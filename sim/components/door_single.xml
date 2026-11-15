@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujocoinclude>
+  <!-- Passive doors; parent scene must use compiler angle='radian'. -->
+  <!-- Nominal geometry and inertia; no latch, closer, actuator or equality constraint. -->
+  <geom name="door_single_left_post" type="box" mass="0" pos="1.576 -0.461 0.969" size="0.05 0.03 0.969" rgba="0.24 0.27 0.31 1" />
+  <geom name="door_single_right_post" type="box" mass="0" pos="1.576 0.461 0.969" size="0.05 0.03 0.969" rgba="0.24 0.27 0.31 1" />
+  <geom name="door_single_top_beam" type="box" mass="0" pos="1.576 0 1.908" size="0.05 0.491 0.03" rgba="0.24 0.27 0.31 1" />
+  <body name="door_single_leaf" pos="1.5 -0.425 0.02">
+    <joint name="door_single_hinge" type="hinge" pos="0 0 0" axis="0 0 1" limited="true" range="0 1.91986217719" stiffness="0" damping="0.3" frictionloss="0.1" />
+    <inertial pos="0 0.424 0.925" mass="12" diaginertia="4.1281 3.4241 0.7072" />
+    <geom name="door_single_panel" type="box" mass="0" pos="0 0.424 0.925" size="0.02 0.42 0.925" rgba="0.65 0.43 0.25 1" friction="0.8 0.005 0.0001" condim="3" />
+    <geom name="door_single_front_handle_lower_stand" type="capsule" mass="0" fromto="-0.02 0.724 0.89 -0.095 0.724 0.89" size="0.012" rgba="0.15 0.17 0.19 1" friction="1 0.005 0.0001" condim="3" />
+    <geom name="door_single_front_handle_upper_stand" type="capsule" mass="0" fromto="-0.02 0.724 1.07 -0.095 0.724 1.07" size="0.012" rgba="0.15 0.17 0.19 1" friction="1 0.005 0.0001" condim="3" />
+    <geom name="door_single_front_handle_grip" type="capsule" mass="0" fromto="-0.095 0.724 0.89 -0.095 0.724 1.07" size="0.012" rgba="0.15 0.17 0.19 1" friction="1 0.005 0.0001" condim="3" />
+    <site name="door_single_front_handle" pos="-0.095 0.724 0.98" quat="0.707106781187 0 -0.707106781187 0" type="sphere" size="0.008" rgba="0.15 0.6 1 0.7" />
+    <geom name="door_single_back_handle_lower_stand" type="capsule" mass="0" fromto="0.02 0.724 0.89 0.095 0.724 0.89" size="0.012" rgba="0.15 0.17 0.19 1" friction="1 0.005 0.0001" condim="3" />
+    <geom name="door_single_back_handle_upper_stand" type="capsule" mass="0" fromto="0.02 0.724 1.07 0.095 0.724 1.07" size="0.012" rgba="0.15 0.17 0.19 1" friction="1 0.005 0.0001" condim="3" />
+    <geom name="door_single_back_handle_grip" type="capsule" mass="0" fromto="0.095 0.724 0.89 0.095 0.724 1.07" size="0.012" rgba="0.15 0.17 0.19 1" friction="1 0.005 0.0001" condim="3" />
+    <site name="door_single_back_handle" pos="0.095 0.724 0.98" quat="0.707106781187 0 0.707106781187 0" type="sphere" size="0.008" rgba="1 0.55 0.15 0.7" />
+  </body>
+</mujocoinclude>

@@ -1,0 +1,58 @@
+# MuJoCo door scene design parameters. These are simulation assumptions,
+# not measurements of a particular real door. Lengths: m; angles: rad;
+# mass: kg; hinge damping: N*m*s/rad; hinge friction loss: N*m.
+# Regenerate with: .venv/bin/python scripts/build_doors.py
+
+door_plane_x: 1.5
+
+leaf:
+  # Nominal width of one opening bay. Edge clearances below shorten the
+  # solid panel slightly; the hinge positions use this nominal width.
+  width: 0.85
+  height: 1.85
+  thickness: 0.04
+  mass: 12.0
+  # The nominal mass is lumped into a uniform-box inertia. Handle mass is
+  # included in that nominal total, without a separate CAD mass estimate.
+  rgba: [0.65, 0.43, 0.25, 1.0]
+  friction: [0.8, 0.005, 0.0001]
+
+clearance:
+  bottom: 0.02
+  hinge_edge: 0.004
+  single_free_edge: 0.006
+  meeting_gap: 0.012
+  frame_side: 0.006
+  frame_top: 0.008
+  frame_rear: 0.006
+
+hinge:
+  range: [0.0, 1.9198621771937625]  # 0 to 110 degrees, expressed in radians.
+  stiffness: 0.0                 # No closer or return spring.
+  damping: 0.3
+  frictionloss: 0.1
+
+handle:
+  # Height is above the world floor, not relative to the leaf bottom.
+  height: 1.0
+  vertical_length: 0.18
+  radius: 0.012
+  stand_off: 0.075
+  offset_from_free_edge: 0.12
+  rgba: [0.15, 0.17, 0.19, 1.0]
+  friction: [1.0, 0.005, 0.0001]
+  # Each leaf has a fixed U handle on both faces. "front" means the
+  # negative-X face at q=0. Handle site +Z points out of its panel face.
+
+frame:
+  post_width: 0.06
+  depth: 0.10
+  rgba: [0.24, 0.27, 0.31, 1.0]
+  # No middle post in the double-door opening. The frame front face is
+  # behind the closed panel's rear face by clearance.frame_rear.
+
+scene:
+  timestep: 0.002
+  floor_half_size: [4.0, 3.0]
+  overview_position: [-1.2, -2.7, 2.0]
+  overview_fovy: 50.0  # MuJoCo camera fovy is specified in degrees.

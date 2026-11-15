@@ -1,0 +1,54 @@
+# 所有长度 m、角度 rad。明确写出的名义值用于开始建模，后续可改。
+robot:
+  base_model: zgws
+  base_prefix: m1_
+  arm_model: piper_h
+  arm_prefix: piper_
+  floating_base: true
+
+arm_mount:
+  parent_link: m1_base_link
+  child_link: piper_base_link
+  xyz_m: [0.05, 0.0, 0.18]
+  rpy_rad: [0.0, 0.0, 0.0]
+  status: simulation_assumption
+  note: 从此名义值开始；按M1网格顶面与Piper基座调整，不是实测安装外参。
+
+accessories:
+  accessory_payload_mode: omitted
+  geometry_mass_kg: 0.0
+  note: 当前保留视觉/碰撞/相机，明确暂不计相机和支架额外载荷；称重与惯量后置。
+  bracket_mesh: assets/accessories/piper_camera_bracket_candidate.obj
+  bracket_metadata: assets/accessories/bracket_source_notes.json
+  parent_candidate: piper_gripper_base
+  registration: align_official_meshes_using_photos
+  pose_status: derive_during_P3
+  note_parent: 候选父节点须对应PiperH实际刚性壳体；不连接活动夹指。
+
+camera:
+  device: orbbec_dabai_dc1
+  mode: synthetic_aligned_rgbd
+  hardware_calibrated: false
+  nominal_shell_size_xyz_m: [0.03, 0.09, 0.026]
+  shell_size_convention: full_edge_lengths_m_mujoco_box_size_is_half
+  shell_axis_convention: x_forward_y_left_z_up
+  nominal_width_px: 640
+  nominal_height_px: 480
+  nominal_fovy_deg: 60.0
+  parameter_status: simulation_assumption
+  pose_status: derive_during_P3_from_bracket_and_photos
+  note: 外壳和fovy仅为第一版仿真设计值，不是DC1规格；RGB和深度来自同一个虚拟相机。
+
+gripper:
+  command: opening_width_m
+  opening_range_m: [0.0, 0.1]
+  finger_relation: q1=w/2; q2=-w/2
+  tcp_parent: piper_gripper_base
+  tcp_nominal_xyz_m: [0.0, 0.0, 0.138]
+  tcp_status: nominal_from_finger_joint_origins
+
+simulation:
+  mujoco_version: '3.3.0'
+  timestep_s: 0.002
+  world_up_axis: z
+  use_vendor_simulator: false

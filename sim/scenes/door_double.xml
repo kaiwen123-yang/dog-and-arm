@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="door_double_passive_preview">
+  <!-- Preview scene only: no robot controller or automated door opening. -->
+  <compiler angle="radian" />
+  <option timestep="0.002" gravity="0 0 -9.81" />
+  <statistic center="1.5 0 0.945" extent="2.2" />
+  <worldbody>
+    <geom name="door_double_floor" type="plane" mass="0" pos="0 0 0" size="4 3 0.1" rgba="0.78 0.8 0.83 1" friction="0.9 0.005 0.0001" />
+    <light name="door_double_light" pos="-1 -2 4" dir="0.5 0.3 -1" diffuse="0.9 0.9 0.9" castshadow="true" />
+    <camera name="overview" pos="-1.2 -2.7 2" xyaxes="0.707106781187 -0.707106781187 0 0.188314659143 0.188314659143 0.96388545912" fovy="50" />
+    <include file="../components/door_double.xml" />
+  </worldbody>
+</mujoco>

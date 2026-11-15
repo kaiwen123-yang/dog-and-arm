@@ -1,0 +1,28 @@
+请把当前 dog-and-arm 仓库从开工框架推进到 P0–P3 完成，直接执行和修复，不要只给计划。
+
+先读 AGENTS.md、PROJECT_STATE.md、docs/BUILD_PLAN.md、docs/MODEL_INTEGRATION.md、docs/SOURCES.md 和 config/assembly.yaml。当前仓库已经包含四张用户照片、支架 OBJ、门生成器、官方来源脚本；不要要求用户重新提供这些材料。
+
+硬件是智身铜锤 M1 四轮轮足（ZGWS）＋松灵 Piper H＋官方夹爪＋腕部官方支架＋DaBai DC1。只用原生 MuJoCo。先做任务实现，暂不定研究主线；手眼标定、标定板采购、相机/支架称重和惯量测量全部后置，不作为开工条件。
+
+按下列顺序推进：
+1. 检查实际 Linux、Python、图形环境和已有 ROS。运行目录初始化，并使用项目 .venv 与 scripts/project_env.sh。不要污染 Conda base、ROS、CUDA、驱动或 shell 启动文件。缺少依赖时处理真实缺项；不要预设所有系统工具都已安装。
+2. 运行 scripts/fetch_sources.py 和 scripts/inspect_sources.py。读取固定版本的 M1 ZGWS MJCF、Piper H 本体和带夹爪 Xacro。来源盘点不代表 MuJoCo 已编译。存在的 vendor checkout 先检查实际版本与修改，保留用户工作。
+3. 实现可重复运行的转换/装配脚本。M1 原生 MJCF 保留为动力学来源；从已知树衍生 M1 URDF。Piper H 去掉自带 world 固定根，加前缀，正确处理夹爪 master/mimic。所有转换 mesh basename 唯一，保留 DAE 场景变换、单位、惯性主轴和碰撞几何。
+4. 完成 M1 背部与 Piper H 的名义固定安装。用已给的四张照片和官方几何对齐支架、相机，集中保存安装参数。附件不接活动夹指；附件 geoms 显式零质量/零密度，首版不计额外载荷。不能等待精确手眼或附件称重。
+5. 输出组合 URDF、原生组合 MJCF、关节/执行器映射与装配预览场景。整机保留一个自由基座，夹爪保留两个真实手指、一个耦合约束和一个控制输入。第一版虚拟相机为同一 camera 输出的理想对齐 RGB-D，注明不是实机标定。
+6. 在少量合法姿态下检查 URDF/MJCF 的轮心、法兰、TCP 位姿，夹爪开合与腕部附件固定关系，检查视觉/碰撞网格。保存整机正面、侧面、腕部局部、腕部 RGB 图及 depth 数据。不要用直接设置 qpos 或 mj_forward 宣称动力学成功。
+
+本轮明确交付：
+- description/m1_derived.urdf
+- description/m1_piper.urdf，以及可维护的装配生成脚本或 Xacro
+- description/joint_map.yaml
+- sim/robots/m1_piper.xml
+- sim/scenes/assembly_preview.xml
+- results/assembly/ 下的整机和腕部观察结果
+- reports/assembly_report.md：来源、假设、实际检查、运行命令、剩余问题
+
+独立模型审阅可以并行，组合模型和进度文件由主任务统一集成。不要建立哈希/冒烟/防御性测试框架，不启动无关训练，不给后台长任务设置任意强制墙钟截止。
+
+用户已授权将本项目代码、配置、必要结果和进度提交推送到 https://github.com/kaiwen123-yang/dog-and-arm 。完成后更新 PROJECT_STATE.md 与 prompts/NEXT_RUN.txt，检查 git status，正常提交并推送，保留已有修改，不强推。不要提交 .venv、vendor、密钥或大量临时数据，不另外制作本机压缩归档。如果当前运行环境确实没有推送权限，保留本地提交并准确报告阻塞，不反复索取已授予的任务授权。
+
+本轮终点是可查看且坐标/夹爪关系正确的整机装配。P4 以后进行真实接触与轮足动力学；当前不要把门场景或静态图写成整机开门成功。最后用中文给出结果、实际验证范围和下一条能执行的命令。
