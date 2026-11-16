@@ -117,3 +117,9 @@ Piper home 为 `[0, 0.8, -1.4, 0, 0.6, 0] rad`，夹爪开口 40 mm。这是独�
 本机 Python 3.10.12 / MuJoCo 3.3.0，X11 :1。已恢复固定官方源、构建 M1 并实际打开 native viewer；与准备侧离线结果分开记录。[home 桌面截图](../results/assembly/live_local/m1_home.png)、[髋关节 +6°](../results/assembly/live_local/m1_hip_plus6.png)、[碰撞凸包视图](../results/assembly/live_local/m1_collision_hulls.png)、[18 秒桌面录像](../results/assembly/live_local/m1_desktop.mp4)。
 
 实际操作 FAR hip +6°、knee −4°、wheel +6°，home 与退出正常；事件见 `m1_events.jsonl`。碰撞显示发现重叠闪白，F9 已改为碰撞专用视图；F6 切换已有检查相机，并清除原生 F6 的坐标轴副作用。没有修改 M1 物理模型或安装参数。GUI 和操作已由桌面捕获核对，未收到用户明确观看反馈。Piper/整机的本机检查继续进行。
+
+## 11. 本机桌面节点：Piper H
+
+实际 `--stage piper` 构建、桌面开窗，J1/J2 各 +4°、J3 −4°，双指 100→0 mm，F6 腕部近景、F9 凸包/附件代理、F8 虚拟相机、F10 重载与 home 恢复。用户对腕部近景及夹爪开合明确回复“能看到，继续”。
+
+[六轴概览](../results/assembly/live_local/piper_home.png)、[张开](../results/assembly/live_local/piper_gripper_open.png)、[闭合](../results/assembly/live_local/piper_gripper_closed.png)、[碰撞几何](../results/assembly/live_local/piper_collision.png)、[24 s 桌面录像](../results/assembly/live_local/piper_desktop.mp4)。空场景腕相机实测只有背景与远地面；联合带门场景再核对目标，未调整外参来伪造视野。事件见 `piper_events.jsonl`，没有 `mj_step` 或硬件访问。

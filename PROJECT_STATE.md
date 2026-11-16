@@ -4,12 +4,12 @@
 
 ## 当前阶段
 
-**H0 已完成；本机仿真环境和 M1 单体桌面检查已完成，正在继续 Piper H 与联合装配。** 本机工作目录为 `/home/kaiwen/research/dog-and-arm`。本次从 H0 提交 `284c1f3` 继续，新增 M1＋Piper H 组合 URDF/MJCF、名义附件、实时查看入口和离线验证；这些结果不代表本机桌面已经打开，也不代表动力学站稳或接触开门。
+**H0 已完成；本机 M1、Piper H 单体桌面检查已完成，正在继续联合装配。** 本机工作目录为 `/home/kaiwen/research/dog-and-arm`。本次从 H0 提交 `284c1f3` 继续，新增 M1＋Piper H 组合 URDF/MJCF、名义附件、实时查看入口和离线验证；这些结果不代表本机桌面已经打开，也不代表动力学站稳或接触开门。
 
 - 机械臂本体验机：**用户此前已完成**，本轮复用现有 OSCBF-learn / pyAgxArm。
 - H0 相机＋机械臂联调：**此前回合实机完成**；[报告](reports/H0_HARDWARE_REPORT.md)、[会话清单](results/hardware/h0/20261116_2051/manifest.json)、[操作说明](docs/H0_RUNBOOK.md)。
 - P1 官方资产、P2 单体生成、P3 名义联合模型：**准备环境已实现并编译／离线检查**；[装配报告](reports/assembly_report.md)。
-- 本机 `.venv`：Python 3.10.12 / MuJoCo 3.3.0 已建立；M1 已实际桌面显示并操作，Piper/整机与重载继续进行。
+- 本机 `.venv`：Python 3.10.12 / MuJoCo 3.3.0 已建立；M1/Piper 已实际桌面显示、关节/夹爪与 F10 重载正常；整机继续进行。
 - 手眼标定、标定板采购、相机/支架称重及惯量：**继续后置**。
 - 下一轮：按 [prompts/NEXT_RUN.txt](prompts/NEXT_RUN.txt) 和 [LIVE_ASSEMBLY.txt](prompts/LIVE_ASSEMBLY.txt) 依次显示 M1、Piper 和整机，用户要看到实时变化；按有意义节点及时普通提交／推送，不自行启动真实机器人。
 
@@ -22,7 +22,10 @@
 - X11 桌面捕获确认 M1 四轮轮足可见；FAR hip +6°、knee −4°、wheel +6°，F11 恢复，F12 正常退出。截图、18 s 桌面录像及事件在 `results/assembly/live_local/`。尚未收到用户明确的观看反馈，不代填“用户确认”。
 - 修复碰撞外观重叠：F9 显示碰撞凸包/盒体并隐藏视觉组 1/2；F6 切换现有概览/侧面/正面/腕部局部相机。实测处理 MuJoCo 原生 F6 的坐标轴副作用。均只改变显示，不改碰撞参数。
 - M1 模型 `nq23/nv22/nu16`，38.82051 kg；生成 URDF 的极小尾数差来自本机数值库。全部仍是 `KINEMATIC_PREVIEW`，没有 `mj_step`。
-- 下一步：Piper H 六轴与双指检查，然后联合安装、腕相机、重载及三组 FK；接触和轮足动力学尚未开始。
+- Piper：终端 B `build_assembly.py --stage piper`，终端 A `live_assembly.py --model sim/scenes/piper_preview.xml --watch --events results/assembly/live_local/piper_events.jsonl`。J1/J2 各 +4°、J3 −4°；Space 双指 100→0 mm，F6 腕部近景，F9 碰撞，F8 腕相机，F10 实际重开窗口并恢复 home。
+- Piper 单体包含名义腕部附件和相机。空场景腕相机主要看见背景/远地面，属实际显示结果；尚未添加目标。用户明确回复“能看到，继续”，对应 Piper 腕部近景与夹爪开合，不扩大为全部阶段确认。
+- Piper `nq8/nv8/nu7/neq1`、4.716554081 kg；保存截图、24 s 桌面录像与事件。M1 节点本地提交 `f8786a8`，首次 push 仍等待网络返回，尚未声称上传成功。
+- 下一步：联合安装、腕相机看被动门、XML watch 重载及三组 FK；接触和轮足动力学尚未开始。
 
 ## 基础联合模型回合：实际成果
 

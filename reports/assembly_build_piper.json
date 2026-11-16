@@ -1,0 +1,46 @@
+{
+  "stage": "piper",
+  "mujoco_version": "3.3.0",
+  "mode": "KINEMATIC_PREVIEW",
+  "hardware_access": false,
+  "dynamics_validated": false,
+  "models": [
+    {
+      "file": "sim/scenes/piper_preview.xml",
+      "nq": 8,
+      "nv": 8,
+      "nu": 7,
+      "neq": 1,
+      "nbody_including_world": 13,
+      "mass_kg": 4.716554081330001,
+      "home_qpos": [
+        0.0,
+        0.8,
+        -1.4,
+        0.0,
+        0.6,
+        0.0,
+        0.02,
+        -0.02
+      ],
+      "contacts_at_home": 0,
+      "mj_step_calls": 0
+    }
+  ],
+  "piper_notes": [
+    "Official Piper H with-gripper Xacro expanded once; standalone gripper not appended.",
+    "Removed the source world/world_to_base_link; caller mounts piper_base_link with a fixed transform.",
+    "Visuals use verbatim official collision STL, with flat gray material. DAE scenes/materials were NOT converted.",
+    "Official STL coordinates/scales retained; no guessed millimeter conversion applied.",
+    "Mesh collision uses MuJoCo convex hulls, so concavities and fine contact geometry are simplified.",
+    "Contact friction/condim and equality solver settings use explicit MuJoCo default assumptions; source URDF has no calibrated contact data.",
+    "Official link mass, COM and inertia retained; visual/collision geoms contribute zero inferred mass.",
+    "URDF keeps official width master and mimic; MJCF removes empty master and constrains finger2=-finger1.",
+    "One gripper motor acts on finger1 in N; opening width=2*q_finger1. This is not a calibrated grip-force interface.",
+    "Seven motor force bounds are URDF effort limits, not independently verified hardware ratings; velocity limits need controller enforcement.",
+    "TCP at gripper_base+[0,0,0.138] m is nominal; camera, hand-eye calibration and accessory payload are outside this module.",
+    "No freejoint, hardware interface, auto-enable, controller gain, or successful dynamics claim is supplied.",
+    "URDF mesh paths assume description; MJCF mesh paths assume project root. Rebase when writing elsewhere.",
+    "Explicit base_link/link1 adjacent collision exclusion also applies when the Piper root is welded to world; source overlapping STL shells are unchanged."
+  ]
+}
