@@ -11,12 +11,14 @@ def main() -> None:
         "vendor", "description", "sim/components", "sim/robots", "sim/scenes",
         "controllers", "scripts", "config", "prompts", "docs", "reports",
         "results/assembly", "results/doors", "results/tmp", "results/raw_large",
+        "results/hardware/h0", "results/raw_large/hardware/h0",
+        "hardware/camera_ws/src", "hardware/deps",
     )
     for folder in folders:
         (project / folder).mkdir(parents=True, exist_ok=True)
     print(f"Project: {project}")
     print(f"Prepared {len(folders)} directories; existing files were preserved.")
-    print("Next: open Codex in this directory and use prompts/FIRST_RUN.txt.")
+    print("Next: open Codex here and read PROJECT_STATE.md and prompts/NEXT_RUN.txt.")
 
 
 if __name__ == "__main__":

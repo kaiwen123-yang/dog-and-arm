@@ -1,0 +1,77 @@
+# H0 working template; not a measured result or an executable launch file.
+# Codex fills these fields from the actual machine and records a session copy.
+phase: H0
+status: pending_hardware_run
+arm_initial_acceptance: completed_by_user
+simulation_backend: mujoco
+
+scope:
+  camera_arm_joint_operation: true
+  m1_hardware_motion: false
+  hand_eye_calibration: deferred
+  calibration_board_purchase: deferred
+  accessory_mass_and_inertia: deferred
+  visual_closed_loop_control: deferred
+
+host:
+  operating_system: null
+  ros_distribution: null
+  single_host_recording: true
+  expected_use_sim_time: false
+  actual_node_use_sim_time: null
+
+arm:
+  model: piper_h
+  existing_project_url: https://github.com/kaiwen123-yang/OSCBF-learn
+  reviewed_project_commit: 2ea3f1f48d10591b2bcb770af704011b381910b7
+  sdk_reference: pyAgxArm
+  historical_firmware_profile: V189
+  local_project_path: null
+  actual_sdk_version: null
+  actual_interface: null
+  state_source: discover_existing_read_only_interface
+  joint_names_and_order: null
+  joint_units: null
+  gripper_feedback_source_and_units: null
+  motion_entry: existing_validated_controller_operator_started
+  recorder_sends_motion_or_enable: false
+
+camera:
+  model_reference: orbbec_dabai_dc1
+  actual_usb_identity: null
+  actual_driver_repository: null
+  actual_driver_revision: null
+  actual_launch_command: null
+  firmware_information: null
+  color_topic: null
+  depth_topic: null
+  color_camera_info_topic: null
+  depth_camera_info_topic: null
+  actual_stream_modes: null
+  depth_encoding_and_scale: null
+  invalid_depth_definition: null
+  color_intrinsics_source: null
+  depth_intrinsics_source: null
+  depth_to_color_registration: record_actual_state
+  actual_frames_and_qos: null
+
+timing:
+  record_original_timestamps: true
+  record_host_monotonic_ns: true
+  record_receive_ros_or_unix_time: true
+  camera_timestamp_semantics: inspect_selected_driver
+  arm_timestamp_semantics: inspect_existing_receiver
+  arm_state_observation_kind: null  # receive_event / feedback_update / cached_poll
+  arm_feedback_timestamp_or_sequence_source: null
+  association: same_host_receive_time
+  hardware_sync_verified: false
+
+recording:
+  static_observation_suggestion_s: [60, 120]
+  background_kill_timeout: null
+  low_speed_motion: small_existing_validated_operator_started_sequence
+  gripper_open_close: true
+  camera_stop_restart: true
+  results_root: results/hardware/h0
+  large_raw_root: results/raw_large/hardware/h0
+  report: reports/H0_HARDWARE_REPORT.md

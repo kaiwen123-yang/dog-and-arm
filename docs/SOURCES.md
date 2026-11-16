@@ -40,7 +40,9 @@
 
 照片与支架结构吻合，可以开始名义装配；尚未确认零售工程修订与实测安装外参。当前不因此暂停，也不把假设写成实物标定。
 
-后续实机相机参考：[orbbec/ros2_astra_camera](https://github.com/orbbec/ros2_astra_camera) 中的 `dabai_dc1.launch.xml`，以及 [OrbbecSDK_ROS2/main](https://github.com/orbbec/OrbbecSDK_ROS2/tree/main) 的旧设备支持路径。届时按实际设备标识和固件核对，不能拿其他 DaBai 型号的 CAD、内参或支持分支直接代用。本阶段不安装这些驱动，也不以真实驱动作为 MuJoCo 图像输出条件。
+H0 实机相机参考：[orbbec/ros2_astra_camera](https://github.com/orbbec/ros2_astra_camera) 中的 `dabai_dc1.launch.xml`，以及 [OrbbecSDK_ROS2/main](https://github.com/orbbec/OrbbecSDK_ROS2/tree/main) 的旧设备支持路径。按实际设备标识和固件核对，不能拿其他 DaBai 型号的 CAD、内参或支持分支直接代用。H0 按需选一套驱动，仿真模型阶段不以它作为 MuJoCo 图像输出条件。
+
+2026-11-16 新增 H0 的固定源码、PID 差异、CameraInfo 和时间戳语义，以及既有 OSCBF-learn / pyAgxArm 复用依据，集中在 [实机联调说明](HARDWARE_INTEGRATION.md)。其中涉及的历史成功日志只用于接口选择，不是本次 H0 的实测结果。
 
 ## 4. MuJoCo 与项目执行
 

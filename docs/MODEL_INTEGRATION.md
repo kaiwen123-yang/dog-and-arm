@@ -87,7 +87,9 @@ hardware_calibrated: false
 
 在 MJCF 中，优先把零质量附件 geoms 和 camera 直接放进具有官方显式 inertial 的固定末端主体，用局部位姿与 sites 表示各安装坐标；URDF 可继续保留 fixed link 结构。不要创建只有零质量 geoms、没有 inertial 的新 body 后让编译器自动算质心——MuJoCo 3.3.0 可能报 `body mass is too small`。这是表示方法问题，不需要为了绕过报错虚构附件实测质量。
 
-第一版从同一个 MuJoCo camera 输出 RGB 与深度，作为理想对齐图像观察门把手和夹爪遮挡。FOV、外壳简化尺寸、安装位姿均标为 `simulation_assumption`。这只是初始仿真，不代表 DaBai DC1 的实物光学标定、噪声或有效测距范围；当前不要求测量、购买标定板或安装实机相机驱动。
+第一版从同一个 MuJoCo camera 输出 RGB 与深度，作为理想对齐图像观察门把手和夹爪遮挡。FOV、外壳简化尺寸、安装位姿均标为 `simulation_assumption`。这只是初始仿真，不代表 DaBai DC1 的实物光学标定、噪声或有效测距范围；模型装配不要求测量、购买标定板或先运行实机驱动。
+
+用户另加 H0 实机联调回合，见 docs/HARDWARE_INTEGRATION.md。H0 可以读取真实 RGB/深度、CameraInfo、实际机械臂状态并观察运动中的遮挡；这不自动提供手眼外参。真实流参数保存在独立硬件配置，不把真实未对齐 RGB/深度套用成仿真的同一理想光心。
 
 保留“支架安装基准、相机外壳、光学坐标”各自的含义，外壳中心不自动等于光心。MuJoCo 相机沿自身负 Z 轴观察、Y 轴向上；建立虚拟光学坐标后检查画面实际方向。[5] 先让夹爪前方目标出现在画面中，再调整视角参数，不从手机照片推算精确焦距。
 
