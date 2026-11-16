@@ -2,7 +2,13 @@
 
 本仓库是智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机的 MuJoCo 开工工程。
 
-**当前交付是可执行的开工框架、官方资源获取脚本、支架资产、四张实物照片和被动门场景；完整组合机器人及开门控制器由第一轮和后续阶段实现。**没有把静态模型或一扇空门的预览称作整机任务成功。
+**基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。当前是 **KINEMATIC_PREVIEW（运动学装配预览）**；轮足保持控制和真实接触开门尚未实现。
+
+本轮在独立 Linux 准备环境完成实际模型编译和离线检查；用户本机 `/home/kaiwen/research/dog-and-arm` 的桌面查看仍需下一次本地会话完成。实时操作说明见 [LIVE_DEBUGGING.md](docs/LIVE_DEBUGGING.md)，可直接交给本机 Codex 的提示词见 [LIVE_ASSEMBLY.txt](prompts/LIVE_ASSEMBLY.txt)。
+
+![基础联合模型运动学预览](results/assembly/overview.png)
+
+生成过程、数值检查和限制见 [装配报告](reports/assembly_report.md)。
 
 **2026-11-16 已完成 H0：Piper H＋DaBai DC1 实机联调。**已保存真实 RGB、原始深度、两路 CameraInfo、静止/慢动作/停止/夹爪联合记录，并验证相机正常重启。最终 240 s 静止记录约 30 Hz 图像、200 Hz 关节反馈；成功动作实测 J6 范围 1.962°。首次失败及后续 QoS/DDS 修正、RGB 畸变参数限制均见 [H0 报告](reports/H0_HARDWARE_REPORT.md) 和 [动作短片](results/hardware/h0/20261116_2051/evidence/motion_success/clip.mp4)。手眼与附件称重仍后置。
 
@@ -16,7 +22,7 @@
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前下一轮是 **prompts/FIRST_RUN.txt** 的 P0–P3 模型装配；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前下一轮是拉取基础模型后，在本机桌面按 **prompts/LIVE_ASSEMBLY.txt** 完成可见检查；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -40,7 +46,7 @@ H0 的实际接口已填入 `config/hardware_session.yaml`，结果位于 `resul
 
 1. 检查实际 Linux/Python/ROS 环境，在项目 .venv 安装 MuJoCo 依赖。
 2. 获取固定来源的 M1 ZGWS 和 Piper H 官方模型，生成源模型清单。
-3. 处理 mesh 路径、DAE 转换、M1 衍生 URDF 和 Piper 夹爪结构。
+3. 处理 mesh 路径、M1 衍生 URDF 和 Piper 夹爪结构。首版 Piper visual 明确复用官方 collision STL，未转换 DAE 材质外观。
 4. 根据官方几何与四张照片完成名义装配，生成组合 URDF 和 MJCF。
 5. 交付整机正面、侧面、腕部局部与虚拟相机图；给出模型查看命令。
 
@@ -53,6 +59,25 @@ H0 的实际接口已填入 `config/hardware_session.yaml`，结果位于 `resul
     bash scripts/setup_env.sh
     bash scripts/project_env.sh .venv/bin/python scripts/fetch_sources.py
     bash scripts/project_env.sh .venv/bin/python scripts/inspect_sources.py
+    bash scripts/project_env.sh .venv/bin/python scripts/build_assembly.py --stage all
+    bash scripts/project_env.sh .venv/bin/python scripts/check_assembly.py
+    bash scripts/project_env.sh .venv/bin/python scripts/live_assembly.py --watch
+
+在 MuJoCo 窗口中：左右方向键选择关节，上下方向键微调；空格开合夹爪；F8 腕部/自由视角；F9 显示碰撞几何；F10 重载；F11 回到仿真 home；F12 退出。终端显示当前选择和数值。`--watch` 在 XML 成功重新生成后重开查看器；XML 修改失败会保留旧模型。
+
+`config/assembly.yaml` 是安装关系入口。在另一终端修改参数后运行 `build_assembly.py --stage combined`；运行中的查看器会更新。只改 YAML 而不重建 XML 不会改变画面。
+
+单体实时查看分别加 `--model sim/scenes/m1_preview.xml` 或 `--model sim/scenes/piper_preview.xml`；带静止被动单门的整机场景为 `sim/scenes/assembly_with_door.xml`。完整逐阶段流程见实时调试文档。
+
+可选的运动学演示和离线证据：
+
+    bash scripts/project_env.sh .venv/bin/python scripts/live_assembly.py --scripted-demo
+    MUJOCO_GL=egl bash scripts/project_env.sh .venv/bin/python scripts/capture_assembly.py --video
+
+二者都不调用 `mj_step`。离线图片／视频不能替代用户本机的实时开窗检查。
+
+原有被动门入口仍保留：
+
     bash scripts/project_env.sh .venv/bin/python scripts/build_doors.py
     bash scripts/project_env.sh .venv/bin/python scripts/view_model.py sim/scenes/door_single.xml
 
@@ -84,12 +109,12 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 | config/ | 来源版本、名义安装、门、观测配置 |
 | materials/photos/ | 用户提供的四张腕部安装照片 |
 | assets/accessories/ | 已提取的官方支架候选几何、来源与预览 |
-| assets/converted/ | 后续生成的唯一命名网格 |
+| assets/converted/ | 按固定源重建的唯一命名网格，不提交重复大资产 |
 | vendor/ | 脚本下载的上游源模型，默认不提交 |
-| description/ | 衍生 M1 URDF、组合 URDF/Xacro及名称映射 |
+| description/ | 衍生 M1、Piper H、组合 URDF 和名称映射 |
 | sim/components/ | 被动门组件和后续机器人组件 |
-| sim/robots/ | 后续组合机器人 MJCF |
-| sim/scenes/ | 门场景以及后续机器人任务场景 |
+| sim/robots/ | 组合机器人原生 MJCF |
+| sim/scenes/ | 单体、整机、整机＋被动单门、单／双门场景 |
 | controllers/ | 后续仿真控制器 |
 | hardware/ | 本机相机 workspace/依赖；下载和编译目录不提交 |
 | scripts/ | 可执行入口 |
@@ -106,6 +131,6 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 
 ## 仓库存储
 
-本仓库是项目代码与阶段记录的保存位置。每轮完成后提交并推送代码、配置、报告及必要小规模结果。无需另外制作本机压缩归档。vendor/ 和 .venv 可按脚本重建，默认不提交。四张实物照片已在仓库，无需重新下载或补拍。
+本仓库是项目代码与阶段记录的保存位置。按有意义的可见调试节点提交并及时推送代码、配置、报告及必要小规模结果。无需另外制作本机压缩归档。vendor/、assets/converted/ 和 .venv 可按脚本重建，默认不提交；新拉取模型后先执行 fetch_sources.py 和 build_assembly.py，才能解析所引用的本地网格。四张实物照片已在仓库，无需重新下载或补拍。
 
 源码引用和第三方资产许可见 THIRD_PARTY_NOTICES.md。

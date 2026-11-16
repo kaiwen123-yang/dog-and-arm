@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="m1_piper_h_with_gripper_and_nominal_camera">
+  <compiler angle="radian" fusestatic="false" inertiafromgeom="false" />
+  <asset>
+    <mesh name="m1_BASE_LINK" file="../../assets/converted/m1_BASE_LINK.stl" />
+    <mesh name="m1_FBL_ABAD_LINK" file="../../assets/converted/m1_FBL_ABAD_LINK.stl" />
+    <mesh name="m1_FBL_HIP_LINK" file="../../assets/converted/m1_FBL_HIP_LINK.stl" />
+    <mesh name="m1_FBL_KNEE_LINK" file="../../assets/converted/m1_FBL_KNEE_LINK.stl" />
+    <mesh name="m1_FBL_FOOT_LINK" file="../../assets/converted/m1_FBL_FOOT_LINK.stl" />
+    <mesh name="m1_FAR_ABAD_LINK" file="../../assets/converted/m1_FAR_ABAD_LINK.stl" />
+    <mesh name="m1_FAR_HIP_LINK" file="../../assets/converted/m1_FAR_HIP_LINK.stl" />
+    <mesh name="m1_FAR_KNEE_LINK" file="../../assets/converted/m1_FAR_KNEE_LINK.stl" />
+    <mesh name="m1_FAR_FOOT_LINK" file="../../assets/converted/m1_FAR_FOOT_LINK.stl" />
+    <mesh name="m1_RAR_ABAD_LINK" file="../../assets/converted/m1_RAR_ABAD_LINK.stl" />
+    <mesh name="m1_RAR_HIP_LINK" file="../../assets/converted/m1_RAR_HIP_LINK.stl" />
+    <mesh name="m1_RAR_KNEE_LINK" file="../../assets/converted/m1_RAR_KNEE_LINK.stl" />
+    <mesh name="m1_RAR_FOOT_LINK" file="../../assets/converted/m1_RAR_FOOT_LINK.stl" />
+    <mesh name="m1_RBL_ABAD_LINK" file="../../assets/converted/m1_RBL_ABAD_LINK.stl" />
+    <mesh name="m1_RBL_HIP_LINK" file="../../assets/converted/m1_RBL_HIP_LINK.stl" />
+    <mesh name="m1_RBL_KNEE_LINK" file="../../assets/converted/m1_RBL_KNEE_LINK.stl" />
+    <mesh name="m1_RBL_FOOT_LINK" file="../../assets/converted/m1_RBL_FOOT_LINK.stl" />
+    <mesh name="piper_base_link_mesh" file="../../assets/converted/piper_base_link_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_link1_mesh" file="../../assets/converted/piper_link1_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_link2_mesh" file="../../assets/converted/piper_link2_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_link3_mesh" file="../../assets/converted/piper_link3_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_link4_mesh" file="../../assets/converted/piper_link4_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_link5_mesh" file="../../assets/converted/piper_link5_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_link6_mesh" file="../../assets/converted/piper_link6_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_flange_link_mesh" file="../../assets/converted/piper_flange_link_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_gripper_base_mesh" file="../../assets/converted/piper_gripper_base_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_gripper_link1_mesh" file="../../assets/converted/piper_gripper_link1_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_gripper_link2_mesh" file="../../assets/converted/piper_gripper_link2_mesh.stl" scale="1 1 1" />
+    <mesh name="piper_bracket_candidate_mesh" file="../../assets/accessories/piper_camera_bracket_candidate.obj" />
+  </asset>
+  <worldbody>
+    <body name="m1_base_link" pos="0 0 0.5">
+      <inertial pos="-0.001406 0.00345 -0.004835" quat="-0.00434043 0.706832 -0.00540402 0.707347" mass="17.033" diaginertia="0.695866 0.661855 0.0928814" />
+      <freejoint name="m1_floating_base" />
+      <site name="m1_imu" pos="0.0 0 0.0" />
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.75294 0.75294 0.75294 1" mesh="m1_BASE_LINK" />
+      <geom type="mesh" rgba="0.69804 0.69804 0.69804 1" mesh="m1_BASE_LINK" group="3" />
+      <body name="m1_FAR_ABAD_LINK" pos="0.2698 -0.065 0">
+        <inertial pos="0.033776 -0.02146 9.6941e-07" quat="0.351949 0.351975 0.613287 0.613289" mass="0.19789" diaginertia="0.00025478 0.00020921 0.00011958" />
+        <joint name="m1_FAR_ABAD_JOINT" pos="0 0 0" axis="1 0 0" range="-0.697 0.523" actuatorfrcrange="-150 150" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_FAR_ABAD_LINK" />
+        <body name="m1_FAR_HIP_LINK" pos="0.0587 -0.045 0">
+          <inertial pos="-3.2e-05 -0.065021 -0.128154" quat="0.703257 -0.0677607 0.068164 0.704409" mass="2.8754" diaginertia="0.0456037 0.045202 0.00275532" />
+          <joint name="m1_FAR_HIP_JOINT" pos="0 0 0" axis="0 1 0" range="-2.442 2.791" actuatorfrcrange="-150 150" />
+          <geom size="0.03 0.0075 0.11" pos="0 -0.07 -0.1" quat="0.988771 -0.149438 0 0" type="box" rgba="0.84706 0.84706 0.84706 1" group="3" />
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_FAR_HIP_LINK" />
+          <body name="m1_FAR_KNEE_LINK" pos="0 -0.0522 -0.26">
+            <inertial pos="1.1e-05 0.004286 -0.115691" quat="0.707101 -0.000811046 0.000666189 0.707112" mass="0.86312" diaginertia="0.01053 0.01024 0.000477956" />
+            <joint name="m1_FAR_KNEE_JOINT" pos="0 0 0" axis="0 1 0" range="-2.791 2.791" actuatorfrcrange="-150 150" />
+            <geom size="0.015 0.015 0.11" pos="0.005 0 -0.09" quat="0.99995 0 -0.00999983 0" type="box" rgba="0.75294 0.75294 0.75294 1" group="3" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_FAR_KNEE_LINK" />
+            <body name="m1_FAR_FOOT_LINK" pos="0 -0.0088 -0.28">
+              <inertial pos="0 -0.039394 4.2e-05" quat="0.5 0.5 0.5 0.5" mass="1.5113" diaginertia="0.004202 0.002606 0.002603" />
+              <joint name="m1_FAR_FOOT_JOINT" pos="0 0 0" axis="0 1 0" range="-99999 99999" actuatorfrcrange="-40 40" />
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_FAR_FOOT_LINK" />
+              <geom type="mesh" rgba="1 1 1 1" mesh="m1_FAR_FOOT_LINK" group="3" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="m1_FBL_ABAD_LINK" pos="0.2698 0.065 0">
+        <inertial pos="0.033776 0.02146 -9.6941e-07" quat="0.613283 0.613294 0.351948 0.351976" mass="0.19789" diaginertia="0.00025478 0.00020921 0.00011958" />
+        <joint name="m1_FBL_ABAD_JOINT" pos="0 0 0" axis="1 0 0" range="-0.523 0.697" actuatorfrcrange="-150 150" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_FBL_ABAD_LINK" />
+        <body name="m1_FBL_HIP_LINK" pos="0.0587 0.045 0">
+          <inertial pos="3.7e-05 0.065021 -0.128154" quat="0.702733 0.067692 -0.0682323 0.704931" mass="2.8754" diaginertia="0.0456037 0.045202 0.00275532" />
+          <joint name="m1_FBL_HIP_JOINT" pos="0 0 0" axis="0 1 0" range="-2.442 2.791" actuatorfrcrange="-150 150" />
+          <geom size="0.03 0.0075 0.11" pos="0 0.07 -0.1" quat="0.988771 0.149438 0 0" type="box" rgba="0.84706 0.84706 0.84706 1" group="3" />
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_FBL_HIP_LINK" />
+          <body name="m1_FBL_KNEE_LINK" pos="1.113e-05 0.0522 -0.26" quat="1 0 -2.14045e-05 0">
+            <inertial pos="-1.1e-05 -0.004286 -0.115691" quat="0.707101 0.000811046 -0.000666189 0.707112" mass="0.86312" diaginertia="0.01053 0.01024 0.000477956" />
+            <joint name="m1_FBL_KNEE_JOINT" pos="0 0 0" axis="0 1 0" range="-2.791 2.791" actuatorfrcrange="-150 150" />
+            <geom size="0.015 0.015 0.11" pos="0.005 0 -0.09" quat="0.99995 0 -0.00999983 0" type="box" rgba="0.75294 0.75294 0.75294 1" group="3" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_FBL_KNEE_LINK" />
+            <body name="m1_FBL_FOOT_LINK" pos="0 0.0088 -0.28">
+              <inertial pos="0 0.039394 4.1863e-05" quat="0.5 0.5 0.5 0.5" mass="1.5113" diaginertia="0.004202 0.002606 0.002603" />
+              <joint name="m1_FBL_FOOT_JOINT" pos="0 0 0" axis="0 1 0" range="-99999 99999" actuatorfrcrange="-40 40" />
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_FBL_FOOT_LINK" />
+              <geom type="mesh" rgba="1 1 1 1" mesh="m1_FBL_FOOT_LINK" group="3" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="m1_RAR_ABAD_LINK" pos="-0.2698 -0.065 0">
+        <inertial pos="-0.033776 -0.02146 -9.6931e-07" quat="0.613283 0.613294 0.351948 0.351976" mass="0.19789" diaginertia="0.00025478 0.00020921 0.00011958" />
+        <joint name="m1_RAR_ABAD_JOINT" pos="0 0 0" axis="1 0 0" range="-0.697 0.523" actuatorfrcrange="-150 150" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_RAR_ABAD_LINK" />
+        <body name="m1_RAR_HIP_LINK" pos="-0.0587 -0.045 0">
+          <inertial pos="-3.7e-05 -0.065021 -0.128154" quat="0.702733 -0.067692 0.0682323 0.704931" mass="2.8754" diaginertia="0.0456037 0.045202 0.00275532" />
+          <joint name="m1_RAR_HIP_JOINT" pos="0 0 0" axis="0 1 0" range="-2.791 2.442" actuatorfrcrange="-150 150" />
+          <geom size="0.03 0.0075 0.11" pos="0 -0.07 -0.1" quat="0.988771 -0.149438 0 0" type="box" rgba="0.847059 0.847059 0.847059 1" group="3" />
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_RAR_HIP_LINK" />
+          <body name="m1_RAR_KNEE_LINK" pos="-1.113e-05 -0.0522 -0.26" quat="1 0 2.14045e-05 0">
+            <inertial pos="1.1e-05 0.004242 -0.116154" quat="0.7071 -0.000956292 0.000810754 0.707112" mass="0.85979" diaginertia="0.0104791 0.010191 0.000474937" />
+            <joint name="m1_RAR_KNEE_JOINT" pos="0 0 0" axis="0 1 0" range="-2.791 2.791" actuatorfrcrange="-150 150" />
+            <geom size="0.015 0.015 0.11" pos="0.005 0 -0.09" quat="0.99995 0 -0.00999983 0" type="box" rgba="0.75294 0.75294 0.75294 1" group="3" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_RAR_KNEE_LINK" />
+            <body name="m1_RAR_FOOT_LINK" pos="0 -0.0088 -0.28">
+              <inertial pos="0 -0.039394 4.1868e-05" quat="0.5 0.5 0.5 0.5" mass="1.5113" diaginertia="0.004202 0.002606 0.002603" />
+              <joint name="m1_RAR_FOOT_JOINT" pos="0 0 0" axis="0 1 0" range="-99999 99999" actuatorfrcrange="-40 40" />
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_RAR_FOOT_LINK" />
+              <geom type="mesh" rgba="1 1 1 1" mesh="m1_RAR_FOOT_LINK" group="3" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="m1_RBL_ABAD_LINK" pos="-0.2698 0.065 0">
+        <inertial pos="-0.033776 0.02146 9.6918e-07" quat="0.351949 0.351975 0.613287 0.613289" mass="0.19789" diaginertia="0.00025478 0.00020921 0.00011958" />
+        <joint name="m1_RBL_ABAD_JOINT" pos="0 0 0" axis="1 0 0" range="-0.523 0.697" actuatorfrcrange="-150 150" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_RBL_ABAD_LINK" />
+        <body name="m1_RBL_HIP_LINK" pos="-0.0587 0.045 0">
+          <inertial pos="3.7e-05 0.065021 -0.128154" quat="0.702733 0.067692 -0.0682323 0.704931" mass="2.8754" diaginertia="0.0456037 0.045202 0.00275532" />
+          <joint name="m1_RBL_HIP_JOINT" pos="0 0 0" axis="0 1 0" range="-2.791 2.442" actuatorfrcrange="-150 150" />
+          <geom size="0.03 0.0075 0.11" pos="0 0.07 -0.1" quat="0.988771 0.149438 0 0" type="box" rgba="0.84706 0.84706 0.84706 1" group="3" />
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_RBL_HIP_LINK" />
+          <body name="m1_RBL_KNEE_LINK" pos="1.1131e-05 0.0522 -0.26" quat="1 0 -2.14055e-05 0">
+            <inertial pos="-1.1e-05 -0.004286 -0.115691" quat="0.707101 0.000811046 -0.000666189 0.707112" mass="0.86312" diaginertia="0.01053 0.01024 0.000477956" />
+            <joint name="m1_RBL_KNEE_JOINT" pos="0 0 0" axis="0 1 0" range="-2.791 2.791" actuatorfrcrange="-150 150" />
+            <geom size="0.015 0.015 0.11" pos="0.005 0 -0.09" quat="0.99995 0 -0.00999983 0" type="box" rgba="0.752941 0.752941 0.752941 1" group="3" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_RBL_KNEE_LINK" />
+            <body name="m1_RBL_FOOT_LINK" pos="0 0.0088 -0.28">
+              <inertial pos="0 0.039394 4.186e-05" quat="0.5 0.5 0.5 0.5" mass="1.5113" diaginertia="0.004202 0.002606 0.002603" />
+              <joint name="m1_RBL_FOOT_JOINT" pos="0 0 0" axis="0 1 0" range="-99999 99999" actuatorfrcrange="-40 40" />
+              <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.49804 0.5 0.49804 1" mesh="m1_RBL_FOOT_LINK" />
+              <geom type="mesh" rgba="1 1 1 1" mesh="m1_RBL_FOOT_LINK" group="3" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <site name="m1_arm_mount" pos="0.05 0 0.18" quat="1 0 0 0" size="0.003" rgba="0.1 0.65 0.95 1" group="4" />
+      <geom name="m1_mount_visual" type="box" pos="0.05 0 0.13104467855" quat="1 0 0 0" size="0.075 0.075 0.04895532145" rgba="0.22 0.32 0.44 1" mass="0" density="0" group="2" contype="0" conaffinity="0" />
+      <geom name="m1_mount_collision" type="box" pos="0.05 0 0.13104467855" quat="1 0 0 0" size="0.075 0.075 0.04895532145" rgba="0.22 0.32 0.44 1" mass="0" density="0" group="3" contype="1" conaffinity="1" />
+      <body name="piper_base_link" pos="0.05 0 0.18" quat="1 0 0 0">
+        <inertial pos="-0.0047364116419148202 2.5682913463024699e-05 0.041451518036016002" mass="1.02" fullinertia="0.0026743299999999999 0.0028261200000000001 0.00089623999999999997 -7.3e-07 -0.00017389 3.9999999999999998e-07" />
+        <geom name="piper_base_link_visual_0" type="mesh" mesh="piper_base_link_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+        <geom name="piper_base_link_collision_0" type="mesh" mesh="piper_base_link_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+        <body name="piper_link1" pos="0 0 0.123" quat="1 0 0 0">
+          <joint name="piper_joint1" type="hinge" axis="0 0 1" pos="0 0 0" limited="true" ref="0" springref="0" damping="0" frictionloss="0" armature="0" stiffness="0" range="-2.6179938 2.6179938" />
+          <inertial pos="0.00032000000000000003 -0.00040999999999999999 -0.00348" mass="0.70999999999999996" fullinertia="0.00050027000000000003 0.00040879000000000002 0.00045802000000000001 7.8000000000000005e-07 6.2600000000000002e-06 4.6199999999999998e-06" />
+          <geom name="piper_link1_visual_0" type="mesh" mesh="piper_link1_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+          <geom name="piper_link1_collision_0" type="mesh" mesh="piper_link1_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+          <body name="piper_link2" pos="0 0 0" quat="0.047970957583410252 -0.047970921062382439 -0.70547769451507103 -0.70547771084752031">
+            <joint name="piper_joint2" type="hinge" axis="0 0 1" pos="0 0 0" limited="true" ref="0" springref="0" damping="0" frictionloss="0" armature="0" stiffness="0" range="0 3.1415926" />
+            <inertial pos="0.21851999999999999 -0.0086099999999999996 0.0012600000000000001" mass="1.1599999999999999" fullinertia="0.00111915 0.067632510000000007 0.067558999999999994 0.00182916 0.00019233 7.6699999999999994e-06" />
+            <geom name="piper_link2_visual_0" type="mesh" mesh="piper_link2_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+            <geom name="piper_link2_collision_0" type="mesh" mesh="piper_link2_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+            <body name="piper_link3" pos="0.28503000000000001 0 0" quat="0.62401599029219956 0 0 -0.78141157136277772">
+              <joint name="piper_joint3" type="hinge" axis="0 0 1" pos="0 0 0" limited="true" ref="0" springref="0" damping="0" frictionloss="0" armature="0" stiffness="0" range="-2.9670597 0" />
+              <inertial pos="-0.019990000000000001 -0.14807999999999999 -0.00052999999999999998" mass="0.5" fullinertia="0.01347608 0.00046377000000000001 0.01363321 0.00161034 6.6000000000000003e-07 1.6199999999999999e-06" />
+              <geom name="piper_link3_visual_0" type="mesh" mesh="piper_link3_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+              <geom name="piper_link3_collision_0" type="mesh" mesh="piper_link3_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+              <body name="piper_link4" pos="-0.02198 -0.25574999999999998 0" quat="0.70710679065997395 0.70710677171312097 0 0">
+                <joint name="piper_joint4" type="hinge" axis="0 0 1" pos="0 0 0" limited="true" ref="0" springref="0" damping="0" frictionloss="0" armature="0" stiffness="0" range="-2.3561944 2.3561944" />
+                <inertial pos="0.00012999999999999999 -0.00076000000000000004 -0.0039399999999999999" mass="0.38" fullinertia="0.00017844000000000001 0.00018913999999999999 0.00014613000000000001 6.1999999999999999e-07 6.7000000000000004e-07 4.0799999999999999e-06" />
+                <geom name="piper_link4_visual_0" type="mesh" mesh="piper_link4_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                <geom name="piper_link4_collision_0" type="mesh" mesh="piper_link4_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                <body name="piper_link5" pos="0 0 0" quat="0.70710679065997395 -0.70710677171312097 0 0">
+                  <joint name="piper_joint5" type="hinge" axis="0 0 1" pos="0 0 0" limited="true" ref="0" springref="0" damping="0" frictionloss="0" armature="0" stiffness="0" range="-1.5620696 1.5620696" />
+                  <inertial pos="0.00018000000000000001 -0.061039999999999997 -0.0022699999999999999" mass="0.39000000000000001" fullinertia="0.0017231799999999999 0.00017935999999999999 0.0017117199999999999 2.5900000000000002e-06 9.9999999999999995e-08 9.9000000000000001e-06" />
+                  <geom name="piper_link5_visual_0" type="mesh" mesh="piper_link5_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                  <geom name="piper_link5_collision_0" type="mesh" mesh="piper_link5_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                  <body name="piper_link6" pos="0 -0.096299999999999997 0" quat="0.70710679065997395 0.70710677171312097 0 0">
+                    <joint name="piper_joint6" type="hinge" axis="0 0 1" pos="0 0 0" limited="true" ref="0" springref="0" damping="0" frictionloss="0" armature="0" stiffness="0" range="-2.9670597 2.9670597" />
+                    <inertial pos="0.0013494081499999999 0 -0.0034497530300000002" mass="0.016554081330000001" fullinertia="1.5247680396700001e-06 1.5172131988099999e-06 2.8454136448100001e-06 0 1.0017156778e-07 0" />
+                    <geom name="piper_link6_visual_0" type="mesh" mesh="piper_link6_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                    <geom name="piper_link6_collision_0" type="mesh" mesh="piper_link6_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                    <body name="piper_flange_link" pos="0 0 0" quat="1 0 0 0">
+                      <inertial pos="0.001151691 0.00078242800000000005 0.0047980510000000002" mass="0.040000000000000001" fullinertia="9.9353889999999997e-06 1.0508003e-05 1.9652872999999999e-05 0 0 0" />
+                      <geom name="piper_flange_link_visual_0" type="mesh" mesh="piper_flange_link_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                      <geom name="piper_flange_link_collision_0" type="mesh" mesh="piper_flange_link_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                      <body name="piper_gripper_base" pos="0 0 0.0044999999999999997" quat="1 0 0 0">
+                        <inertial pos="-0.00018380716223559101 8.0503315557791104e-05 0.032143668990887601" mass="0.45000000000000001" fullinertia="0.00046657303588599998 0.000208671755285 0.00044351762764499998 0 0 0" />
+                        <geom name="piper_gripper_base_visual_0" type="mesh" mesh="piper_gripper_base_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                        <geom name="piper_gripper_base_collision_0" type="mesh" mesh="piper_gripper_base_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                        <body name="piper_gripper_link1" pos="0 0 0.13800000000000001" quat="0.70710679065997395 0.70710677171312097 0 0">
+                          <joint name="piper_gripper_joint1" type="slide" axis="0 0 1" pos="0 0 0" limited="true" ref="0" springref="0" damping="0" frictionloss="0" armature="0" stiffness="0" range="0 0.05" />
+                          <inertial pos="0.00065123185041968004 -0.049192986913198899 0.0097225876918402496" mass="0.025000000000000001" fullinertia="1.0831334372e-05 5.4394105091800003e-06 1.41828415054e-05 3.3210865524300001e-07 -5.1777696424200001e-08 1.75746071559e-06" />
+                          <geom name="piper_gripper_link1_visual_0" type="mesh" mesh="piper_gripper_link1_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                          <geom name="piper_gripper_link1_collision_0" type="mesh" mesh="piper_gripper_link1_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                        </body>
+                        <body name="piper_gripper_link2" pos="0 0 0.13800000000000001" quat="1.8946853330305491e-08 1.8946852822626527e-08 -0.70710677171312075 -0.70710679065997373">
+                          <joint name="piper_gripper_joint2" type="slide" axis="0 0 -1" pos="0 0 0" limited="true" ref="0" springref="0" damping="0" frictionloss="0" armature="0" stiffness="0" range="-0.05 0" />
+                          <inertial pos="0.00065123185041968004 -0.049192986913198899 0.0097225876918402496" mass="0.025000000000000001" fullinertia="1.0831334372e-05 5.4394105091800003e-06 1.41828415054e-05 3.3210865524300001e-07 -5.1777696424200001e-08 1.75746071559e-06" />
+                          <geom name="piper_gripper_link2_visual_0" type="mesh" mesh="piper_gripper_link2_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="2" contype="0" conaffinity="0" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                          <geom name="piper_gripper_link2_collision_0" type="mesh" mesh="piper_gripper_link2_mesh" pos="0 0 0" quat="1 0 0 0" mass="0" density="0" rgba="0.22 0.24 0.27 1" group="3" contype="1" conaffinity="1" condim="3" friction="1 0.005 0.0001" margin="0" gap="0" />
+                        </body>
+                        <body name="piper_tcp_nominal" pos="0 0 0.138" quat="1 0 0 0">
+                          <site name="piper_tcp_nominal" type="sphere" size="0.003" rgba="0.1 0.8 0.2 1" group="4" />
+                        </body>
+                        <geom name="piper_bracket_visual" type="mesh" mesh="piper_bracket_candidate_mesh" pos="0 0 0" quat="0.5000000000000001 -0.5 -0.4999999999999999 0.5" rgba="0.12 0.13 0.15 1" mass="0" density="0" group="2" contype="0" conaffinity="0" />
+                        <site name="piper_camera_bracket" pos="0 0 0" quat="0.5000000000000001 -0.5 -0.4999999999999999 0.5" size="0.003" rgba="0.1 0.65 0.95 1" group="4" />
+                        <geom name="piper_bracket_collision_0" type="box" pos="-0.08599999999999999 0.005000000000000019 0.007000000000000019" quat="0.5000000000000001 -0.5 -0.4999999999999999 0.5" size="0.039 0.003 0.01" rgba="0.4 0.55 0.8 0.35" mass="0" density="0" group="3" contype="1" conaffinity="1" />
+                        <geom name="piper_bracket_collision_1" type="box" pos="-0.06 0.005000000000000013 0.01000000000000001" quat="0.5000000000000001 -0.5 -0.4999999999999999 0.5" size="0.013 0.003 0.017" rgba="0.4 0.55 0.8 0.35" mass="0" density="0" group="3" contype="1" conaffinity="1" />
+                        <geom name="piper_camera_shell_visual" type="box" pos="-0.092 0 0.026" quat="0.7071067811865476 0 -0.7071067811865475 0" size="0.015 0.045 0.013" rgba="0.82 0.83 0.84 1" mass="0" density="0" group="2" contype="0" conaffinity="0" />
+                        <geom name="piper_camera_shell_collision" type="box" pos="-0.092 0 0.026" quat="0.7071067811865476 0 -0.7071067811865475 0" size="0.015 0.045 0.013" rgba="0.4 0.55 0.8 0.35" mass="0" density="0" group="3" contype="1" conaffinity="1" />
+                        <site name="piper_camera_shell" pos="-0.092 0 0.026" quat="0.7071067811865476 0 -0.7071067811865475 0" size="0.003" rgba="0.1 0.65 0.95 1" group="4" />
+                        <geom name="piper_camera_front_visual" type="box" pos="-0.092 0 0.0417" quat="0.7071067811865476 0 -0.7071067811865475 0" size="0.0005 0.0423 0.01105" rgba="0.025 0.03 0.04 1" mass="0" density="0" group="2" contype="0" conaffinity="0" />
+                        <site name="piper_wrist_optical_frame" pos="-0.092 0 0.042" quat="0.7071067811865476 0 0 -0.7071067811865475" size="0.003" rgba="0.95 0.65 0.1 1" group="4" />
+                        <camera name="wrist_rgbd" pos="-0.092 0 0.042" quat="4.329780281177467e-17 0.7071067811865476 -0.7071067811865475 -4.329780281177466e-17" fovy="60.0" />
+                        <camera name="wrist_detail" pos="-0.24 -0.32 0.33" xyaxes="0 0.6305926250944657 0.7761140001162655 -0.8866893818532602 0.3588484086559077 -0.291564332032925" fovy="38" />
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <motor name="m1_FAR_ABAD_LINK" joint="m1_FAR_ABAD_JOINT" />
+    <motor name="m1_FAR_HIP_LINK" joint="m1_FAR_HIP_JOINT" />
+    <motor name="m1_FAR_KNEE_LINK" joint="m1_FAR_KNEE_JOINT" />
+    <motor name="m1_FAR_FOOT_LINK" joint="m1_FAR_FOOT_JOINT" />
+    <motor name="m1_FBL_ABAD_LINK" joint="m1_FBL_ABAD_JOINT" />
+    <motor name="m1_FBL_HIP_LINK" joint="m1_FBL_HIP_JOINT" />
+    <motor name="m1_FBL_KNEE_LINK" joint="m1_FBL_KNEE_JOINT" />
+    <motor name="m1_FBL_FOOT_LINK" joint="m1_FBL_FOOT_JOINT" />
+    <motor name="m1_RAR_ABAD_LINK" joint="m1_RAR_ABAD_JOINT" />
+    <motor name="m1_RAR_HIP_LINK" joint="m1_RAR_HIP_JOINT" />
+    <motor name="m1_RAR_KNEE_LINK" joint="m1_RAR_KNEE_JOINT" />
+    <motor name="m1_RAR_FOOT_LINK" joint="m1_RAR_FOOT_JOINT" />
+    <motor name="m1_RBL_ABAD_LINK" joint="m1_RBL_ABAD_JOINT" />
+    <motor name="m1_RBL_HIP_LINK" joint="m1_RBL_HIP_JOINT" />
+    <motor name="m1_RBL_KNEE_LINK" joint="m1_RBL_KNEE_JOINT" />
+    <motor name="m1_RBL_FOOT_LINK" joint="m1_RBL_FOOT_JOINT" />
+    <motor name="piper_joint1_motor" joint="piper_joint1" gear="1" ctrllimited="true" ctrlrange="-100 100" forcelimited="true" forcerange="-100 100" />
+    <motor name="piper_joint2_motor" joint="piper_joint2" gear="1" ctrllimited="true" ctrlrange="-100 100" forcelimited="true" forcerange="-100 100" />
+    <motor name="piper_joint3_motor" joint="piper_joint3" gear="1" ctrllimited="true" ctrlrange="-100 100" forcelimited="true" forcerange="-100 100" />
+    <motor name="piper_joint4_motor" joint="piper_joint4" gear="1" ctrllimited="true" ctrlrange="-100 100" forcelimited="true" forcerange="-100 100" />
+    <motor name="piper_joint5_motor" joint="piper_joint5" gear="1" ctrllimited="true" ctrlrange="-100 100" forcelimited="true" forcerange="-100 100" />
+    <motor name="piper_joint6_motor" joint="piper_joint6" gear="1" ctrllimited="true" ctrlrange="-100 100" forcelimited="true" forcerange="-100 100" />
+    <motor name="piper_gripper_joint1_motor" joint="piper_gripper_joint1" gear="1" ctrllimited="true" ctrlrange="-10 10" forcelimited="true" forcerange="-10 10" />
+  </actuator>
+  <sensor>
+    <jointpos name="m1_FR_hip_pos" joint="m1_FAR_ABAD_JOINT" />
+    <jointpos name="m1_FR_thigh_pos" joint="m1_FAR_HIP_JOINT" />
+    <jointpos name="m1_FR_calf_pos" joint="m1_FAR_KNEE_JOINT" />
+    <jointpos name="m1_FR_foot_pos" joint="m1_FAR_FOOT_JOINT" />
+    <jointpos name="m1_FL_hip_pos" joint="m1_FBL_ABAD_JOINT" />
+    <jointpos name="m1_FL_thigh_pos" joint="m1_FBL_HIP_JOINT" />
+    <jointpos name="m1_FL_calf_pos" joint="m1_FBL_KNEE_JOINT" />
+    <jointpos name="m1_FL_foot_pos" joint="m1_FBL_FOOT_JOINT" />
+    <jointpos name="m1_RR_hip_pos" joint="m1_RAR_ABAD_JOINT" />
+    <jointpos name="m1_RR_thigh_pos" joint="m1_RAR_HIP_JOINT" />
+    <jointpos name="m1_RR_calf_pos" joint="m1_RAR_KNEE_JOINT" />
+    <jointpos name="m1_RR_foot_pos" joint="m1_RAR_FOOT_JOINT" />
+    <jointpos name="m1_RL_hip_pos" joint="m1_RBL_ABAD_JOINT" />
+    <jointpos name="m1_RL_thigh_pos" joint="m1_RBL_HIP_JOINT" />
+    <jointpos name="m1_RL_calf_pos" joint="m1_RBL_KNEE_JOINT" />
+    <jointpos name="m1_RL_foot_pos" joint="m1_RBL_FOOT_JOINT" />
+    <jointvel name="m1_FR_hip_vel" joint="m1_FAR_ABAD_JOINT" />
+    <jointvel name="m1_FR_thigh_vel" joint="m1_FAR_HIP_JOINT" />
+    <jointvel name="m1_FR_calf_vel" joint="m1_FAR_KNEE_JOINT" />
+    <jointvel name="m1_FR_foot_vel" joint="m1_FAR_FOOT_JOINT" />
+    <jointvel name="m1_FL_hip_vel" joint="m1_FBL_ABAD_JOINT" />
+    <jointvel name="m1_FL_thigh_vel" joint="m1_FBL_HIP_JOINT" />
+    <jointvel name="m1_FL_calf_vel" joint="m1_FBL_KNEE_JOINT" />
+    <jointvel name="m1_FL_foot_vel" joint="m1_FBL_FOOT_JOINT" />
+    <jointvel name="m1_RR_hip_vel" joint="m1_RAR_ABAD_JOINT" />
+    <jointvel name="m1_RR_thigh_vel" joint="m1_RAR_HIP_JOINT" />
+    <jointvel name="m1_RR_calf_vel" joint="m1_RAR_KNEE_JOINT" />
+    <jointvel name="m1_RR_foot_vel" joint="m1_RAR_FOOT_JOINT" />
+    <jointvel name="m1_RL_hip_vel" joint="m1_RBL_ABAD_JOINT" />
+    <jointvel name="m1_RL_thigh_vel" joint="m1_RBL_HIP_JOINT" />
+    <jointvel name="m1_RL_calf_vel" joint="m1_RBL_KNEE_JOINT" />
+    <jointvel name="m1_RL_foot_vel" joint="m1_RBL_FOOT_JOINT" />
+    <jointactuatorfrc name="m1_FR_hip_torque" joint="m1_FAR_ABAD_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_FR_thigh_torque" joint="m1_FAR_HIP_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_FR_calf_torque" joint="m1_FAR_KNEE_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_FR_foot_torque" joint="m1_FAR_FOOT_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_FL_hip_torque" joint="m1_FBL_ABAD_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_FL_thigh_torque" joint="m1_FBL_HIP_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_FL_calf_torque" joint="m1_FBL_KNEE_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_FL_foot_torque" joint="m1_FBL_FOOT_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_RR_hip_torque" joint="m1_RAR_ABAD_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_RR_thigh_torque" joint="m1_RAR_HIP_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_RR_calf_torque" joint="m1_RAR_KNEE_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_RR_foot_torque" joint="m1_RAR_FOOT_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_RL_hip_torque" joint="m1_RBL_ABAD_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_RL_thigh_torque" joint="m1_RBL_HIP_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_RL_calf_torque" joint="m1_RBL_KNEE_JOINT" noise="0.00" />
+    <jointactuatorfrc name="m1_RL_foot_torque" joint="m1_RBL_FOOT_JOINT" noise="0.00" />
+    <framequat name="m1_imu_quat" objtype="site" objname="m1_imu" />
+    <gyro name="m1_imu_gyro" site="m1_imu" />
+    <accelerometer name="m1_imu_acc" site="m1_imu" />
+    <framepos name="m1_frame_pos" objtype="site" objname="m1_imu" />
+    <framelinvel name="m1_frame_vel" objtype="site" objname="m1_imu" />
+  </sensor>
+  <option timestep="0.002" gravity="0 0 -9.81" />
+  <equality>
+    <joint name="piper_finger_symmetry" joint1="piper_gripper_joint2" joint2="piper_gripper_joint1" polycoef="0 -1 0 0 0" solref="0.02 1" solimp="0.9 0.95 0.001 0.5 2" />
+  </equality>
+  <contact>
+    <exclude name="piper_base_adjacent" body1="piper_base_link" body2="piper_link1" />
+  </contact>
+  <keyframe>
+    <key name="home" qpos="0 0 0.54266 1 0 0 0 0 0.6 -1.2 0 0 0.6 -1.2 0 0 -0.6 1.2 0 0 -0.6 1.2 0 0 0.8 -1.4 0 0.6 0 0.02 -0.02" />
+  </keyframe>
+</mujoco>

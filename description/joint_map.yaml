@@ -1,0 +1,92 @@
+floating_joint: m1_floating_base
+base_joints:
+- m1_FAR_ABAD_JOINT
+- m1_FAR_HIP_JOINT
+- m1_FAR_KNEE_JOINT
+- m1_FAR_FOOT_JOINT
+- m1_FBL_ABAD_JOINT
+- m1_FBL_HIP_JOINT
+- m1_FBL_KNEE_JOINT
+- m1_FBL_FOOT_JOINT
+- m1_RAR_ABAD_JOINT
+- m1_RAR_HIP_JOINT
+- m1_RAR_KNEE_JOINT
+- m1_RAR_FOOT_JOINT
+- m1_RBL_ABAD_JOINT
+- m1_RBL_HIP_JOINT
+- m1_RBL_KNEE_JOINT
+- m1_RBL_FOOT_JOINT
+wheel_joints:
+- m1_FAR_FOOT_JOINT
+- m1_FBL_FOOT_JOINT
+- m1_RAR_FOOT_JOINT
+- m1_RBL_FOOT_JOINT
+arm_joints:
+- piper_joint1
+- piper_joint2
+- piper_joint3
+- piper_joint4
+- piper_joint5
+- piper_joint6
+finger_joints:
+- piper_gripper_joint1
+- piper_gripper_joint2
+gripper:
+  urdf_width_joint: piper_gripper
+  mjcf_input_joint: piper_gripper_joint1
+  width_m_per_input_q: 2.0
+  width_range_m:
+  - 0.0
+  - 0.1
+  follower_joint: piper_gripper_joint2
+  follower_multiplier: -1.0
+actuated_joints:
+- m1_FAR_ABAD_JOINT
+- m1_FAR_HIP_JOINT
+- m1_FAR_KNEE_JOINT
+- m1_FAR_FOOT_JOINT
+- m1_FBL_ABAD_JOINT
+- m1_FBL_HIP_JOINT
+- m1_FBL_KNEE_JOINT
+- m1_FBL_FOOT_JOINT
+- m1_RAR_ABAD_JOINT
+- m1_RAR_HIP_JOINT
+- m1_RAR_KNEE_JOINT
+- m1_RAR_FOOT_JOINT
+- m1_RBL_ABAD_JOINT
+- m1_RBL_HIP_JOINT
+- m1_RBL_KNEE_JOINT
+- m1_RBL_FOOT_JOINT
+- piper_joint1
+- piper_joint2
+- piper_joint3
+- piper_joint4
+- piper_joint5
+- piper_joint6
+- piper_gripper_joint1
+actuators:
+- m1_FAR_ABAD_LINK
+- m1_FAR_HIP_LINK
+- m1_FAR_KNEE_LINK
+- m1_FAR_FOOT_LINK
+- m1_FBL_ABAD_LINK
+- m1_FBL_HIP_LINK
+- m1_FBL_KNEE_LINK
+- m1_FBL_FOOT_LINK
+- m1_RAR_ABAD_LINK
+- m1_RAR_HIP_LINK
+- m1_RAR_KNEE_LINK
+- m1_RAR_FOOT_LINK
+- m1_RBL_ABAD_LINK
+- m1_RBL_HIP_LINK
+- m1_RBL_KNEE_LINK
+- m1_RBL_FOOT_LINK
+- piper_joint1_motor
+- piper_joint2_motor
+- piper_joint3_motor
+- piper_joint4_motor
+- piper_joint5_motor
+- piper_joint6_motor
+- piper_gripper_joint1_motor
+actuator_input: generalized motor forces; not position setpoints
+urdf_base: fixed-root description; scene supplies floating pose in MJCF

@@ -4,14 +4,33 @@
 
 ## 当前阶段
 
-**H0：Piper H＋DaBai DC1 实机联调已完成，保留明确的测量限制。** 本机工作目录为 `/home/kaiwen/research/dog-and-arm`。本轮完成目录/现有环境检查、相机驱动构建、真实静止与动作联合采集、正常停止/重启及证据保存；没有进行 P1–P3 模型装配，不能把 H0 或开工包标成 P3 完成。
+**H0 实机联调已完成；基础联合模型已在独立准备环境实现，下一项是用户本机桌面实时查看与修正。** 本机工作目录为 `/home/kaiwen/research/dog-and-arm`。本次从 H0 提交 `284c1f3` 继续，新增 M1＋Piper H 组合 URDF/MJCF、名义附件、实时查看入口和离线验证；这些结果不代表本机桌面已经打开，也不代表动力学站稳或接触开门。
 
 - 机械臂本体验机：**用户此前已完成**，本轮复用现有 OSCBF-learn / pyAgxArm。
-- H0 相机＋机械臂联调：**本轮实机完成**；[报告](reports/H0_HARDWARE_REPORT.md)、[会话清单](results/hardware/h0/20261116_2051/manifest.json)、[操作说明](docs/H0_RUNBOOK.md)。
+- H0 相机＋机械臂联调：**此前回合实机完成**；[报告](reports/H0_HARDWARE_REPORT.md)、[会话清单](results/hardware/h0/20261116_2051/manifest.json)、[操作说明](docs/H0_RUNBOOK.md)。
+- P1 官方资产、P2 单体生成、P3 名义联合模型：**准备环境已实现并编译／离线检查**；[装配报告](reports/assembly_report.md)。
+- 本机仿真 `.venv`、桌面开窗、按键和重载：**待在用户 Linux 执行并可见检查**，不由 H0 或离线图片替代。
 - 手眼标定、标定板采购、相机/支架称重及惯量：**继续后置**。
-- 下一轮：按 [prompts/NEXT_RUN.txt](prompts/NEXT_RUN.txt) 完成尚未执行的 P0 仿真环境与 P1–P3 官方模型转换/装配，不自行启动真实机器人。
+- 下一轮：按 [prompts/NEXT_RUN.txt](prompts/NEXT_RUN.txt) 和 [LIVE_ASSEMBLY.txt](prompts/LIVE_ASSEMBLY.txt) 依次显示 M1、Piper 和整机，用户要看到实时变化；按有意义节点及时普通提交／推送，不自行启动真实机器人。
 
-## 本轮实际环境、命令和文件
+## 基础联合模型回合：实际成果
+
+实际在独立 Linux／Python 3.12.14／MuJoCo 3.3.0 环境执行官方源获取、清单、全模型构建、三姿态 FK、EGL 图像与视频导出。未接入用户的 ROS、CAN、相机或机械臂环境。
+
+- `scripts/build_assembly.py --stage m1|piper|combined|all` 可重建；不修改 vendor。场景在临时 XML 编译成功后才替换，支持稳定的查看器重载。
+- `description/m1_derived.urdf`、`piper_h.urdf`、`m1_piper.urdf`、`joint_map.yaml` 已生成。
+- `sim/robots/m1_piper.xml` 和 `sim/scenes/{m1,piper,assembly}_preview.xml` 已生成；`assembly_with_door.xml` 提供被动单门的可视对照，没有门电机。
+- 联合模型 `nq=31, nv=30, nu=23, neq=1`；唯一浮动基座，16 个 M1 关节＋6 轴臂＋双真实夹指。源模型质量之和 43.537064081 kg，不含附件和名义安装座额外载荷。
+- 配置背部安装 xyz `[0.05,0,0.18] m`；源注释站姿的根高由穿地的 0.52 m 调为名义 0.54266 m。支架／相机固定在 `piper_gripper_base`，外参未测量。
+- 三组独立 URDF/MJCF FK 对照通过；最大位置差约 3.044e-16 m、旋转矩阵元素差约 9.806e-16，两指 mimic 误差 0。这是数字模型间一致性，非标定精度。
+- `results/assembly/` 有整机、侧面、正面、腕部局部、原始理想 RGB／米制深度及 8 秒／240 帧运动学视频；`with_door/` 有同一相机看到门和把手的对照。
+- `scripts/live_assembly.py` 支持关节选择／微调、夹爪、腕相机、碰撞显示、home 与 XML 重载。同一加载函数已核对实际模型；**准备环境无 DISPLAY/WAYLAND，未执行桌面 viewer**。
+
+本轮仅 `mj_forward`，没有整机动力学步进、站立／轮速控制或开门动作。Piper 外观采用官方 collision STL，未转换 DAE 精细外观；官方质量和惯量保留。M1 原生动力学数值未改变。原始大网格由固定源重建，`assets/converted/` 不提交。
+
+官方有 MATRiX_Robot_MC 的 ZGWS/ZGWS_ARM 运行包，但当前未下载／接入，不能把 native 模型的 16 个 motor 当成已验证运控。此项待 P4/P5 明确适配。
+
+## H0 回合实际环境、命令和文件
 
 - 从 `7bb3c1b` 克隆本仓库。原工程 `/home/kaiwen/research/OSCBF-research` 对应 OSCBF-learn `2ea3f1f`；解释器 `envs/piper-sdk/bin/python` 中实际是 pyAgxArm 1.0.0 / python-can 4.6.1，SDK 源提交 `d90e234b`，PIPER_H/V189 配置。未重装机械臂环境或升级固件。
 - 实际 `can0` 初始 DOWN；确认 USB-CAN `1d50:606f`、序列号 `004F00374548570120353731` 后，用户执行 `sudo bash scripts/h0_host_prepare.sh` 补齐缺失相机依赖、USB 权限并启用 1 Mbps CAN。准备脚本及接收器不发电机指令。
@@ -53,8 +72,8 @@
 
 开工包已有环境隔离/源下载脚本、来源锁定清单、门生成器、配置/查看器、支架 OBJ/预览/来源说明、四张用户安装照片和装配规则。既有单/双门 XML 曾在独立准备环境用 MuJoCo 3.3.0 编译并静止步进 2 s；[开工验证](reports/KICKOFF_VALIDATION.md) 不含机器人控制，也不是本轮 Linux 的整机验证。
 
-仍待下一轮完成：项目仿真 `.venv` 和图形显示、完整官方 M1 ZGWS/Piper H 网格获取与转换、M1 衍生 URDF、背部名义安装与腕部附件对齐、组合 URDF/MJCF、关节/执行器映射、少量合法姿态的 FK 与夹爪检查及装配图。随后才进入 P4 以后的接触/轮足动力学和单/双门任务。
+当前模型生成和离线检查已完成，仍待用户本机完成仿真 `.venv`、恢复固定源与派生网格、桌面图形显示、实时关节／夹爪／视角／重载操作及必要的名义安装修正。完成本机可见调试后才进入 P4 以后的接触／轮足动力学和单／双门任务。使用已有生成器，不重新从零编写整套装配逻辑。
 
 遵守 `accessory_payload_mode=omitted` 和 `synthetic_aligned_rgbd`：附件显式零质量，仿真理想对齐 RGB-D 不冒充本次实物标定。手眼及称重不阻塞名义装配。
 
-下一轮阅读续接提示后可执行的第一条环境命令：`bash scripts/setup_env.sh`。仅需相机复跑时使用 `bash scripts/h0_camera.sh`，它不会启动机械臂动作。
+下一轮先查看 `git status` 并正常拉取；仿真环境缺失时运行 `bash scripts/setup_env.sh`。本地完整流程见实时调试文档，默认查看命令为 `bash scripts/project_env.sh python scripts/live_assembly.py --watch`。本轮续接不执行任何 `h0_*` 硬件入口。

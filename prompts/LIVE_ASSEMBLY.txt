@@ -1,0 +1,62 @@
+请在 /home/kaiwen/research/dog-and-arm 继续 P0–P3，并让我在本机 Linux 桌面实时看到 M1、Piper H 和整机装配的调试变化。直接构建、运行和修正，不只给计划；完成有意义的里程碑后及时普通提交并推送 GitHub。
+
+先读 AGENTS.md、PROJECT_STATE.md、prompts/NEXT_RUN.txt、docs/LIVE_DEBUGGING.md，以及当前步骤涉及的 docs/BUILD_PLAN.md、docs/MODEL_INTEGRATION.md、config/assembly.yaml。新流程以脚本实际行为为准，不把尚未执行的本机验证写成完成。
+
+准备侧已经用 MuJoCo 3.3.0 编译三种预览场景，见 reports/assembly_build_all.json；这不等于本机已开窗。已有离线渲染也不替代本机桌面证据。后续状态以实际本机记录为准，不把已准备的生成器重新描述成尚未实现，也不把准备侧结果套成本机执行结果。
+
+既定边界：
+- H0 已在 2026-11-16 完成，保留 reports/H0_HARDWARE_REPORT.md 和原始证据，不重启机械臂验机或相机联调，也不再把 H0 列为待完成。
+- 本轮不导入/启动硬件 SDK，不发真实机械臂或 M1 命令，不自动回零/失能，不接入真实 q 的实时映射。MuJoCo 桌面预览使用独立项目环境。
+- 手眼标定、购买标定板、相机/支架称重和惯量全部后置，不阻塞名义装配。相机使用 synthetic_aligned_rgbd，附件载荷 omitted，不伪装为实测标定。
+- 继续原生 MuJoCo 路线，先完成任务，不定研究主线。P4 以后的真实接触、自由基座控制与双门任务不在本预览回合中冒充完成。
+
+按下面顺序实际推进：
+
+1. 进入已有仓库，检查 git status，保留已有修改。检查实际 .venv 和桌面显示环境。仅首次无仿真环境或确有缺失依赖时运行 bash scripts/setup_env.sh；不要每次重新安装，不修改 base、ROS/CUDA、驱动或 shell 启动文件。
+   项目命令统一用 bash scripts/project_env.sh python ...。这个脚本会进入仓库根并隔离 ROS/Conda 路径，不要 source 它，不要用它运行 ROS 节点。预览入口要求 MuJoCo 3.3.0。
+
+2. 首次需要官方资产时执行：
+   bash scripts/project_env.sh python scripts/fetch_sources.py
+   bash scripts/project_env.sh python scripts/inspect_sources.py
+   核对固定来源、保留 vendor 中已有工作。后续仅改名义参数时无需重下载。
+
+3. 先生成 M1 单体：
+   bash scripts/project_env.sh python scripts/build_assembly.py --stage m1
+   然后在用户桌面持续运行：
+   bash scripts/project_env.sh python scripts/live_assembly.py --model sim/scenes/m1_preview.xml --watch
+   让我先看四轮轮足结构、home 姿态和少数关节变化。不要等整机完成才打开第一个模型。M1 预览姿态不是站立控制结果。
+
+4. 继续生成 Piper H 单体：
+   bash scripts/project_env.sh python scripts/build_assembly.py --stage piper
+   关闭旧查看会话后打开：
+   bash scripts/project_env.sh python scripts/live_assembly.py --model sim/scenes/piper_preview.xml --watch
+   查看六轴、官方双指夹爪及其对称开合。若单体没有 wrist_rgbd，相机切换应明确提示，不报成相机显示成功。
+
+5. 生成整机：
+   bash scripts/project_env.sh python scripts/build_assembly.py --stage combined
+   关闭旧会话后运行默认整机场景：
+   bash scripts/project_env.sh python scripts/live_assembly.py --watch
+   检查背部安装、整体尺度、支架/相机与固定末端主体关系、夹爪遮挡和碰撞几何。继续完成 FIRST_RUN.txt 要求的组合 URDF、原生 MJCF、关节/执行器映射、少量合法姿态的 FK 对照和必要图像；不要只交付 viewer。
+
+6. 边改边显示：在终端 A 保持 viewer，终端 B 修改有依据的 config/assembly.yaml 参数并重跑对应 build_assembly.py。--watch 监控生成的场景及引用 XML，不直接读取 YAML；只改网格而 XML 未变时按 F10 重载。
+   新模型成功编译后程序关闭旧窗口再打开新窗口，恢复 home；失败应保留旧窗口并报告失败，不能把旧画面说成新修改已显示。当前同一时刻只保留一个该预览会话，不不断堆积窗口。无需给长期可视化进程加任意强制墙钟截止。
+
+真实快捷键：
+- 左/右箭头选择关节，下/上箭头减小/增加；默认 hinge 每次 2°，slide 每次 2 mm，终端显示当前关节和值。
+- Space 夹爪开闭；F8 腕相机/自由视角；F9 碰撞组显隐，默认 group 3。
+- F10 重载；F11 home；F12 退出；Esc 为 MuJoCo 原生自由视角。
+- 默认只 mj_forward，标题 KINEMATIC_PREVIEW，物理时间不推进。不要添加施力、基座轨迹或未经请求的控制器。
+- 仅用户明确要自动慢速动画时才加 --scripted-demo。它只演示运动学，不代表动力学；手动调关节/夹爪/home 会停止演示。
+
+可视化和记录：
+- 启动命令、进程存在或事件日志都不自动证明用户看到画面。分别记录模型编译、GUI/桌面画面证据、具体按键变化，以及是否有用户明确反馈，不混写。
+- results/assembly/live_events.jsonl 是实际 load/reload/按键等事件的追加日志，不冒充视频或动力学数据。按需保留少量当前截图/短片，写清场景和 KINEMATIC_PREVIEW 模式。
+- GUI 不可用时明确说明尚未完成本机实时显示，继续处理可执行的转换/编译工作并给出桌面运行命令；不偷偷切 headless 后把可视化标成已完成，不为了确认显示反复阻塞其它已授权工作。
+- RViz 可选，仅在需要 URDF/TF 对照时于独立 ROS 终端处理。当前没有已验证的 RViz 启动脚本或同步桥；不把打开空 RViz 或另一窗口的独立姿态变化写成 MuJoCo/ROS 同步完成。
+
+GitHub 节奏：
+- 用户已授权推送到 kaiwen123-yang/dog-and-arm。按 M1 单体、Piper/夹爪、整机装配等有意义节点正常提交并及时推送，不必等开门任务全部完成，不每帧/每按键自动提交。
+- 提交前检查实际 diff，选择必要代码、配置、派生描述、报告和小规模结果；不提交 .venv、vendor、编译/下载目录、密钥或大量临时录制，不强推，不制作压缩包。
+- 更新 PROJECT_STATE.md、reports/assembly_report.md、prompts/NEXT_RUN.txt，明确代码已准备/编译通过/本机 GUI 已验证的区别。报告实际提交与推送结果；若推送受阻，保留本地提交并解释真实原因，不重复索取已经授予的项目授权。
+
+不要增加哈希、冒烟或防御性测试框架。每次进度更新说清改了什么、现在能看到什么、还缺什么、下一条实际命令；不把静态图、qpos 动画或固定底盘条件说成动力学或完整开门成功。

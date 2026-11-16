@@ -1,18 +1,26 @@
-继续 dog-and-arm 尚未完成的 P0–P3 模型首轮，按 prompts/FIRST_RUN.txt 实际执行到组合模型和装配检查，不只给计划。
+继续 dog-and-arm：基础联合仿真模型已经生成，下一项是在我的 Linux 桌面实时看到单体与整机的调试变化，按完成节点及时推送 GitHub。请实际执行，不只给计划。
 
-先读 AGENTS.md、PROJECT_STATE.md、reports/H0_HARDWARE_REPORT.md、docs/BUILD_PLAN.md、docs/MODEL_INTEGRATION.md、docs/SOURCES.md、config/assembly.yaml 和 prompts/FIRST_RUN.txt。
+本机仓库 /home/kaiwen/research/dog-and-arm。先读 AGENTS.md、PROJECT_STATE.md、reports/assembly_report.md、docs/LIVE_DEBUGGING.md、prompts/LIVE_ASSEMBLY.txt 和 config/assembly.yaml。已有 H0 报告按需要读取，不重复验机。
 
-2026-11-16 的 H0 已实际完成：Piper H 与 DC1 的真实 RGB/原始深度/两路 CameraInfo、静止联合记录、现场 J6 小幅慢动作/正常停止及夹爪开合、正常相机重启均有证据。机械臂本体验机是更早已完成的独立成果。不要重启整套验机或把 H0 再标成待执行。
+先确认 git status，保留已有改动；工作区干净时正常拉取 main，不强推、不覆盖本地修改。按已提供的 scripts/build_assembly.py 继续，不重写一套模型生成器。
 
-本机仓库 /home/kaiwen/research/dog-and-arm。H0 配置在 config/hardware_session.yaml，实测结果在 results/hardware/h0/20261116_2051/evidence/；报告保留首次关节未动、QoS/SHM 修正和 RGB 畸变参数差异。最终 240 s 静止记录约 30 Hz 图像、200 Hz 状态；成功运动在修改 DDS 前完成，不能套用最终静止时序指标。软件接收时间关联不等于硬件同步，CameraInfo 不等于新标定。
+准备侧已实际完成：固定官方 M1 ZGWS/Piper H 模型下载、单体与联合 URDF/MJCF、名义支架/相机、3姿态FK、真实MuJoCo离线图像与8秒运动学短片。联合模型 nq31/nv30/nu23/neq1。准备侧没有图形桌面，因此不能写成本机实时窗口已经验证。
 
-H0 结束时相机/接收器已退出，机械臂仍使能保持。这个模型回合不发送真实机械臂或 M1 命令，不自动回零/失能，也不盲目重放报告中的绝对关节角。以后明确需要硬件复跑再按 docs/H0_RUNBOOK.md 检查实时状态与现场条件。保留全部 H0 原件；大录制在 results/raw_large/hardware/h0/ 和本地被忽略的会话运行目录中。
+实际工作顺序：
+1. 检查本机已有仿真 .venv 和图形会话；缺环境时 bash scripts/setup_env.sh。以后命令通过 bash scripts/project_env.sh python ...；不改 OSCBF/ROS/CUDA/Conda base。
+2. bash scripts/project_env.sh python scripts/fetch_sources.py
+   bash scripts/project_env.sh python scripts/inspect_sources.py
+   原始大网格在vendor，assets/converted由builder重建，均不需要提交。
+3. 分别 --stage m1 和 --stage piper 构建后，在桌面用 scripts/live_assembly.py --model sim/scenes/m1_preview.xml --watch、--model sim/scenes/piper_preview.xml --watch 显示并操作。切换前关闭前一个窗口。让我看到四轮结构、六轴臂与双指开合。
+4. --stage combined 构建后，默认启动 bash scripts/project_env.sh python scripts/live_assembly.py --watch。保持窗口可见，用另一终端调整config/assembly.yaml并重建；成功后watch重新开窗，展示修改。向我说明改了哪里，不只汇报后台数值。
+5. 左右选关节、上下微调、Space夹爪、F8腕相机、F9碰撞、F10重载、F11仿真home、F12退出。需要慢速自动运动学动画时才加--scripted-demo。不是动力学/控制器演示。
+6. 检查三组FK：bash scripts/project_env.sh python scripts/check_assembly.py。有实际模型更改后按需要更新离线图，不做无关防御框架/哈希/长测。
+7. 可在 assembly_with_door.xml 查看同一腕相机中的被动门/把手。默认空场景腕视角主要是背景与远地面，不为了看到指尖就把名义外参伪装成实测。先不要进入无控制的自由基座mj_step或开门。
 
-下一阶段实际工作：
-1. 检查本机仿真依赖和图形环境；H0 没有创建仿真 .venv。第一条环境命令为 bash scripts/setup_env.sh，之后通过 scripts/project_env.sh 使用项目 .venv，不修改原 OSCBF-research 的环境、ROS/CUDA 或 shell 启动文件。
-2. 执行 bash scripts/project_env.sh .venv/bin/python scripts/fetch_sources.py 和 bash scripts/project_env.sh .venv/bin/python scripts/inspect_sources.py，核对 config/sources.lock.json 的固定版本。vendor 中如有既有修改先保留。M1 来源为 model/zgws/zgws.xml，Piper H 使用带官方夹爪的 Xacro，不重复加夹爪。
-3. 依据官方树与四张现有照片、assets/accessories/ 支架几何，生成 description/m1_derived.urdf、description/m1_piper.urdf、description/joint_map.yaml、sim/robots/m1_piper.xml、sim/scenes/assembly_preview.xml；转换与装配流程必须可重跑。具体约束按 MODEL_INTEGRATION：唯一前缀/mesh basename、保留 DAE 场景变换和惯性、去掉 Piper 自带 world 固定根、一个自由基座、双真实夹指和一个 mimic 耦合/控制输入。
-4. config/assembly.yaml 统一名义装配参数，附件固定在正确末端主体，不挂活动夹指。accessory_payload_mode=omitted，附件显式零质量/密度；synthetic_aligned_rgbd 仍是理想仿真相机，不能直接当真实 DC1 的两个光心已对齐。H0 视野与夹爪遮挡证据可用于对照，不充当手眼测量。
-5. 检查少量合法姿态的轮心/法兰/TCP FK、夹爪与附件固定关系及视觉/碰撞，保存 results/assembly/ 整机正面/侧面/腕部图与 RGB/depth，写 reports/assembly_report.md。mj_forward 或直接设置 qpos 只算运动学检查，不宣称动力学或开门成功。
+显示不可用时依据实际DISPLAY/桌面问题解决；可以继续不依赖GUI的工作，但离线图片/事件日志不能算用户已经看见实时窗口。对真实成功创建窗口、按键、重载和我的反馈分别记录。
 
-手眼标定、标定板采购、相机/支架称重和惯量测量继续后置，不以此阻塞名义装配。P3 尚未完成，不能直接跳到自由基座双门任务。完成后更新 PROJECT_STATE.md、prompts/NEXT_RUN.txt，普通提交并推送用户已授权的 kaiwen123-yang/dog-and-arm，不强推、不另建压缩归档。
+H0已完成，结束时机械臂仍MOVE_J使能、相机和接收器已停止。本轮只做仿真，不发送实机命令、不自动失能/reset/回零、不重放H0绝对角度。保留全部H0原件。H0仍有RGB畸变参数差异、最终DDS配置只做静止复核两项限制，不能擅自标解决。
+
+手眼、标定板、附件称重/惯量继续后置。当前附件和名义安装座载荷omitted；虚拟相机synthetic_aligned_rgbd，不替代DC1两路CameraInfo。当前URDF主要供描述/FK对照，RViz启动与ROS资源URI整合未验证，先用MuJoCo满足实时查看。
+
+每完成一个有意义节点就普通commit并push到已授权的kaiwen123-yang/dog-and-arm；不要等整个开门任务结束再上传。按内容选择代码/配置/小结果，不盲目git add整个大录制目录、不每帧提交、不强推、不另做压缩归档。更新PROJECT_STATE.md、reports/assembly_report.md和本提示，报告真实看到的变化与commit。无需重复询问上传许可。

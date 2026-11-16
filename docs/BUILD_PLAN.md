@@ -2,6 +2,8 @@
 
 ## 当前边界
 
+2026-11-16 更新：H0 已实机完成；基础联合模型、三姿态 FK 和离线图像已在独立准备环境实现，见 reports/assembly_report.md。下一轮先按 docs/LIVE_DEBUGGING.md 在用户 Linux 桌面依次查看单体与整机，完成可见调试；不能把准备环境的离线截图记成本机实时确认。P4 以后仍未开始。
+
 先把仿真任务实现，再考虑研究主线。现阶段不购买标定板、不做手眼标定、不要求称量相机或支架。照片已经足够开始装配；缺少的安装数值由官方几何和明确的名义假设补齐，后续可替换。
 
 模型首轮完成 P0–P3；用户另加 H0 臂相机联调回合，P0 后即可执行并与 P1/P2 交错，结果供 P3 使用。机械臂本体验机已完成，H0 不重复整套验机。下面的 P4–P7 仍是后续仿真路线。
@@ -11,7 +13,7 @@
 | P0 环境与工程 | 初始化目录，检查现有 Ubuntu/Python/ROS；建立 .venv | 实际环境记录、可调用的项目 Python；不修改 base/ROS/CUDA |
 | H0 臂相机实机联调 | 复用已验机臂环境，接入 DC1，静止与有限动作期间联合采集 | RGB、原始深度、两路 CameraInfo、真实状态与时间记录、短视频、联调报告；手眼仍后置 |
 | P1 官方资产 | 获取 M1 ZGWS 和 Piper H 两个指定来源，读取原 XML/Xacro | source_versions.json、source_inventory.json；明确每个 mesh 的真实路径 |
-| P2 单体模型 | M1 单体、Piper H 带夹爪分别显示；转换 DAE；准备 M1 衍生 URDF | 单体图和转换说明，保留轮足结构、几何、质量与坐标关系 |
+| P2 单体模型 | M1 单体、Piper H 带夹爪分别显示；准备 M1 衍生 URDF；首版 visual 复用官方 STL | 单体图和转换说明，保留轮足结构、几何、质量与坐标关系；后续 DAE 精细外观另行完整转换 |
 | P3 整机装配 | 加前缀、移除 Piper 独立 world、参数化安装座、夹爪耦合、支架/相机、URDF/MJCF | 组合 URDF、原生组合 MJCF、关节/执行器映射、几组 FK 对照、整机和腕部图 |
 | P4 MuJoCo 固定基座接触 | 固定底盘做单门推/拉；机器人执行器通过接触打开被动门 | 实际 mj_step，门角/手指/力矩曲线及视频；明确只是固定基座仿真结果 |
 | P5 M1 基础控制 | 释放自由基座，地面保持、低速前进/转向/停车，再加入缓慢臂运动 | 不靠固定关节保持底盘；记录基座姿态、轮/腿状态、力矩和滑动 |
@@ -52,7 +54,9 @@ Piper H 使用专门目录，带夹爪 Xacro 已包含夹爪。必须处理 pack
 - sim/robots/m1_piper.xml
 - sim/scenes/assembly_preview.xml
 - reports/assembly_report.md
-- results/assembly/front.png、side.png、wrist.png、wrist_rgb.png、wrist_depth.npy
+- results/assembly/front.png、side.png、wrist_detail.png、wrist_rgb.png、wrist_depth_m.npy
+
+生成入口现为 scripts/build_assembly.py；少量 FK 对照入口为 scripts/check_assembly.py；真实桌面查看入口为 scripts/live_assembly.py；离线图片／短片入口为 scripts/capture_assembly.py。带门腕部图像保存在 results/assembly/with_door/，其外参和机器人 home 与空场景一致。
 
 M1 原生 MJCF 继续作为仿真动力学来源；衍生 URDF用于描述、规划或坐标检查。可以在 MJCF 中保留 M1 的 body/joint/inertial/actuator，再接入转换后的 Piper 子树。不要为了得到统一文件而先后多次往返转换所有动力学参数。
 

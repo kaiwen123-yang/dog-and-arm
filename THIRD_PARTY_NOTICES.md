@@ -10,6 +10,8 @@
 
 M1 来源于 `zsibot/MATRiX_Python_SDK`，Piper H/夹爪来源于 `agilexrobotics/agx_arm_urdf`，版本和 URL 在 `config/sources.lock.json`。它们由用户本机下载到 `vendor/`，本开工提交不重新分发这些完整源资产。
 
+当前提交包含由这些固定源派生的 URDF/MJCF 及来源记录，不提交 assets/converted/ 中可重新生成的大网格。Piper H 固定源的 MIT License（Copyright (c) 2026 aalicecc）保留在 docs/licenses/agx_arm_urdf_MIT.txt。M1 固定源 checkout 未包含顶层许可文件，因此这里只记录其原始仓库与版本，不为其资产添加本工程许可声明。
+
 以后提交转换或衍生网格时，需要一起保留相应上游来源与许可；不能把所有第三方模型自动归入本工程代码的许可。
 
 ## 用户照片

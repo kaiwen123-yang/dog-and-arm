@@ -11,6 +11,9 @@ arm_mount:
   child_link: piper_base_link
   xyz_m: [0.05, 0.0, 0.18]
   rpy_rad: [0.0, 0.0, 0.0]
+  pedestal_size_xyz_m: [0.15, 0.15, 0.0979106429]
+  pedestal_local_xyz_m: [0.0, 0.0, -0.04895532145]
+  pedestal_payload_mode: omitted
   status: simulation_assumption
   note: 从此名义值开始；按M1网格顶面与Piper基座调整，不是实测安装外参。
 
@@ -22,7 +25,14 @@ accessories:
   bracket_metadata: assets/accessories/bracket_source_notes.json
   parent_candidate: piper_gripper_base
   registration: align_official_meshes_using_photos
-  pose_status: derive_during_P3
+  pose_status: nominal_visual_fit_unmeasured
+  bracket_xyz_m: [0.0, 0.0, 0.0]
+  bracket_rpy_rad: [-1.5707963267948966, 0.0, 1.5707963267948966]
+  bracket_collision_boxes:
+    - xyz_m: [0.005, -0.007, 0.086]
+      size_xyz_m: [0.078, 0.006, 0.02]
+    - xyz_m: [0.005, -0.01, 0.06]
+      size_xyz_m: [0.026, 0.006, 0.034]
   note_parent: 候选父节点须对应PiperH实际刚性壳体；不连接活动夹指。
 
 camera:
@@ -36,7 +46,12 @@ camera:
   nominal_height_px: 480
   nominal_fovy_deg: 60.0
   parameter_status: simulation_assumption
-  pose_status: derive_during_P3_from_bracket_and_photos
+  pose_status: nominal_visual_fit_unmeasured
+  shell_xyz_m: [-0.092, 0.0, 0.026]
+  shell_rpy_rad: [0.0, -1.5707963267948966, 0.0]
+  optical_xyz_m: [-0.092, 0.0, 0.042]
+  optical_rpy_rad: [0.0, 0.0, -1.5707963267948966]
+  optical_convention: x_right_y_down_z_forward
   note: 外壳和fovy仅为第一版仿真设计值，不是DC1规格；RGB和深度来自同一个虚拟相机。
 
 gripper:
@@ -52,3 +67,12 @@ simulation:
   timestep_s: 0.002
   world_up_axis: z
   use_vendor_simulator: false
+
+preview:
+  mode: KINEMATIC_PREVIEW
+  m1_root_z_m: 0.54266
+  ground_clearance_nominal_m: 0.001
+  root_height_note: 源注释home的四轮几何最低点对应根高0.54165915m；加约1mm间隙。没有验证动态站稳。
+  arm_home_rad: [0.0, 0.8, -1.4, 0.0, 0.6, 0.0]
+  gripper_width_m: 0.04
+  note: 纯仿真人工选取的装配姿态，不来自H0实机状态；附件和安装座额外载荷暂不计。

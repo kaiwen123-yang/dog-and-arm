@@ -1,0 +1,2177 @@
+{
+  "source_files": {
+    "m1": {
+      "path": "vendor/matrix_python_sdk/model/zgws/zgws.xml",
+      "exists": true,
+      "format": "MJCF source inventory; no compilation or physics performed",
+      "model": "zgws",
+      "compiler": {
+        "angle": "radian",
+        "meshdir": "assets/"
+      },
+      "bodies": [
+        {
+          "name": "base_link",
+          "parent": null,
+          "attributes": {
+            "name": "base_link",
+            "pos": "0 0 0.5"
+          },
+          "inertial": {
+            "pos": "-0.001406 0.00345 -0.004835",
+            "quat": "-0.00434043 0.706832 -0.00540402 0.707347",
+            "mass": "17.033",
+            "diaginertia": "0.695866 0.661855 0.0928814"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.75294 0.75294 0.75294 1",
+              "mesh": "BASE_LINK"
+            },
+            {
+              "type": "mesh",
+              "rgba": "0.69804 0.69804 0.69804 1",
+              "mesh": "BASE_LINK"
+            }
+          ]
+        },
+        {
+          "name": "FAR_ABAD_LINK",
+          "parent": "base_link",
+          "attributes": {
+            "name": "FAR_ABAD_LINK",
+            "pos": "0.2698 -0.065 0"
+          },
+          "inertial": {
+            "pos": "0.033776 -0.02146 9.6941e-07",
+            "quat": "0.351949 0.351975 0.613287 0.613289",
+            "mass": "0.19789",
+            "diaginertia": "0.00025478 0.00020921 0.00011958"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "FAR_ABAD_LINK"
+            }
+          ]
+        },
+        {
+          "name": "FAR_HIP_LINK",
+          "parent": "FAR_ABAD_LINK",
+          "attributes": {
+            "name": "FAR_HIP_LINK",
+            "pos": "0.0587 -0.045 0"
+          },
+          "inertial": {
+            "pos": "-3.2e-05 -0.065021 -0.128154",
+            "quat": "0.703257 -0.0677607 0.068164 0.704409",
+            "mass": "2.8754",
+            "diaginertia": "0.0456037 0.045202 0.00275532"
+          },
+          "geoms": [
+            {
+              "size": "0.03 0.0075 0.11",
+              "pos": "0 -0.07 -0.1",
+              "quat": "0.988771 -0.149438 0 0",
+              "type": "box",
+              "rgba": "0.84706 0.84706 0.84706 1"
+            },
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "FAR_HIP_LINK"
+            }
+          ]
+        },
+        {
+          "name": "FAR_KNEE_LINK",
+          "parent": "FAR_HIP_LINK",
+          "attributes": {
+            "name": "FAR_KNEE_LINK",
+            "pos": "0 -0.0522 -0.26"
+          },
+          "inertial": {
+            "pos": "1.1e-05 0.004286 -0.115691",
+            "quat": "0.707101 -0.000811046 0.000666189 0.707112",
+            "mass": "0.86312",
+            "diaginertia": "0.01053 0.01024 0.000477956"
+          },
+          "geoms": [
+            {
+              "size": "0.015 0.015 0.11",
+              "pos": "0.005 0 -0.09",
+              "quat": "0.99995 0 -0.00999983 0",
+              "type": "box",
+              "rgba": "0.75294 0.75294 0.75294 1"
+            },
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "FAR_KNEE_LINK"
+            }
+          ]
+        },
+        {
+          "name": "FAR_FOOT_LINK",
+          "parent": "FAR_KNEE_LINK",
+          "attributes": {
+            "name": "FAR_FOOT_LINK",
+            "pos": "0 -0.0088 -0.28"
+          },
+          "inertial": {
+            "pos": "0 -0.039394 4.2e-05",
+            "quat": "0.5 0.5 0.5 0.5",
+            "mass": "1.5113",
+            "diaginertia": "0.004202 0.002606 0.002603"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "FAR_FOOT_LINK"
+            },
+            {
+              "type": "mesh",
+              "rgba": "1 1 1 1",
+              "mesh": "FAR_FOOT_LINK"
+            }
+          ]
+        },
+        {
+          "name": "FBL_ABAD_LINK",
+          "parent": "base_link",
+          "attributes": {
+            "name": "FBL_ABAD_LINK",
+            "pos": "0.2698 0.065 0"
+          },
+          "inertial": {
+            "pos": "0.033776 0.02146 -9.6941e-07",
+            "quat": "0.613283 0.613294 0.351948 0.351976",
+            "mass": "0.19789",
+            "diaginertia": "0.00025478 0.00020921 0.00011958"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "FBL_ABAD_LINK"
+            }
+          ]
+        },
+        {
+          "name": "FBL_HIP_LINK",
+          "parent": "FBL_ABAD_LINK",
+          "attributes": {
+            "name": "FBL_HIP_LINK",
+            "pos": "0.0587 0.045 0"
+          },
+          "inertial": {
+            "pos": "3.7e-05 0.065021 -0.128154",
+            "quat": "0.702733 0.067692 -0.0682323 0.704931",
+            "mass": "2.8754",
+            "diaginertia": "0.0456037 0.045202 0.00275532"
+          },
+          "geoms": [
+            {
+              "size": "0.03 0.0075 0.11",
+              "pos": "0 0.07 -0.1",
+              "quat": "0.988771 0.149438 0 0",
+              "type": "box",
+              "rgba": "0.84706 0.84706 0.84706 1"
+            },
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "FBL_HIP_LINK"
+            }
+          ]
+        },
+        {
+          "name": "FBL_KNEE_LINK",
+          "parent": "FBL_HIP_LINK",
+          "attributes": {
+            "name": "FBL_KNEE_LINK",
+            "pos": "1.113e-05 0.0522 -0.26",
+            "quat": "1 0 -2.14045e-05 0"
+          },
+          "inertial": {
+            "pos": "-1.1e-05 -0.004286 -0.115691",
+            "quat": "0.707101 0.000811046 -0.000666189 0.707112",
+            "mass": "0.86312",
+            "diaginertia": "0.01053 0.01024 0.000477956"
+          },
+          "geoms": [
+            {
+              "size": "0.015 0.015 0.11",
+              "pos": "0.005 0 -0.09",
+              "quat": "0.99995 0 -0.00999983 0",
+              "type": "box",
+              "rgba": "0.75294 0.75294 0.75294 1"
+            },
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "FBL_KNEE_LINK"
+            }
+          ]
+        },
+        {
+          "name": "FBL_FOOT_LINK",
+          "parent": "FBL_KNEE_LINK",
+          "attributes": {
+            "name": "FBL_FOOT_LINK",
+            "pos": "0 0.0088 -0.28"
+          },
+          "inertial": {
+            "pos": "0 0.039394 4.1863e-05",
+            "quat": "0.5 0.5 0.5 0.5",
+            "mass": "1.5113",
+            "diaginertia": "0.004202 0.002606 0.002603"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "FBL_FOOT_LINK"
+            },
+            {
+              "type": "mesh",
+              "rgba": "1 1 1 1",
+              "mesh": "FBL_FOOT_LINK"
+            }
+          ]
+        },
+        {
+          "name": "RAR_ABAD_LINK",
+          "parent": "base_link",
+          "attributes": {
+            "name": "RAR_ABAD_LINK",
+            "pos": "-0.2698 -0.065 0"
+          },
+          "inertial": {
+            "pos": "-0.033776 -0.02146 -9.6931e-07",
+            "quat": "0.613283 0.613294 0.351948 0.351976",
+            "mass": "0.19789",
+            "diaginertia": "0.00025478 0.00020921 0.00011958"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "RAR_ABAD_LINK"
+            }
+          ]
+        },
+        {
+          "name": "RAR_HIP_LINK",
+          "parent": "RAR_ABAD_LINK",
+          "attributes": {
+            "name": "RAR_HIP_LINK",
+            "pos": "-0.0587 -0.045 0"
+          },
+          "inertial": {
+            "pos": "-3.7e-05 -0.065021 -0.128154",
+            "quat": "0.702733 -0.067692 0.0682323 0.704931",
+            "mass": "2.8754",
+            "diaginertia": "0.0456037 0.045202 0.00275532"
+          },
+          "geoms": [
+            {
+              "size": "0.03 0.0075 0.11",
+              "pos": "0 -0.07 -0.1",
+              "quat": "0.988771 -0.149438 0 0",
+              "type": "box",
+              "rgba": "0.847059 0.847059 0.847059 1"
+            },
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "RAR_HIP_LINK"
+            }
+          ]
+        },
+        {
+          "name": "RAR_KNEE_LINK",
+          "parent": "RAR_HIP_LINK",
+          "attributes": {
+            "name": "RAR_KNEE_LINK",
+            "pos": "-1.113e-05 -0.0522 -0.26",
+            "quat": "1 0 2.14045e-05 0"
+          },
+          "inertial": {
+            "pos": "1.1e-05 0.004242 -0.116154",
+            "quat": "0.7071 -0.000956292 0.000810754 0.707112",
+            "mass": "0.85979",
+            "diaginertia": "0.0104791 0.010191 0.000474937"
+          },
+          "geoms": [
+            {
+              "size": "0.015 0.015 0.11",
+              "pos": "0.005 0 -0.09",
+              "quat": "0.99995 0 -0.00999983 0",
+              "type": "box",
+              "rgba": "0.75294 0.75294 0.75294 1"
+            },
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "RAR_KNEE_LINK"
+            }
+          ]
+        },
+        {
+          "name": "RAR_FOOT_LINK",
+          "parent": "RAR_KNEE_LINK",
+          "attributes": {
+            "name": "RAR_FOOT_LINK",
+            "pos": "0 -0.0088 -0.28"
+          },
+          "inertial": {
+            "pos": "0 -0.039394 4.1868e-05",
+            "quat": "0.5 0.5 0.5 0.5",
+            "mass": "1.5113",
+            "diaginertia": "0.004202 0.002606 0.002603"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "RAR_FOOT_LINK"
+            },
+            {
+              "type": "mesh",
+              "rgba": "1 1 1 1",
+              "mesh": "RAR_FOOT_LINK"
+            }
+          ]
+        },
+        {
+          "name": "RBL_ABAD_LINK",
+          "parent": "base_link",
+          "attributes": {
+            "name": "RBL_ABAD_LINK",
+            "pos": "-0.2698 0.065 0"
+          },
+          "inertial": {
+            "pos": "-0.033776 0.02146 9.6918e-07",
+            "quat": "0.351949 0.351975 0.613287 0.613289",
+            "mass": "0.19789",
+            "diaginertia": "0.00025478 0.00020921 0.00011958"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "RBL_ABAD_LINK"
+            }
+          ]
+        },
+        {
+          "name": "RBL_HIP_LINK",
+          "parent": "RBL_ABAD_LINK",
+          "attributes": {
+            "name": "RBL_HIP_LINK",
+            "pos": "-0.0587 0.045 0"
+          },
+          "inertial": {
+            "pos": "3.7e-05 0.065021 -0.128154",
+            "quat": "0.702733 0.067692 -0.0682323 0.704931",
+            "mass": "2.8754",
+            "diaginertia": "0.0456037 0.045202 0.00275532"
+          },
+          "geoms": [
+            {
+              "size": "0.03 0.0075 0.11",
+              "pos": "0 0.07 -0.1",
+              "quat": "0.988771 0.149438 0 0",
+              "type": "box",
+              "rgba": "0.84706 0.84706 0.84706 1"
+            },
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "RBL_HIP_LINK"
+            }
+          ]
+        },
+        {
+          "name": "RBL_KNEE_LINK",
+          "parent": "RBL_HIP_LINK",
+          "attributes": {
+            "name": "RBL_KNEE_LINK",
+            "pos": "1.1131e-05 0.0522 -0.26",
+            "quat": "1 0 -2.14055e-05 0"
+          },
+          "inertial": {
+            "pos": "-1.1e-05 -0.004286 -0.115691",
+            "quat": "0.707101 0.000811046 -0.000666189 0.707112",
+            "mass": "0.86312",
+            "diaginertia": "0.01053 0.01024 0.000477956"
+          },
+          "geoms": [
+            {
+              "size": "0.015 0.015 0.11",
+              "pos": "0.005 0 -0.09",
+              "quat": "0.99995 0 -0.00999983 0",
+              "type": "box",
+              "rgba": "0.752941 0.752941 0.752941 1"
+            },
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "RBL_KNEE_LINK"
+            }
+          ]
+        },
+        {
+          "name": "RBL_FOOT_LINK",
+          "parent": "RBL_KNEE_LINK",
+          "attributes": {
+            "name": "RBL_FOOT_LINK",
+            "pos": "0 0.0088 -0.28"
+          },
+          "inertial": {
+            "pos": "0 0.039394 4.186e-05",
+            "quat": "0.5 0.5 0.5 0.5",
+            "mass": "1.5113",
+            "diaginertia": "0.004202 0.002606 0.002603"
+          },
+          "geoms": [
+            {
+              "type": "mesh",
+              "contype": "0",
+              "conaffinity": "0",
+              "group": "1",
+              "density": "0",
+              "rgba": "0.49804 0.5 0.49804 1",
+              "mesh": "RBL_FOOT_LINK"
+            },
+            {
+              "type": "mesh",
+              "rgba": "1 1 1 1",
+              "mesh": "RBL_FOOT_LINK"
+            }
+          ]
+        }
+      ],
+      "joints": [
+        {
+          "body": "base_link",
+          "type": "free",
+          "attributes": {}
+        },
+        {
+          "body": "FAR_ABAD_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FAR_ABAD_JOINT",
+            "pos": "0 0 0",
+            "axis": "1 0 0",
+            "range": "-0.697 0.523",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "FAR_HIP_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FAR_HIP_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-2.442 2.791",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "FAR_KNEE_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FAR_KNEE_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-2.791 2.791",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "FAR_FOOT_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FAR_FOOT_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-99999 99999",
+            "actuatorfrcrange": "-40 40"
+          }
+        },
+        {
+          "body": "FBL_ABAD_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FBL_ABAD_JOINT",
+            "pos": "0 0 0",
+            "axis": "1 0 0",
+            "range": "-0.523 0.697",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "FBL_HIP_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FBL_HIP_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-2.442 2.791",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "FBL_KNEE_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FBL_KNEE_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-2.791 2.791",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "FBL_FOOT_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FBL_FOOT_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-99999 99999",
+            "actuatorfrcrange": "-40 40"
+          }
+        },
+        {
+          "body": "RAR_ABAD_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RAR_ABAD_JOINT",
+            "pos": "0 0 0",
+            "axis": "1 0 0",
+            "range": "-0.697 0.523",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "RAR_HIP_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RAR_HIP_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-2.791 2.442",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "RAR_KNEE_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RAR_KNEE_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-2.791 2.791",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "RAR_FOOT_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RAR_FOOT_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-99999 99999",
+            "actuatorfrcrange": "-40 40"
+          }
+        },
+        {
+          "body": "RBL_ABAD_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RBL_ABAD_JOINT",
+            "pos": "0 0 0",
+            "axis": "1 0 0",
+            "range": "-0.523 0.697",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "RBL_HIP_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RBL_HIP_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-2.791 2.442",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "RBL_KNEE_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RBL_KNEE_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-2.791 2.791",
+            "actuatorfrcrange": "-150 150"
+          }
+        },
+        {
+          "body": "RBL_FOOT_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RBL_FOOT_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-99999 99999",
+            "actuatorfrcrange": "-40 40"
+          }
+        }
+      ],
+      "wheel_joints": [
+        {
+          "body": "FAR_FOOT_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FAR_FOOT_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-99999 99999",
+            "actuatorfrcrange": "-40 40"
+          }
+        },
+        {
+          "body": "FBL_FOOT_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "FBL_FOOT_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-99999 99999",
+            "actuatorfrcrange": "-40 40"
+          }
+        },
+        {
+          "body": "RAR_FOOT_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RAR_FOOT_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-99999 99999",
+            "actuatorfrcrange": "-40 40"
+          }
+        },
+        {
+          "body": "RBL_FOOT_LINK",
+          "type": "hinge",
+          "attributes": {
+            "name": "RBL_FOOT_JOINT",
+            "pos": "0 0 0",
+            "axis": "0 1 0",
+            "range": "-99999 99999",
+            "actuatorfrcrange": "-40 40"
+          }
+        }
+      ],
+      "actuators": [
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "FAR_ABAD_LINK",
+            "joint": "FAR_ABAD_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "FAR_HIP_LINK",
+            "joint": "FAR_HIP_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "FAR_KNEE_LINK",
+            "joint": "FAR_KNEE_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "FAR_FOOT_LINK",
+            "joint": "FAR_FOOT_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "FBL_ABAD_LINK",
+            "joint": "FBL_ABAD_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "FBL_HIP_LINK",
+            "joint": "FBL_HIP_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "FBL_KNEE_LINK",
+            "joint": "FBL_KNEE_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "FBL_FOOT_LINK",
+            "joint": "FBL_FOOT_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "RAR_ABAD_LINK",
+            "joint": "RAR_ABAD_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "RAR_HIP_LINK",
+            "joint": "RAR_HIP_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "RAR_KNEE_LINK",
+            "joint": "RAR_KNEE_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "RAR_FOOT_LINK",
+            "joint": "RAR_FOOT_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "RBL_ABAD_LINK",
+            "joint": "RBL_ABAD_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "RBL_HIP_LINK",
+            "joint": "RBL_HIP_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "RBL_KNEE_LINK",
+            "joint": "RBL_KNEE_JOINT"
+          }
+        },
+        {
+          "type": "motor",
+          "attributes": {
+            "name": "RBL_FOOT_LINK",
+            "joint": "RBL_FOOT_JOINT"
+          }
+        }
+      ],
+      "meshes": [
+        {
+          "attributes": {
+            "name": "BASE_LINK",
+            "file": "BASE_LINK.STL"
+          },
+          "source_reference": "BASE_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/BASE_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "FBL_ABAD_LINK",
+            "file": "FBL_ABAD_LINK.STL"
+          },
+          "source_reference": "FBL_ABAD_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/FBL_ABAD_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "FBL_HIP_LINK",
+            "file": "FBL_HIP_LINK.STL"
+          },
+          "source_reference": "FBL_HIP_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/FBL_HIP_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "FBL_KNEE_LINK",
+            "file": "FBL_KNEE_LINK.STL"
+          },
+          "source_reference": "FBL_KNEE_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/FBL_KNEE_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "FBL_FOOT_LINK",
+            "file": "FBL_FOOT_LINK.STL"
+          },
+          "source_reference": "FBL_FOOT_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/FBL_FOOT_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "FAR_ABAD_LINK",
+            "file": "FAR_ABAD_LINK.STL"
+          },
+          "source_reference": "FAR_ABAD_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/FAR_ABAD_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "FAR_HIP_LINK",
+            "file": "FAR_HIP_LINK.STL"
+          },
+          "source_reference": "FAR_HIP_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/FAR_HIP_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "FAR_KNEE_LINK",
+            "file": "FAR_KNEE_LINK.STL"
+          },
+          "source_reference": "FAR_KNEE_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/FAR_KNEE_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "FAR_FOOT_LINK",
+            "file": "FAR_FOOT_LINK.STL"
+          },
+          "source_reference": "FAR_FOOT_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/FAR_FOOT_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "RAR_ABAD_LINK",
+            "file": "RAR_ABAD_LINK.STL"
+          },
+          "source_reference": "RAR_ABAD_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/RAR_ABAD_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "RAR_HIP_LINK",
+            "file": "RAR_HIP_LINK.STL"
+          },
+          "source_reference": "RAR_HIP_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/RAR_HIP_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "RAR_KNEE_LINK",
+            "file": "RAR_KNEE_LINK.STL"
+          },
+          "source_reference": "RAR_KNEE_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/RAR_KNEE_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "RAR_FOOT_LINK",
+            "file": "RAR_FOOT_LINK.STL"
+          },
+          "source_reference": "RAR_FOOT_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/RAR_FOOT_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "RBL_ABAD_LINK",
+            "file": "RBL_ABAD_LINK.STL"
+          },
+          "source_reference": "RBL_ABAD_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/RBL_ABAD_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "RBL_HIP_LINK",
+            "file": "RBL_HIP_LINK.STL"
+          },
+          "source_reference": "RBL_HIP_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/RBL_HIP_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "RBL_KNEE_LINK",
+            "file": "RBL_KNEE_LINK.STL"
+          },
+          "source_reference": "RBL_KNEE_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/RBL_KNEE_LINK.STL",
+          "exists": true
+        },
+        {
+          "attributes": {
+            "name": "RBL_FOOT_LINK",
+            "file": "RBL_FOOT_LINK.STL"
+          },
+          "source_reference": "RBL_FOOT_LINK.STL",
+          "resolved_path": "vendor/matrix_python_sdk/model/zgws/assets/RBL_FOOT_LINK.STL",
+          "exists": true
+        }
+      ],
+      "active_keyframes": [],
+      "summary": {
+        "body_count": 17,
+        "free_joint_count": 1,
+        "one_dof_joint_count": 16,
+        "wheel_joint_count": 4,
+        "actuator_count": 16,
+        "mesh_count": 17,
+        "source_mass_sum_kg": 38.82051,
+        "structurally_expected_dimensions": {
+          "nq": 23,
+          "nv": 22,
+          "nu": 16
+        },
+        "dimensions_compiled_and_checked": false
+      },
+      "notes": [
+        "For the pinned ZGWS model, the structural dimensions are nq=23, nv=22, nu=16.",
+        "Source actuatorfrcrange values are simulation settings, not verified hardware continuous torque ratings.",
+        "The source does not specify physical joint velocity limits; do not invent official URDF velocity ratings.",
+        "motor actuator controls are not desired joint positions.",
+        "Only actual key elements are counted; XML comments do not define an active home posture.",
+        "The root body placement belongs to the scene, not to the M1-to-arm mounting transform."
+      ]
+    },
+    "piper_h_base": {
+      "path": "vendor/agx_arm_urdf/piper_h/urdf/piper_h_description.urdf",
+      "exists": true,
+      "format": "URDF/Xacro XML inventory; xacro includes are recorded, not expanded",
+      "robot": "piper_h",
+      "links": [
+        {
+          "name": "world",
+          "inertial": null
+        },
+        {
+          "name": "base_link",
+          "inertial": {
+            "origin": {
+              "xyz": "-0.00473641164191482 2.56829134630247E-05 0.041451518036016",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "1.02"
+            },
+            "inertia": {
+              "ixx": "0.00267433",
+              "ixy": "-0.00000073",
+              "ixz": "-0.00017389",
+              "iyy": "0.00282612",
+              "iyz": "0.0000004",
+              "izz": "0.00089624"
+            }
+          }
+        },
+        {
+          "name": "link1",
+          "inertial": {
+            "origin": {
+              "xyz": "0.00032 -0.00041 -0.00348",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.71"
+            },
+            "inertia": {
+              "ixx": "0.00050027",
+              "ixy": "0.00000078",
+              "ixz": "0.00000626",
+              "iyy": "0.00040879",
+              "iyz": "0.00000462",
+              "izz": "0.00045802"
+            }
+          }
+        },
+        {
+          "name": "link2",
+          "inertial": {
+            "origin": {
+              "xyz": "0.21852 -0.00861 0.00126",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "1.16"
+            },
+            "inertia": {
+              "ixx": "0.00111915",
+              "ixy": "0.00182916",
+              "ixz": "0.00019233",
+              "iyy": "0.06763251",
+              "iyz": "0.00000767",
+              "izz": "0.067559"
+            }
+          }
+        },
+        {
+          "name": "link3",
+          "inertial": {
+            "origin": {
+              "xyz": "-0.01999 -0.14808 -0.00053",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.5"
+            },
+            "inertia": {
+              "ixx": "0.01347608",
+              "ixy": "0.00161034",
+              "ixz": "0.00000066",
+              "iyy": "0.00046377",
+              "iyz": "0.00000162",
+              "izz": "0.01363321"
+            }
+          }
+        },
+        {
+          "name": "link4",
+          "inertial": {
+            "origin": {
+              "xyz": "0.00013 -0.00076 -0.00394",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.38"
+            },
+            "inertia": {
+              "ixx": "0.00017844",
+              "ixy": "0.00000062",
+              "ixz": "0.00000067",
+              "iyy": "0.00018914",
+              "iyz": "0.00000408",
+              "izz": "0.00014613"
+            }
+          }
+        },
+        {
+          "name": "link5",
+          "inertial": {
+            "origin": {
+              "xyz": "0.00018 -0.06104 -0.00227",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.39"
+            },
+            "inertia": {
+              "ixx": "0.00172318",
+              "ixy": "0.00000259",
+              "ixz": "0.00000010",
+              "iyy": "0.00017936",
+              "iyz": "0.00000990",
+              "izz": "0.00171172"
+            }
+          }
+        },
+        {
+          "name": "link6",
+          "inertial": {
+            "origin": {
+              "xyz": "0.00134940815 0 -0.00344975303",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.01655408133"
+            },
+            "inertia": {
+              "ixx": "1.52476803967e-6",
+              "ixy": "0",
+              "ixz": "1.0017156778e-7",
+              "iyy": "1.51721319881e-6",
+              "iyz": "0",
+              "izz": "2.84541364481e-6"
+            }
+          }
+        }
+      ],
+      "joints": [
+        {
+          "name": "world_to_base_link",
+          "type": "fixed",
+          "parent": {
+            "link": "world"
+          },
+          "child": {
+            "link": "base_link"
+          },
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "axis": null,
+          "limit": null,
+          "mimic": null
+        },
+        {
+          "name": "joint1",
+          "type": "revolute",
+          "parent": {
+            "link": "base_link"
+          },
+          "child": {
+            "link": "link1"
+          },
+          "origin": {
+            "xyz": "0 0 0.123",
+            "rpy": "0 0 0"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-2.6179938",
+            "upper": "2.6179938",
+            "effort": "100",
+            "velocity": "5"
+          },
+          "mimic": null
+        },
+        {
+          "name": "joint2",
+          "type": "revolute",
+          "parent": {
+            "link": "link1"
+          },
+          "child": {
+            "link": "link2"
+          },
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "1.5707963 -0.1357866 -3.1415926"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "0",
+            "upper": "3.1415926",
+            "effort": "100",
+            "velocity": "5"
+          },
+          "mimic": null
+        },
+        {
+          "name": "joint3",
+          "type": "revolute",
+          "parent": {
+            "link": "link2"
+          },
+          "child": {
+            "link": "link3"
+          },
+          "origin": {
+            "xyz": "0.28503 0 0",
+            "rpy": "0 0 -1.7938494"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-2.9670597",
+            "upper": "0",
+            "effort": "100",
+            "velocity": "5"
+          },
+          "mimic": null
+        },
+        {
+          "name": "joint4",
+          "type": "revolute",
+          "parent": {
+            "link": "link3"
+          },
+          "child": {
+            "link": "link4"
+          },
+          "origin": {
+            "xyz": "-0.02198 -0.25575 0",
+            "rpy": "1.5707963 0 0"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-2.3561944",
+            "upper": "2.3561944",
+            "effort": "100",
+            "velocity": "5"
+          },
+          "mimic": null
+        },
+        {
+          "name": "joint5",
+          "type": "revolute",
+          "parent": {
+            "link": "link4"
+          },
+          "child": {
+            "link": "link5"
+          },
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "-1.5707963 0 0"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-1.5620696",
+            "upper": "1.5620696",
+            "effort": "100",
+            "velocity": "5"
+          },
+          "mimic": null
+        },
+        {
+          "name": "joint6",
+          "type": "revolute",
+          "parent": {
+            "link": "link5"
+          },
+          "child": {
+            "link": "link6"
+          },
+          "origin": {
+            "xyz": "0 -0.0963 0",
+            "rpy": "1.5707963 0 0"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "-2.9670597",
+            "upper": "2.9670597",
+            "effort": "100",
+            "velocity": "5"
+          },
+          "mimic": null
+        }
+      ],
+      "mimics": [],
+      "meshes": [
+        {
+          "link": "base_link",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/base_link.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/base_link.dae",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/dae/base_link.dae",
+          "exists": true
+        },
+        {
+          "link": "base_link",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/base_link.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/base_link.stl",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/base_link.stl",
+          "exists": true
+        },
+        {
+          "link": "link1",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link1.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link1.dae",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/dae/link1.dae",
+          "exists": true
+        },
+        {
+          "link": "link1",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link1.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link1.stl",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/link1.stl",
+          "exists": true
+        },
+        {
+          "link": "link2",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link2.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link2.dae",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/dae/link2.dae",
+          "exists": true
+        },
+        {
+          "link": "link2",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link2.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link2.stl",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/link2.stl",
+          "exists": true
+        },
+        {
+          "link": "link3",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link3.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link3.dae",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/dae/link3.dae",
+          "exists": true
+        },
+        {
+          "link": "link3",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link3.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link3.stl",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/link3.stl",
+          "exists": true
+        },
+        {
+          "link": "link4",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link4.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link4.dae",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/dae/link4.dae",
+          "exists": true
+        },
+        {
+          "link": "link4",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link4.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link4.stl",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/link4.stl",
+          "exists": true
+        },
+        {
+          "link": "link5",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link5.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link5.dae",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/dae/link5.dae",
+          "exists": true
+        },
+        {
+          "link": "link5",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link5.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link5.stl",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/link5.stl",
+          "exists": true
+        },
+        {
+          "link": "link6",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link6.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/link6.dae",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/dae/link6.dae",
+          "exists": true
+        },
+        {
+          "link": "link6",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link6.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/link6.stl",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/link6.stl",
+          "exists": true
+        }
+      ],
+      "includes": [],
+      "summary": {
+        "local_link_count": 8,
+        "local_joint_count": 7,
+        "mesh_reference_count": 14
+      }
+    },
+    "piper_h_with_gripper": {
+      "path": "vendor/agx_arm_urdf/piper_h/urdf/piper_h_with_gripper_description.xacro",
+      "exists": true,
+      "format": "URDF/Xacro XML inventory; xacro includes are recorded, not expanded",
+      "robot": "piper_h",
+      "links": [
+        {
+          "name": "flange_link",
+          "inertial": {
+            "origin": {
+              "xyz": "1.151691e-03 0.782428e-03 4.798051e-03",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.04"
+            },
+            "inertia": {
+              "ixx": "9.935389e-06",
+              "ixy": "0.0",
+              "ixz": "0.0",
+              "iyy": "10.508003e-06",
+              "iyz": "0.0",
+              "izz": "19.652873e-06"
+            }
+          }
+        },
+        {
+          "name": "gripper_base",
+          "inertial": {
+            "origin": {
+              "xyz": "-0.000183807162235591 8.05033155577911E-05 0.0321436689908876",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.45"
+            },
+            "inertia": {
+              "ixx": "0.000466573035886",
+              "ixy": "0",
+              "ixz": "0",
+              "iyy": "0.000208671755285",
+              "iyz": "0",
+              "izz": "0.000443517627645"
+            }
+          }
+        },
+        {
+          "name": "gripper_link",
+          "inertial": null
+        },
+        {
+          "name": "gripper_link1",
+          "inertial": {
+            "origin": {
+              "xyz": "0.00065123185041968 -0.0491929869131989 0.00972258769184025",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.025"
+            },
+            "inertia": {
+              "ixx": "1.0831334372e-05",
+              "ixy": "3.32108655243e-07",
+              "ixz": "-5.17776964242e-08",
+              "iyy": "5.43941050918e-06",
+              "iyz": "1.75746071559e-06",
+              "izz": "1.41828415054e-05"
+            }
+          }
+        },
+        {
+          "name": "gripper_link2",
+          "inertial": {
+            "origin": {
+              "xyz": "0.00065123185041968 -0.0491929869131989 0.00972258769184025",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.025"
+            },
+            "inertia": {
+              "ixx": "1.0831334372e-05",
+              "ixy": "3.32108655243e-07",
+              "ixz": "-5.17776964242e-08",
+              "iyy": "5.43941050918e-06",
+              "iyz": "1.75746071559e-06",
+              "izz": "1.41828415054e-05"
+            }
+          }
+        }
+      ],
+      "joints": [
+        {
+          "name": "flange_joint",
+          "type": "fixed",
+          "parent": {
+            "link": "link6"
+          },
+          "child": {
+            "link": "flange_link"
+          },
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "axis": null,
+          "limit": null,
+          "mimic": null
+        },
+        {
+          "name": "gripper_base_joint",
+          "type": "fixed",
+          "parent": {
+            "link": "flange_link"
+          },
+          "child": {
+            "link": "gripper_base"
+          },
+          "origin": {
+            "xyz": "0 0 0.0045",
+            "rpy": "0 0 0"
+          },
+          "axis": null,
+          "limit": null,
+          "mimic": null
+        },
+        {
+          "name": "gripper",
+          "type": "prismatic",
+          "parent": {
+            "link": "gripper_base"
+          },
+          "child": {
+            "link": "gripper_link"
+          },
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "0",
+            "upper": "0.1",
+            "effort": "10",
+            "velocity": "3"
+          },
+          "mimic": null
+        },
+        {
+          "name": "gripper_joint1",
+          "type": "prismatic",
+          "parent": {
+            "link": "gripper_base"
+          },
+          "child": {
+            "link": "gripper_link1"
+          },
+          "origin": {
+            "xyz": "0 0 0.138",
+            "rpy": "1.5707963 0 0"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "0",
+            "upper": "0.05",
+            "effort": "10",
+            "velocity": "3"
+          },
+          "mimic": {
+            "joint": "gripper",
+            "multiplier": "0.5",
+            "offset": "0.0"
+          }
+        },
+        {
+          "name": "gripper_joint2",
+          "type": "prismatic",
+          "parent": {
+            "link": "gripper_base"
+          },
+          "child": {
+            "link": "gripper_link2"
+          },
+          "origin": {
+            "xyz": "0 0 0.138",
+            "rpy": "1.5707963 0 -3.1415926"
+          },
+          "axis": {
+            "xyz": "0 0 -1"
+          },
+          "limit": {
+            "lower": "-0.05",
+            "upper": "0",
+            "effort": "10",
+            "velocity": "3"
+          },
+          "mimic": {
+            "joint": "gripper",
+            "multiplier": "-0.5",
+            "offset": "0.0"
+          }
+        }
+      ],
+      "mimics": [
+        {
+          "driven_joint": "gripper_joint1",
+          "joint": "gripper",
+          "multiplier": "0.5",
+          "offset": "0.0"
+        },
+        {
+          "driven_joint": "gripper_joint2",
+          "joint": "gripper",
+          "multiplier": "-0.5",
+          "offset": "0.0"
+        }
+      ],
+      "meshes": [
+        {
+          "link": "flange_link",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/flange.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/dae/flange.dae",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/dae/flange.dae",
+          "exists": true
+        },
+        {
+          "link": "flange_link",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/flange.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/piper_h/meshes/flange.stl",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/meshes/flange.stl",
+          "exists": true
+        },
+        {
+          "link": "gripper_base",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_base.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_base.dae",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/dae/gripper_base.dae",
+          "exists": true
+        },
+        {
+          "link": "gripper_base",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_base.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_base.stl",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/gripper_base.stl",
+          "exists": true
+        },
+        {
+          "link": "gripper_link1",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link1.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link1.dae",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link1.dae",
+          "exists": true
+        },
+        {
+          "link": "gripper_link1",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_link1.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_link1.stl",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/gripper_link1.stl",
+          "exists": true
+        },
+        {
+          "link": "gripper_link2",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link2.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link2.dae",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link2.dae",
+          "exists": true
+        },
+        {
+          "link": "gripper_link2",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_link2.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_link2.stl",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/gripper_link2.stl",
+          "exists": true
+        }
+      ],
+      "includes": [
+        {
+          "source_reference": "$(find agx_arm_description)/agx_arm_urdf/piper_h/urdf/piper_h_description.urdf",
+          "resolved_path": "vendor/agx_arm_urdf/piper_h/urdf/piper_h_description.urdf",
+          "exists": true
+        }
+      ],
+      "summary": {
+        "local_link_count": 5,
+        "local_joint_count": 5,
+        "mesh_reference_count": 8
+      }
+    },
+    "standalone_gripper": {
+      "path": "vendor/agx_arm_urdf/agx_gripper/urdf/agx_gripper_description.urdf",
+      "exists": true,
+      "format": "URDF/Xacro XML inventory; xacro includes are recorded, not expanded",
+      "robot": "agx_gripper",
+      "links": [
+        {
+          "name": "gripper_base",
+          "inertial": {
+            "origin": {
+              "xyz": "-0.000183807162235591 8.05033155577911E-05 0.0321436689908876",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.45"
+            },
+            "inertia": {
+              "ixx": "0.000466573035886",
+              "ixy": "0",
+              "ixz": "0",
+              "iyy": "0.000208671755285",
+              "iyz": "0",
+              "izz": "0.000443517627645"
+            }
+          }
+        },
+        {
+          "name": "gripper_link",
+          "inertial": null
+        },
+        {
+          "name": "gripper_link1",
+          "inertial": {
+            "origin": {
+              "xyz": "0.00065123185041968 -0.0491929869131989 0.00972258769184025",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.025"
+            },
+            "inertia": {
+              "ixx": "1.0831334372e-05",
+              "ixy": "3.32108655243e-07",
+              "ixz": "-5.17776964242e-08",
+              "iyy": "5.43941050918e-06",
+              "iyz": "1.75746071559e-06",
+              "izz": "1.41828415054e-05"
+            }
+          }
+        },
+        {
+          "name": "gripper_link2",
+          "inertial": {
+            "origin": {
+              "xyz": "0.00065123185041968 -0.0491929869131989 0.00972258769184025",
+              "rpy": "0 0 0"
+            },
+            "mass": {
+              "value": "0.025"
+            },
+            "inertia": {
+              "ixx": "1.0831334372e-05",
+              "ixy": "3.32108655243e-07",
+              "ixz": "-5.17776964242e-08",
+              "iyy": "5.43941050918e-06",
+              "iyz": "1.75746071559e-06",
+              "izz": "1.41828415054e-05"
+            }
+          }
+        }
+      ],
+      "joints": [
+        {
+          "name": "gripper",
+          "type": "prismatic",
+          "parent": {
+            "link": "gripper_base"
+          },
+          "child": {
+            "link": "gripper_link"
+          },
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "0",
+            "upper": "0.1",
+            "effort": "10",
+            "velocity": "3"
+          },
+          "mimic": null
+        },
+        {
+          "name": "gripper_joint1",
+          "type": "prismatic",
+          "parent": {
+            "link": "gripper_base"
+          },
+          "child": {
+            "link": "gripper_link1"
+          },
+          "origin": {
+            "xyz": "0 0 0.138",
+            "rpy": "1.5707963 0 0"
+          },
+          "axis": {
+            "xyz": "0 0 1"
+          },
+          "limit": {
+            "lower": "0",
+            "upper": "0.05",
+            "effort": "10",
+            "velocity": "3"
+          },
+          "mimic": {
+            "joint": "gripper",
+            "multiplier": "0.5",
+            "offset": "0.0"
+          }
+        },
+        {
+          "name": "gripper_joint2",
+          "type": "prismatic",
+          "parent": {
+            "link": "gripper_base"
+          },
+          "child": {
+            "link": "gripper_link2"
+          },
+          "origin": {
+            "xyz": "0 0 0.138",
+            "rpy": "1.5707963 0 -3.1415926"
+          },
+          "axis": {
+            "xyz": "0 0 -1"
+          },
+          "limit": {
+            "lower": "-0.05",
+            "upper": "0",
+            "effort": "10",
+            "velocity": "3"
+          },
+          "mimic": {
+            "joint": "gripper",
+            "multiplier": "-0.5",
+            "offset": "0.0"
+          }
+        }
+      ],
+      "mimics": [
+        {
+          "driven_joint": "gripper_joint1",
+          "joint": "gripper",
+          "multiplier": "0.5",
+          "offset": "0.0"
+        },
+        {
+          "driven_joint": "gripper_joint2",
+          "joint": "gripper",
+          "multiplier": "-0.5",
+          "offset": "0.0"
+        }
+      ],
+      "meshes": [
+        {
+          "link": "gripper_base",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_base.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_base.dae",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/dae/gripper_base.dae",
+          "exists": true
+        },
+        {
+          "link": "gripper_base",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_base.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_base.stl",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/gripper_base.stl",
+          "exists": true
+        },
+        {
+          "link": "gripper_link1",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link1.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link1.dae",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link1.dae",
+          "exists": true
+        },
+        {
+          "link": "gripper_link1",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_link1.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_link1.stl",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/gripper_link1.stl",
+          "exists": true
+        },
+        {
+          "link": "gripper_link2",
+          "role": "visual",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link2.dae"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link2.dae",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/dae/gripper_link2.dae",
+          "exists": true
+        },
+        {
+          "link": "gripper_link2",
+          "role": "collision",
+          "origin": {
+            "xyz": "0 0 0",
+            "rpy": "0 0 0"
+          },
+          "attributes": {
+            "filename": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_link2.stl"
+          },
+          "source_reference": "package://agx_arm_description/agx_arm_urdf/agx_gripper/meshes/gripper_link2.stl",
+          "resolved_path": "vendor/agx_arm_urdf/agx_gripper/meshes/gripper_link2.stl",
+          "exists": true
+        }
+      ],
+      "includes": [],
+      "summary": {
+        "local_link_count": 4,
+        "local_joint_count": 3,
+        "mesh_reference_count": 6
+      }
+    }
+  },
+  "missing_source_files": [],
+  "missing_resources": []
+}
