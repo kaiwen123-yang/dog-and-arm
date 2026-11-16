@@ -1,10 +1,8 @@
-# H0 working template; not a measured result or an executable launch file.
-# Codex fills these fields from the actual machine and records a session copy.
+# Measured H0 interfaces and results. See reports/H0_HARDWARE_REPORT.md for limits.
 phase: H0
-status: pending_hardware_run
+status: completed_with_documented_measurement_limits
 arm_initial_acceptance: completed_by_user
 simulation_backend: mujoco
-
 scope:
   camera_arm_joint_operation: true
   m1_hardware_motion: false
@@ -12,66 +10,143 @@ scope:
   calibration_board_purchase: deferred
   accessory_mass_and_inertia: deferred
   visual_closed_loop_control: deferred
-
 host:
-  operating_system: null
-  ros_distribution: null
+  operating_system: Ubuntu 22.04.5 LTS x86_64
+  ros_distribution: humble
   single_host_recording: true
   expected_use_sim_time: false
-  actual_node_use_sim_time: null
-
+  actual_node_use_sim_time:
+    /wrist_camera/camera: false
+    /h0_camera_recorder: false
+  ros_domain_id: 88
+  ros_localhost_only: true
+  rmw_observed: Fast DDS / libfastrtps 2.6.11
+  dds_profile: config/h0_fastdds.xml
+  dds_shm_segment_bytes: 67108864
 arm:
   model: piper_h
   existing_project_url: https://github.com/kaiwen123-yang/OSCBF-learn
   reviewed_project_commit: 2ea3f1f48d10591b2bcb770af704011b381910b7
   sdk_reference: pyAgxArm
   historical_firmware_profile: V189
-  local_project_path: null
-  actual_sdk_version: null
-  actual_interface: null
-  state_source: discover_existing_read_only_interface
-  joint_names_and_order: null
-  joint_units: null
-  gripper_feedback_source_and_units: null
-  motion_entry: existing_validated_controller_operator_started
+  local_project_path: /home/kaiwen/research/OSCBF-research
+  actual_sdk_version: pyAgxArm 1.0.0 / python-can 4.6.1
+  actual_interface:
+    name: can0
+    bitrate: 1000000
+    usb: 1d50:606f
+    serial: 004F00374548570120353731
+    initial_state: DOWN; operator enabled interface using h0_host_prepare.sh
+  state_source: pyAgxArm comm.recv() with start_read_thread=False; existing read_joint_state.py
+    logic
+  joint_names_and_order:
+  - J1
+  - J2
+  - J3
+  - J4
+  - J5
+  - J6
+  joint_units: rad
+  gripper_feedback_source_and_units: 0x2A8 receive event; width m (wire um), force
+    N (wire mN), status/mode raw bytes
+  motion_entry: scripts/h0_operator_motion.py; imports unchanged OSCBF-learn piper_oscbf.device.PiperDevice;
+    explicit on-site --execute
   recorder_sends_motion_or_enable: false
-
+  sdk_revision: d90e234ba8e408cfa964b38aa9120b3131fc9f85
+  python: /home/kaiwen/research/OSCBF-research/envs/piper-sdk/bin/python
 camera:
   model_reference: orbbec_dabai_dc1
-  actual_usb_identity: null
-  actual_driver_repository: null
-  actual_driver_revision: null
-  actual_launch_command: null
-  firmware_information: null
-  color_topic: null
-  depth_topic: null
-  color_camera_info_topic: null
-  depth_camera_info_topic: null
-  actual_stream_modes: null
-  depth_encoding_and_scale: null
-  invalid_depth_definition: null
-  color_intrinsics_source: null
-  depth_intrinsics_source: null
-  depth_to_color_registration: record_actual_state
-  actual_frames_and_qos: null
-
+  actual_usb_identity:
+    color: 2bc5:0557
+    depth: 2bc5:0657
+    serial: CC16762023M
+    rgb_node_at_detection: /dev/video2
+    usb_speed_Mbps: 480
+  actual_driver_repository: https://github.com/orbbec/ros2_astra_camera
+  actual_driver_revision: f7e71d9ce806e788cb48d8580aac2c778fba4214
+  actual_launch_command: bash scripts/h0_camera.sh
+  firmware_information:
+    get_sdk_version_firmware_version: RD1001
+    note: driver queries SENSOR_PLATFORM_STRING; not a verified full firmware build
+      identifier
+    ros_sdk_version: 1.1.0
+    openni_version: Standard 2.3.0 (Build 85)
+    device_info_name: Astra (generic SDK label); USB identifies DC1
+  color_topic: /wrist_camera/color/image_raw
+  depth_topic: /wrist_camera/depth/image_raw
+  color_camera_info_topic: /wrist_camera/color/camera_info
+  depth_camera_info_topic: /wrist_camera/depth/camera_info
+  actual_stream_modes:
+    color:
+      width: 640
+      height: 480
+      requested_fps: 30
+      usb_format: MJPEG
+      ros_encoding: rgb8
+    depth:
+      width: 640
+      height: 400
+      requested_fps: 30
+      ros_encoding: 16UC1
+      openni_format: PIXEL_FORMAT_DEPTH_1_MM
+  depth_encoding_and_scale:
+    encoding: 16UC1
+    metres_per_count: 0.001
+    driver_depth_scale: 1
+    note: driver depth_scale is spatial resize; kept at 1
+  invalid_depth_definition: 0 invalid; retain original uint16 values; no clipping
+    in saved raw arrays
+  color_intrinsics_source: device OBEXTENSION_ID_CAM_PARAMS right-camera K, no external
+    calibration URL; published D=zeros despite nonzero device r_k; unverified calibration
+  depth_intrinsics_source: device OBEXTENSION_ID_CAM_PARAMS left-camera K, scale width/640=1,
+    D=zeros; no external calibration URL
+  depth_to_color_registration: false
+  actual_frames_and_qos:
+    color: wrist_camera_color_optical_frame
+    depth: wrist_camera_depth_optical_frame
+    publisher: RELIABLE VOLATILE default
+    recorder: RELIABLE KEEP_LAST 10 VOLATILE
+    camera_only_tf: true
+    arm_to_camera_tf: false
 timing:
   record_original_timestamps: true
   record_host_monotonic_ns: true
   record_receive_ros_or_unix_time: true
-  camera_timestamp_semantics: inspect_selected_driver
-  arm_timestamp_semantics: inspect_existing_receiver
-  arm_state_observation_kind: null  # receive_event / feedback_update / cached_poll
-  arm_feedback_timestamp_or_sequence_source: null
+  camera_timestamp_semantics: original ROS header is driver node->now() in callbacks,
+    use_sim_time=false; no raw device exposure timestamp exposed by selected driver
+  arm_timestamp_semantics: SocketCAN frame.timestamp (Unix/kernel receive time) plus
+    host monotonic_ns immediately after SDK recv/decode; cached polls separately labelled
+  arm_state_observation_kind:
+    joints: three-frame receive_event group
+    gripper: 0x2A8 receive_event
+    snapshots: cached_poll at ~10 Hz
+  arm_feedback_timestamp_or_sequence_source: 0x2A5/0x2A6/0x2A7 first/last kernel timestamps,
+    SDK feedback timestamp; raw CAN retained locally
   association: same_host_receive_time
   hardware_sync_verified: false
-
 recording:
-  static_observation_suggestion_s: [60, 120]
+  static_observation_suggestion_s:
+  - 60
+  - 120
   background_kill_timeout: null
-  low_speed_motion: small_existing_validated_operator_started_sequence
+  low_speed_motion: operator completed MOVE_J J6 +/-2deg over 4s per ramp with stops;
+    actual J6 range 1.962deg; gripper 39.5/15.1/39.5mm
   gripper_open_close: true
-  camera_stop_restart: true
+  camera_stop_restart: 'completed: clean driver exit, restart with same streams and
+    project 64 MiB SHM profile; 90s + 240s stationary recovery validation'
   results_root: results/hardware/h0
   large_raw_root: results/raw_large/hardware/h0
   report: reports/H0_HARDWARE_REPORT.md
+  static_completed_seconds: 65
+  static_result: results/hardware/h0/20261116_2051/static_reliable
+  raw_bag_seconds_per_run: 10
+  operator_observation: 第二次动作、停止、支架和线缆都正常
+  final_static_validation_s: 240
+  final_rates_hz:
+    color: 29.91186522243507
+    depth: 30.017192312016252
+    joints: 200.0252224476179
+  final_camera_state: stopped normally after recording
+  final_arm_state: MOVE_J, enabled, no reset/disable; final measured degrees [83.551,2.737,0,-1.132,24.567,5.557]
+  final_motion_not_repeated_after_dds_change: true
+session: '20261116_2051'

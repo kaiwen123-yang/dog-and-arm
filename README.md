@@ -4,7 +4,7 @@
 
 **当前交付是可执行的开工框架、官方资源获取脚本、支架资产、四张实物照片和被动门场景；完整组合机器人及开门控制器由第一轮和后续阶段实现。**没有把静态模型或一扇空门的预览称作整机任务成功。
 
-**2026-11-16 新增 H0：Piper H＋DaBai DC1 实机联调。**机械臂本体验机用户已完成，本轮增加相机识别、RGB/深度与机械臂状态联合采集，以及有限低速动作时的稳定性和遮挡检查。H0 尚未执行，手眼与附件称重仍后置。
+**2026-11-16 已完成 H0：Piper H＋DaBai DC1 实机联调。**已保存真实 RGB、原始深度、两路 CameraInfo、静止/慢动作/停止/夹爪联合记录，并验证相机正常重启。最终 240 s 静止记录约 30 Hz 图像、200 Hz 关节反馈；成功动作实测 J6 范围 1.962°。首次失败及后续 QoS/DDS 修正、RGB 畸变参数限制均见 [H0 报告](reports/H0_HARDWARE_REPORT.md) 和 [动作短片](results/hardware/h0/20261116_2051/evidence/motion_success/clip.mp4)。手眼与附件称重仍后置。
 
 ## 从创建文件夹开始
 
@@ -16,7 +16,7 @@
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex。当前新增联调回合使用 **prompts/HARDWARE_INTEGRATION.txt**；模型首轮使用 **prompts/FIRST_RUN.txt**，后者仍负责 P0–P3。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前下一轮是 **prompts/FIRST_RUN.txt** 的 P0–P3 模型装配；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -26,7 +26,7 @@
 
 ## 用户现在需要做什么
 
-完成上面的克隆和目录初始化，然后按当前任务启动 H0 或模型首轮。H0 在已验机的机械臂固定安装状态下即可进行，不需要等 M1 装配完成；P1/P2 模型工作可以交错。手眼标定、购买标定板、附件称重和惯量测量全部后置。
+本机目录 `/home/kaiwen/research/dog-and-arm` 已创建，H0 已有真实结果。下一轮继续模型首轮，无需重复克隆或再次启动机械臂验机。H0 结束时采集进程已退出，机械臂保持 MOVE_J 使能。手眼标定、购买标定板、附件称重和惯量测量全部后置。
 
 ## H0：相机和机械臂联合运行
 
@@ -34,7 +34,7 @@
 
 相机/状态采集与运动控制分开运行，保持唯一命令发送端；复用已有 pyAgxArm 接口，不重验机械臂、不自动运行旧完整抓放或 CPV demo。记录 RGB、原始深度、两路 CameraInfo、关节/夹爪反馈及时间信息。软件时间关联、手眼标定和视觉闭环分别记录。
 
-H0 的实际接口填入 `config/hardware_session.yaml`，结果存入 `results/hardware/h0/`，报告为 `reports/H0_HARDWARE_REPORT.md`。硬件未连接时保持 pending，继续模型工作，不以占位数据报告通过。
+H0 的实际接口已填入 `config/hardware_session.yaml`，结果位于 `results/hardware/h0/20261116_2051/evidence/`。成功动作记录含修正前的 RGB 成批到达，最终 DDS 配置只完成静止复核；不宣称硬件同步或新标定。复跑入口、进程分离及完整本地大录制的范围见 [H0_RUNBOOK](docs/H0_RUNBOOK.md)。
 
 ## Codex 模型首轮要完成什么
 
@@ -80,7 +80,7 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 | PROJECT_STATE.md | 当前完成情况、验证范围及下一步 |
 | prompts/ | 首轮、续接、后续动力学阶段提示词 |
 | docs/HARDWARE_INTEGRATION.md | H0 实机联调步骤、验收依据和接口核查 |
-| config/hardware_session.yaml | H0 实际设备/驱动/流/时间域记录模板 |
+| config/hardware_session.yaml | H0 实测设备/驱动/流/时间域配置 |
 | config/ | 来源版本、名义安装、门、观测配置 |
 | materials/photos/ | 用户提供的四张腕部安装照片 |
 | assets/accessories/ | 已提取的官方支架候选几何、来源与预览 |

@@ -1,0 +1,83 @@
+{
+  "session": "20261116_2051",
+  "date_timezone": "2026-11-16 Asia/Shanghai",
+  "repository_base_commit": "7bb3c1b6e73f244f7ded4c4cb0b8b44b35c3bfc3",
+  "arm_project_commit": "2ea3f1f48d10591b2bcb770af704011b381910b7",
+  "sdk_commit": "d90e234ba8e408cfa964b38aa9120b3131fc9f85",
+  "camera_driver_commit": "f7e71d9ce806e788cb48d8580aac2c778fba4214",
+  "boot_id": "3d72cd12-6f1b-40f3-a505-ef917cabd41d",
+  "artifact_scope": "evidence/ contains curated real measured exports; no synthetic or historical arm data substituted",
+  "full_local_runs": [
+    "arm_probe",
+    "static",
+    "static_reliable",
+    "continuous",
+    "restart_shm64",
+    "final_validation",
+    "motion_preview",
+    "motion_retry_preview"
+  ],
+  "large_raw_directory": "results/raw_large/hardware/h0/20261116_2051",
+  "full_preview_note": "Full preview.avi and periodic samples stay in local run directories, ignored by Git. No unique original deleted.",
+  "bag_scope": "10 seconds from start of static, static_reliable, continuous, restart_shm64; continuous motion occurs later and is covered by video, periodic raw arrays and full timestamps/CAN, not these introductory bags.",
+  "video_scope": "Fixed-30-FPS display exports; original header/receive times and video index mapping preserved. Depth panel is unregistered visualization.",
+  "events": {
+    "attempt1": "evidence/attempt1/events.jsonl",
+    "motion_success": "evidence/motion_success/events.jsonl",
+    "operator_confirmation": "evidence/motion_success/operator_events.jsonl"
+  },
+  "unverified": [
+    "exposure-level timestamps",
+    "hardware synchronization",
+    "hand-eye extrinsics",
+    "new geometric calibration",
+    "emergency stop behavior in this H0 (normal stops only)",
+    "motion under final DDS profile (final profile verified stationary 90+240s)"
+  ],
+  "representative_samples": [
+    {
+      "stream": "color",
+      "index": 0,
+      "path": "evidence/static_color_000000.png",
+      "host_monotonic_ns": 1071104583050,
+      "header_ns": 1794834050610840897,
+      "encoding": "rgb8",
+      "width": 640,
+      "height": 480,
+      "source_local": "results/hardware/h0/20261116_2051/static_reliable/samples/color_000000.png"
+    },
+    {
+      "stream": "depth",
+      "index": 0,
+      "path": "evidence/static_depth_000000.npy",
+      "host_monotonic_ns": 1071096517884,
+      "header_ns": 1794834050614665241,
+      "encoding": "16UC1",
+      "width": 640,
+      "height": 400,
+      "source_local": "results/hardware/h0/20261116_2051/static_reliable/samples/depth_000000.npy"
+    },
+    {
+      "stream": "color",
+      "index": 0,
+      "path": "evidence/final_color_000000.png",
+      "host_monotonic_ns": 2126407630037,
+      "header_ns": 1794835105924625571,
+      "encoding": "rgb8",
+      "width": 640,
+      "height": 480,
+      "source_local": "results/hardware/h0/20261116_2051/final_validation/samples/color_000000.png"
+    },
+    {
+      "stream": "depth",
+      "index": 0,
+      "path": "evidence/final_depth_000000.npy",
+      "host_monotonic_ns": 2126391961389,
+      "header_ns": 1794835105909504438,
+      "encoding": "16UC1",
+      "width": 640,
+      "height": 400,
+      "source_local": "results/hardware/h0/20261116_2051/final_validation/samples/depth_000000.npy"
+    }
+  ]
+}

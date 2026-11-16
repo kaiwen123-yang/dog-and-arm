@@ -17,3 +17,16 @@ reports/environment_local.txt
 reports/requirements_resolved.txt
 hardware/camera_ws/
 hardware/deps/
+# Full local previews and periodic samples stay on disk; selected evidence is added explicitly.
+results/hardware/h0/**/preview.avi
+results/hardware/h0/**/samples/
+!results/hardware/h0/*/evidence/*/samples/
+# Full acquisition runs are preserved locally; compact exports live in evidence/.
+results/hardware/h0/*/arm_probe/
+results/hardware/h0/*/static/
+results/hardware/h0/*/static_reliable/
+results/hardware/h0/*/continuous/
+results/hardware/h0/*/restart_shm64/
+results/hardware/h0/*/final_validation/
+results/hardware/h0/*/motion_preview/
+results/hardware/h0/*/motion_retry_preview/

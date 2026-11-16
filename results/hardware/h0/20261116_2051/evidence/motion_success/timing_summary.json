@@ -1,0 +1,377 @@
+{
+  "source": "results/hardware/h0/20261116_2051/evidence/motion_success",
+  "streams": {
+    "color": {
+      "receive": {
+        "count": 997,
+        "span_s": 33.377980995,
+        "receive_hz": 29.8400313712564,
+        "interval_ms": {
+          "median": 0.7178425,
+          "p95": 321.7044085,
+          "max": 367.247198
+        },
+        "backwards": 0,
+        "equal_timestamps": 0,
+        "gaps_over_100ms": 90,
+        "gaps_over_500ms": 0,
+        "clock": "host_monotonic",
+        "first_timestamp_ns": 1850885830162,
+        "last_timestamp_ns": 1884263811157
+      },
+      "header": {
+        "count": 997,
+        "span_s": 33.69959153,
+        "receive_hz": 29.555254374918533,
+        "interval_ms": {
+          "median": 32.080496,
+          "p95": 36.12536575,
+          "max": 68.889741
+        },
+        "backwards": 0,
+        "equal_timestamps": 0,
+        "gaps_over_100ms": 0,
+        "gaps_over_500ms": 0,
+        "clock": "original_ros_header",
+        "first_timestamp_ns": 1794834830071386111,
+        "last_timestamp_ns": 1794834863770977641
+      },
+      "modes": [
+        [
+          "rgb8",
+          640,
+          480,
+          "wrist_camera_color_optical_frame"
+        ]
+      ]
+    },
+    "color_info": {
+      "receive": {
+        "count": 1008,
+        "span_s": 33.663087604,
+        "receive_hz": 29.914071217886256,
+        "interval_ms": {
+          "median": 32.216786,
+          "p95": 36.411432500000004,
+          "max": 39.538069
+        },
+        "backwards": 0,
+        "equal_timestamps": 0,
+        "gaps_over_100ms": 0,
+        "gaps_over_500ms": 0,
+        "clock": "host_monotonic",
+        "first_timestamp_ns": 1850889856433,
+        "last_timestamp_ns": 1884552944037
+      },
+      "header": {
+        "count": 1008,
+        "span_s": 33.66351268,
+        "receive_hz": 29.913693486843812,
+        "interval_ms": {
+          "median": 32.079437,
+          "p95": 36.1053126,
+          "max": 36.930572
+        },
+        "backwards": 0,
+        "equal_timestamps": 0,
+        "gaps_over_100ms": 0,
+        "gaps_over_500ms": 0,
+        "clock": "original_ros_header",
+        "first_timestamp_ns": 1794834830407377371,
+        "last_timestamp_ns": 1794834864070890051
+      },
+      "modes": [
+        [
+          "CameraInfo",
+          640,
+          480,
+          "wrist_camera_color_optical_frame"
+        ]
+      ]
+    },
+    "depth": {
+      "receive": {
+        "count": 1013,
+        "span_s": 33.708757073,
+        "receive_hz": 30.02187229295946,
+        "interval_ms": {
+          "median": 34.717811,
+          "p95": 35.5933691,
+          "max": 341.992965
+        },
+        "backwards": 0,
+        "equal_timestamps": 0,
+        "gaps_over_100ms": 1,
+        "gaps_over_500ms": 0,
+        "clock": "host_monotonic",
+        "first_timestamp_ns": 1850868942790,
+        "last_timestamp_ns": 1884577699863
+      },
+      "header": {
+        "count": 1013,
+        "span_s": 33.70878936,
+        "receive_hz": 30.021843537367552,
+        "interval_ms": {
+          "median": 34.782135,
+          "p95": 35.2594597,
+          "max": 38.169039
+        },
+        "backwards": 0,
+        "equal_timestamps": 0,
+        "gaps_over_100ms": 0,
+        "gaps_over_500ms": 0,
+        "clock": "original_ros_header",
+        "first_timestamp_ns": 1794834830387623223,
+        "last_timestamp_ns": 1794834864096412583
+      },
+      "modes": [
+        [
+          "16UC1",
+          640,
+          400,
+          "wrist_camera_depth_optical_frame"
+        ]
+      ]
+    },
+    "depth_info": {
+      "receive": {
+        "count": 1013,
+        "span_s": 33.708769971,
+        "receive_hz": 30.02186080567858,
+        "interval_ms": {
+          "median": 34.714098,
+          "p95": 35.59646865,
+          "max": 38.445407
+        },
+        "backwards": 0,
+        "equal_timestamps": 0,
+        "gaps_over_100ms": 0,
+        "gaps_over_500ms": 0,
+        "clock": "host_monotonic",
+        "first_timestamp_ns": 1850869009381,
+        "last_timestamp_ns": 1884577779352
+      },
+      "header": {
+        "count": 1013,
+        "span_s": 33.70878936,
+        "receive_hz": 30.021843537367552,
+        "interval_ms": {
+          "median": 34.782135,
+          "p95": 35.2594597,
+          "max": 38.169039
+        },
+        "backwards": 0,
+        "equal_timestamps": 0,
+        "gaps_over_100ms": 0,
+        "gaps_over_500ms": 0,
+        "clock": "original_ros_header",
+        "first_timestamp_ns": 1794834830387623223,
+        "last_timestamp_ns": 1794834864096412583
+      },
+      "modes": [
+        [
+          "CameraInfo",
+          640,
+          400,
+          "wrist_camera_depth_optical_frame"
+        ]
+      ]
+    }
+  },
+  "issues": [],
+  "timing_findings": [
+    {
+      "stream": "color",
+      "gaps_over_100ms": 90,
+      "note": "Inspect whether gaps are transport bursts, intentional restart or missing data"
+    },
+    {
+      "stream": "depth",
+      "gaps_over_100ms": 1,
+      "note": "Inspect whether gaps are transport bursts, intentional restart or missing data"
+    }
+  ],
+  "issues_scope": "Recorder errors only. Interval observations are separate, not universal pass/fail thresholds.",
+  "joints": {
+    "count": 6746,
+    "span_s": 33.720789744,
+    "receive_hz": 200.02497127755288,
+    "interval_ms": {
+      "median": 4.999129,
+      "p95": 5.302909199999999,
+      "max": 9.595247
+    },
+    "backwards": 0,
+    "equal_timestamps": 0,
+    "gaps_over_100ms": 0,
+    "gaps_over_500ms": 0,
+    "clock": "host_monotonic",
+    "first_timestamp_ns": 1850855886906,
+    "last_timestamp_ns": 1884576676650
+  },
+  "gripper": {
+    "count": 6746,
+    "span_s": 33.720722273,
+    "receive_hz": 200.02537150281282,
+    "interval_ms": {
+      "median": 4.999821,
+      "p95": 5.340225399999999,
+      "max": 9.55815
+    },
+    "backwards": 0,
+    "equal_timestamps": 0,
+    "gaps_over_100ms": 0,
+    "gaps_over_500ms": 0,
+    "clock": "host_monotonic",
+    "first_timestamp_ns": 1850856042316,
+    "last_timestamp_ns": 1884576764589
+  },
+  "joint_deg": {
+    "first": [
+      83.551,
+      2.821,
+      1.611,
+      -1.1320000000000003,
+      24.567,
+      5.556
+    ],
+    "last": [
+      83.551,
+      2.737,
+      0.0,
+      -1.1320000000000003,
+      24.567,
+      5.557
+    ],
+    "range": [
+      0.0,
+      0.6670000000000004,
+      2.044,
+      0.0,
+      0.49499999999999783,
+      1.9620000000000002
+    ]
+  },
+  "joint_group_max_span_ms": 0.7472038269042969,
+  "joint_groups_over_20ms": 0,
+  "gripper_width_mm": {
+    "first": 39.5,
+    "last": 39.5,
+    "min": 15.1,
+    "max": 39.5
+  },
+  "association": {
+    "color_depth": {
+      "count": 997,
+      "absolute_ms": {
+        "median": 8.255887,
+        "p95": 16.6557902,
+        "max": 66.625662
+      },
+      "meaning": "Nearest callback/receive time on same host, not exposure synchronization or latency"
+    },
+    "color_joints": {
+      "count": 997,
+      "absolute_ms": {
+        "median": 1.267221,
+        "p95": 2.3688846,
+        "max": 2.73258
+      },
+      "meaning": "Nearest callback/receive time on same host, not exposure synchronization or latency"
+    }
+  },
+  "depth_samples": [
+    {
+      "file": "samples/depth_019327.npy",
+      "shape": [
+        400,
+        640
+      ],
+      "dtype": "uint16",
+      "nonzero_fraction": 0.5705,
+      "nonzero_mm_percentiles_5_50_95": [
+        1130.0,
+        1490.0,
+        1987.0
+      ]
+    },
+    {
+      "file": "samples/depth_019478.npy",
+      "shape": [
+        400,
+        640
+      ],
+      "dtype": "uint16",
+      "nonzero_fraction": 0.560265625,
+      "nonzero_mm_percentiles_5_50_95": [
+        1147.0,
+        1490.0,
+        1987.0
+      ]
+    },
+    {
+      "file": "samples/depth_019629.npy",
+      "shape": [
+        400,
+        640
+      ],
+      "dtype": "uint16",
+      "nonzero_fraction": 0.55453125,
+      "nonzero_mm_percentiles_5_50_95": [
+        1151.0,
+        1497.0,
+        1974.0
+      ]
+    },
+    {
+      "file": "samples/depth_019780.npy",
+      "shape": [
+        400,
+        640
+      ],
+      "dtype": "uint16",
+      "nonzero_fraction": 0.566390625,
+      "nonzero_mm_percentiles_5_50_95": [
+        1130.0,
+        1490.0,
+        1987.0
+      ]
+    },
+    {
+      "file": "samples/depth_019931.npy",
+      "shape": [
+        400,
+        640
+      ],
+      "dtype": "uint16",
+      "nonzero_fraction": 0.597078125,
+      "nonzero_mm_percentiles_5_50_95": [
+        1101.0,
+        1468.0,
+        1987.0
+      ]
+    },
+    {
+      "file": "samples/depth_020082.npy",
+      "shape": [
+        400,
+        640
+      ],
+      "dtype": "uint16",
+      "nonzero_fraction": 0.56015625,
+      "nonzero_mm_percentiles_5_50_95": [
+        1130.0,
+        1483.0,
+        1974.0
+      ]
+    }
+  ],
+  "color_info_check": {
+    "image_dimensions_and_frame_match": true,
+    "fx_nonzero": true
+  },
+  "depth_info_check": {
+    "image_dimensions_and_frame_match": true,
+    "fx_nonzero": true
+  }
+}

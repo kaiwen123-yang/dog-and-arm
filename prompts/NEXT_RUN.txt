@@ -1,9 +1,18 @@
-当前新增回合：先完成必要 P0 检查，再执行 prompts/HARDWARE_INTEGRATION.txt 的 H0（Piper H＋DaBai DC1 实机联调）。机械臂本体验机已完成，复用已有环境和状态/动作入口；不要重新开始整套验机。
+继续 dog-and-arm 尚未完成的 P0–P3 模型首轮，按 prompts/FIRST_RUN.txt 实际执行到组合模型和装配检查，不只给计划。
 
-H0 在原固定安装条件下即可开展，不依赖 M1 背部装配。设备可用时实际完成 RGB、深度、CameraInfo 与真实状态联合采集，覆盖有限低速动作和夹爪变化。手眼、标定板、称重继续后置。尚未运行则保持 pending。
+先读 AGENTS.md、PROJECT_STATE.md、reports/H0_HARDWARE_REPORT.md、docs/BUILD_PLAN.md、docs/MODEL_INTEGRATION.md、docs/SOURCES.md、config/assembly.yaml 和 prompts/FIRST_RUN.txt。
 
-P1/P2 模型工作可以交错；H0 完成后按实际进度继续 prompts/FIRST_RUN.txt 的 P0–P3。硬件暂不可用时先完成不依赖设备的模型工作，同时明确 H0 未完成。
+2026-11-16 的 H0 已实际完成：Piper H 与 DC1 的真实 RGB/原始深度/两路 CameraInfo、静止联合记录、现场 J6 小幅慢动作/正常停止及夹爪开合、正常相机重启均有证据。机械臂本体验机是更早已完成的独立成果。不要重启整套验机或把 H0 再标成待执行。
 
-开工包已提供被动门和附件参考，但没有完成组合机器人，不能直接把项目标成 P3 完成，也不能跳到自由基座双门控制。
+本机仓库 /home/kaiwen/research/dog-and-arm。H0 配置在 config/hardware_session.yaml，实测结果在 results/hardware/h0/20261116_2051/evidence/；报告保留首次关节未动、QoS/SHM 修正和 RGB 畸变参数差异。最终 240 s 静止记录约 30 Hz 图像、200 Hz 状态；成功运动在修改 DDS 前完成，不能套用最终静止时序指标。软件接收时间关联不等于硬件同步，CameraInfo 不等于新标定。
 
-完成本轮后，请将本文件替换为基于实际结果的具体续接指令：写明下一阶段、可复用的模型路径、启动命令和需要解决的问题，不保留过时任务。
+H0 结束时相机/接收器已退出，机械臂仍使能保持。这个模型回合不发送真实机械臂或 M1 命令，不自动回零/失能，也不盲目重放报告中的绝对关节角。以后明确需要硬件复跑再按 docs/H0_RUNBOOK.md 检查实时状态与现场条件。保留全部 H0 原件；大录制在 results/raw_large/hardware/h0/ 和本地被忽略的会话运行目录中。
+
+下一阶段实际工作：
+1. 检查本机仿真依赖和图形环境；H0 没有创建仿真 .venv。第一条环境命令为 bash scripts/setup_env.sh，之后通过 scripts/project_env.sh 使用项目 .venv，不修改原 OSCBF-research 的环境、ROS/CUDA 或 shell 启动文件。
+2. 执行 bash scripts/project_env.sh .venv/bin/python scripts/fetch_sources.py 和 bash scripts/project_env.sh .venv/bin/python scripts/inspect_sources.py，核对 config/sources.lock.json 的固定版本。vendor 中如有既有修改先保留。M1 来源为 model/zgws/zgws.xml，Piper H 使用带官方夹爪的 Xacro，不重复加夹爪。
+3. 依据官方树与四张现有照片、assets/accessories/ 支架几何，生成 description/m1_derived.urdf、description/m1_piper.urdf、description/joint_map.yaml、sim/robots/m1_piper.xml、sim/scenes/assembly_preview.xml；转换与装配流程必须可重跑。具体约束按 MODEL_INTEGRATION：唯一前缀/mesh basename、保留 DAE 场景变换和惯性、去掉 Piper 自带 world 固定根、一个自由基座、双真实夹指和一个 mimic 耦合/控制输入。
+4. config/assembly.yaml 统一名义装配参数，附件固定在正确末端主体，不挂活动夹指。accessory_payload_mode=omitted，附件显式零质量/密度；synthetic_aligned_rgbd 仍是理想仿真相机，不能直接当真实 DC1 的两个光心已对齐。H0 视野与夹爪遮挡证据可用于对照，不充当手眼测量。
+5. 检查少量合法姿态的轮心/法兰/TCP FK、夹爪与附件固定关系及视觉/碰撞，保存 results/assembly/ 整机正面/侧面/腕部图与 RGB/depth，写 reports/assembly_report.md。mj_forward 或直接设置 qpos 只算运动学检查，不宣称动力学或开门成功。
+
+手眼标定、标定板采购、相机/支架称重和惯量测量继续后置，不以此阻塞名义装配。P3 尚未完成，不能直接跳到自由基座双门任务。完成后更新 PROJECT_STATE.md、prompts/NEXT_RUN.txt，普通提交并推送用户已授权的 kaiwen123-yang/dog-and-arm，不强推、不另建压缩归档。
