@@ -123,3 +123,13 @@ Piper home 为 `[0, 0.8, -1.4, 0, 0.6, 0] rad`，夹爪开口 40 mm。这是独�
 实际 `--stage piper` 构建、桌面开窗，J1/J2 各 +4°、J3 −4°，双指 100→0 mm，F6 腕部近景、F9 凸包/附件代理、F8 虚拟相机、F10 重载与 home 恢复。用户对腕部近景及夹爪开合明确回复“能看到，继续”。
 
 [六轴概览](../results/assembly/live_local/piper_home.png)、[张开](../results/assembly/live_local/piper_gripper_open.png)、[闭合](../results/assembly/live_local/piper_gripper_closed.png)、[碰撞几何](../results/assembly/live_local/piper_collision.png)、[24 s 桌面录像](../results/assembly/live_local/piper_desktop.mp4)。空场景腕相机实测只有背景与远地面；联合带门场景再核对目标，未调整外参来伪造视野。事件见 `piper_events.jsonl`，没有 `mj_step` 或硬件访问。
+
+## 12. 本机联合预览与暂停点
+
+用户于 2026-11-16 要求“今天就这样吧，先暂停”。已正常关闭本轮 viewer；没有启动硬件或 `mj_step`。
+
+暂停前实际执行 `build_assembly.py --stage combined`、默认 `live_assembly.py --watch` 和 `check_assembly.py`。联合模型 31/30/23/1、43.537064081 kg 未变；三姿态 FK 最大位置差 3.044e-16 m、旋转矩阵差 9.806e-16。保留 [侧面](../results/assembly/live_local/combined_side.png)、[正面](../results/assembly/live_local/combined_front.png)、[腕部局部](../results/assembly/live_local/combined_wrist_detail.png)、[开口 100 mm](../results/assembly/live_local/combined_gripper_open.png)、[闭合时碰撞代理](../results/assembly/live_local/combined_wrist_collision.png)。证据来自本次 X11 屏幕捕获；事件为 `combined_events.jsonl`，不是动力学数据。
+
+名义安装参数未改变，不为了演示重载制造安装修改。Piper 单体已验证 F10，且在 combined 构建重写其 XML 时实际完成 watch 重载。联合场景的带门腕视角、相机固定关系量化与重载收尾尚未完成；初始自由视角曾裁掉腕部上缘，F6 命名视角正常，默认取景仍待修正。不能把整个本机装配检查或后续动力学标为完成。
+
+M1/Piper 节点 `f8786a8`、`728fc8a` 已普通推送。HTTPS 首次 TLS 中断，随后缺少 credential helper；最终命令 `git -c http.version=HTTP/1.1 -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin main` 复用本机已有登录成功。
