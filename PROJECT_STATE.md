@@ -4,14 +4,25 @@
 
 ## 当前阶段
 
-**H0 实机联调已完成；基础联合模型已在独立准备环境实现，下一项是用户本机桌面实时查看与修正。** 本机工作目录为 `/home/kaiwen/research/dog-and-arm`。本次从 H0 提交 `284c1f3` 继续，新增 M1＋Piper H 组合 URDF/MJCF、名义附件、实时查看入口和离线验证；这些结果不代表本机桌面已经打开，也不代表动力学站稳或接触开门。
+**H0 已完成；本机仿真环境和 M1 单体桌面检查已完成，正在继续 Piper H 与联合装配。** 本机工作目录为 `/home/kaiwen/research/dog-and-arm`。本次从 H0 提交 `284c1f3` 继续，新增 M1＋Piper H 组合 URDF/MJCF、名义附件、实时查看入口和离线验证；这些结果不代表本机桌面已经打开，也不代表动力学站稳或接触开门。
 
 - 机械臂本体验机：**用户此前已完成**，本轮复用现有 OSCBF-learn / pyAgxArm。
 - H0 相机＋机械臂联调：**此前回合实机完成**；[报告](reports/H0_HARDWARE_REPORT.md)、[会话清单](results/hardware/h0/20261116_2051/manifest.json)、[操作说明](docs/H0_RUNBOOK.md)。
 - P1 官方资产、P2 单体生成、P3 名义联合模型：**准备环境已实现并编译／离线检查**；[装配报告](reports/assembly_report.md)。
-- 本机仿真 `.venv`、桌面开窗、按键和重载：**待在用户 Linux 执行并可见检查**，不由 H0 或离线图片替代。
+- 本机 `.venv`：Python 3.10.12 / MuJoCo 3.3.0 已建立；M1 已实际桌面显示并操作，Piper/整机与重载继续进行。
 - 手眼标定、标定板采购、相机/支架称重及惯量：**继续后置**。
 - 下一轮：按 [prompts/NEXT_RUN.txt](prompts/NEXT_RUN.txt) 和 [LIVE_ASSEMBLY.txt](prompts/LIVE_ASSEMBLY.txt) 依次显示 M1、Piper 和整机，用户要看到实时变化；按有意义节点及时普通提交／推送，不自行启动真实机器人。
+
+## 本机可见调试：2026-11-16
+
+工作区初始干净，`git pull --ff-only origin main` 从 `284c1f3` 快进至 `b545796`。实际桌面 X11 `DISPLAY=:1` 可连接。仅创建项目 `.venv`，没有修改 ROS/Conda/CUDA 或启动硬件。
+
+- 已执行 `bash scripts/setup_env.sh`、`bash scripts/project_env.sh python scripts/fetch_sources.py`、`scripts/inspect_sources.py`。两处官方源仍为锁定提交，资产完整。
+- 终端 B 执行 `bash scripts/project_env.sh python scripts/build_assembly.py --stage m1`；终端 A 实际打开 `bash scripts/project_env.sh python scripts/live_assembly.py --model sim/scenes/m1_preview.xml --watch --events results/assembly/live_local/m1_events.jsonl`。
+- X11 桌面捕获确认 M1 四轮轮足可见；FAR hip +6°、knee −4°、wheel +6°，F11 恢复，F12 正常退出。截图、18 s 桌面录像及事件在 `results/assembly/live_local/`。尚未收到用户明确的观看反馈，不代填“用户确认”。
+- 修复碰撞外观重叠：F9 显示碰撞凸包/盒体并隐藏视觉组 1/2；F6 切换现有概览/侧面/正面/腕部局部相机。实测处理 MuJoCo 原生 F6 的坐标轴副作用。均只改变显示，不改碰撞参数。
+- M1 模型 `nq23/nv22/nu16`，38.82051 kg；生成 URDF 的极小尾数差来自本机数值库。全部仍是 `KINEMATIC_PREVIEW`，没有 `mj_step`。
+- 下一步：Piper H 六轴与双指检查，然后联合安装、腕相机、重载及三组 FK；接触和轮足动力学尚未开始。
 
 ## 基础联合模型回合：实际成果
 
@@ -72,7 +83,7 @@
 
 开工包已有环境隔离/源下载脚本、来源锁定清单、门生成器、配置/查看器、支架 OBJ/预览/来源说明、四张用户安装照片和装配规则。既有单/双门 XML 曾在独立准备环境用 MuJoCo 3.3.0 编译并静止步进 2 s；[开工验证](reports/KICKOFF_VALIDATION.md) 不含机器人控制，也不是本轮 Linux 的整机验证。
 
-当前模型生成和离线检查已完成，仍待用户本机完成仿真 `.venv`、恢复固定源与派生网格、桌面图形显示、实时关节／夹爪／视角／重载操作及必要的名义安装修正。完成本机可见调试后才进入 P4 以后的接触／轮足动力学和单／双门任务。使用已有生成器，不重新从零编写整套装配逻辑。
+当前模型生成和准备侧离线检查已完成；本机环境/资产与 M1 桌面检查已完成，Piper、整机与重载继续按上方本机记录推进。完成本机可见调试后才进入 P4 以后的接触／轮足动力学和单／双门任务。使用已有生成器，不重新从零编写整套装配逻辑。
 
 遵守 `accessory_payload_mode=omitted` 和 `synthetic_aligned_rgbd`：附件显式零质量，仿真理想对齐 RGB-D 不冒充本次实物标定。手眼及称重不阻塞名义装配。
 

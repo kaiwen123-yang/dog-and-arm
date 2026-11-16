@@ -1,0 +1,58 @@
+{
+  "stage": "m1",
+  "mujoco_version": "3.3.0",
+  "mode": "KINEMATIC_PREVIEW",
+  "hardware_access": false,
+  "dynamics_validated": false,
+  "models": [
+    {
+      "file": "sim/scenes/m1_preview.xml",
+      "nq": 23,
+      "nv": 22,
+      "nu": 16,
+      "neq": 0,
+      "nbody_including_world": 18,
+      "mass_kg": 38.82051,
+      "home_qpos": [
+        0.0,
+        0.0,
+        0.54266,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.6,
+        -1.2,
+        0.0,
+        0.0,
+        0.6,
+        -1.2,
+        0.0,
+        0.0,
+        -0.6,
+        1.2,
+        0.0,
+        0.0,
+        -0.6,
+        1.2,
+        0.0
+      ],
+      "contacts_at_home": 0,
+      "mj_step_calls": 0
+    }
+  ],
+  "m1_notes": [
+    "Derived from official ZGWS source: https://github.com/zsibot/MATRiX_Python_SDK/blob/7c63590c21beba2f633c344b96bc29a695d7a807/model/zgws/zgws.xml",
+    "Native MJCF retains source masses, inertial quaternions, joint ranges, motors, sensors, contact geometry, and floating base.",
+    "Contact geoms use display group 3; non-contact visual geoms retain their existing group. Collision masks are unchanged.",
+    "URDF omits the root body's scene placement and freejoint; downstream scene placement remains separate.",
+    "URDF expresses each source principal-axis inertia as the equivalent full tensor R diag(I) R^T in the link frame, with inertial RPY zero; masses, centers of mass, and physical inertias are preserved.",
+    "The four URDF wheel joints retain the source finite +/-99999 rad ranges; this is not a claim of validated wheel control.",
+    "URDF velocity=1.0 rad/s is a description/planning placeholder because the source specifies no physical velocity limits.",
+    "actuatorfrcrange values are source model settings, not verified continuous hardware torque specifications.",
+    "The upstream home keyframe is commented out. Its qpos is exposed only as an assembly/FK candidate; its ctrl is ignored.",
+    "Use transformed wheel collision mesh vertices or the compiled model to set contact height; bbox centers alone are only geometric references.",
+    "Binary STL headers beginning with 'solid' are normalized only when their byte layout confirms binary STL; triangle data is unchanged."
+  ]
+}

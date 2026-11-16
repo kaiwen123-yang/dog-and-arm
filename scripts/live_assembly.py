@@ -135,6 +135,16 @@ def clamp_joint(model, joint, value):
     return float(value)
 
 
+def collision_view(mj, viewer, group, enabled):
+    # Visual meshes coincide with collision meshes on M1/Piper. Showing both
+    # creates z-fighting and hides the primitive proxies. Keep the floor (0),
+    # hide robot visuals (1/2), and display the actual mesh convex hulls.
+    viewer.opt.geomgroup[1] = int(not enabled)
+    viewer.opt.geomgroup[2] = int(not enabled)
+    viewer.opt.geomgroup[group] = int(enabled)
+    viewer.opt.flags[mj.mjtVisFlag.mjVIS_CONVEXHULL] = int(enabled)
+
+
 def close_viewer(viewer):
     # In 3.3.0 close() waits for the render loop; m becomes None when the
     # viewer thread has also released its window/Simulate wrapper. Wait for
@@ -148,14 +158,15 @@ def run(args, mj, viewer_api, glfw, record):
     actions = {
         glfw.KEY_LEFT: "previous_joint", glfw.KEY_RIGHT: "next_joint",
         glfw.KEY_DOWN: "decrease_joint", glfw.KEY_UP: "increase_joint",
-        glfw.KEY_SPACE: "toggle_gripper", glfw.KEY_F8: "toggle_camera",
+        glfw.KEY_SPACE: "toggle_gripper", glfw.KEY_F6: "next_inspection_camera", glfw.KEY_F8: "toggle_camera",
         glfw.KEY_F9: "toggle_collision_group", glfw.KEY_F10: "reload",
         glfw.KEY_F11: "reset_home", glfw.KEY_F12: "quit",
     }
     print(f"\n{MODE}: 只做运动学预览，物理时间不推进，不运行实机。", flush=True)
     print("窗口获得焦点后：\n"
           "  ←/→ 选择单关节；↓/↑ 小步调整；Space 夹爪开/闭\n"
-          "  F8 腕相机/自由视角；F9 碰撞组显隐；F10 重新加载 XML\n"
+          "  F6 概览/侧面/正面/腕部局部；F8 腕相机/自由视角\n"
+          "  F9 外观/碰撞专用视图（凸包）；F10 重新加载 XML\n"
           "  F11 恢复 home；F12 退出；Esc 为 MuJoCo 原生自由视角\n"
           "  鼠标拖动/滚轮按 MuJoCo 原生方式旋转、平移、缩放。\n"
           "  修改配置后需先重新生成 XML；--watch 只跟踪 XML。\n"
@@ -169,6 +180,7 @@ def run(args, mj, viewer_api, glfw, record):
     collisions_visible = False
     use_wrist_camera = False
     free_camera = None
+    inspection_camera = None
     keys = queue.SimpleQueue()
 
     while True:
@@ -195,7 +207,7 @@ def run(args, mj, viewer_api, glfw, record):
                                            show_left_ui=False, show_right_ui=False)
         try:
             with viewer.lock():
-                viewer.opt.geomgroup[args.collision_group] = int(collisions_visible)
+                collision_view(mj, viewer, args.collision_group, collisions_visible)
                 if free_camera:
                     viewer.cam.lookat[:] = free_camera[0]
                     viewer.cam.distance, viewer.cam.azimuth, viewer.cam.elevation = free_camera[1:]
@@ -205,6 +217,11 @@ def run(args, mj, viewer_api, glfw, record):
                 else:
                     use_wrist_camera = False
                     viewer.cam.type = mj.mjtCamera.mjCAMERA_FREE
+                    if inspection_camera:
+                        fixed_id = mj.mj_name2id(model, mj.mjtObj.mjOBJ_CAMERA, inspection_camera)
+                        if fixed_id >= 0:
+                            viewer.cam.type = mj.mjtCamera.mjCAMERA_FIXED
+                            viewer.cam.fixedcamid = fixed_id
             viewer.sync()
             record(next_load_event, model=str(args.model), mujoco_version=mj.__version__, home="home", nq=model.nq,
                    joints=[name for name, _ in joints], camera_available=camera_id >= 0,
@@ -259,6 +276,23 @@ def run(args, mj, viewer_api, glfw, record):
                             width = set_width(data, gripper, low if width > (low + high) / 2 else high)
                             record("gripper_position_set", width_m=width)
                             print(f"夹爪名义开口：{width * 1000:.1f} mm（运动学位置）", flush=True)
+                        elif action == "next_inspection_camera":
+                            # MuJoCo's native F6 also cycles frame axes before
+                            # invoking this callback; keep our inspection view clean.
+                            viewer.opt.frame = mj.mjtFrame.mjFRAME_NONE
+                            names = [name for name in ("overview", "side", "front", "wrist_detail")
+                                     if mj.mj_name2id(model, mj.mjtObj.mjOBJ_CAMERA, name) >= 0]
+                            if names:
+                                current = mj.mj_id2name(model, mj.mjtObj.mjOBJ_CAMERA, viewer.cam.fixedcamid) if viewer.cam.type == mj.mjtCamera.mjCAMERA_FIXED else None
+                                if viewer.cam.type == mj.mjtCamera.mjCAMERA_FREE:
+                                    free_camera = (viewer.cam.lookat.copy(), float(viewer.cam.distance),
+                                                   float(viewer.cam.azimuth), float(viewer.cam.elevation))
+                                inspection_camera = names[(names.index(current) + 1) % len(names)] if current in names else names[0]
+                                viewer.cam.type = mj.mjtCamera.mjCAMERA_FIXED
+                                viewer.cam.fixedcamid = mj.mj_name2id(model, mj.mjtObj.mjOBJ_CAMERA, inspection_camera)
+                                use_wrist_camera = False
+                                record("camera_selected", camera=inspection_camera)
+                                print(f"检查视角：{inspection_camera}", flush=True)
                         elif action == "toggle_camera":
                             use_wrist_camera = not (viewer.cam.type == mj.mjtCamera.mjCAMERA_FIXED and
                                                     viewer.cam.fixedcamid == camera_id)
@@ -269,6 +303,7 @@ def run(args, mj, viewer_api, glfw, record):
                                 viewer.cam.fixedcamid = camera_id
                             else:
                                 use_wrist_camera = False
+                                inspection_camera = None
                                 viewer.cam.type = mj.mjtCamera.mjCAMERA_FREE
                                 if free_camera:
                                     viewer.cam.lookat[:] = free_camera[0]
@@ -276,8 +311,10 @@ def run(args, mj, viewer_api, glfw, record):
                             record("camera_selected", camera="wrist_rgbd" if use_wrist_camera else "free")
                         elif action == "toggle_collision_group":
                             collisions_visible = not bool(viewer.opt.geomgroup[args.collision_group])
-                            viewer.opt.geomgroup[args.collision_group] = int(collisions_visible)
-                            record("collision_group_visibility", group=args.collision_group, visible=collisions_visible)
+                            collision_view(mj, viewer, args.collision_group, collisions_visible)
+                            record("collision_group_visibility", group=args.collision_group, visible=collisions_visible,
+                                   display="collision_only_convex_hulls" if collisions_visible else "visual")
+                            print("碰撞专用视图：显示凸包/代理，隐藏重合外观。" if collisions_visible else "外观视图。", flush=True)
                         elif action == "reset_home":
                             mj.mj_resetDataKeyframe(model, data, home)
                             record("home_reset", keyframe="home")
@@ -324,7 +361,10 @@ def run(args, mj, viewer_api, glfw, record):
                         with viewer.lock():
                             use_wrist_camera = (viewer.cam.type == mj.mjtCamera.mjCAMERA_FIXED and
                                                 viewer.cam.fixedcamid == camera_id)
-                            if not use_wrist_camera:
+                            if viewer.cam.type == mj.mjtCamera.mjCAMERA_FIXED and not use_wrist_camera:
+                                inspection_camera = mj.mj_id2name(model, mj.mjtObj.mjOBJ_CAMERA, viewer.cam.fixedcamid)
+                            elif viewer.cam.type == mj.mjtCamera.mjCAMERA_FREE:
+                                inspection_camera = None
                                 free_camera = (viewer.cam.lookat.copy(), float(viewer.cam.distance),
                                                float(viewer.cam.azimuth), float(viewer.cam.elevation))
                         print("重载：新模型已编译；先关闭旧窗口，再打开新窗口并恢复 home。", flush=True)

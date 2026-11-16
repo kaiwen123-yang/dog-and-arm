@@ -111,3 +111,9 @@ Piper home 为 `[0, 0.8, -1.4, 0, 0.6, 0] rad`，夹爪开口 40 mm。这是独�
 第一项是让用户真正看到 M1、Piper 和整机，并在调整时看到变化。桌面确认和修正按有意义节点及时普通提交／推送，不自动按帧提交。之后再进入固定基座单门接触，逐步接入轮足保持／慢行和自由基座任务。
 
 官方确有 [MATRiX_Robot_MC](https://github.com/GENISOM-AI/MATRiX_Robot_MC) 外部运控运行包，支持表包含 `zsm-1w→ZGWS`、`zgwsarm→ZGWS_ARM`；但本项目没有下载／接入该包，也未验证其与独立 MuJoCo＋Piper H 的兼容性。[v0.6.6 发布记录](https://github.com/GENISOM-AI/MATRiX_Robot_MC/releases/tag/v0.6.6) 明确其打包检查未包含实机或仿真运动试验。因此当前模型中的 16 个 M1 motor 仍是控制接口，不代表已经有站立控制器。
+
+## 10. 本机桌面节点：M1（2026-11-16）
+
+本机 Python 3.10.12 / MuJoCo 3.3.0，X11 :1。已恢复固定官方源、构建 M1 并实际打开 native viewer；与准备侧离线结果分开记录。[home 桌面截图](../results/assembly/live_local/m1_home.png)、[髋关节 +6°](../results/assembly/live_local/m1_hip_plus6.png)、[碰撞凸包视图](../results/assembly/live_local/m1_collision_hulls.png)、[18 秒桌面录像](../results/assembly/live_local/m1_desktop.mp4)。
+
+实际操作 FAR hip +6°、knee −4°、wheel +6°，home 与退出正常；事件见 `m1_events.jsonl`。碰撞显示发现重叠闪白，F9 已改为碰撞专用视图；F6 切换已有检查相机，并清除原生 F6 的坐标轴副作用。没有修改 M1 物理模型或安装参数。GUI 和操作已由桌面捕获核对，未收到用户明确观看反馈。Piper/整机的本机检查继续进行。
