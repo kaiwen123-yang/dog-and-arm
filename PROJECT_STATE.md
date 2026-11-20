@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+**当前进度：P6-C 名义前拉整任务已通过，进入预定条件变化和背推。** 运行 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final --output results/p6/mobile_01`。在本机桌面实时完成 0.30 m 驶近、持续停车、双指抓门、60°前拉、释放、退臂、保持、收臂、倒车和最终稳定停车。82.162 s / 41,081 步无重置，门最终 60.055003°，终点位置误差 2.77 mm。两段 3 s 窗口分别通过。[报告](reports/P6_FREE_BASE_DOOR.md) · [全程视频](results/p6/mobile_01/motion.mp4)。此运行作为 C01。
+
 **P6-A 已在本机桌面通过。** 运行 `bash scripts/project_env.sh python scripts/p6_single_door.py support --live --video --hold-final --output results/p6/support_01`。25.32 s 连续自由根承重、伸臂、空中扫弧和停车，门 0°；操作漂移峰值 0.82 mm、最大倾角 0.176°。输出场景、控制器、曲线源数据和实时画面见 [P6 报告](reports/P6_FREE_BASE_DOOR.md)。
 
 **P6-B 小角已通过。** 在桌面运行 `small --live --video --hold-final`。默认锥两次停在 3.401° / 7.839°；椭圆锥、阻抗比 10 的第三次在 29.02 s 内拉到 14.958°、松爪退臂并连续稳定 3 s。抓持偏移峰值 1.81 mm，门对整机合力峰值 2.405 N。[时序与视频](results/p6/small_03/)。

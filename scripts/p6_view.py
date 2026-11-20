@@ -25,7 +25,8 @@ class DoorView:
         self.main.type = mj.mjtCamera.mjCAMERA_FIXED
         self.main.fixedcamid = model.camera('p6_overview').id
         self.detail = mj.MjvCamera()
-        self.detail.azimuth = 144 if cfg['stage'] == 'push' else -45
+        self.view_azimuth = 235 if cfg['stage'] == 'push' else 55
+        self.hinge_q = model.joint('door_single_hinge').qposadr[0]
         self.detail.elevation = -22
         self.detail.distance = .39
         self.opt = mj.MjvOption()
@@ -54,6 +55,7 @@ class DoorView:
     def draw(self, left, right, record=True):
         self.last_lines = (left, right)
         self.detail.lookat[:] = self.d.site_xpos[self.handle]
+        self.detail.azimuth = self.view_azimuth + np.rad2deg(self.d.qpos[self.hinge_q])
         mj.mjv_updateScene(self.m, self.d, self.opt, None, self.main, mj.mjtCatBit.mjCAT_ALL, self.scene)
         mj.mjr_render(self.rect, self.scene, self.ctx)
         mj.mjv_updateCamera(self.m, self.d, self.detail, self.scene)

@@ -36,7 +36,7 @@ def quat(mat):
     return result
 
 
-def run(cfg, out, live, video, hold_final):
+def run(cfg, out, live, video, hold_final, view_factory=None):
     model = build(cfg)
     d = mj.MjData(model)
     mj.mj_resetDataKeyframe(model, d, model.key('home').id)
@@ -56,8 +56,9 @@ def run(cfg, out, live, video, hold_final):
     meter = ContactMeter(model, 'preview_floor', 'back' if stage == 'push' else 'front',
                          cfg['contact_threshold_n'], cfg['wheel_threshold_n'])
     if live:
-        from p6_view import DoorView
-        view = DoorView(model, d, arm.handle_id, cfg, out, video)
+        if view_factory is None:
+            from p6_view import DoorView as view_factory
+        view = view_factory(model, d, arm.handle_id, cfg, out, video)
     else:
         view = None
     seq = (['approach_base'] if mobile else []) + ['settle', 'pregrasp']

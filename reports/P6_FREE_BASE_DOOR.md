@@ -41,3 +41,19 @@ bash scripts/project_env.sh python scripts/p6_single_door.py support --live --vi
 松爪、退臂后持续稳定 3 s；结束时实际开口 90.0 mm，抓取点距把手 107.4 mm。无非预期接触、饱和或求解警告。此样本在操作站位起步；下一步接入短程行驶。
 
 [事件与汇总](../results/p6/pull_01/summary.json) · [同时序曲线](../results/p6/pull_01/signals.png) · [57.84° 的桌面截图](../results/p6/pull_01/desktop.png) · [运行视频](../results/p6/pull_01/motion.mp4)
+
+## C　0.30 m 驶近、抓门和底盘退离
+
+`bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final --output results/p6/mobile_01`。独立桌面试验用一个自由基座从后方 0.30 m 处出发。41,081 个 2 ms 步共 82.162 s，实测实时比 1.000。13 个阶段全部完成，script_completed 与 task_success 均为 true。右上角的近景从这一轮开始随门扇转动。
+
+| 事件 | 物理时刻 | 实测 |
+| --- | ---: | --- |
+| 到站并连续停稳 1 s | 7.042 s | XY [0.64836, 0.29841] m，距名义站位 2.29 mm |
+| 双指握持持续确认 0.2 s | 17.544 s | 双指接触门前竖杆，门 0.064° |
+| 拉门、稳定握持后开始释放 | 60.254 s | 门 59.833° |
+| 退臂后在操作位保持满 3 s | 68.054 s | 已松爪，与门无接触，门 60.055° |
+| 收臂、倒车、终点连续停车满 3 s | 82.162 s | XY [0.43950, 0.09009] m，距停车目标 2.77 mm；门 60.055003° |
+
+抓持几何偏移峰值 2.575 mm、操作漂移 0.950 mm、整轮最大倾角 0.191°。门对整机合力峰值 2.614 N，无非预期接触、饱和或求解警告。底盘退离约 0.295 m（收臂结束至最终停车两点的平面距离）。此轮冻结为条件试验 C01。横向/纵向滑速、四轮实际载荷、指力和实际执行器输出见同目录 CSV。
+
+[状态与阶段证据](../results/p6/mobile_01/summary.json) · [全程实时画面](../results/p6/mobile_01/motion.mp4) · [事件对齐图](../results/p6/mobile_01/signals.png)
