@@ -1,0 +1,35 @@
+# P4 simulation-only design parameters; not hardware controller limits.
+base_xyz_m: [0.70, 0.38, 0.54266]
+base_yaw_rad: 0.0
+handle_site: door_single_front_handle
+# Scene-design height; lowered to keep the retreating fixed-base arm reachable.
+door_handle_height_m: 0.85
+# Grasp inside the actual finger pads (mesh spans local z=0.0615..0.138).
+grasp_local_xyz_m: [0.0, 0.0, 0.115]
+pregrasp_distance_m: 0.08
+retreat_distance_m: 0.08
+# First contact-validation arc; the 60 degree task remains a later target.
+target_angle_deg: 20.0
+open_width_m: 0.09
+closed_command_width_m: 0.018
+arm_kp: [300, 350, 300, 80, 60, 40]
+arm_kv: [25, 30, 25, 6, 5, 3]
+arm_torque_limit_nm: [35, 35, 30, 12, 12, 8]
+gripper_kp: 1500
+gripper_kv: 10
+gripper_force_limit_n: 10
+base_joint_kp: 160
+base_joint_kv: 12
+base_leg_torque_limit_nm: 50
+base_wheel_torque_limit_nm: 15
+timestep_s: 0.002
+sample_hz: 100
+phase_duration_s:
+  settle: 1.5
+  approach: 3.0
+  grip: 2.0
+  pull: 12.0
+  hold: 2.0
+  release: 1.5
+  retreat: 3.0
+  final: 1.0

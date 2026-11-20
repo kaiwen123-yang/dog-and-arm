@@ -2,9 +2,9 @@
 
 本仓库是智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机的 MuJoCo 开工工程。
 
-**基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。当前是 **KINEMATIC_PREVIEW（运动学装配预览）**；轮足保持控制和真实接触开门尚未实现。
+**基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，已用真实接触将单门拉到 **19.261°**。60°、另一侧推门和轮足保持控制仍未完成。
 
-本轮在独立 Linux 准备环境完成实际模型编译和离线检查；用户本机 `/home/kaiwen/research/dog-and-arm` 的桌面查看仍需下一次本地会话完成。实时操作说明见 [LIVE_DEBUGGING.md](docs/LIVE_DEBUGGING.md)，可直接交给本机 Codex 的提示词见 [LIVE_ASSEMBLY.txt](prompts/LIVE_ASSEMBLY.txt)。
+本机桌面装配检查已完成，并已显示 P4 固定基座动力学运行。结果和边界见 [P4 接触报告](reports/P4_FIXED_BASE_CONTACT.md)、[26 秒视频](results/p4/pull_20deg/contact.mp4) 和 [时序图](results/p4/pull_20deg/contact_timeseries.png)。实时装配说明见 [LIVE_DEBUGGING.md](docs/LIVE_DEBUGGING.md)。
 
 ![基础联合模型运动学预览](results/assembly/overview.png)
 
@@ -22,7 +22,7 @@
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前下一轮是拉取基础模型后，在本机桌面按 **prompts/LIVE_ASSEMBLY.txt** 完成可见检查；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前下一轮是继续 P4 固定基座接触，详见 **reports/P4_FIXED_BASE_CONTACT.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -32,7 +32,7 @@
 
 ## 用户现在需要做什么
 
-本机目录 `/home/kaiwen/research/dog-and-arm` 已创建，H0 已有真实结果。下一轮继续模型首轮，无需重复克隆或再次启动机械臂验机。H0 结束时采集进程已退出，机械臂保持 MOVE_J 使能。手眼标定、购买标定板、附件称重和惯量测量全部后置。
+本机目录 `/home/kaiwen/research/dog-and-arm` 已创建，H0 已有真实结果。下一轮继续 P4 仿真，无需重复克隆或再次启动机械臂验机。H0 结束时采集进程已退出，机械臂保持 MOVE_J 使能。手眼标定、购买标定板、附件称重和惯量测量全部后置。
 
 ## H0：相机和机械臂联合运行
 
@@ -63,7 +63,7 @@ H0 的实际接口已填入 `config/hardware_session.yaml`，结果位于 `resul
     bash scripts/project_env.sh .venv/bin/python scripts/check_assembly.py
     bash scripts/project_env.sh .venv/bin/python scripts/live_assembly.py --watch
 
-在 MuJoCo 窗口中：左右方向键选择关节，上下方向键微调；空格开合夹爪；F8 腕部/自由视角；F9 显示碰撞几何；F10 重载；F11 回到仿真 home；F12 退出。终端显示当前选择和数值。`--watch` 在 XML 成功重新生成后重开查看器；XML 修改失败会保留旧模型。
+在 MuJoCo 窗口中：左右方向键选择关节，上下方向键微调；空格开合夹爪；F6 检查视角；F8 腕部/自由视角；F9 外观/碰撞专用凸包视图；F10 重载；F11 回到仿真 home；F12 退出。终端显示当前选择和数值。`--watch` 在 XML 成功重新生成后重开查看器；XML 修改失败会保留旧模型。
 
 `config/assembly.yaml` 是安装关系入口。在另一终端修改参数后运行 `build_assembly.py --stage combined`；运行中的查看器会更新。只改 YAML 而不重建 XML 不会改变画面。
 
@@ -75,6 +75,12 @@ H0 的实际接口已填入 `config/hardware_session.yaml`，结果位于 `resul
     MUJOCO_GL=egl bash scripts/project_env.sh .venv/bin/python scripts/capture_assembly.py --video
 
 二者都不调用 `mj_step`。离线图片／视频不能替代用户本机的实时开窗检查。
+
+P4 固定基座接触复跑（仅仿真，默认保存到新的时间目录）：
+
+    bash scripts/project_env.sh python scripts/p4_fixed_door.py --live --video
+
+结果目录中的 `timeseries.csv` 可由 `scripts/plot_p4.py <结果目录>` 绘图。P4 场景使用独立固定根和专用把手高度；不代表 M1 具有站立控制。
 
 原有被动门入口仍保留：
 

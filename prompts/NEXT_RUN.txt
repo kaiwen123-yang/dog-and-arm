@@ -1,11 +1,18 @@
-继续 /home/kaiwen/research/dog-and-arm。2026-11-20 用户已恢复任务，P3 本机可见装配检查已收尾，下一步 P4 固定基座单门接触。
-先检查 git status，保留修改并正常 pull main，读 AGENTS.md、PROJECT_STATE.md 和当前阶段文档。环境/官方源已存在，不重装。H0 已完成，不操作实机。
+继续 /home/kaiwen/research/dog-and-arm。先 git status，保留已有修改，正常 pull main；读 AGENTS.md、PROJECT_STATE.md、reports/P4_FIXED_BASE_CONTACT.md 和 docs/BUILD_PLAN.md 的 P4。环境和官方资产齐全，不重装。H0 已完成，本轮不操作实机。
 
-已完成：M1/Piper/联合模型桌面顺序展示；关节与夹爪、碰撞视图、默认自由视角修正、联合 XML watch 重载、同一虚拟腕相机看门和把手。三组 FK 和 9 个开合/腕姿态的相机固定关系量化通过。新证据 results/assembly/live_20261120/，安装名义参数未改。
+当前事实：
+- P3 本机可见装配检查已收尾，提交 4bbf1e5；M1/Piper/整机曾依次显示，默认取景、联合 watch 重载、腕相机看门及名义固定关系均有记录。
+- P4 独立固定底盘场景 scripts/p4_fixed_door.py + config/p4.yaml 已在桌面实际 mj_step。名义20°轨迹将被动门从0°拉到19.261095°，保持后松爪退离；26s/13,000步，数据与视频 results/p4/pull_20deg/。
+- 有效运行机器人与门只在两指/把手接触；无超限、无警告、无非零自接触力。主联合模型仍有唯一自由根；P4专用场景无自由根。
+- 不是60°任务完成，不是推门或轮足站稳。最初60°规划失败；初次20°实测因门板碰机身停在16.829°。后移P4根至[0.70,0.38,0.54266]、专用把手降至0.85m后解决当前20°障碍，碰撞没有关闭。
 
-接下来按 docs/BUILD_PLAN.md 的 P4：从既有组合 MJCF 衍生专用固定基座场景，保留主模型唯一自由基座；有限执行器、被动门和真实 mj_step，记录门角/接触力/力矩及视频。先单门，再自由基座轮足保持/慢行。不能写门角轨迹或焊接把手冒充接触开门。手眼/标定板/称重继续后置。
+下一步继续P4：
+1. 按实际桌面流程显示当前有效接触：
+   bash scripts/project_env.sh python scripts/p4_fixed_door.py --live --video
+   默认新UTC目录保留结果。纯运动学查看仍用 live_assembly.py，不混写。
+2. 在保留窗口/阶段记录的条件下，先解决更大开角的连续IK、夹持/退离与门板–机器人碰撞路径；当前站位/朝向不能直接把目标改成60就运行。再加入实测门角反馈减少19.261°相对20°的偏差。
+3. 完成固定基座更大角度拉门及另一侧推门后，再进入P5自由基座保持/慢行。禁止每步设置门角、焊把手、修改自由基座qpos轨迹冒充接触成功。
+4. 保留失败和有效试验、CSV、必要图/视频。plot_p4.py可以直接绘制某次记录，无需重复跑物理仿真。有限执行器上限是仿真假设，不是实物电机规格。
 
-GUI 仍须真实打开供用户观看；首次命令 bash scripts/project_env.sh python scripts/live_assembly.py --model sim/scenes/assembly_with_door.xml --watch。它只有运动学预览，不是 P4 控制入口。
-
-每个有意义节点更新 PROJECT_STATE.md、报告和提示，普通提交/推送，不强推、不建立压缩归档。已有 gh keyring 可用：
+手眼、标定板、附件称重继续后置；omitted载荷与synthetic_aligned_rgbd不冒充实测。按有意义节点更新状态/报告/提示并普通commit/push，无需再次授权；不强推、不建压缩归档。已有认证命令：
 git -c http.version=HTTP/1.1 -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin main
