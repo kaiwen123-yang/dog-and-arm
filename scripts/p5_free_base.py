@@ -18,6 +18,7 @@ from scipy.spatial.transform import Rotation
 from build_assembly import write_xml, camera_lookat
 from p4_fixed_door import ARM, ROOT, configure_position_servos, smooth
 from live_assembly import close_viewer
+from p6_base import wheel_geometry, wheel_rates
 
 
 # Segment durations are simulation seconds. Ramps are included in each segment.
@@ -62,9 +63,7 @@ def experiment(model, cfg, out, live, video, hold_final):
     home = data.qpos[q].copy()
     wheel_joints = joints[wheels]
     axes = data.xaxis[wheel_joints].copy()
-    if np.min(np.abs(axes[:, 1])) < .99:
-        raise ValueError('Home wheel axes do not align with lateral Y')
-    lateral = data.xanchor[wheel_joints, 1].copy()
+    axle_sign, lateral = wheel_geometry(data, model.body('m1_base_link').id, wheel_joints)
     ground = model.geom('preview_floor').id
     wheel_bodies = model.jnt_bodyid[wheel_joints].tolist()
     wheel_labels = [names[i].split('_')[1] for i in wheels]
@@ -141,7 +140,7 @@ def experiment(model, cfg, out, live, video, hold_final):
                 data.ctrl[:] = home
                 data.ctrl[arms] += np.deg2rad(cfg['arm_excursion_deg'])*arm_fraction
                 data.ctrl[held] += data.qfrc_bias[dof[held]]/model.actuator_gainprm[held,0]
-                data.ctrl[wheels] = axes[:,1]*(speed-lateral*yaw_request)/cfg['rolling_radius_m']
+                data.ctrl[wheels] = wheel_rates(axle_sign, lateral, cfg['rolling_radius_m'], speed, yaw_request)
                 mj.mj_step(model, data)
                 if not np.isfinite(data.qpos).all() or any(w.number for w in data.warning):
                     raise RuntimeError('MuJoCo warning or nonfinite state during free-base experiment')
