@@ -27,6 +27,8 @@ def settings(stage, case):
     cfg = load('p4_push.yaml' if stage == 'push' else 'p4_pull_60.yaml')
     cfg.update(load('p5.yaml'))
     cfg.update(load('p6_pull.yaml'))
+    if stage == 'push':
+        cfg.update(load('p6_push.yaml'))
     for old_key in ('scene_file', 'phase_duration_s', 'arm_excursion_deg'):
         cfg.pop(old_key, None)
     cfg.update(stage=stage, case=case, perturbation=deepcopy(CASES[case]))

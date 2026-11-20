@@ -13,6 +13,8 @@ HORIZONTAL_TOOL = np.array([[0., 0., 1.], [0., 1., 0.], [-1., 0., 0.]])
 class Arm:
     def __init__(self, model, data, cfg):
         self.cfg = cfg
+        pitch = Rotation.from_euler('y', cfg.get('tool_pitch_deg', 0.), degrees=True).as_matrix()
+        self.tool = HORIZONTAL_TOOL @ pitch
         self.ik = IK(model)
         self.grasp_id = self.ik.site
         self.handle_id = model.site(cfg['handle_site']).id
@@ -43,7 +45,7 @@ class Arm:
         position = hinge + delta.apply(data.site_xpos[self.handle_id] - hinge)
         start_yaw = self.cfg['tool_yaw_start_deg']
         tool_yaw = start_yaw + self.cfg['tool_yaw_door_ratio'] * angle_deg
-        rotation = Rotation.from_euler('z', tool_yaw, degrees=True).as_matrix() @ HORIZONTAL_TOOL
+        rotation = Rotation.from_euler('z', tool_yaw, degrees=True).as_matrix() @ self.tool
         direction = rotation[:, 2]
         if retreat_fraction and self.cfg['handle_site'].endswith('front_handle'):
             direction = np.array(self.cfg['pull_retreat_world_direction'])
@@ -55,7 +57,7 @@ class Arm:
             full_arc = 25. if self.cfg['handle_site'].endswith('back_handle') else 60.
             final_yaw = start_yaw + (self.cfg['retreat_yaw_deg'] - start_yaw) * np.clip(angle_deg/full_arc, 0., 1.)
             yaw = tool_yaw + (final_yaw-tool_yaw)*retreat_fraction
-            rotation = Rotation.from_euler('z', yaw, degrees=True).as_matrix() @ HORIZONTAL_TOOL
+            rotation = Rotation.from_euler('z', yaw, degrees=True).as_matrix() @ self.tool
         return position, rotation
 
     def _command_fk(self):
