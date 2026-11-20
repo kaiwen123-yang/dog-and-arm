@@ -112,6 +112,10 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
     last_phase = None
     log_stream = (out/'timeseries.csv').open('w')
     points_stream = (out/'contacts.csv').open('w')
+    margins_stream = (out/'joint_margins_500hz.csv').open('w')
+    margin_writer = csv.writer(margins_stream, lineterminator='\n')
+    margin_writer.writerow(['time_s', 'phase', *[name + '_margin_rad' for name in arm_names]])
+    margin_writer.writerow([0, 'initial', *arm_min_margin])
     point_writer = csv.DictWriter(points_stream, ['time_s', 'phase', *meter.row_fields], lineterminator='\n')
     point_writer.writeheader()
     writer = None
@@ -164,6 +168,7 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
             # extrema that fall between the 25 Hz CSV samples. Negative = outside.
             actual_arm_q = d.qpos[arm.ik.q]
             actual_margin = np.minimum(actual_arm_q - arm_lower, arm_upper - actual_arm_q)
+            margin_writer.writerow([format(d.time, '.6f'), phase, *actual_margin])
             for i in np.flatnonzero(actual_margin < arm_min_margin):
                 arm_min_margin[i] = actual_margin[i]
                 arm_min_q[i] = actual_arm_q[i]
@@ -208,6 +213,11 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
             ps['both_contact_s'] += int(c.both)*dt
             ps['min_wheel_N'] = np.minimum(ps['min_wheel_N'], c.normal).tolist()
             if sample:
+                if phase in ('retreat_arm','post_release_hold','stow','retreat_base','final'):
+                    clearance, pair = meter.door_clearance(d)
+                    if clearance < ps.get('min_robot_door_clearance_m_25hz', math.inf):
+                        ps.update(min_robot_door_clearance_m_25hz=clearance,
+                                  clearance_pair=pair, clearance_time_s=t)
                 row = dict(time_s=t, phase=phase, door_deg=angle, door_rate_rad_s=v0[model.joint('door_single_hinge').dofadr[0]],
                            raw_deg=arm.raw_angle_deg, effective_deg=arm.angle_deg, actual_width_m=width,
                            width_ref_m=arm.width, planar_error_m=drift, heading_error_deg=heading_err,
@@ -317,6 +327,7 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
     finally:
         wall = time.monotonic()-started-paused_s
         log_stream.close()
+        margins_stream.close()
         points_stream.close()
         if view:
             view.finish_video()

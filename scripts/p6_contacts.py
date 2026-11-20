@@ -56,8 +56,22 @@ class ContactMeter:
                       for i in range(model.ngeom)]
         self.robot = model.body_rootid[model.geom_bodyid] == self.root
         self.is_door = [name.startswith('door_single_') for name in self.names]
+        active = np.flatnonzero(model.geom_contype | model.geom_conaffinity)
+        self.robot_collision = [i for i in active if self.robot[i]]
+        self.door_collision = [i for i in active if self.is_door[i]]
         self.force_local = np.zeros(6)
         self.point_velocity = np.empty(6)
+
+    def door_clearance(self, data):
+        """Closest active robot/door collision surfaces at this observation."""
+        best = 4.0  # above all relevant separations in this scene
+        pair = None
+        for robot in self.robot_collision:
+            for door in self.door_collision:
+                distance = mj.mj_geomDistance(self.model, data, robot, door, best, None)
+                if distance < best:
+                    best, pair = distance, [self.names[robot], self.names[door]]
+        return best, pair
 
     def _door_pair(self, robot_geom, door_geom):
         body = self.model.geom_bodyid[robot_geom]

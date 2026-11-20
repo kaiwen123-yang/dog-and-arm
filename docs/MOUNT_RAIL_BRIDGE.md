@@ -83,3 +83,7 @@ bash scripts/project_env.sh python scripts/check_assembly.py --report results/as
 生成器及前拉/背推派生场景均编译成功；保持唯一自由根、23 个控制输入与单个夹爪耦合。三组 FK 最大位置差 2.457×10⁻¹⁶ m、最大旋转矩阵差 9.806×10⁻¹⁶。机身最高凸包面至板底的净空下界为 4.410643 mm；两侧导轨支承面高度仍匹配既有名义值。相同 home 姿态下，整机质心向 +X 移动 6.500053 mm，整机总质量 43.537064 kg 不变。这意味着前移会改变承重分配，旧版开门结果不能直接沿用。[模型记录](../results/assembly/rail_bridge_front60_v2/model_check.json) · [源网格计算](../results/assembly/rail_bridge_front60_v2/source_mesh_clearance.json) · [FK](../results/assembly/rail_bridge_front60_v2/kinematics.json)
 
 本轮只完成代码/模型与离线静态检查，未执行 mj_step、用户桌面展示或新位置下的推拉门。接续 [MOUNT_FORWARD_PUSH_PULL.txt](../prompts/MOUNT_FORWARD_PUSH_PULL.txt)，先在 Linux 桌面确认前移，再前拉 60°/背推 25°及两侧各 C01–C20。所有新运行从实际模型读取 `mount_revision`，不要覆盖旧结果。
+
+## 6. 本机 Linux 桌面前移检查
+同日从 main 快进至 5cb8403，重建当前组合件后，在已打开的 MuJoCo 3.3.0 窗口再次重建并观察 XML 重载。近景可见底座紧固于跨轨板，碰撞视图显示简化板及支座，整机侧视显示 home 收臂姿态。碰撞距离按机身凸包、前腿代理和机械臂活动件（含腕附件）计算，距机身 92.420 mm，距前腿 260.216 mm，home 接触数为零。三个 FK 姿态最大位移差 2.457e−16 m、最大旋转矩阵差 9.806e−16。仅为真实桌面的运动学检查。
+[板近景](../results/assembly/rail_bridge_front60_v2/local_desktop/mount.png) · [近景碰撞](../results/assembly/rail_bridge_front60_v2/local_desktop/mount_collision.png) · [收臂侧视](../results/assembly/rail_bridge_front60_v2/local_desktop/stow_side.png) · [收臂碰撞](../results/assembly/rail_bridge_front60_v2/local_desktop/stow_collision.png) · [事件、距离和 FK 数据](../results/assembly/rail_bridge_front60_v2/local_desktop/)

@@ -143,3 +143,5 @@ M1/Piper 节点 `f8786a8`、`728fc8a` 已普通推送。HTTPS 首次 TLS 中断�
 ## 2026-11-20：安装向狗头前移一个 60 mm 孔距
 
 更新 `config/assembly.yaml` 和选孔数据，板心 X=0.070 m、臂根 X=0.110 m，支座按新孔组居中到 X=0.060 m。高度和旋转不变，版本 `rail_bridge_front60_v2`。独立云端 MuJoCo 3.3.0 重建及三组 FK 通过，最大位置差 2.457e-16 m，最大旋转矩阵差 9.806e-16；相机刚性通过。完整源网格与模型检查、同视角前后渲染位于 [results/assembly/rail_bridge_front60_v2](../results/assembly/rail_bridge_front60_v2/)。本次未执行用户 Linux 桌面查看、mj_step 或实机动作，完整推拉待本机可见复测。
+
+本机已重建前移 60 mm 的组合模型，先打开、再重建并重载整机，在用户的 Linux 桌面切换安装板近景、碰撞几何与收臂侧视。数值和原窗口画面见 [前移装配检查](../docs/MOUNT_RAIL_BRIDGE.md#6-本机-linux-桌面前移检查)。

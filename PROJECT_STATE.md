@@ -4,7 +4,9 @@
 
 ## 当前阶段
 
-**当前模型已前移 60 mm，完整推拉复测待在用户 Linux 桌面执行。** 用户要求安装板靠近狗头，故将板、两支座和整台 Piper 沿 M1 机身 +X 前移一档孔距，版本为 `rail_bridge_front60_v2`。臂根由 [0.050, 0, 0.0945] m 改为 [0.110, 0, 0.0945] m，板心 X 由 0.010 改为 0.070 m，选孔由每排第 3/4/5 改为第 4/5/6（按 X 递增编号）；完整导轨基准与高度不变。
+**本机复测启动。** main 快进至 5cb8403，原未跟踪 P5 数据保留。用 `bash scripts/project_env.sh python scripts/build_assembly.py --stage combined` 重建，在 `live_assembly.py --watch --mount-detail` 窗口观察 XML 重载、板和碰撞近景、收臂侧视和腕相机，并用 `check_assembly.py --report results/assembly/rail_bridge_front60_v2/local_desktop/kinematics.json` 核对 FK。收臂时活动臂、夹爪及腕附件相对机身/前腿的最近碰撞面间距分别为 92.420/260.216 mm。下一项为连续动力学名义复测。[本机桌面证据](results/assembly/rail_bridge_front60_v2/local_desktop/)
+
+**前移模型的云端准备记录。** 用户要求安装板靠近狗头，故将板、两支座和整台 Piper 沿 M1 机身 +X 前移一档孔距，版本为 `rail_bridge_front60_v2`。臂根由 [0.050, 0, 0.0945] m 改为 [0.110, 0, 0.0945] m，板心 X 由 0.010 改为 0.070 m，选孔由每排第 3/4/5 改为第 4/5/6（按 X 递增编号）；完整导轨基准与高度不变。
 
 本轮在独立云端检查环境（Python 3.12.14 / MuJoCo 3.3.0）实际重建 URDF/MJCF、编译前拉/背推场景，三组 FK 与腕相机刚性检查通过。板下机身凸包净空下界 4.410643 mm，相同 home 姿态的整机质心前移 6.500053 mm，质量仍 43.537064 kg。保存 [前后静态对照](results/assembly/rail_bridge_front60_v2/forward_comparison.png)、[模型检查](results/assembly/rail_bridge_front60_v2/model_check.json) 和 [源网格净空](results/assembly/rail_bridge_front60_v2/source_mesh_clearance.json)。**本轮无 GUI、无 mj_step、无硬件操作；没有新增推拉通过结果。** 用户的 `/home/kaiwen/research/dog-and-arm` 未从本会话直接访问。
 
