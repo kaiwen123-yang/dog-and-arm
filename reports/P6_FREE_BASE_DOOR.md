@@ -200,3 +200,5 @@ bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --vid
 上述背侧站位在 C01–C20 初态的最小机门间距为 21.695 mm。预抓取路径的运动学筛查取初始门角 0/2/5° 和到站航向误差 ±1°，展开取 65 点，局部 IK 筛查不列入任务成绩。后续用同一实际控制版本分组复测。[初态距离](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_deployment_initial_clearance.csv) · [路径筛查](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_deployment_ik.csv)。
 
 **mobile_A**　前拉 C02、C03、C04、C05、C06、C07，逐案审核 6/6 通过。本组 J5 最小余量 1.577°。桌面分格视频已解码 607 帧。 使用 `bash scripts/project_env.sh python scripts/p6_cases.py 2 3 4 5 6 7 --stage mobile --output results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_A`。已核对六轴每步极小值，成功案例的两段停车再用 25 Hz 速度/接触时序复核。[各案摘要与分格视频](../results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_A/)
+
+**mobile_B**　前拉 C08、C09、C10、C11、C12、C14，逐案审核 6/6 通过。本组 J5 最小余量 1.744°。桌面分格视频已解码 596 帧。 使用 `bash scripts/project_env.sh python scripts/p6_cases.py 8 9 10 11 12 14 --stage mobile --output results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_B`。已核对六轴每步极小值，成功案例的两段停车再用 25 Hz 速度/接触时序复核。[各案摘要与分格视频](../results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_B/)
