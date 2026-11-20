@@ -4,7 +4,9 @@
 
 ## 当前阶段
 
-**当前进度：P6-C 名义前拉整任务已通过，进入预定条件变化和背推。** 运行 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final --output results/p6/mobile_01`。在本机桌面实时完成 0.30 m 驶近、持续停车、双指抓门、60°前拉、释放、退臂、保持、收臂、倒车和最终稳定停车。82.162 s / 41,081 步无重置，门最终 60.055003°，终点位置误差 2.77 mm。两段 3 s 窗口分别通过。[报告](reports/P6_FREE_BASE_DOOR.md) · [全程视频](results/p6/mobile_01/motion.mp4)。此运行作为 C01。
+**P6-D 首次条件对照已完成，10/20 通过。** 名义 C01 加桌面分格参数 2–6、7–12、13–17、18–20。原始门/站位目标固定。C02–07、C18–20 在驶近超时，C14 在退爪时碰门板；[逐案结果](results/p6/conditions_v1.csv)。下一步单独复查到站能力，修正退臂净空，再重跑固定清单及背推。
+
+**P6-C 名义前拉整任务已通过，进入预定条件变化和背推。** 运行 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final --output results/p6/mobile_01`。在本机桌面实时完成 0.30 m 驶近、持续停车、双指抓门、60°前拉、释放、退臂、保持、收臂、倒车和最终稳定停车。82.162 s / 41,081 步无重置，门最终 60.055003°，终点位置误差 2.77 mm。两段 3 s 窗口分别通过。[报告](reports/P6_FREE_BASE_DOOR.md) · [全程视频](results/p6/mobile_01/motion.mp4)。此运行作为 C01。
 
 **P6-A 已在本机桌面通过。** 运行 `bash scripts/project_env.sh python scripts/p6_single_door.py support --live --video --hold-final --output results/p6/support_01`。25.32 s 连续自由根承重、伸臂、空中扫弧和停车，门 0°；操作漂移峰值 0.82 mm、最大倾角 0.176°。输出场景、控制器、曲线源数据和实时画面见 [P6 报告](reports/P6_FREE_BASE_DOOR.md)。
 

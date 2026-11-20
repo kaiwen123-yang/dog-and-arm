@@ -57,3 +57,9 @@ bash scripts/project_env.sh python scripts/p6_single_door.py support --live --vi
 抓持几何偏移峰值 2.575 mm、操作漂移 0.950 mm、整轮最大倾角 0.191°。门对整机合力峰值 2.614 N，无非预期接触、饱和或求解警告。底盘退离约 0.295 m（收臂结束至最终停车两点的平面距离）。此轮冻结为条件试验 C01。横向/纵向滑速、四轮实际载荷、指力和实际执行器输出见同目录 CSV。
 
 [状态与阶段证据](../results/p6/mobile_01/summary.json) · [全程实时画面](../results/p6/mobile_01/motion.mp4) · [事件对齐图](../results/p6/mobile_01/signals.png)
+
+## D　冻结初版的 20 条条件对照
+
+C01 使用上面的名义整任务。其余条件用 `bash scripts/project_env.sh python scripts/p6_cases.py CASES --output DIRECTORY` 原生桌面分格并列显示。分别运行 2–6（conditions_A）、7–12（B）、13–17（C）、18–20（D）。每格实时接收独立物理进程的状态，桌面用只渲染的状态副本绘图，物理进程各自只有一个积分实例。每条的 500 Hz 峰值、事件、5 Hz 摘录及实际接触对摩擦见对应 Cxx 子目录，25 Hz 详细记录保留在本机 results/raw_large/p6/ 下。
+
+[完整结果表](../results/p6/conditions_v1.csv)。10/20 完成。C02–C07、C18–C20 在 32 s 驶近时限内未满足到站条件，均未抓门。C02 在末时还距目标 79.4 mm，早期未对准就开始向前，转向修正达上限后不能及时沿新方向收敛。C14 门开至 60.235°，退爪碰门板，接触点力 0.732 N。其余通过项包括门初角 2°/5°、轮地或指杆摩擦 0.8/1.2 倍和高/低铰链阻尼。实际 wheel_ground 与 finger_handle 接触对记录验证了各自倍率已生效。下一步复查驶近纠偏并增加前拉退臂净空，再按相同的20条清单重跑。此轮未达到 18/20 工程门槛。
