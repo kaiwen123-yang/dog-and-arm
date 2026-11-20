@@ -262,7 +262,9 @@ def run(args, mj, viewer_api, glfw, record):
                 with viewer.lock():
                     while not keys.empty():
                         key, received_ns = keys.get_nowait()
-                        action = actions.get(key, "native_or_unhandled")
+                        action = actions.get(key)
+                        if action is None:
+                            continue
                         record("key", keycode=key, action=action, received_monotonic_ns=received_ns)
                         if action in ("decrease_joint", "increase_joint", "toggle_gripper", "reset_home") and demo:
                             demo = False

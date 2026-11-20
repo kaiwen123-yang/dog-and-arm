@@ -39,7 +39,8 @@ def read_row(directory, root):
     if complete and min(holds) + 1e-9 < cfg['post_hold_s']:
         reasons.append('parking_window')
     both_s = phases.get('open', {}).get('both_contact_s', 0.)
-    row = dict(stage=stage, case=case, passed=not reasons, failure='|'.join(reasons), task_success=complete,
+    row = dict(stage=stage, case=case, perturbation=json.dumps(CASES[case], sort_keys=True),
+               passed=not reasons, failure='|'.join(reasons), task_success=complete,
                run=str(directory.relative_to(root)), mount=s['assembly_revision'], steps=s['physics_steps'],
                final_deg=s['final_deg'], sim_s=s['sim_time_s'], open_s=opening,
                open_budget_left_s=None if opening is None else cfg['phase_timeout_s']['open'] - opening,

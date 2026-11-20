@@ -4,7 +4,9 @@
 
 ## 当前阶段
 
-前拉 C15、C16、C17、C18、C19、C20，逐案审核 0/6 通过。失败项为 C15 window_closed，C16 window_closed，C17 window_closed，C18 window_closed，C19 window_closed，C20 window_closed。本组 J5 最小余量 2.613°。桌面分格视频已解码 382 帧。 下一项为背推 C02 至 C06。[本组记录](results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_C/)
+**按用户要求暂停，已关闭桌面分格和后续批次。** 冻结控制为 `7e3c5e0`，安装为 `rail_bridge_front60_v2`。前拉 C01–C14 已完整通过（14 条），背推仅 C01 已完整通过（1 条）。原生 MuJoCo 名义前拉 60.051577°、名义背推 25.085208°、前拉 C13 60.052550°，三者都完成两个连续 3 s 停车窗口。前拉 C15–C20 均在 47.562 s 开门阶段由操作者暂停，原始终止字段为 `window_closed`，保留[六条截断数据和录像](results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_C/)，归为中断。背推 C02–C20 尚未启动。已有原版成绩、失败与未跟踪 P5 数据均保留。
+
+恢复时先用 `bash scripts/project_env.sh python scripts/p6_cases.py 15 16 17 18 19 20 --stage mobile` 在新目录重跑中断组，再跑剩余背推；无需重做已完成的单门案例。
 
 前拉 C08、C09、C10、C11、C12、C14，逐案审核 6/6 通过。本组 J5 最小余量 1.744°。桌面分格视频已解码 596 帧。 下一项为前拉 C15 至 C20。[本组记录](results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_B/)
 

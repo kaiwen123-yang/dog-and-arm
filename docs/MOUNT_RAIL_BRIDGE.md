@@ -2,7 +2,7 @@
 
 更新：2026-11-20（Asia/Shanghai）。用户决定后续仿真按下图的连接形式进行；随后指定Piper H官方手册核对孔位。
 
-**当前组合 URDF 和 MJCF 已更新为向狗头前移 60 mm 的 rail_bridge_front60_v2，详见第 5 节；新位置的本机可见推拉测试尚未运行。** 前一版本 rail_bridge_v1 已在本机 Linux 桌面用同一近景展示旧方块座与新板，再查看整臂和碰撞外形。[旧座](../results/assembly/rail_bridge_v1/old_block.png) · [新座](../results/assembly/rail_bridge_v1/bridge_exterior.png) · [碰撞](../results/assembly/rail_bridge_v1/bridge_collision.png) · [整机](../results/assembly/rail_bridge_v1/bridge_overview.png)
+**当前组合 URDF 和 MJCF 已更新为向狗头前移 60 mm 的 rail_bridge_front60_v2，详见第 5 节；本机可见装配检查见第 6 节，单门推拉复测现按用户要求暂停。** 前一版本 rail_bridge_v1 已在本机 Linux 桌面用同一近景展示旧方块座与新板，再查看整臂和碰撞外形。[旧座](../results/assembly/rail_bridge_v1/old_block.png) · [新座](../results/assembly/rail_bridge_v1/bridge_exterior.png) · [碰撞](../results/assembly/rail_bridge_v1/bridge_collision.png) · [整机](../results/assembly/rail_bridge_v1/bridge_overview.png)
 
 ## 1. 用户选定的结构
 
