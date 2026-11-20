@@ -1,3 +1,9 @@
-继续 P6 单门。先看工作区并正常拉取 main，读 PROJECT_STATE.md、reports/P6_FREE_BASE_DOOR.md 和 docs/P6_SINGLE_DOOR_PLAN.md。名义连续移动前拉和固定20条条件变化均已完成；最终数据为 results/p6/conditions_final.csv 及 final_A–D。保留初版失败及既有未跟踪P5结果。
-旧方块座的背推也已通过，push_02 为25.055163°且无夹爪基座碰杆。下一模型切换节点按下述双导轨方案展示旧/新几何，检查组合URDF/MJCF，再独立复跑名义前拉。
-新增用户决定：下一版连接件按 docs/MOUNT_RAIL_BRIDGE.md 的双导轨跨接板实现，参考 config/mount_interface_reference.json；官方Piper H已确认70×70mm四孔/M5螺钉，图示4×Ø5.4通孔。若旧安装版本的条件组已在运行，让其正常结束并保留。在下个模型切换节点复用build_assembly.py替换旧方块安装座，保留板下间隙和两侧支承，在用户桌面重建/展示；当前只是参考已准备，尚未替换。新安装版本需另存一条名义整任务基准，不能覆盖mobile_01或混用版本成功率。手眼/称重后置，额外安装座与附件载荷仍omitted。
+继续 /home/kaiwen/research/dog-and-arm。先看工作区、保留已有修改，正常拉取 main。读 PROJECT_STATE.md、reports/P6_FREE_BASE_DOOR.md、docs/MOUNT_RAIL_BRIDGE.md 与 docs/P6_SINGLE_DOOR_PLAN.md。
+
+当前使用 rail_bridge_v1。旧/新座已在 Linux 桌面用同一近景重载，并已检查碰撞、整机和三姿态 FK。新座名义前拉 rail_bridge_v1_mobile_01 已在一个连续自由根物理状态下从 0.30 m 外驶近到倒车停稳，最终 60.048936°。25 Hz 实际记录中，松爪段 J5 距下限最少 0.141°。旧座数据包括原固定清单 20/20 和背推 push_02 的 25.055163°，按安装版本独立保留。
+
+下一轮继续新座的条件试验。先说明目的与桌面观察重点，然后运行以下 C13 整任务，使用自动创建的结果目录。
+bash scripts/project_env.sh python scripts/p6_single_door.py mobile --case 13 --live --video --hold-final
+C13 在旧座下距 55 s 开门时限只有 0.102 s。核对新座开门时间、J5 实际余量、双指稳定性、两次停车窗口和退离接触。接续原计划的其他条件与同版本背推，记录失败和参数更改，并使用同一模型、控制器版本和门槛汇总。新拉取且本地缺少板网格时，先运行 bash scripts/project_env.sh python scripts/build_assembly.py --stage combined。
+
+每次试验前用中文说明观察重点，在用户 Linux 桌面展示物理运行、修改前后变化。按有意义节点更新状态并普通提交推送。保留已有未跟踪 P5 数据。H0 已完成，本阶段不操作实机。手眼、标定板与附件称重后置。

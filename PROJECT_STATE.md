@@ -4,6 +4,10 @@
 
 ## 当前阶段
 
+**当前模型的 P6 名义前拉通过。** `rail_bridge_v1_mobile_01` 在 Linux 桌面连续运行 82.474 s / 41,237 步，从 0.30 m 外驶近、停车、双指前拉、松爪、退臂及保持、收臂、倒车至终点停车。最终 60.048936°，操作漂移 0.949 mm，抓持偏移 2.670 mm，门对机器人合力峰值 2.840 N。机器人与门仅两指接触目标杆。两个 3 s 窗口通过，2,062 帧全程录像已解码。松爪附近的 25 Hz 日志中，J5 距下限仅 0.141°。新座目前仅有这条名义前拉。[视频](results/p6/rail_bridge_v1_mobile_01/motion.mp4) · [报告与逐阶段记录](reports/P6_FREE_BASE_DOOR.md)
+
+实际命令为 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final --output results/p6/rail_bridge_v1_mobile_01`，完成后用 `scripts/plot_p6.py results/p6/rail_bridge_v1_mobile_01` 出图。下一轮在新目录先复查 C13，重点看开门时限和 J5 余量，再接续同版本剩余条件与背推。保留旧版 20 案例和背推汇总。H0 本轮无操作，手眼、标定板与称重继续后置。
+
 **双导轨安装座 rail_bridge_v1 已完成模型替换与桌面检查。** 运行 `bash scripts/project_env.sh python scripts/build_assembly.py --stage combined` 与 `bash scripts/project_env.sh python scripts/check_assembly.py --report results/assembly/rail_bridge_v1/kinematics.json`，重建组合 URDF、MJCF 和安装板网格。固定近景重载旧座与新座并切换碰撞/整机视图。Piper 臂根降低 85.5 mm；名义板下外观净空 14.5 mm，板中心到机身碰撞凸包净空约 4.41 mm。三组 FK 通过，整机质量 43.5371 kg，附加载荷继续省略。[连接件说明与桌面截图](docs/MOUNT_RAIL_BRIDGE.md)
 
 **旧方块安装座 P6 自由底盘前拉已在 Linux 桌面完成。** 20 个预先列明的条件全部完成驶近、停稳、双指拉门、松爪、退臂、保持、收臂、底盘倒车和终点稳定。最终门角 59.9698°–60.2421°，20 例最大抓持偏移 3.133 mm、操作漂移 2.912 mm、倾角 0.2433°。C13 开门段用时 54.898 s，55 s 时限的余量很小。完整条件与逐案限制见 [P6 报告](reports/P6_FREE_BASE_DOOR.md) 和 [最终清单](results/p6/conditions_final.csv)。

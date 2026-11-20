@@ -87,8 +87,9 @@ class DoorView:
     def close(self, hold, result):
         self.finish_video()
         glfw.set_window_title(self.window, self.title + '  |  ' + result)
+        left, right = self.last_lines
         while hold and self.running() and not self.leave:
-            self.draw(self.last_lines[0] + '\nReview', self.last_lines[1] + '\n' + result, record=False)
+            self.draw(left + '\nReview', right + '\n' + result, record=False)
             glfw.wait_events_timeout(.12)
         self.ctx.free()
         glfw.destroy_window(self.window)
