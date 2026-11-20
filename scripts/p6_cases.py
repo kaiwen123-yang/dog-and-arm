@@ -58,12 +58,13 @@ class LiveFrames:
         self.send('DONE', '', result)
 
 
-def worker(case, control, raw, arrival_only):
+def worker(case, control, raw, destination, arrival_only):
     out = raw/f'C{case:02}'
     out.mkdir(parents=True, exist_ok=False)
     cfg = settings('mobile',case)
     cfg['arrival_only'] = arrival_only
     run(cfg,out,True,False,False,partial(LiveFrames,control))
+    compact_case(out, destination/f'C{case:02}')
 
 
 def compact_case(out, compact):
@@ -116,7 +117,7 @@ def display(cases, destination, raw, arrival_only):
             glfw.set_window_should_close(window, True)
     glfw.set_key_callback(window, keyboard)
     configs = {case:settings('mobile',case)['perturbation'] for case in cases}
-    processes = {case:context.Process(target=worker,args=(case,(packets,start,play,stop),raw,arrival_only)) for case in cases}
+    processes = {case:context.Process(target=worker,args=(case,(packets,start,play,stop),raw,destination,arrival_only)) for case in cases}
     for process in processes.values():
         process.start()
     latest = {}
@@ -127,7 +128,7 @@ def display(cases, destination, raw, arrival_only):
     full = mj.MjrRect(0,0,w,h)
     pixels = np.empty((h,w,3),dtype=np.uint8)
     writer = imageio.get_writer(destination/'live_grid.mp4',fps=8,codec='libx264',quality=5,macro_block_size=2)
-    last_frame = 0.
+    next_frame = None
     try:
         while True:
             glfw.poll_events()
@@ -168,12 +169,18 @@ def display(cases, destination, raw, arrival_only):
                         info += '\n'+fields[-1]
                 else:
                     info = 'Loading model'
+                if not play.is_set():
+                    info += '\nPAUSED'
                 mj.mjr_overlay(mj.mjtFont.mjFONT_NORMAL,mj.mjtGridPos.mjGRID_TOPLEFT,rect,heading+'\n'+info,'',ctx)
             now = time.monotonic()
-            if start.is_set() and now-last_frame>=.125:
-                mj.mjr_readPixels(pixels,None,full,ctx)
-                writer.append_data(pixels[::-1])
-                last_frame=now
+            if start.is_set():
+                if next_frame is None:
+                    next_frame = now
+                if now >= next_frame:
+                    mj.mjr_readPixels(pixels,None,full,ctx)
+                    while now >= next_frame:
+                        writer.append_data(pixels[::-1])
+                        next_frame += .125
             glfw.swap_buffers(window)
             if all(not p.is_alive() for p in processes.values()):
                 break
@@ -192,8 +199,8 @@ def display(cases, destination, raw, arrival_only):
         ctx.free()
         glfw.destroy_window(window)
         glfw.terminate()
-    for case in cases:
-        compact_case(raw/f'C{case:02}',destination/f'C{case:02}')
+    if any(p.exitcode != 0 for p in processes.values()):
+        raise RuntimeError('An independent worker failed to save its results')
     return all(json.loads((destination/f'C{case:02}/summary.json').read_text())['stage_pass'] for case in cases)
 
 

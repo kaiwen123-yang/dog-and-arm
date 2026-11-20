@@ -97,6 +97,8 @@ class BaseDrive:
             self.mode = mode
             self.aligned = False
             self.arrived = False
+            self.correct_longitudinal = False
+            self.correct_heading = False
 
         cfg = self.cfg
         state = self.state(data)
@@ -127,8 +129,16 @@ class BaseDrive:
             # manipulation yaw and longitudinal corrections can re-engage.
             limit = cfg.get('base_grip_speed_m_s', .012) if mode == 'grip' else .022
             speed = float(np.clip(1.3 * along, -limit, limit))
-            if abs(along) <= .001:
-                speed = 0.
+            if moving:
+                if abs(along) <= .001:
+                    speed = 0.
+            else:
+                if abs(along) >= cfg['park_position_engage_m']:
+                    self.correct_longitudinal = True
+                elif abs(along) <= cfg['park_position_brake_m']:
+                    self.correct_longitudinal = False
+                if not self.correct_longitudinal:
+                    speed = 0.
 
         heading_error = signed_angle(desired_yaw-yaw)
         max_rate = cfg['yaw_rate_rad_s']
@@ -139,7 +149,13 @@ class BaseDrive:
         requested_rate = np.clip(cfg.get('heading_gain_per_s', 2.5)*heading_error,
                                  -max_rate, max_rate)
         rate_error = requested_rate - state['yaw_rate']
-        if abs(heading_error) <= math.radians(cfg.get('base_heading_deadband_deg', .30)):
+        if moving:
+            self.correct_heading = abs(heading_error) > math.radians(cfg.get('base_heading_deadband_deg', .30))
+        elif abs(heading_error) >= math.radians(cfg['park_heading_engage_deg']):
+            self.correct_heading = True
+        elif abs(heading_error) <= math.radians(cfg['park_heading_brake_deg']):
+            self.correct_heading = False
+        if not self.correct_heading:
             self.yaw_integral = 0.
             turn = 0.
         else:

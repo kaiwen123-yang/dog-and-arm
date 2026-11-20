@@ -2,7 +2,7 @@
 
 日期：2026-11-20（Asia/Shanghai）。依据实际代码与数据提交 `9c43f530360ce3398018b954f46eac11b96e0d73` 制定。
 
-**本文是下一阶段实施计划，尚无 P6 运行结果。** 既有结果复核见 [P6_NEXT_STAGE_REVIEW_20261120.md](../reports/P6_NEXT_STAGE_REVIEW_20261120.md)，本机执行提示见 [P6_SINGLE_DOOR.txt](../prompts/P6_SINGLE_DOOR.txt)。
+**本文保留开跑前制定的计划和验收门槛。** 实际运行、失败样本和配置修订见 [P6 试验报告](../reports/P6_FREE_BASE_DOOR.md)。 既有结果复核见 [P6_NEXT_STAGE_REVIEW_20261120.md](../reports/P6_NEXT_STAGE_REVIEW_20261120.md)，本机执行提示见 [P6_SINGLE_DOOR.txt](../prompts/P6_SINGLE_DOOR.txt)。
 
 ## 1. 这一阶段要让用户看到什么
 
