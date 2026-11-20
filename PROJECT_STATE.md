@@ -4,7 +4,9 @@
 
 ## 当前阶段
 
-**2026-11-20 用户要求继续；P3 本机可见装配检查已收尾；P4 已取得固定基座拉门 19.261° 的真实接触片段，完整 P4 仍未完成。** M1、Piper H 和联合模型此前已依次桌面显示；本轮补齐默认取景、联合 XML 重载、腕相机看门和夹爪/相机固定关系量化。已进行有限执行器的真实 mj_step；60°、另一侧推门和自由基座任务未完成，本轮未操作实机。
+**P3 桌面装配检查已完成。P4 固定底盘从前侧拉门，单次名义 60° 试验实际达到 59.963319°。** 随后松爪退离，38 秒 / 19,000 步。门与机器人只有前把手和两夹指接触，接触力范数之和峰值 2.2433 N。严格 60° 阈值尚差 0.0367°。下一步从另一侧推门，再开展 P5 轮足地面保持。
+
+固定根移至 [0.65, 0.30, 0.54266] m 并转 45°，把手高度 0.85 m。松爪后退 0.10 m 并抬高 0.04 m。桌面运行命令为 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --config config/p4_pull_60.yaml --live --video --hold-final --output results/p4/pull_60_trial01`。3,800 行时序与 950 帧视频已核对，按本次记录结束时仍为 59.963319°。 [桌面截图](results/p4/pull_60_trial01/desktop_final.png) · [曲线](results/p4/pull_60_trial01/contact_timeseries.png)
 
 - 机械臂本体验机：**用户此前已完成**，本轮不启动 SDK 或实机。
 - H0 相机＋机械臂联调：**此前回合实机完成**；[报告](reports/H0_HARDWARE_REPORT.md)、[会话清单](results/hardware/h0/20261116_2051/manifest.json)、[操作说明](docs/H0_RUNBOOK.md)。

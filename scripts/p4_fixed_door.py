@@ -72,7 +72,7 @@ def build(cfg):
     ET.SubElement(visual, 'global', offwidth='1280', offheight='720', azimuth='135', elevation='-20')
     ET.SubElement(visual, 'headlight', ambient='.35 .35 .35', diffuse='.6 .6 .6')
     ET.SubElement(visual, 'map', znear='.005', zfar='30')
-    path = ROOT / 'sim/scenes/p4_fixed_pull.xml'
+    path = ROOT / cfg.get('scene_file', 'sim/scenes/p4_fixed_pull.xml')
     write_xml(root, path)
     return path
 
@@ -117,7 +117,9 @@ def target(cfg, phase, fraction, hinge, local_handle):
     Rz = Rotation.from_euler('z', theta).as_matrix()
     # Tool +Z approaches the front handle along the panel inward normal;
     # tool +Y closes across the vertical bar; tool +X points downwards.
-    rotation = Rz @ np.array([[0,0,1],[0,1,0],[-1,0,0]], float)
+    yaw_start = math.radians(cfg.get('tool_yaw_start_deg', 0.))
+    tool_yaw = yaw_start + cfg.get('tool_yaw_door_ratio', 1.) * theta
+    rotation = Rotation.from_euler('z', tool_yaw).as_matrix() @ np.array([[0,0,1],[0,1,0],[-1,0,0]], float)
     position = hinge + Rz @ local_handle
     retreat = 0.
     if phase == 'settle': retreat = cfg['pregrasp_distance_m']
@@ -126,7 +128,9 @@ def target(cfg, phase, fraction, hinge, local_handle):
     if phase == 'final': retreat = cfg['retreat_distance_m']
     position = position - retreat * rotation[:,2]
     if phase in ('retreat', 'final'):
-        yaw = theta * (1-smooth(fraction)) if phase == 'retreat' else 0.
+        position[2] += cfg.get('retreat_lift_m', 0.) * (smooth(fraction) if phase == 'retreat' else 1.)
+        yaw_end = math.radians(cfg.get('retreat_yaw_deg', 0.))
+        yaw = tool_yaw + (yaw_end-tool_yaw)*smooth(fraction) if phase == 'retreat' else yaw_end
         rotation = Rotation.from_euler('z', yaw).as_matrix() @ np.array([[0,0,1],[0,1,0],[-1,0,0]], float)
     width = cfg['open_width_m']
     if phase == 'grip': width += smooth(fraction) * (cfg['closed_command_width_m'] - width)
@@ -140,7 +144,7 @@ def plan(model, cfg):
     mj.mj_forward(model, ik.d)
     hinge = ik.d.xpos[model.body('door_single_leaf').id].copy()
     local_handle = ik.d.site_xpos[model.site(cfg['handle_site']).id] - hinge
-    seed = np.array([0., .8, -1.4, 0., .6, 0.])
+    seed = np.array(cfg.get('ik_seed_rad', [0., .8, -1.4, 0., .6, 0.]))
     targets, phases, positions, angles, errors, rot_errors = [], [], [], [], [], []
     for phase, duration in cfg['phase_duration_s'].items():
         # Plan at 100 Hz; interpolate joint commands during physical stepping.
@@ -154,7 +158,7 @@ def plan(model, cfg):
             'worst_position_error_phase': phases[int(np.argmax(errors))]}
 
 
-def run(model, cfg, trajectory, out, live=False, video=False):
+def run(model, cfg, trajectory, out, live=False, video=False, hold_final=False):
     data = mj.MjData(model)
     source = mj.MjModel.from_xml_path(str(ROOT/'sim/robots/m1_piper.xml'))
     initial = mj.MjData(source); mj.mj_resetDataKeyframe(source, initial, 0)
@@ -249,6 +253,11 @@ def run(model, cfg, trajectory, out, live=False, video=False):
                 if not viewer.is_running(): stopped=True; break
                 viewer.sync(); next_view+=1/60
                 time.sleep(max(0, start+t-time.monotonic()))
+        if hold_final and viewer and not stopped:
+            print('FINAL_STATE_REVIEW: dynamics finished; close viewer to save and exit.', flush=True)
+            while viewer.is_running():
+                viewer.sync()
+                time.sleep(1/30)
     except Exception as exc:
         failure = f'{type(exc).__name__}: {exc}'
     finally:
@@ -290,6 +299,7 @@ def main():
     parser.add_argument('--config',type=Path,default=ROOT/'config/p4.yaml')
     parser.add_argument('--output',type=Path,default=None)
     parser.add_argument('--live',action='store_true');parser.add_argument('--video',action='store_true');parser.add_argument('--plan-only',action='store_true')
+    parser.add_argument('--hold-final', action='store_true', help='keep the live final state visible until the viewer is closed')
     args=parser.parse_args();cfg=yaml.safe_load(args.config.read_text())
     if args.output is None:
         args.output = ROOT/'results/p4'/datetime.now(timezone.utc).strftime('pull_%Y%m%dT%H%M%SZ')
@@ -299,7 +309,7 @@ def main():
     print('IK:',trajectory['max_position_error_m'],trajectory['max_rotation_error_rad'],trajectory['worst_position_error_phase'],flush=True)
     if trajectory['max_position_error_m']>.002 or trajectory['max_rotation_error_rad']>.02:
         raise RuntimeError('Planned target exceeds IK tolerance; physical simulation not started')
-    if not args.plan_only:run(model,cfg,trajectory,args.output,args.live,args.video)
+    if not args.plan_only:run(model,cfg,trajectory,args.output,args.live,args.video,args.hold_final)
     print(f'Saved {args.output}', flush=True)
 
 if __name__=='__main__':main()
