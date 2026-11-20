@@ -68,6 +68,8 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
         seq += ['approach_arm','grasp','open','hold','release','retreat_arm','post_release_hold']
         if mobile:
             seq += ['stow','retreat_base','final']
+    if cfg.get('arrival_only'):
+        seq = ['approach_base', 'settle']
     labels = [model.joint(j).name for j in model.actuator_trnid[:, 0]]
     arm_ids = np.r_[drive.arms, drive.grip]
     arm_dof = model.jnt_dofadr[model.actuator_trnid[arm_ids, 0]]
@@ -238,6 +240,9 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
             elif gripping and door_load > cfg.get('grip_net_force_limit_n', math.inf):
                 reason = 'door_force_limit'
             if reason:
+                if not sample:
+                    for point in meter.measure(d, details=True).rows:
+                        point_writer.writerow(compact(dict(time_s=t, phase=phase, **point)))
                 break
             stable = slow and in_zone and supported
             reached = abs(angle-goal) <= cfg['angle_tolerance_deg']
@@ -289,7 +294,7 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
         if view:
             view.finish_video()
         completed = phase_index == len(seq) and reason is None
-        summary = dict(stage=stage, case=cfg['case'], script_completed=completed, task_success=completed and mobile,
+        summary = dict(stage=stage, case=cfg['case'], script_completed=completed, task_success=completed and mobile and not cfg.get('arrival_only', False),
                        stage_pass=completed, failure=reason, last_phase=last_phase, events=events, planned_phases=seq,
                        samples=samples, frames=view.frames if view else 0, physics_steps=step, dt_s=dt,
                        sim_time_s=d.time, wall_s=wall, realtime_factor=d.time/max(wall,.001), desktop=bool(view),

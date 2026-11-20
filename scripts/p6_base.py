@@ -49,6 +49,22 @@ class BaseDrive:
         self.leg_kp = model.actuator_gainprm[self.legs, 0]
         self.leg_rest = data.qpos[model.jnt_qposadr[joints[self.legs]]].copy()
         self.radius = cfg['rolling_radius_m']
+        self.leg_yaw = 0.
+        self.leg_yaw_gain = np.zeros_like(self.leg_rest)
+        root_R = data.xmat[self.body].reshape(3, 3)
+        jac = np.empty((3, model.nv))
+        for wheel in self.wheels:
+            body = model.jnt_bodyid[joints[wheel]]
+            label = names[wheel].split('_')[1]
+            indices = [k for k, i in enumerate(self.legs) if names[i].split('_')[1] == label]
+            wheel_geom = next(g for g in range(model.ngeom) if model.geom_bodyid[g] == body and model.geom_contype[g])
+            point = data.geom_xpos[wheel_geom] - np.array([0., 0., self.radius])
+            lever_x = (root_R.T @ (point-data.xpos[self.body]))[0]
+            mj.mj_jac(model, data, jac, None, point, body)
+            # Opposite fore/aft lateral stance offsets let the body yaw on
+            # the four contacts. Hold contact height; wheels supply rolling X.
+            self.leg_yaw_gain[indices] = np.linalg.solve(
+                root_R.T @ jac[:,self.leg_dofs[indices]], [0., -lever_x, 0.])
         self.mode = None
         self.yaw_integral = 0.
         self.last_speed = 0.
@@ -71,7 +87,7 @@ class BaseDrive:
                     linear_world=world_linear.copy(), angular_world=world_angular)
 
     def leg_commands(self, data):
-        return self.leg_rest + data.qfrc_bias[self.leg_dofs] / self.leg_kp
+        return self.leg_rest + self.leg_yaw*self.leg_yaw_gain + data.qfrc_bias[self.leg_dofs] / self.leg_kp
 
     def wheel_commands(self, data, target_xy, target_yaw_rad, mode='hold'):
         if mode not in ('approach', 'retreat', 'hold', 'grip'):
@@ -79,6 +95,8 @@ class BaseDrive:
         if mode != self.mode:
             self.yaw_integral = 0.
             self.mode = mode
+            self.aligned = False
+            self.arrived = False
 
         cfg = self.cfg
         state = self.state(data)
@@ -89,14 +107,21 @@ class BaseDrive:
         distance = float(np.linalg.norm(delta))
         desired_yaw = target_yaw_rad
         moving = mode in ('approach', 'retreat')
-        if moving and distance > cfg.get('base_arrival_radius_m', .009):
+        if moving and distance <= cfg.get('base_arrival_radius_m', .009):
+            self.arrived = True
+        if moving and not self.arrived:
             # Point towards the target (away from it while reversing). Reduce
             # speed if the chassis still needs to turn to acquire its line.
             direction = -1 if mode == 'retreat' else 1
             desired_yaw = math.atan2(direction * delta[1], direction * delta[0])
             pointing_error = abs(signed_angle(desired_yaw-yaw))
             speed = direction * min(cfg['straight_speed_m_s'], 1.2 * distance)
-            speed *= np.clip(1 - pointing_error / math.radians(18.), 0., 1.)
+            if pointing_error < math.radians(1.):
+                self.aligned = True
+            if pointing_error > math.radians(4.):
+                self.aligned = False
+            if not self.aligned:
+                speed = 0.
         else:
             # Let the velocity servos brake close to target. During parked
             # manipulation yaw and longitudinal corrections can re-engage.
@@ -119,8 +144,13 @@ class BaseDrive:
             turn = 0.
         else:
             self.yaw_integral = np.clip(self.yaw_integral + rate_error*self.model.opt.timestep, -.30, .30)
-            turn = np.clip(requested_rate + cfg['yaw_rate_kp']*rate_error + cfg['yaw_rate_ki']*self.yaw_integral,
-                           -turn_limit, turn_limit)
+            turn = requested_rate + cfg['yaw_rate_kp']*rate_error + cfg['yaw_rate_ki']*self.yaw_integral
+            if moving:
+                turn_limit = cfg['travel_turn_limit_rad_s']
+                trim_limit = math.radians(cfg['stance_yaw_limit_deg'])
+                self.leg_yaw = np.clip(self.leg_yaw + requested_rate*self.model.opt.timestep,
+                                       -trim_limit, trim_limit)
+            turn = np.clip(turn, -turn_limit, turn_limit)
         self.last_speed, self.last_turn = float(speed), float(turn)
         sign, lateral = wheel_geometry(data, self.body, self.wheel_joints)
         return wheel_rates(sign, lateral, self.radius, speed, turn)

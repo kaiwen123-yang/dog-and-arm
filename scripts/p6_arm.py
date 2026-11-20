@@ -44,7 +44,10 @@ class Arm:
         start_yaw = self.cfg['tool_yaw_start_deg']
         tool_yaw = start_yaw + self.cfg['tool_yaw_door_ratio'] * angle_deg
         rotation = Rotation.from_euler('z', tool_yaw, degrees=True).as_matrix() @ HORIZONTAL_TOOL
-        position -= clearance * rotation[:, 2]
+        direction = rotation[:, 2]
+        if retreat_fraction and self.cfg['handle_site'].endswith('front_handle'):
+            direction = np.array(self.cfg['pull_retreat_world_direction'])
+        position -= clearance * direction
         if retreat_fraction:
             position[2] += self.cfg['retreat_lift_m'] * retreat_fraction
             # The P4 retreat yaw was established for 60 degrees front pull,

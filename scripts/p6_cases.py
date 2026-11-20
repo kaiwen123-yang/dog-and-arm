@@ -58,10 +58,12 @@ class LiveFrames:
         self.send('DONE', '', result)
 
 
-def worker(case, control, raw):
+def worker(case, control, raw, arrival_only):
     out = raw/f'C{case:02}'
     out.mkdir(parents=True, exist_ok=False)
-    run(settings('mobile',case),out,True,False,False,partial(LiveFrames,control))
+    cfg = settings('mobile',case)
+    cfg['arrival_only'] = arrival_only
+    run(cfg,out,True,False,False,partial(LiveFrames,control))
 
 
 def compact_case(out, compact):
@@ -87,7 +89,7 @@ def compact_case(out, compact):
     (compact/'contact_friction.json').write_text(json.dumps({k:sorted(v) for k,v in friction.items()}, indent=2)+'\n')
 
 
-def display(cases, destination, raw):
+def display(cases, destination, raw, arrival_only):
     if not glfw.init():
         raise RuntimeError('GLFW failed on the Linux desktop')
     window = glfw.create_window(1500,900,'P6 / FREE_BASE / mj_step  |  live condition trials',None,None)
@@ -114,7 +116,7 @@ def display(cases, destination, raw):
             glfw.set_window_should_close(window, True)
     glfw.set_key_callback(window, keyboard)
     configs = {case:settings('mobile',case)['perturbation'] for case in cases}
-    processes = {case:context.Process(target=worker,args=(case,(packets,start,play,stop),raw)) for case in cases}
+    processes = {case:context.Process(target=worker,args=(case,(packets,start,play,stop),raw,arrival_only)) for case in cases}
     for process in processes.values():
         process.start()
     latest = {}
@@ -192,13 +194,14 @@ def display(cases, destination, raw):
         glfw.terminate()
     for case in cases:
         compact_case(raw/f'C{case:02}',destination/f'C{case:02}')
-    return all(json.loads((destination/f'C{case:02}/summary.json').read_text())['task_success'] for case in cases)
+    return all(json.loads((destination/f'C{case:02}/summary.json').read_text())['stage_pass'] for case in cases)
 
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('cases', type=int, choices=range(1,21), nargs='+')
     parser.add_argument('--output',type=Path)
+    parser.add_argument('--arrival-only',action='store_true',help='end this diagnostic after the sustained station stop')
     args=parser.parse_args()
     if len(set(args.cases))!=len(args.cases) or len(args.cases)>6:
         parser.error('Use one to six distinct conditions per live window')
@@ -207,4 +210,4 @@ if __name__=='__main__':
     out.mkdir(parents=True,exist_ok=False)
     raw=ROOT/'results/raw_large/p6'/out.name
     raw.mkdir(parents=True,exist_ok=False)
-    raise SystemExit(0 if display(args.cases,out,raw) else 1)
+    raise SystemExit(0 if display(args.cases,out,raw,args.arrival_only) else 1)
