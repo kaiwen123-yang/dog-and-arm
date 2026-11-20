@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+前拉 C15、C16、C17、C18、C19、C20，逐案审核 0/6 通过。失败项为 C15 window_closed，C16 window_closed，C17 window_closed，C18 window_closed，C19 window_closed，C20 window_closed。本组 J5 最小余量 2.613°。桌面分格视频已解码 382 帧。 下一项为背推 C02 至 C06。[本组记录](results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_C/)
+
 前拉 C08、C09、C10、C11、C12、C14，逐案审核 6/6 通过。本组 J5 最小余量 1.744°。桌面分格视频已解码 596 帧。 下一项为前拉 C15 至 C20。[本组记录](results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_B/)
 
 前拉 C02、C03、C04、C05、C06、C07，逐案审核 6/6 通过。本组 J5 最小余量 1.577°。桌面分格视频已解码 607 帧。 下一项为前拉 C08 至 C12 及 C14。[本组记录](results/p6/rail_bridge_front60_v2_20261120T133724Z/mobile_A/)
