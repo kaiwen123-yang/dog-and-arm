@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "decision_date": "2026-11-20",
+  "timezone": "Asia/Shanghai",
+  "purpose": "Reference geometry and user decision for the next assembly revision; current build_assembly.py does not consume this file.",
+  "implementation_status": "selected_design_pending_generator_and_local_visible_validation",
+  "user_selected_design": {
+    "structure": "rigid_adapter_plate_spanning_two_m1_mounting_rails",
+    "user_reference_image": "assets/mounting/m1_piper_bridge_user_reference.png",
+    "cover_clearance_required": true,
+    "selected_m1_holes_per_row": 3,
+    "selected_m1_hole_indices_zero_based": [
+      2,
+      3,
+      4
+    ],
+    "selected_hole_count": 6,
+    "selection_status": "project_choice_from_user_schematic_not_a_vendor_mandate"
+  },
+  "m1_interface": {
+    "source": "user_supplied_schematic",
+    "verification_status": "transcribed_from_user_image_not_independently_reverified_this_turn",
+    "rows": 2,
+    "holes_per_row": 7,
+    "along_row_pitch_m": 0.06,
+    "between_row_center_distance_m": 0.154,
+    "thread_designation": "M4",
+    "thread_depth_m": 0.006,
+    "pattern_frame_convention": "x along rail rows, y across rows, z up; diagram datum, not an identified m1_base_link transform",
+    "selected_hole_centers_m": [
+      [
+        -0.06,
+        -0.077,
+        0
+      ],
+      [
+        0,
+        -0.077,
+        0
+      ],
+      [
+        0.06,
+        -0.077,
+        0
+      ],
+      [
+        -0.06,
+        0.077,
+        0
+      ],
+      [
+        0,
+        0.077,
+        0
+      ],
+      [
+        0.06,
+        0.077,
+        0
+      ]
+    ]
+  },
+  "piper_h_interface": {
+    "verification_status": "official_piper_h_manual_text_and_embedded_drawing_verified",
+    "mounting_hole_count": 4,
+    "hole_center_spacing_xy_m": [
+      0.07,
+      0.07
+    ],
+    "bolt_designation": "M5",
+    "drawing_hole_diameter_m": 0.0054,
+    "drawing_hole_type": "through_hole",
+    "drawing_base_outline_xy_m": [
+      0.08,
+      0.095
+    ],
+    "hole_centers_in_pattern_center_frame_m": [
+      [
+        -0.035,
+        -0.035,
+        0
+      ],
+      [
+        -0.035,
+        0.035,
+        0
+      ],
+      [
+        0.035,
+        -0.035,
+        0
+      ],
+      [
+        0.035,
+        0.035,
+        0
+      ]
+    ],
+    "frame_note": "Pattern center is a local design datum; do not assume it equals the arm URDF root or the drawing 72-mm circle center.",
+    "thread_status": "The prose calls these threaded through holes, but the drawing calls out four diameter-5.4 through holes; physical female-thread status is not established.",
+    "simulation_hole_interpretation": "Use the drawing through-hole geometry with M5 fasteners as the nominal reference.",
+    "other_holes_note": "The six diameter-4.5 countersunk holes are a separate group and are not the four mounting holes.",
+    "source": {
+      "manual_title": "PIPER H 用户手册",
+      "url": "https://agilexsupport.yuque.com/staff-hso6mo/alxgtf/ay1awrn2hrhn1krg",
+      "sections": [
+        "1.2 性能参数",
+        "2.4.1 底座安装说明"
+      ],
+      "displayed_revision": "V.1.1.0 / 2026-01-25",
+      "content_updated_at_utc": "2026-10-22T06:59:43.000Z",
+      "retrieved_date": "2026-11-20",
+      "public_document_endpoint": "https://agilexsupport.yuque.com/api/docs/254611207?book_id=67097634",
+      "drawing_url": "https://cdn.nlark.com/yuque/0/2025/png/33709157/1767175387998-59ffc4b5-8070-4a90-8e1e-bfc62c6f6efe.png?x-oss-process=image%2Fformat%2Cwebp",
+      "local_drawing": "assets/mounting/piper_h_base_mount_official.webp"
+    }
+  },
+  "not_defined_by_schematic": [
+    "adapter_plate_outer_dimensions",
+    "adapter_plate_thickness",
+    "cover_clearance_height",
+    "rail_datum_transform_in_m1_base_link",
+    "arm_root_transform_from_hole_pattern",
+    "bolt_lengths",
+    "fastener_torques"
+  ],
+  "next_implementation": {
+    "reuse_generator": "scripts/build_assembly.py",
+    "active_mount_transform_config": "config/assembly.yaml:arm_mount",
+    "rigid_chain": [
+      "m1_base_link",
+      "m1_arm_mount",
+      "piper_base_link"
+    ],
+    "retain_one_robot_freejoint": true,
+    "additional_mount_payload_mode": "omitted",
+    "camera_bracket_payload_mode": "omitted",
+    "local_visible_check_required": true,
+    "new_nominal_door_run_required_after_geometry_revision": true,
+    "preserve_old_p4_p5_p6_results": true
+  }
+}

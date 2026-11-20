@@ -1,8 +1,10 @@
 继续 /home/kaiwen/research/dog-and-arm，实施 P6 自由底盘单门。先读本提示，实际执行并让我在 Linux 桌面看见变化；不要只再列一份计划。
 
+2026-11-20连接件补充：后续模型按 docs/MOUNT_RAIL_BRIDGE.md 和 config/mount_interface_reference.json 采用双导轨跨接转接板，机盖上方留间隙。Piper H官方70×70mm四孔/M5螺钉已核实，附图为4×Ø5.4通孔。旧方块安装座尚待替换；在下个模型切换节点实际更新生成器、URDF/MJCF和桌面显示，再为新安装版本保留一条名义任务结果。既有P6完成进度以PROJECT_STATE.md为准，正在运行的旧条件组正常保留，不重复整套P0–P3或H0。
+
 先查看 git status，保留已有修改并正常拉取 main，不重置/强推。阅读 AGENTS.md、PROJECT_STATE.md、prompts/NEXT_RUN.txt、docs/P6_SINGLE_DOOR_PLAN.md、reports/P6_NEXT_STAGE_REVIEW_20261120.md，以及相关 P4/P5 脚本和配置。docs/LIVE_DEBUGGING.md 的桌面/重载原则继续有效，但 P0–P3 已完成，不重新逐个验机或重做装配。复用已有 .venv、官方资产和生成器，命令使用 bash scripts/project_env.sh ...。
 
-当前已知事实：P4 固定底盘前拉 59.963319°；背推门角反馈 25.076175°，但含夹爪基座碰把手。P5 自由根平地慢行、±12°转向和伸臂移动已记录，尚无门反力下驻停验证。源数据审阅以 9c43f530360ce3398018b954f46eac11b96e0d73 为基线；P6 计划已准备，P6 动力学尚未完成。后续若仓库已有更新，先读真实进度，不重复已完成节点。
+原计划制定时的已知事实（最新完成进度见 PROJECT_STATE.md）：P4 固定底盘前拉 59.963319°；背推门角反馈 25.076175°，但含夹爪基座碰把手。P5 自由根平地慢行、±12°转向和伸臂移动已记录，尚无门反力下驻停验证。源数据审阅以 9c43f530360ce3398018b954f46eac11b96e0d73 为基线；P6 计划已准备，P6 动力学尚未完成。后续若仓库已有更新，先读真实进度，不重复已完成节点。
 
 本轮全程原生 MuJoCo，不启动硬件 SDK、CAN、ROS相机或真实M1/Piper命令；不因H0历史使能状态自动回零/失能。手眼、标定板、相机/支架称重及惯量后置；附件额外载荷仍omitted。先完成任务，不定研究主线，不先引入RL或全身MPC。
 
