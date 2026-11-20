@@ -1,0 +1,306 @@
+{
+  "mode": "P4_FIXED_BASE_CONTACT_PUSH",
+  "config": {
+    "base_xyz_m": [
+      1.88,
+      0.0,
+      0.54266
+    ],
+    "base_yaw_rad": 1.5707963267948966,
+    "handle_site": "door_single_back_handle",
+    "door_handle_height_m": 0.85,
+    "grasp_local_xyz_m": [
+      0.0,
+      0.0,
+      0.115
+    ],
+    "pregrasp_distance_m": 0.06,
+    "retreat_distance_m": 0.06,
+    "target_angle_deg": 25.0,
+    "open_width_m": 0.09,
+    "closed_command_width_m": 0.018,
+    "arm_kp": [
+      300,
+      350,
+      300,
+      80,
+      60,
+      40
+    ],
+    "arm_kv": [
+      25,
+      30,
+      25,
+      6,
+      5,
+      3
+    ],
+    "arm_torque_limit_nm": [
+      35,
+      35,
+      30,
+      12,
+      12,
+      8
+    ],
+    "gripper_kp": 1500,
+    "gripper_kv": 10,
+    "gripper_force_limit_n": 10,
+    "base_joint_kp": 160,
+    "base_joint_kv": 12,
+    "base_leg_torque_limit_nm": 50,
+    "base_wheel_torque_limit_nm": 15,
+    "timestep_s": 0.002,
+    "sample_hz": 100,
+    "phase_duration_s": {
+      "settle": 1.5,
+      "approach": 3.0,
+      "grip": 2.0,
+      "push": 18,
+      "hold": 5.0,
+      "release": 1.5,
+      "retreat": 3.0,
+      "final": 1.0
+    },
+    "retreat_lift_m": 0.015,
+    "tool_yaw_start_deg": 180,
+    "tool_yaw_door_ratio": 0.5,
+    "retreat_yaw_deg": 192.5,
+    "scene_file": "sim/scenes/p4_fixed_push.xml",
+    "camera_position_m": [
+      4.1,
+      2.9,
+      2.0
+    ],
+    "camera_target_m": [
+      1.55,
+      0.05,
+      0.94
+    ],
+    "ik_seed_rad": [
+      0.036939837985236014,
+      1.9942296704113962,
+      -0.6419323678570414,
+      -1.5355699352717112,
+      -1.5596866298646304,
+      0.30557786049972846
+    ],
+    "max_angle_trim_deg": 4.0,
+    "hold_gain_per_s": 1.8
+  },
+  "mujoco_version": "3.3.0",
+  "failure": null,
+  "nq": 25,
+  "nv": 25,
+  "nu": 23,
+  "neq": 1,
+  "steps": 17500,
+  "simulation_time_s": 34.99999999999681,
+  "initial_qpos": [
+    0.0,
+    0.6,
+    -1.2,
+    0.0,
+    0.0,
+    0.6,
+    -1.2,
+    0.0,
+    0.0,
+    -0.6,
+    1.2,
+    0.0,
+    0.0,
+    -0.6,
+    1.2,
+    0.0,
+    0.036939837985236014,
+    1.9942296704113962,
+    -0.6419323678570414,
+    -1.5355699352717112,
+    -1.5596866298646304,
+    0.30557786049972846,
+    0.045,
+    -0.045,
+    0.0
+  ],
+  "final_qpos": [
+    4.92122926467939e-19,
+    0.6,
+    -1.2,
+    1.2280705956916137e-19,
+    9.436118009845292e-19,
+    0.6,
+    -1.2,
+    -4.553997637554135e-20,
+    1.97811902817141e-18,
+    -0.6,
+    1.2,
+    4.70710788897528e-20,
+    9.052290353701914e-19,
+    -0.6,
+    1.2,
+    2.9745455373260164e-20,
+    0.9361990049028774,
+    2.4283653933700213,
+    -1.6957687466613551,
+    -1.0881995655048984,
+    -1.016780462247053,
+    0.7853901186498464,
+    0.04500012959967473,
+    -0.04500082561424934,
+    0.4376618093784011
+  ],
+  "door_min_angle_deg": -0.0001006227125598337,
+  "door_max_angle_deg": 25.076174531441534,
+  "door_final_angle_deg": 25.076174531441534,
+  "robot_door_contact_steps": 11886,
+  "max_contact_force_norm_sum_n": 9.066882157749472,
+  "max_robot_door_penetration_m": 0.0008192260815360879,
+  "contact_pair_max_force_n": {
+    "door_single_back_handle_grip / piper_gripper_link1_collision_0": 1.7108840124230682,
+    "door_single_back_handle_grip / piper_gripper_link2_collision_0": 1.0150558506574365,
+    "door_single_back_handle_grip / piper_gripper_base_collision_0": 7.727999372478665
+  },
+  "actuator_max_abs_forces": [
+    6.087408979330795,
+    2.564667849632073,
+    2.896803329296432,
+    0.0003515948649445952,
+    6.087408979330799,
+    2.5628188416390003,
+    2.896831992519111,
+    0.00035046992450070544,
+    6.084744849574208,
+    2.5579520160073628,
+    2.896903328513588,
+    0.0003505117836509614,
+    6.087408979330802,
+    2.565178338532533,
+    2.896623233321179,
+    0.00035040095344451914,
+    2.066657120854927,
+    11.481967489626982,
+    4.821712393252369,
+    0.6411729743161345,
+    0.9654786268412465,
+    0.06110026615648678,
+    2.1001543736851858
+  ],
+  "actuator_force_limits": [
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -15.0,
+      15.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -15.0,
+      15.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -15.0,
+      15.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -50.0,
+      50.0
+    ],
+    [
+      -15.0,
+      15.0
+    ],
+    [
+      -35.0,
+      35.0
+    ],
+    [
+      -35.0,
+      35.0
+    ],
+    [
+      -30.0,
+      30.0
+    ],
+    [
+      -12.0,
+      12.0
+    ],
+    [
+      -12.0,
+      12.0
+    ],
+    [
+      -8.0,
+      8.0
+    ],
+    [
+      -10.0,
+      10.0
+    ]
+  ],
+  "stopped_by_window_close": false,
+  "door_actuated": false,
+  "floating_joint_count": 0,
+  "door_state_writes_after_initialization": 0,
+  "handle_weld": false,
+  "robot_self_contact_max_force_n": {},
+  "robot_frame_max_force_n": {},
+  "force_limits_respected": true,
+  "mujoco_warning_counts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "ik_max_position_error_m": 1.99894900105179e-05,
+  "ik_max_rotation_error_rad": 1.3746702305857584e-05,
+  "final_angle_trim_deg": 3.01537440281128,
+  "completed_planned_duration": true,
+  "reached_60deg_once": false
+}

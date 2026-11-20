@@ -26,9 +26,13 @@ ROOT = Path(__file__).resolve().parents[1]
 ARM = [f'piper_joint{i}' for i in range(1, 7)]
 
 
+def motion_name(cfg):
+    return 'push' if cfg['handle_site'] == 'door_single_back_handle' else 'pull'
+
+
 def build(cfg):
     root = ET.parse(ROOT / 'sim/robots/m1_piper.xml').getroot()
-    root.set('model', 'P4_FIXED_BASE_CONTACT_PULL')
+    root.set('model', 'P4_FIXED_BASE_CONTACT_' + motion_name(cfg).upper())
     option = root.find('option')
     option.set('timestep', str(cfg['timestep_s']))
     option.set('integrator', 'implicitfast')
@@ -65,7 +69,7 @@ def build(cfg):
     world.extend(list(component(door_cfg, double=False)))
     ET.SubElement(world, 'geom', name='p4_floor', type='plane', size='4 4 .1', mass='0', rgba='.8 .83 .86 1', friction='.9 .005 .0001')
     ET.SubElement(world, 'light', pos='0 -2 4', dir='.2 .3 -1', castshadow='true')
-    camera_lookat(world, 'p4_overview', [-.4, 2.7, 2.1], [1.1, 0, .9], 48)
+    camera_lookat(world, 'p4_overview', cfg.get('camera_position_m', [-.4, 2.7, 2.1]), cfg.get('camera_target_m', [1.1, 0, .9]), 48)
     camera_lookat(world, 'p4_contact', [1.0, 1.5, 1.5], [1.25, .1, 1.0], 40)
     ET.SubElement(root, 'statistic', center='1.1 0 .95', extent='2.4')
     visual = ET.SubElement(root, 'visual')
@@ -113,10 +117,9 @@ def smooth(x):
 
 def target(cfg, phase, fraction, hinge, local_handle):
     angle = math.radians(cfg['target_angle_deg'])
-    theta = angle * smooth(fraction) if phase == 'pull' else (angle if phase in ('hold','release','retreat','final') else 0.)
+    theta = angle * smooth(fraction) if phase in ('pull', 'push') else (angle if phase in ('hold','release','retreat','final') else 0.)
     Rz = Rotation.from_euler('z', theta).as_matrix()
-    # Tool +Z approaches the front handle along the panel inward normal;
-    # tool +Y closes across the vertical bar; tool +X points downwards.
+    # Tool +Z approaches the chosen handle, +Y closes across the bar.
     yaw_start = math.radians(cfg.get('tool_yaw_start_deg', 0.))
     tool_yaw = yaw_start + cfg.get('tool_yaw_door_ratio', 1.) * theta
     rotation = Rotation.from_euler('z', tool_yaw).as_matrix() @ np.array([[0,0,1],[0,1,0],[-1,0,0]], float)
@@ -134,7 +137,7 @@ def target(cfg, phase, fraction, hinge, local_handle):
         rotation = Rotation.from_euler('z', yaw).as_matrix() @ np.array([[0,0,1],[0,1,0],[-1,0,0]], float)
     width = cfg['open_width_m']
     if phase == 'grip': width += smooth(fraction) * (cfg['closed_command_width_m'] - width)
-    if phase in ('pull','hold'): width = cfg['closed_command_width_m']
+    if phase in ('pull', 'push', 'hold'): width = cfg['closed_command_width_m']
     if phase == 'release': width = cfg['closed_command_width_m'] + smooth(fraction) * (width-cfg['closed_command_width_m'])
     return position, rotation, width, theta
 
@@ -196,6 +199,9 @@ def run(model, cfg, trajectory, out, live=False, video=False, hold_final=False):
     records=[]; phases_seen=[]; max_force=0.; max_penetration=0.; max_torques=np.zeros(model.nu)
     contact_steps=0; min_angle=0.; max_angle=0.; stopped=False; pair_forces={}; self_forces={}
     contact_force = np.zeros(6)
+    frame_geoms = {model.geom(name).id for name in ('door_single_left_post', 'door_single_right_post', 'door_single_top_beam')}
+    frame_forces = {}
+    angle_trim_deg = 0.0
     failure = None
     step = -1
     try:
@@ -206,6 +212,14 @@ def run(model, cfg, trajectory, out, live=False, video=False, hold_final=False):
             phase = trajectory['phases'][index]
             if not phases_seen or phases_seen[-1] != phase:
                 phases_seen.append(phase); print(f'{t:.2f}s {phase}: door={math.degrees(data.qpos[hinge_q]):.2f} deg', flush=True)
+            if 'trim_targets' in trajectory and phase in ('hold', 'release', 'retreat', 'final'):
+                if phase == 'hold':
+                    remaining = cfg['target_angle_deg'] - math.degrees(data.qpos[hinge_q])
+                    angle_trim_deg = float(np.clip(angle_trim_deg + dt * cfg['hold_gain_per_s'] * remaining,
+                                                   0., cfg['max_angle_trim_deg']))
+                extra = trajectory['trim_targets']
+                extra_command = (1-f)*extra[index] + f*extra[next_index]
+                command = command + angle_trim_deg / cfg['max_angle_trim_deg'] * (extra_command-command)
             data.ctrl[:] = rest
             data.ctrl[arm_a] = command[:6]; data.ctrl[grip_a] = command[6]
             # Gravity compensation is inside the same force-limited actuators.
@@ -216,6 +230,12 @@ def run(model, cfg, trajectory, out, live=False, video=False, hold_final=False):
             robot_door_contacts=0; total_force=0.
             for ci in range(data.ncon):
                 c=data.contact[ci]; names=[model.body(model.geom_bodyid[g]).name for g in (c.geom1,c.geom2)]
+                if frame_geoms.intersection((c.geom1, c.geom2)) and any(n.startswith(('piper_', 'm1_')) for n in names):
+                    mj.mj_contactForce(model, data, ci, contact_force)
+                    force = float(np.linalg.norm(contact_force[:3]))
+                    if force > 1e-6:
+                        pair = ' / '.join(model.geom(g).name or model.body(model.geom_bodyid[g]).name for g in (c.geom1, c.geom2))
+                        frame_forces[pair] = max(frame_forces.get(pair, 0.), force)
                 if all(n.startswith(('piper_', 'm1_')) for n in names):
                     mj.mj_contactForce(model, data, ci, contact_force)
                     force = float(np.linalg.norm(contact_force[:3]))
@@ -238,7 +258,7 @@ def run(model, cfg, trajectory, out, live=False, video=False, hold_final=False):
                                 float(data.qvel[model.joint('door_single_hinge').dofadr[0]]),
                                 float(data.qpos[f1]-data.qpos[f2]),robot_door_contacts,total_force,
                                 float(np.linalg.norm(data.site_xpos[grasp]-trajectory['positions'][index])),
-                                *data.qpos[arm_q],*data.actuator_force[arm_a],float(data.actuator_force[grip_a])])
+                                *data.qpos[arm_q],*data.actuator_force[arm_a],float(data.actuator_force[grip_a]), angle_trim_deg])
                 next_sample+=1/cfg['sample_hz']
             if writer and t+1e-9>=next_frame:
                 renderer.update_scene(data, camera='p4_overview', scene_option=opt)
@@ -269,9 +289,9 @@ def run(model, cfg, trajectory, out, live=False, video=False, hold_final=False):
         w = csv.writer(f, lineterminator='\n')
         w.writerow(['time_s', 'phase', 'door_angle_deg', 'planned_angle_deg', 'door_speed_rad_s',
                     'width_m', 'robot_door_contacts', 'contact_force_norm_sum_n', 'tcp_error_m',
-                    *[n+'_rad' for n in ARM], *[n+'_torque_nm' for n in ARM], 'gripper_force_n'])
+                    *[n+'_rad' for n in ARM], *[n+'_torque_nm' for n in ARM], 'gripper_force_n', 'angle_trim_deg'])
         w.writerows(records)
-    summary={'mode':'P4_FIXED_BASE_CONTACT_PULL','config':cfg,'mujoco_version':mj.__version__,
+    summary={'mode':'P4_FIXED_BASE_CONTACT_' + motion_name(cfg).upper(),'config':cfg,'mujoco_version':mj.__version__,
              'failure':failure, 'nq':model.nq,'nv':model.nv,'nu':model.nu,'neq':model.neq,'steps':step+1,'simulation_time_s':float(data.time),
              'initial_qpos':baseline_q.tolist(),'final_qpos':data.qpos.tolist(),'door_min_angle_deg':math.degrees(min_angle),
              'door_max_angle_deg':math.degrees(max_angle),'door_final_angle_deg':math.degrees(data.qpos[hinge_q]),
@@ -282,10 +302,11 @@ def run(model, cfg, trajectory, out, live=False, video=False, hold_final=False):
              'floating_joint_count':int(np.sum(model.jnt_type == mj.mjtJoint.mjJNT_FREE)),
              'door_state_writes_after_initialization':0,
              'handle_weld':bool(np.any(model.eq_type == mj.mjtEq.mjEQ_WELD)),
-             'robot_self_contact_max_force_n': self_forces,
+             'robot_self_contact_max_force_n': self_forces, 'robot_frame_max_force_n': frame_forces,
              'force_limits_respected': bool(np.all(max_torques <= np.max(np.abs(model.actuator_forcerange), axis=1)+1e-8)),
              'mujoco_warning_counts': [int(w.number) for w in data.warning],
              'ik_max_position_error_m':trajectory['max_position_error_m'],'ik_max_rotation_error_rad':trajectory['max_rotation_error_rad']}
+    summary['final_angle_trim_deg'] = angle_trim_deg
     summary['completed_planned_duration'] = failure is None and not stopped and step+1 == round(len(trajectory['targets'])/100/dt)
     summary['reached_60deg_once']=summary['door_max_angle_deg']>=60 and contact_steps>0
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
@@ -302,13 +323,18 @@ def main():
     parser.add_argument('--hold-final', action='store_true', help='keep the live final state visible until the viewer is closed')
     args=parser.parse_args();cfg=yaml.safe_load(args.config.read_text())
     if args.output is None:
-        args.output = ROOT/'results/p4'/datetime.now(timezone.utc).strftime('pull_%Y%m%dT%H%M%SZ')
+        args.output = ROOT/'results/p4'/datetime.now(timezone.utc).strftime(motion_name(cfg) + '_%Y%m%dT%H%M%SZ')
     args.output.mkdir(parents=True,exist_ok=True)
     model=mj.MjModel.from_xml_path(str(build(cfg)));trajectory=plan(model,cfg)
     (args.output/'plan.json').write_text(json.dumps({k:v for k,v in trajectory.items() if k.startswith('max_') or k.startswith('worst_')},indent=2)+'\n')
     print('IK:',trajectory['max_position_error_m'],trajectory['max_rotation_error_rad'],trajectory['worst_position_error_phase'],flush=True)
     if trajectory['max_position_error_m']>.002 or trajectory['max_rotation_error_rad']>.02:
         raise RuntimeError('Planned target exceeds IK tolerance; physical simulation not started')
+    if cfg.get('max_angle_trim_deg', 0.) > 0:
+        upper = plan(model, {**cfg, 'target_angle_deg': cfg['target_angle_deg'] + cfg['max_angle_trim_deg']})
+        if upper['max_position_error_m'] > .002 or upper['max_rotation_error_rad'] > .02:
+            raise RuntimeError(f"Door angle trim path exceeds IK tolerance: {upper['max_position_error_m']:.4g} m, {upper['max_rotation_error_rad']:.4g} rad")
+        trajectory['trim_targets'] = upper['targets']
     if not args.plan_only:run(model,cfg,trajectory,args.output,args.live,args.video,args.hold_final)
     print(f'Saved {args.output}', flush=True)
 

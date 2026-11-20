@@ -4,7 +4,9 @@
 
 ## 当前阶段
 
-**P3 桌面装配检查已完成。P4 固定底盘从前侧拉门，单次名义 60° 试验实际达到 59.963319°。** 随后松爪退离，38 秒 / 19,000 步。门与机器人只有前把手和两夹指接触，接触力范数之和峰值 2.2433 N。严格 60° 阈值尚差 0.0367°。下一步从另一侧推门，再开展 P5 轮足地面保持。
+**P3 桌面装配检查已完成。P4 固定底盘从前侧拉门，单次名义 60° 试验实际达到 59.963319°。** 随后松爪退离，38 秒 / 19,000 步。门与机器人只有前把手和两夹指接触，接触力范数之和峰值 2.2433 N。严格 60° 阈值尚差 0.0367°。背侧实测已从 22.098° 提升至 25.076°，准备开展 P5 轮足地面保持。
+
+背侧固定根 [1.88, 0, 0.54266] m、朝向 90°。35 s / 17,500 步，门角反馈补偿 3.015°，退爪后门停在 25.076°。两夹指及夹爪基座接触背把手。运行 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --config config/p4_push.yaml --live --video`。[详细数据](results/p4/push_feedback/summary.json) · [报告](reports/P4_FIXED_BASE_CONTACT.md)。前侧提交 `29eab00`。
 
 固定根移至 [0.65, 0.30, 0.54266] m 并转 45°，把手高度 0.85 m。松爪后退 0.10 m 并抬高 0.04 m。桌面运行命令为 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --config config/p4_pull_60.yaml --live --video --hold-final --output results/p4/pull_60_trial01`。3,800 行时序与 950 帧视频已核对，按本次记录结束时仍为 59.963319°。 [桌面截图](results/p4/pull_60_trial01/desktop_final.png) · [曲线](results/p4/pull_60_trial01/contact_timeseries.png)
 

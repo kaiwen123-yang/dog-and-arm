@@ -2,6 +2,14 @@
 
 日期：2026-11-20（Asia/Shanghai）。起点为 P3 可见检查提交 `4bbf1e5`。本轮没有导入 SDK、CAN、ROS 相机或操作实机。
 
+## 背侧推门与门角反馈
+
+本轮在相同的门和把手高度下把 M1 放在门后 [1.88, 0, 0.54266] m，底盘朝向 90°。把手随门向远离机器人的方向移动。先用背侧 U 形把手、两指夹持做 25° 名义圆弧，松开后实测 22.098246°。这个基准的接触仅限两指和把手。其运行汇总内含原始配置，可用于重建。[基准时序](../results/p4/push_25/timeseries.csv)
+
+同站位下，仅加大夹持力的两次试验实际得到 22.020° 和 22.028°。随后恢复原来的夹爪指令，在保持阶段读取仿真铰链角，通过积分误差在两条已求解的关节路径之间插值，额外手部圆弧限于 4°。松爪和退离沿用最后一次修正。关节执行器带动机器人接触门，铰链由物理积分推进。时序中 planned_angle_deg 与 tcp_error_m 均相对于原始名义轨迹，angle_trim_deg 单列反馈补偿。
+
+执行 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --config config/p4_push.yaml --live --video --output results/p4/push_feedback`，35 s / 17,500 步。最终修正 3.015°，松爪退离后门角 25.076175°，机器人与门扇接触力为零。过程接触对象包括背侧把手与两指，以及把手与夹爪基座（单点峰值 7.728 N）。机器人–门扇接触力范数之和峰值 9.067 N，最大软穿透 0.819 mm，机器人–门框、自碰撞的非零接触力均未记录到，执行器均在设置范围内，警告计数为 0。此结果使用仿真铰链角，较大角度的背侧推门和扰动重复留待后续。[视频](../results/p4/push_feedback/contact.mp4) · [曲线](../results/p4/push_feedback/contact_timeseries.png) · [桌面截图](../results/p4/push_feedback/desktop.png)
+
 ## 后续前侧拉门
 
 底盘在 [0.65, 0.30, 0.54266] m 处转 45°，抓住竖直把手后腕部从 0° 缓慢转到 −10°。退离增加 4 cm 抬升和 10 cm 后退，修正早期退离时碰门板的问题。380 个采样姿态通过路径检查。随后在桌面执行 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --config config/p4_pull_60.yaml --live --video --hold-final`。
