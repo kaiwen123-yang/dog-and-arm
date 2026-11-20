@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+前拉 C01，unexpected_contact:robot_panel。终态 61.18086°，29,951 步。开门段 39.472 s。六轴最小余量依次为 0.931° / 39.099° / 37.424° / 44.082° / -0.081° / 95.632°。J5 最小值发生在 52.210 s（open）。两段停车分别为 未完成、未完成。59.900 s 的接触点落在夹爪基座与门板之间。 下一项为修正站位后可见复跑名义前拉。[事件、桌面视频与精简时序](results/p6/rail_bridge_front60_v2_20261120T133724Z/baseline_mobile_C01/)
+
 **本机复测启动。** main 快进至 5cb8403，原未跟踪 P5 数据保留。用 `bash scripts/project_env.sh python scripts/build_assembly.py --stage combined` 重建，在 `live_assembly.py --watch --mount-detail` 窗口观察 XML 重载、板和碰撞近景、收臂侧视和腕相机，并用 `check_assembly.py --report results/assembly/rail_bridge_front60_v2/local_desktop/kinematics.json` 核对 FK。收臂时活动臂、夹爪及腕附件相对机身/前腿的最近碰撞面间距分别为 92.420/260.216 mm。下一项为连续动力学名义复测。[本机桌面证据](results/assembly/rail_bridge_front60_v2/local_desktop/)
 
 **前移模型的云端准备记录。** 用户要求安装板靠近狗头，故将板、两支座和整台 Piper 沿 M1 机身 +X 前移一档孔距，版本为 `rail_bridge_front60_v2`。臂根由 [0.050, 0, 0.0945] m 改为 [0.110, 0, 0.0945] m，板心 X 由 0.010 改为 0.070 m，选孔由每排第 3/4/5 改为第 4/5/6（按 X 递增编号）；完整导轨基准与高度不变。

@@ -146,3 +146,9 @@ bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --vid
 ## 前移 60 mm 的本机复测
 
 已完成当前安装的桌面预览与重载。动力学从原控制参数的名义前拉开始。每个 2 ms 步的实际六轴限位余量另存本机 CSV，摘要保留各轴最小值及发生的时刻和阶段。退臂、释放后保持、收臂、倒车和终点的机门碰撞面净空在 25 Hz 观测点计算，所有参与碰撞的机器人和门几何均纳入。
+
+### baseline_mobile_C01
+
+前拉 C01，unexpected_contact:robot_panel。终态 61.18086°，29,951 步。开门段 39.472 s。六轴最小余量依次为 0.931° / 39.099° / 37.424° / 44.082° / -0.081° / 95.632°。J5 最小值发生在 52.210 s（open）。两段停车分别为 未完成、未完成。59.900 s 的接触点落在夹爪基座与门板之间。
+
+实际命令为 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --case 1 --live --video --hold-final --output results/p6/rail_bridge_front60_v2_20261120T133724Z/baseline_mobile_C01`。每步六轴原表与 25 Hz 接触/状态留在本机 `results/raw_large/p6/rail_bridge_front60_v2_20261120T133724Z/baseline_mobile_C01/`。核对物理步数、六轴极小值和视频解码帧数。[运行证据](../results/p6/rail_bridge_front60_v2_20261120T133724Z/baseline_mobile_C01/)
