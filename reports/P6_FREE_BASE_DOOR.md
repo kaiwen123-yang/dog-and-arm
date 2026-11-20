@@ -170,3 +170,11 @@ bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --vid
 前拉 C13，timeout:open。终态 56.01962°，36,261 步。六轴最小余量依次为 9.323° / 31.250° / 34.144° / 46.766° / 2.674° / 107.105°。J5 最小值发生在 72.522 s（open）。两段停车分别为 未完成、未完成。指杆摩擦为 1.2 倍，55.002 s 开门阶段内始终保持双指接触，峰值合力 2.957 N。
 
 实际命令为 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --case 13 --live --video --hold-final --output results/p6/rail_bridge_front60_v2_20261120T133724Z/station_mobile_C13`。每步六轴原表与 25 Hz 接触/状态留在本机 `results/raw_large/p6/rail_bridge_front60_v2_20261120T133724Z/station_mobile_C13/`。核对物理步数、六轴极小值和视频解码帧数。[运行证据](../results/p6/rail_bridge_front60_v2_20261120T133724Z/station_mobile_C13/)
+
+### lead_mobile_C13
+
+前拉 C13，流程完成。终态 60.05255°，37,753 步。开门段 35.382 s。六轴最小余量依次为 3.709° / 31.250° / 34.144° / 45.849° / 1.752° / 98.053°。J5 最小值发生在 53.850 s（release）。两段停车分别为 3.0 s、3.0 s。前侧跟随领先上限调整到 0.40°，55 s 时限仍有 19.618 s 余量。完整退臂采样净空 11.56 mm。
+
+实际命令为 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --case 13 --live --video --hold-final --output results/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C13`。每步六轴原表与 25 Hz 接触/状态留在本机 `results/raw_large/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C13/`。核对物理步数、六轴极小值和视频解码帧数。[运行证据](../results/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C13/)
+
+背侧原站位的世界坐标起点筛查发现 C03、C20 在 home 与左门柱分别重叠 4.312/22.920 mm。背侧站位 X 外移 40 mm 至 1.92 m，静态初态重算，20 条中的最小净空为 6.753 mm（C20）。沿用 120° 入杆腕姿和 0.30° 领先量。[两站位各 20 个规定初态的距离](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_initial_clearance.csv)。

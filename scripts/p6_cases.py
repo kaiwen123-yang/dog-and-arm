@@ -220,6 +220,9 @@ if __name__=='__main__':
     prefix = 'conditions' if args.stage == 'mobile' else 'conditions_push'
     out=args.output or ROOT/'results/p6'/f'{prefix}_{stamp}'
     out.mkdir(parents=True,exist_ok=False)
-    raw=ROOT/'results/raw_large/p6'/out.name
+    case_root = ROOT/'results/p6'
+    location = out.resolve()
+    raw = ROOT/'results/raw_large/p6'/(location.relative_to(case_root)
+                                      if location.is_relative_to(case_root) else location.name)
     raw.mkdir(parents=True,exist_ok=False)
     raise SystemExit(0 if display(args.cases,out,raw,args.arrival_only,args.stage) else 1)
