@@ -1,0 +1,2874 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-11-20",
+  "timezone": "Asia/Shanghai",
+  "source_repository": "https://github.com/kaiwen123-yang/dog-and-arm",
+  "source_commit": "9c43f530360ce3398018b954f46eac11b96e0d73",
+  "scope": "Retrospective source and saved-data review for P6 planning; not a new P6 test.",
+  "new_simulation_run": false,
+  "hardware_operated": false,
+  "p6_validated": false,
+  "p4": {
+    "schema": "p4_baseline_audit_v1",
+    "source_repository": "https://github.com/kaiwen123-yang/dog-and-arm",
+    "source_commit": "9c43f530360ce3398018b954f46eac11b96e0d73",
+    "review_scope": "Source/XML and saved-result audit; arithmetic over committed CSVs; no simulation or hardware rerun.",
+    "provenance_policy": {
+      "recorded": "Numbers copied from saved MuJoCo summaries/CSVs are simulation observations, not hardware measurements.",
+      "code_confirmed": "Control structure and passive/fixed-root declarations are established by source/XML inspection.",
+      "derived": "CSV phase statistics, sample maxima and differences are reproducible arithmetic over the saved CSV.",
+      "inference": "Contact-quality interpretations are explicitly bounded by missing per-contact timeseries.",
+      "single_run_boundary": "No single nominal success is classified as robustness evidence."
+    },
+    "sampling_and_metric_definitions": {
+      "physical_step_s": 0.002,
+      "step_summary_update_hz": 500,
+      "csv_nominal_sample_hz": 100,
+      "peak_rule": "Summary force/penetration/actuator maxima are accumulated every mj_step; CSV contains one sample per 0.01 s and can miss narrow peaks. Compare each source at its own rate.",
+      "timestamp_rule": "CSV writes data.time after mj_step; the first row is 0.002 s, then 0.012 s, etc. Last CSV sample precedes final simulated time by about 0.008 s.",
+      "contact_count_rule": "robot_door_contacts counts contact points whose force norm exceeds 1e-6 N, not number of contacting links or guaranteed grasp constraints.",
+      "force_norm_sum": "For robot versus door_single_leaf contacts, sum norm(contact_force[:3]) over contacts in that step. This is neither vector-summed net force nor a six-dimensional wrench.",
+      "contact_pair_max_force_n": "Maximum norm of an individual contact encountered for each geom pair over the run; different pair maxima need not be simultaneous.",
+      "penetration": "max_robot_door_penetration_m is max(-contact.dist) over robot-door leaf contacts, not a whole-scene clearance guarantee.",
+      "missing_net_wrench_fields": [
+        "per_contact_position",
+        "per_contact_normal_and_tangential_force",
+        "contact_frame_orientation",
+        "per_contact_geom_ids_each_sample",
+        "net_force_vector",
+        "net_torque_vector"
+      ],
+      "cannot_reconstruct_net_wrench_from_saved_csv": true,
+      "tcp_error_reference": "Original nominal task-space path; feedback trim is stored separately and is not incorporated into the tcp_error_m reference.",
+      "summary_absence_rule": "Absent monitoring fields are stored as null plus presence=false; they must not be interpreted as observed zero.",
+      "door_state_write_counter": "door_state_writes_after_initialization=0 is a hardcoded source declaration; inspection of the loop supports it, but it is not an instrumented write counter."
+    },
+    "control_and_scene_evidence": {
+      "source": {
+        "path": "scripts/p4_fixed_door.py",
+        "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/scripts/p4_fixed_door.py"
+      },
+      "fixed_root_build_lines": [
+        51,
+        74
+      ],
+      "offline_ik_lines": [
+        88,
+        165
+      ],
+      "physical_initialization_lines": [
+        168,
+        180
+      ],
+      "trajectory_and_trim_loop_lines": [
+        212,
+        231
+      ],
+      "contact_metrics_lines": [
+        234,
+        265
+      ],
+      "summary_and_success_lines": [
+        298,
+        315
+      ],
+      "force_limit_code_lines": [
+        33,
+        48
+      ],
+      "angle_trim_upper_path_lines": [
+        337,
+        341
+      ],
+      "control_description": "100 Hz precomputed world-geometry arm IK path, interpolated while a force-limited position servo drives 500 Hz mj_step. Push feedback adjusts only hold using simulated hinge angle, interpolating the nominal 25-degree and preplanned 29-degree joint paths.",
+      "force_limit_description": "ctrl target plus qfrc_bias/kp enters the same forcelimited actuator. Compensation does not bypass actuator output limits. These limits do not bound contact-force magnitude.",
+      "arm_limit_nm": [
+        35,
+        35,
+        30,
+        12,
+        12,
+        8
+      ],
+      "single_gripper_actuator_limit_n": 10,
+      "fixed_leg_joint_limit_nm": 50,
+      "fixed_wheel_joint_limit_nm": 15,
+      "integrator": "implicitfast",
+      "phase_transitions": "Time based; no contact-loss or unintended-contact event gate. Explicit runtime checks cover nonfinite qpos/MuJoCo warnings, plus window-close stop.",
+      "bias_description": "qfrc_bias includes gravity, Coriolis and centrifugal terms; it is not strictly gravity alone."
+    },
+    "nominal_scene_parameters": {
+      "classification": "nominal_simulation_scene_assumptions_not_measured_real_door_or_floor_parameters",
+      "sources": [
+        {
+          "path": "config/door.yaml",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/config/door.yaml"
+        },
+        {
+          "path": "scripts/build_doors.py",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/scripts/build_doors.py"
+        },
+        {
+          "path": "scripts/p4_fixed_door.py",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/scripts/p4_fixed_door.py"
+        },
+        {
+          "path": "config/p4_pull_60.yaml",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/config/p4_pull_60.yaml"
+        },
+        {
+          "path": "config/p4_push.yaml",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/config/p4_push.yaml"
+        },
+        {
+          "path": "sim/scenes/p4_fixed_pull_60.xml",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/sim/scenes/p4_fixed_pull_60.xml"
+        },
+        {
+          "path": "sim/scenes/p4_fixed_push.xml",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/sim/scenes/p4_fixed_push.xml"
+        }
+      ],
+      "door": {
+        "nominal_bay_width_m": 0.85,
+        "solid_panel_width_m": 0.84,
+        "height_m": 1.85,
+        "thickness_m": 0.04,
+        "leaf_total_lumped_mass_kg": 12.0,
+        "inertial_diagonal_at_com_kg_m2": [
+          4.1281,
+          3.4241,
+          0.7072
+        ],
+        "inertial_com_in_leaf_m": [
+          0.0,
+          0.424,
+          0.925
+        ],
+        "leaf_world_origin_closed_m": [
+          1.5,
+          -0.425,
+          0.02
+        ],
+        "hinge_stiffness_nm_per_rad": 0.0,
+        "hinge_damping_nm_s_per_rad": 0.3,
+        "hinge_frictionloss_nm": 0.1,
+        "hinge_range_rad": [
+          0.0,
+          1.91986217719
+        ],
+        "panel_geom_friction_triplet": [
+          0.8,
+          0.005,
+          0.0001
+        ],
+        "handle_geom_friction_triplet": [
+          1.0,
+          0.005,
+          0.0001
+        ],
+        "door_panel_and_handle_condim": 3,
+        "handle_radius_m": 0.012,
+        "handle_vertical_length_m": 0.18,
+        "handle_stand_off_from_panel_face_m": 0.075,
+        "config_door_yaml_handle_height_m": 1.0,
+        "successful_p4_effective_handle_height_world_m": 0.85,
+        "successful_p4_height_override_m": 0.85,
+        "failure_trial_02_handle_height_m": null,
+        "handle_mass_model": "Door leaf inertial mass is a lumped 12 kg uniform-box nominal mass including handles; individual leaf geoms have mass=0, so no separately measured handle mass is added.",
+        "actuator": false,
+        "handle_weld": false,
+        "latch": false,
+        "closer_or_return_spring": false
+      },
+      "floor": {
+        "geom_name": "p4_floor",
+        "type": "plane",
+        "attached_to": "worldbody",
+        "geom_declared_mass_kg": 0.0,
+        "physical_interpretation": "Static world plane; zero geom mass is not a freely moving massless floor.",
+        "geom_friction_triplet": [
+          0.9,
+          0.005,
+          0.0001
+        ],
+        "size": [
+          4.0,
+          4.0,
+          0.1
+        ],
+        "damping": "No floor damping scalar is specified; hinge damping is unrelated to contact solver softness.",
+        "contact_solver_parameters": "No floor-specific solref or solimp is set in these P4 scene XML files; MuJoCo defaults apply.",
+        "effective_pair_friction_not_audited": "These are declared per-geom values. They must not be assumed to equal every robot-floor effective contact pair coefficient without inspecting MuJoCo mixing/defaults and the partner geom."
+      },
+      "friction_triplet_labels": [
+        "sliding",
+        "torsional",
+        "rolling"
+      ],
+      "friction_triplet_note": "Stored as the exact per-geom MJCF friction values. With condim=3, the contact model uses tangential sliding friction; the presence of torsional/rolling entries alone does not establish active torsional/rolling friction DOFs."
+    },
+    "runs": {
+      "pull_60_trial01": {
+        "evidence_kind": "recorded_mujoco_simulation_not_hardware_measurement",
+        "sources": {
+          "summary": {
+            "path": "results/p4/pull_60_trial01/summary.json",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/pull_60_trial01/summary.json"
+          },
+          "timeseries": {
+            "path": "results/p4/pull_60_trial01/timeseries.csv",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/pull_60_trial01/timeseries.csv"
+          },
+          "plan.json": {
+            "path": "results/p4/pull_60_trial01/plan.json",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/pull_60_trial01/plan.json"
+          },
+          "contact_timeseries.png": {
+            "path": "results/p4/pull_60_trial01/contact_timeseries.png",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/pull_60_trial01/contact_timeseries.png"
+          },
+          "contact.mp4": {
+            "path": "results/p4/pull_60_trial01/contact.mp4",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/pull_60_trial01/contact.mp4"
+          },
+          "desktop_final.png": {
+            "path": "results/p4/pull_60_trial01/desktop_final.png",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/pull_60_trial01/desktop_final.png"
+          }
+        },
+        "configuration_from_run_summary": {
+          "base_xyz_m": [
+            0.65,
+            0.3,
+            0.54266
+          ],
+          "base_yaw_rad": 0.7853981633974483,
+          "handle_site": "door_single_front_handle",
+          "door_handle_height_m": 0.85,
+          "target_angle_deg": 60.0,
+          "timestep_s": 0.002,
+          "sample_hz": 100,
+          "phase_duration_s": {
+            "settle": 1.5,
+            "approach": 3.0,
+            "grip": 2.0,
+            "pull": 24.0,
+            "hold": 2.0,
+            "release": 1.5,
+            "retreat": 3.0,
+            "final": 1.0
+          },
+          "tool_yaw_start_deg": 0.0,
+          "tool_yaw_door_ratio": -0.16666666666666666,
+          "retreat_distance_m": 0.1,
+          "retreat_lift_m": 0.04,
+          "retreat_yaw_deg": -60.0,
+          "max_angle_trim_deg": null,
+          "hold_gain_per_s": null
+        },
+        "step_summary": {
+          "mode": "P4_FIXED_BASE_CONTACT_PULL",
+          "mujoco_version": "3.3.0",
+          "steps": 19000,
+          "simulation_time_s": 38.000000000000476,
+          "nq": 25,
+          "nv": 25,
+          "nu": 23,
+          "neq": 1,
+          "door_min_angle_deg": -1.1989402404025172e-06,
+          "door_max_angle_deg": 59.96331871179707,
+          "door_final_angle_deg": 59.96331871179707,
+          "robot_door_contact_steps": 13371,
+          "max_contact_force_norm_sum_n": 2.2432941526951513,
+          "max_robot_door_penetration_m": 0.0007019352310956954,
+          "contact_pair_max_force_n": {
+            "door_single_front_handle_grip / piper_gripper_link1_collision_0": 1.255483079840782,
+            "door_single_front_handle_grip / piper_gripper_link2_collision_0": 1.2807593288451997
+          },
+          "door_actuated": false,
+          "floating_joint_count": 0,
+          "door_state_writes_after_initialization": 0,
+          "handle_weld": false,
+          "robot_self_contact_max_force_n": {},
+          "robot_frame_max_force_n": null,
+          "force_limits_respected": true,
+          "mujoco_warning_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "failure": null,
+          "stopped_by_window_close": false,
+          "completed_planned_duration": true,
+          "reached_60deg_once": false,
+          "final_angle_trim_deg": null,
+          "ik_max_position_error_m": 1.9887205092586012e-05,
+          "ik_max_rotation_error_rad": 0.00016137344861461066
+        },
+        "summary_field_presence": {
+          "floating_joint_count": true,
+          "robot_self_contact_max_force_n": true,
+          "robot_frame_max_force_n": false,
+          "force_limits_respected": true,
+          "mujoco_warning_counts": true,
+          "failure": true,
+          "completed_planned_duration": true,
+          "final_angle_trim_deg": false
+        },
+        "derived_from_summary": {
+          "final_angle_error_vs_config_target_deg": -0.03668128820292793,
+          "max_penetration_mm": 0.7019352310956954,
+          "arm_actuator_max_abs_torque_nm": {
+            "piper_joint1_motor": 0.37316597746126945,
+            "piper_joint2_motor": 11.855857024818306,
+            "piper_joint3_motor": 4.749613158071384,
+            "piper_joint4_motor": 0.7759471223634051,
+            "piper_joint5_motor": 0.970635223445413,
+            "piper_joint6_motor": 0.03099122994468928
+          },
+          "arm_peak_abs_torque_nm": 11.855857024818306,
+          "arm_peak_actuator": "piper_joint2_motor",
+          "gripper_actuator_max_abs_force_n": 2.1518984697896464,
+          "all_summary_actuator_maxima_within_reported_force_ranges": true
+        },
+        "csv_100hz_analysis": {
+          "row_count": 3800,
+          "time_first_s": 0.002,
+          "time_last_s": 37.992000000000466,
+          "median_sample_interval_s": 0.009999999999998899,
+          "max_contact_force_norm_sum": {
+            "value": 2.2347190694312005,
+            "time_s": 9.411999999999813,
+            "phase": "pull"
+          },
+          "peak_contact_sample": {
+            "time_s": 9.411999999999813,
+            "phase": "pull",
+            "door_angle_deg": 0.636005516752116,
+            "planned_angle_deg": 0.8844506597061768,
+            "door_speed_rad_s": 0.012531983595995938,
+            "width_m": 0.02223472439299564,
+            "robot_door_contacts": 2,
+            "contact_force_norm_sum_n": 2.2347190694312005,
+            "tcp_error_m": 0.0008799054852993866
+          },
+          "summary_peak_minus_sampled_peak_n": 0.008575083263950845,
+          "first_operation_sample_with_fewer_than_two_nonzero_contacts": null,
+          "operation_contact_count_histogram": {
+            "2": 2400
+          },
+          "phase_statistics": [
+            {
+              "phase": "settle",
+              "sample_rows": 150,
+              "first_time_s": 0.002,
+              "last_time_s": 1.492000000000001,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0,
+              "contact_count_histogram": {
+                "0": 150
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 4.340379266151515e-06,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "approach",
+              "sample_rows": 300,
+              "first_time_s": 1.5020000000000011,
+              "last_time_s": 4.491999999999727,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0,
+              "contact_count_histogram": {
+                "0": 300
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.004109270439384827,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "grip",
+              "sample_rows": 200,
+              "first_time_s": 4.501999999999726,
+              "last_time_s": 6.491999999999507,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0001431105452997349,
+              "contact_count_histogram": {
+                "0": 158,
+                "2": 42
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.1665831098768624,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.000633784422024697,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "pull",
+              "sample_rows": 2400,
+              "first_time_s": 6.501999999999506,
+              "last_time_s": 30.49199999999398,
+              "first_angle_deg": 0.00014819676202348467,
+              "last_angle_deg": 59.92464344680871,
+              "contact_count_histogram": {
+                "2": 2400
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.2347190694312005,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.005480821884347407,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "hold",
+              "sample_rows": 200,
+              "first_time_s": 30.501999999993973,
+              "last_time_s": 32.491999999993745,
+              "first_angle_deg": 59.92467501392129,
+              "last_angle_deg": 59.92818232562829,
+              "contact_count_histogram": {
+                "2": 200
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.006199674533655,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.00017723297630661196,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "release",
+              "sample_rows": 150,
+              "first_time_s": 32.50199999999376,
+              "last_time_s": 33.99199999999558,
+              "first_angle_deg": 59.928196870974766,
+              "last_angle_deg": 59.96331871179707,
+              "contact_count_histogram": {
+                "0": 118,
+                "1": 3,
+                "2": 29
+              },
+              "sampled_max_contact_force_norm_sum_n": 1.980808717833723,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.000255750435848074,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "retreat",
+              "sample_rows": 300,
+              "first_time_s": 34.00199999999559,
+              "last_time_s": 36.991999999999244,
+              "first_angle_deg": 59.96331871179707,
+              "last_angle_deg": 59.96331871179707,
+              "contact_count_histogram": {
+                "0": 300
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.005392379247365636,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "final",
+              "sample_rows": 100,
+              "first_time_s": 37.001999999999256,
+              "last_time_s": 37.992000000000466,
+              "first_angle_deg": 59.96331871179707,
+              "last_angle_deg": 59.96331871179707,
+              "contact_count_histogram": {
+                "0": 100
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 8.200110874944142e-05,
+              "last_angle_trim_deg": null
+            }
+          ],
+          "all_retreat_and_final_samples_have_zero_robot_door_force": true,
+          "retreat_and_final_angle_range_deg": [
+            59.96331871179707,
+            59.96331871179707
+          ]
+        },
+        "interpretation": {
+          "angle": "Single nominal run reaches 59.96331871179707 degrees; strict 60-degree threshold remains false. Release, retreat and final phase are completed in the record.",
+          "contact": "Only front-handle versus two finger geom-pair types occur in summary; all 2400 pull and 200 hold CSV samples count two nonzero contacts. Per-contact identities are not present in CSV, so sustained per-finger force cannot be reconstructed independently.",
+          "frame_contact": "robot_frame_max_force_n is absent, not an empty dictionary; zero frame contact is not established by this run summary.",
+          "robustness": "No claim of robustness, randomized trials, changed-door conditions or physical-robot performance."
+        }
+      },
+      "push_25": {
+        "evidence_kind": "recorded_mujoco_simulation_not_hardware_measurement",
+        "sources": {
+          "summary": {
+            "path": "results/p4/push_25/summary.json",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_25/summary.json"
+          },
+          "timeseries": {
+            "path": "results/p4/push_25/timeseries.csv",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_25/timeseries.csv"
+          },
+          "plan.json": {
+            "path": "results/p4/push_25/plan.json",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_25/plan.json"
+          },
+          "contact.mp4": {
+            "path": "results/p4/push_25/contact.mp4",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_25/contact.mp4"
+          }
+        },
+        "configuration_from_run_summary": {
+          "base_xyz_m": [
+            1.88,
+            0.0,
+            0.54266
+          ],
+          "base_yaw_rad": 1.5707963267948966,
+          "handle_site": "door_single_back_handle",
+          "door_handle_height_m": 0.85,
+          "target_angle_deg": 25.0,
+          "timestep_s": 0.002,
+          "sample_hz": 100,
+          "phase_duration_s": {
+            "settle": 1.5,
+            "approach": 3.0,
+            "grip": 2.0,
+            "push": 18,
+            "hold": 2.0,
+            "release": 1.5,
+            "retreat": 3.0,
+            "final": 1.0
+          },
+          "tool_yaw_start_deg": 180,
+          "tool_yaw_door_ratio": 0.5,
+          "retreat_distance_m": 0.06,
+          "retreat_lift_m": 0.015,
+          "retreat_yaw_deg": 192.5,
+          "max_angle_trim_deg": null,
+          "hold_gain_per_s": null
+        },
+        "step_summary": {
+          "mode": "P4_FIXED_BASE_CONTACT_PUSH",
+          "mujoco_version": "3.3.0",
+          "steps": 16000,
+          "simulation_time_s": 31.999999999993143,
+          "nq": 25,
+          "nv": 25,
+          "nu": 23,
+          "neq": 1,
+          "door_min_angle_deg": -0.0001006227125598337,
+          "door_max_angle_deg": 22.098979177188728,
+          "door_final_angle_deg": 22.098246462530913,
+          "robot_door_contact_steps": 10380,
+          "max_contact_force_norm_sum_n": 2.2412076229419107,
+          "max_robot_door_penetration_m": 0.0008208266218423955,
+          "contact_pair_max_force_n": {
+            "door_single_back_handle_grip / piper_gripper_link1_collision_0": 1.556818206968747,
+            "door_single_back_handle_grip / piper_gripper_link2_collision_0": 1.0150558506574365
+          },
+          "door_actuated": false,
+          "floating_joint_count": 0,
+          "door_state_writes_after_initialization": 0,
+          "handle_weld": false,
+          "robot_self_contact_max_force_n": {},
+          "robot_frame_max_force_n": {},
+          "force_limits_respected": true,
+          "mujoco_warning_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "failure": null,
+          "stopped_by_window_close": false,
+          "completed_planned_duration": true,
+          "reached_60deg_once": false,
+          "final_angle_trim_deg": null,
+          "ik_max_position_error_m": 1.99894900105179e-05,
+          "ik_max_rotation_error_rad": 1.3746702305857584e-05
+        },
+        "summary_field_presence": {
+          "floating_joint_count": true,
+          "robot_self_contact_max_force_n": true,
+          "robot_frame_max_force_n": true,
+          "force_limits_respected": true,
+          "mujoco_warning_counts": true,
+          "failure": true,
+          "completed_planned_duration": true,
+          "final_angle_trim_deg": false
+        },
+        "derived_from_summary": {
+          "final_angle_error_vs_config_target_deg": -2.9017535374690873,
+          "max_penetration_mm": 0.8208266218423955,
+          "arm_actuator_max_abs_torque_nm": {
+            "piper_joint1_motor": 0.7634724137007538,
+            "piper_joint2_motor": 10.84620363859824,
+            "piper_joint3_motor": 4.187965117475187,
+            "piper_joint4_motor": 0.5777609473251744,
+            "piper_joint5_motor": 0.9654786268412465,
+            "piper_joint6_motor": 0.03907623467268806
+          },
+          "arm_peak_abs_torque_nm": 10.84620363859824,
+          "arm_peak_actuator": "piper_joint2_motor",
+          "gripper_actuator_max_abs_force_n": 2.1001543736851858,
+          "all_summary_actuator_maxima_within_reported_force_ranges": true
+        },
+        "csv_100hz_analysis": {
+          "row_count": 3200,
+          "time_first_s": 0.002,
+          "time_last_s": 31.991999999993148,
+          "median_sample_interval_s": 0.009999999999998899,
+          "max_contact_force_norm_sum": {
+            "value": 2.2412076229419107,
+            "time_s": 6.6419999999994905,
+            "phase": "push"
+          },
+          "peak_contact_sample": {
+            "time_s": 6.6419999999994905,
+            "phase": "push",
+            "door_angle_deg": -9.537399248503534e-05,
+            "planned_angle_deg": 0.00011625884189402022,
+            "door_speed_rad_s": -5.346880744505151e-07,
+            "width_m": 0.022062800758983148,
+            "robot_door_contacts": 2,
+            "contact_force_norm_sum_n": 2.2412076229419107,
+            "tcp_error_m": 0.0005087652514630649
+          },
+          "summary_peak_minus_sampled_peak_n": 0.0,
+          "first_operation_sample_with_fewer_than_two_nonzero_contacts": {
+            "time_s": 21.531999999998945,
+            "phase": "push",
+            "door_angle_deg": 21.521725694840946,
+            "planned_angle_deg": 24.13657426890627,
+            "door_speed_rad_s": 0.012066055396950567,
+            "width_m": 0.02039834348054851,
+            "robot_door_contacts": 1,
+            "contact_force_norm_sum_n": 1.5071712054791757,
+            "tcp_error_m": 0.00249967203954461
+          },
+          "operation_contact_count_histogram": {
+            "1": 161,
+            "2": 1639
+          },
+          "phase_statistics": [
+            {
+              "phase": "settle",
+              "sample_rows": 150,
+              "first_time_s": 0.002,
+              "last_time_s": 1.492000000000001,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0,
+              "contact_count_histogram": {
+                "0": 150
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 8.434232156490264e-06,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "approach",
+              "sample_rows": 300,
+              "first_time_s": 1.5020000000000011,
+              "last_time_s": 4.491999999999727,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0,
+              "contact_count_histogram": {
+                "0": 300
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0031221233327138912,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "grip",
+              "sample_rows": 200,
+              "first_time_s": 4.501999999999726,
+              "last_time_s": 6.491999999999507,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": -9.993074704738852e-05,
+              "contact_count_histogram": {
+                "0": 158,
+                "2": 42
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.2097160351445893,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0005192503189869451,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "push",
+              "sample_rows": 1800,
+              "first_time_s": 6.501999999999506,
+              "last_time_s": 24.491999999997304,
+              "first_angle_deg": -9.930831483853764e-05,
+              "last_angle_deg": 22.098881722991873,
+              "contact_count_histogram": {
+                "1": 161,
+                "2": 1639
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.2412076229419107,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0027851559706036006,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "hold",
+              "sample_rows": 200,
+              "first_time_s": 24.5019999999973,
+              "last_time_s": 26.491999999996196,
+              "first_angle_deg": 22.098877862559732,
+              "last_angle_deg": 22.098030127062128,
+              "contact_count_histogram": {
+                "1": 200
+              },
+              "sampled_max_contact_force_norm_sum_n": 1.5533709164568175,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0022410391881766568,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "release",
+              "sample_rows": 150,
+              "first_time_s": 26.50199999999619,
+              "last_time_s": 27.991999999995365,
+              "first_angle_deg": 22.09802602572157,
+              "last_angle_deg": 22.098246462530913,
+              "contact_count_histogram": {
+                "0": 116,
+                "1": 34
+              },
+              "sampled_max_contact_force_norm_sum_n": 1.553353481161031,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0022386172418731045,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "retreat",
+              "sample_rows": 300,
+              "first_time_s": 28.00199999999536,
+              "last_time_s": 30.991999999993702,
+              "first_angle_deg": 22.098246462530913,
+              "last_angle_deg": 22.098246462530913,
+              "contact_count_histogram": {
+                "0": 300
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.003256847564454094,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "final",
+              "sample_rows": 100,
+              "first_time_s": 31.001999999993696,
+              "last_time_s": 31.991999999993148,
+              "first_angle_deg": 22.098246462530913,
+              "last_angle_deg": 22.098246462530913,
+              "contact_count_histogram": {
+                "0": 100
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 6.2061031349474e-05,
+              "last_angle_trim_deg": null
+            }
+          ],
+          "all_retreat_and_final_samples_have_zero_robot_door_force": true,
+          "retreat_and_final_angle_range_deg": [
+            22.098246462530913,
+            22.098246462530913
+          ]
+        },
+        "interpretation": {
+          "angle": "Nominal 25-degree hand trajectory produces final passive-door angle 22.098246462530913 degrees.",
+          "contact": "Only the two finger geom-pair types are recorded, but the operation first has fewer than two nonzero contacts at 21.531999999998945 s and approximately 21.521725694840946 degrees. Bilateral finger contact is not continuous; hold samples all contain one contact.",
+          "baseline_config": "Use the config embedded in this summary for reproduction: current config/p4_push.yaml includes feedback and a longer hold, unlike this baseline."
+        }
+      },
+      "push_feedback": {
+        "evidence_kind": "recorded_mujoco_simulation_not_hardware_measurement",
+        "sources": {
+          "summary": {
+            "path": "results/p4/push_feedback/summary.json",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_feedback/summary.json"
+          },
+          "timeseries": {
+            "path": "results/p4/push_feedback/timeseries.csv",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_feedback/timeseries.csv"
+          },
+          "plan.json": {
+            "path": "results/p4/push_feedback/plan.json",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_feedback/plan.json"
+          },
+          "contact_timeseries.png": {
+            "path": "results/p4/push_feedback/contact_timeseries.png",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_feedback/contact_timeseries.png"
+          },
+          "contact.mp4": {
+            "path": "results/p4/push_feedback/contact.mp4",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_feedback/contact.mp4"
+          },
+          "desktop.png": {
+            "path": "results/p4/push_feedback/desktop.png",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/push_feedback/desktop.png"
+          }
+        },
+        "configuration_from_run_summary": {
+          "base_xyz_m": [
+            1.88,
+            0.0,
+            0.54266
+          ],
+          "base_yaw_rad": 1.5707963267948966,
+          "handle_site": "door_single_back_handle",
+          "door_handle_height_m": 0.85,
+          "target_angle_deg": 25.0,
+          "timestep_s": 0.002,
+          "sample_hz": 100,
+          "phase_duration_s": {
+            "settle": 1.5,
+            "approach": 3.0,
+            "grip": 2.0,
+            "push": 18,
+            "hold": 5.0,
+            "release": 1.5,
+            "retreat": 3.0,
+            "final": 1.0
+          },
+          "tool_yaw_start_deg": 180,
+          "tool_yaw_door_ratio": 0.5,
+          "retreat_distance_m": 0.06,
+          "retreat_lift_m": 0.015,
+          "retreat_yaw_deg": 192.5,
+          "max_angle_trim_deg": 4.0,
+          "hold_gain_per_s": 1.8
+        },
+        "step_summary": {
+          "mode": "P4_FIXED_BASE_CONTACT_PUSH",
+          "mujoco_version": "3.3.0",
+          "steps": 17500,
+          "simulation_time_s": 34.99999999999681,
+          "nq": 25,
+          "nv": 25,
+          "nu": 23,
+          "neq": 1,
+          "door_min_angle_deg": -0.0001006227125598337,
+          "door_max_angle_deg": 25.076174531441534,
+          "door_final_angle_deg": 25.076174531441534,
+          "robot_door_contact_steps": 11886,
+          "max_contact_force_norm_sum_n": 9.066882157749472,
+          "max_robot_door_penetration_m": 0.0008192260815360879,
+          "contact_pair_max_force_n": {
+            "door_single_back_handle_grip / piper_gripper_link1_collision_0": 1.7108840124230682,
+            "door_single_back_handle_grip / piper_gripper_link2_collision_0": 1.0150558506574365,
+            "door_single_back_handle_grip / piper_gripper_base_collision_0": 7.727999372478665
+          },
+          "door_actuated": false,
+          "floating_joint_count": 0,
+          "door_state_writes_after_initialization": 0,
+          "handle_weld": false,
+          "robot_self_contact_max_force_n": {},
+          "robot_frame_max_force_n": {},
+          "force_limits_respected": true,
+          "mujoco_warning_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "failure": null,
+          "stopped_by_window_close": false,
+          "completed_planned_duration": true,
+          "reached_60deg_once": false,
+          "final_angle_trim_deg": 3.01537440281128,
+          "ik_max_position_error_m": 1.99894900105179e-05,
+          "ik_max_rotation_error_rad": 1.3746702305857584e-05
+        },
+        "summary_field_presence": {
+          "floating_joint_count": true,
+          "robot_self_contact_max_force_n": true,
+          "robot_frame_max_force_n": true,
+          "force_limits_respected": true,
+          "mujoco_warning_counts": true,
+          "failure": true,
+          "completed_planned_duration": true,
+          "final_angle_trim_deg": true
+        },
+        "derived_from_summary": {
+          "final_angle_error_vs_config_target_deg": 0.0761745314415343,
+          "max_penetration_mm": 0.8192260815360879,
+          "arm_actuator_max_abs_torque_nm": {
+            "piper_joint1_motor": 2.066657120854927,
+            "piper_joint2_motor": 11.481967489626982,
+            "piper_joint3_motor": 4.821712393252369,
+            "piper_joint4_motor": 0.6411729743161345,
+            "piper_joint5_motor": 0.9654786268412465,
+            "piper_joint6_motor": 0.06110026615648678
+          },
+          "arm_peak_abs_torque_nm": 11.481967489626982,
+          "arm_peak_actuator": "piper_joint2_motor",
+          "gripper_actuator_max_abs_force_n": 2.1001543736851858,
+          "all_summary_actuator_maxima_within_reported_force_ranges": true
+        },
+        "csv_100hz_analysis": {
+          "row_count": 3500,
+          "time_first_s": 0.002,
+          "time_last_s": 34.9919999999968,
+          "median_sample_interval_s": 0.009999999999998899,
+          "max_contact_force_norm_sum": {
+            "value": 9.066882157749472,
+            "time_s": 24.611999999997238,
+            "phase": "hold"
+          },
+          "peak_contact_sample": {
+            "time_s": 24.611999999997238,
+            "phase": "hold",
+            "door_angle_deg": 22.170392540637113,
+            "planned_angle_deg": 25.0,
+            "door_speed_rad_s": 0.03845276149140803,
+            "width_m": 0.020289346749779034,
+            "robot_door_contacts": 3,
+            "contact_force_norm_sum_n": 9.066882157749472,
+            "tcp_error_m": 0.0033020054754614317,
+            "angle_trim_deg": 0.5808163197320921
+          },
+          "summary_peak_minus_sampled_peak_n": 0.0,
+          "first_operation_sample_with_fewer_than_two_nonzero_contacts": {
+            "time_s": 21.531999999998945,
+            "phase": "push",
+            "door_angle_deg": 21.521725694840946,
+            "planned_angle_deg": 24.13657426890627,
+            "door_speed_rad_s": 0.012066055396950567,
+            "width_m": 0.02039834348054851,
+            "robot_door_contacts": 1,
+            "contact_force_norm_sum_n": 1.5071712054791757,
+            "tcp_error_m": 0.00249967203954461,
+            "angle_trim_deg": 0.0
+          },
+          "operation_contact_count_histogram": {
+            "1": 161,
+            "2": 1639
+          },
+          "phase_statistics": [
+            {
+              "phase": "settle",
+              "sample_rows": 150,
+              "first_time_s": 0.002,
+              "last_time_s": 1.492000000000001,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0,
+              "contact_count_histogram": {
+                "0": 150
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 8.434232156490264e-06,
+              "last_angle_trim_deg": 0.0
+            },
+            {
+              "phase": "approach",
+              "sample_rows": 300,
+              "first_time_s": 1.5020000000000011,
+              "last_time_s": 4.491999999999727,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0,
+              "contact_count_histogram": {
+                "0": 300
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0031221233327138912,
+              "last_angle_trim_deg": 0.0
+            },
+            {
+              "phase": "grip",
+              "sample_rows": 200,
+              "first_time_s": 4.501999999999726,
+              "last_time_s": 6.491999999999507,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": -9.993074704738852e-05,
+              "contact_count_histogram": {
+                "0": 158,
+                "2": 42
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.2097160351445893,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0005192503189869451,
+              "last_angle_trim_deg": 0.0
+            },
+            {
+              "phase": "push",
+              "sample_rows": 1800,
+              "first_time_s": 6.501999999999506,
+              "last_time_s": 24.491999999997304,
+              "first_angle_deg": -9.930831483853764e-05,
+              "last_angle_deg": 22.098881722991873,
+              "contact_count_histogram": {
+                "1": 161,
+                "2": 1639
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.2412076229419107,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0027851559706036006,
+              "last_angle_trim_deg": 0.0
+            },
+            {
+              "phase": "hold",
+              "sample_rows": 500,
+              "first_time_s": 24.5019999999973,
+              "last_time_s": 29.491999999994533,
+              "first_angle_deg": 22.0988859640182,
+              "last_angle_deg": 24.99485598887061,
+              "contact_count_histogram": {
+                "1": 256,
+                "2": 235,
+                "3": 9
+              },
+              "sampled_max_contact_force_norm_sum_n": 9.066882157749472,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.03791631280797638,
+              "last_angle_trim_deg": 3.015301243648691
+            },
+            {
+              "phase": "release",
+              "sample_rows": 150,
+              "first_time_s": 29.501999999994528,
+              "last_time_s": 30.991999999993702,
+              "first_angle_deg": 24.99503381863756,
+              "last_angle_deg": 25.076174531441534,
+              "contact_count_histogram": {
+                "0": 115,
+                "1": 19,
+                "2": 16
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.44030859989314,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.03903652672012519,
+              "last_angle_trim_deg": 3.01537440281128
+            },
+            {
+              "phase": "retreat",
+              "sample_rows": 300,
+              "first_time_s": 31.001999999993696,
+              "last_time_s": 33.99199999999558,
+              "first_angle_deg": 25.076174531441534,
+              "last_angle_deg": 25.076174531441534,
+              "contact_count_histogram": {
+                "0": 300
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.04172059287675257,
+              "last_angle_trim_deg": 3.01537440281128
+            },
+            {
+              "phase": "final",
+              "sample_rows": 100,
+              "first_time_s": 34.00199999999559,
+              "last_time_s": 34.9919999999968,
+              "first_angle_deg": 25.076174531441534,
+              "last_angle_deg": 25.076174531441534,
+              "contact_count_histogram": {
+                "0": 100
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.03839445053250914,
+              "last_angle_trim_deg": 3.01537440281128
+            }
+          ],
+          "all_retreat_and_final_samples_have_zero_robot_door_force": true,
+          "retreat_and_final_angle_range_deg": [
+            25.076174531441534,
+            25.076174531441534
+          ]
+        },
+        "interpretation": {
+          "angle": "Uses simulated hinge-angle feedback only during hold; final trim is 3.01537440281128 degrees and final door angle is 25.076174531441534 degrees.",
+          "contact": "Includes unintended back-handle versus gripper-base contact, whose maximum single-contact force norm is 7.727999372478665 N. It is not a clean two-finger-only success.",
+          "force_peak": "The 9.066882157749472 N contact-norm-sum peak is sampled at 24.611999999997238 s in hold with three nonzero contacts.",
+          "causal_limit": "The exact fraction of door opening attributable to gripper-base contact cannot be recovered because per-contact time-resolved forces/positions are not saved.",
+          "reference_error": "CSV planned_angle_deg and tcp_error_m refer to the original nominal path, even during trim. A roughly 38-42 mm error in late phases includes intentional path correction and is not pure servo tracking error."
+        }
+      },
+      "trial_02_obstructed": {
+        "evidence_kind": "recorded_mujoco_simulation_not_hardware_measurement",
+        "sources": {
+          "summary": {
+            "path": "results/p4/trial_02_obstructed/summary.json",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/trial_02_obstructed/summary.json"
+          },
+          "timeseries": {
+            "path": "results/p4/trial_02_obstructed/timeseries.csv",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/trial_02_obstructed/timeseries.csv"
+          },
+          "desktop.png": {
+            "path": "results/p4/trial_02_obstructed/desktop.png",
+            "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/trial_02_obstructed/desktop.png"
+          }
+        },
+        "configuration_from_run_summary": {
+          "base_xyz_m": [
+            0.82,
+            0.38,
+            0.54266
+          ],
+          "base_yaw_rad": 0.0,
+          "handle_site": "door_single_front_handle",
+          "door_handle_height_m": null,
+          "target_angle_deg": 20.0,
+          "timestep_s": 0.002,
+          "sample_hz": 100,
+          "phase_duration_s": {
+            "settle": 1.5,
+            "approach": 3.0,
+            "grip": 2.0,
+            "pull": 12.0,
+            "hold": 2.0,
+            "release": 1.5,
+            "retreat": 3.0,
+            "final": 1.0
+          },
+          "tool_yaw_start_deg": null,
+          "tool_yaw_door_ratio": null,
+          "retreat_distance_m": 0.08,
+          "retreat_lift_m": null,
+          "retreat_yaw_deg": null,
+          "max_angle_trim_deg": null,
+          "hold_gain_per_s": null
+        },
+        "step_summary": {
+          "mode": "P4_FIXED_BASE_CONTACT_PULL",
+          "mujoco_version": "3.3.0",
+          "steps": 13000,
+          "simulation_time_s": 25.99999999999647,
+          "nq": 25,
+          "nv": 25,
+          "nu": 23,
+          "neq": 1,
+          "door_min_angle_deg": 0.0,
+          "door_max_angle_deg": 16.840928628676814,
+          "door_final_angle_deg": 16.82912964899931,
+          "robot_door_contact_steps": 5342,
+          "max_contact_force_norm_sum_n": 19.081571137972418,
+          "max_robot_door_penetration_m": 0.0006550589578891014,
+          "contact_pair_max_force_n": {
+            "door_single_front_handle_grip / piper_gripper_link1_collision_0": 1.3812794743544894,
+            "door_single_front_handle_grip / piper_gripper_link2_collision_0": 1.711142866415851,
+            "door_single_panel / m1_base_link": 16.408416754513752
+          },
+          "door_actuated": false,
+          "floating_joint_count": null,
+          "door_state_writes_after_initialization": 0,
+          "handle_weld": false,
+          "robot_self_contact_max_force_n": null,
+          "robot_frame_max_force_n": null,
+          "force_limits_respected": null,
+          "mujoco_warning_counts": null,
+          "failure": null,
+          "stopped_by_window_close": false,
+          "completed_planned_duration": null,
+          "reached_60deg_once": false,
+          "final_angle_trim_deg": null,
+          "ik_max_position_error_m": 1.9932979868777187e-05,
+          "ik_max_rotation_error_rad": 8.383787239518871e-05
+        },
+        "summary_field_presence": {
+          "floating_joint_count": false,
+          "robot_self_contact_max_force_n": false,
+          "robot_frame_max_force_n": false,
+          "force_limits_respected": false,
+          "mujoco_warning_counts": false,
+          "failure": false,
+          "completed_planned_duration": false,
+          "final_angle_trim_deg": false
+        },
+        "derived_from_summary": {
+          "final_angle_error_vs_config_target_deg": -3.1708703510006906,
+          "max_penetration_mm": 0.6550589578891014,
+          "arm_actuator_max_abs_torque_nm": {
+            "piper_joint1_motor": 0.5229096240283297,
+            "piper_joint2_motor": 7.191705188355741,
+            "piper_joint3_motor": 4.6029707607008845,
+            "piper_joint4_motor": 0.978250467373158,
+            "piper_joint5_motor": 0.9391732982424514,
+            "piper_joint6_motor": 0.029844767066103728
+          },
+          "arm_peak_abs_torque_nm": 7.191705188355741,
+          "arm_peak_actuator": "piper_joint2_motor",
+          "gripper_actuator_max_abs_force_n": 2.3259613060515907,
+          "all_summary_actuator_maxima_within_reported_force_ranges": true
+        },
+        "csv_100hz_analysis": {
+          "row_count": 2600,
+          "time_first_s": 0.002,
+          "time_last_s": 25.991999999996473,
+          "median_sample_interval_s": 0.009999999999998899,
+          "max_contact_force_norm_sum": {
+            "value": 18.678317952860457,
+            "time_s": 15.432000000001823,
+            "phase": "pull"
+          },
+          "peak_contact_sample": {
+            "time_s": 15.432000000001823,
+            "phase": "pull",
+            "door_angle_deg": 16.835892316562756,
+            "planned_angle_deg": 17.804731697757184,
+            "door_speed_rad_s": 0.019958055091278994,
+            "width_m": 0.022826885859763564,
+            "robot_door_contacts": 3,
+            "contact_force_norm_sum_n": 18.678317952860457,
+            "tcp_error_m": 0.002106427821668148
+          },
+          "summary_peak_minus_sampled_peak_n": 0.40325318511196073,
+          "first_operation_sample_with_fewer_than_two_nonzero_contacts": {
+            "time_s": 16.512000000001727,
+            "phase": "pull",
+            "door_angle_deg": 16.829266855935007,
+            "planned_angle_deg": 19.299729957658233,
+            "door_speed_rad_s": -2.118577874917118e-06,
+            "width_m": 0.02082828776627995,
+            "robot_door_contacts": 1,
+            "contact_force_norm_sum_n": 0.917363007121134,
+            "tcp_error_m": 0.0018895050537231857
+          },
+          "operation_contact_count_histogram": {
+            "0": 174,
+            "1": 25,
+            "2": 915,
+            "3": 86
+          },
+          "phase_statistics": [
+            {
+              "phase": "settle",
+              "sample_rows": 150,
+              "first_time_s": 0.002,
+              "last_time_s": 1.492000000000001,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0,
+              "contact_count_histogram": {
+                "0": 150
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 3.149186122378865e-07,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "approach",
+              "sample_rows": 300,
+              "first_time_s": 1.5020000000000011,
+              "last_time_s": 4.491999999999727,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 0.0,
+              "contact_count_histogram": {
+                "0": 300
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0041983968106734226,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "grip",
+              "sample_rows": 200,
+              "first_time_s": 4.501999999999726,
+              "last_time_s": 6.491999999999507,
+              "first_angle_deg": 0.0,
+              "last_angle_deg": 3.1373248589210116e-05,
+              "contact_count_histogram": {
+                "0": 158,
+                "2": 42
+              },
+              "sampled_max_contact_force_norm_sum_n": 2.1559551740957925,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0006147337583802093,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "pull",
+              "sample_rows": 1200,
+              "first_time_s": 6.501999999999506,
+              "last_time_s": 18.49200000000063,
+              "first_angle_deg": 3.2065353781021106e-05,
+              "last_angle_deg": 16.82912964899931,
+              "contact_count_histogram": {
+                "0": 174,
+                "1": 25,
+                "2": 915,
+                "3": 86
+              },
+              "sampled_max_contact_force_norm_sum_n": 18.678317952860457,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.003407024428958398,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "hold",
+              "sample_rows": 200,
+              "first_time_s": 18.502000000000624,
+              "last_time_s": 20.49199999999952,
+              "first_angle_deg": 16.82912964899931,
+              "last_angle_deg": 16.82912964899931,
+              "contact_count_histogram": {
+                "0": 200
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 2.198587365426221e-05,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "release",
+              "sample_rows": 150,
+              "first_time_s": 20.501999999999516,
+              "last_time_s": 21.99199999999869,
+              "first_angle_deg": 16.82912964899931,
+              "last_angle_deg": 16.82912964899931,
+              "contact_count_histogram": {
+                "0": 150
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 1.97951130730232e-05,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "retreat",
+              "sample_rows": 300,
+              "first_time_s": 22.001999999998684,
+              "last_time_s": 24.991999999997027,
+              "first_angle_deg": 16.82912964899931,
+              "last_angle_deg": 16.82912964899931,
+              "contact_count_histogram": {
+                "0": 300
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 0.0041122772737336504,
+              "last_angle_trim_deg": null
+            },
+            {
+              "phase": "final",
+              "sample_rows": 100,
+              "first_time_s": 25.00199999999702,
+              "last_time_s": 25.991999999996473,
+              "first_angle_deg": 16.82912964899931,
+              "last_angle_deg": 16.82912964899931,
+              "contact_count_histogram": {
+                "0": 100
+              },
+              "sampled_max_contact_force_norm_sum_n": 0.0,
+              "sampled_max_tcp_error_to_original_nominal_path_m": 8.543858542658726e-05,
+              "last_angle_trim_deg": null
+            }
+          ],
+          "all_retreat_and_final_samples_have_zero_robot_door_force": true,
+          "retreat_and_final_angle_range_deg": [
+            16.82912964899931,
+            16.82912964899931
+          ]
+        },
+        "interpretation": {
+          "angle": "Documented obstructed 20-degree nominal pull trial ends at 16.82912964899931 degrees.",
+          "contact": "Door-panel versus M1-base contact maximum is 16.408416754513752 N; maximum contact-norm sum is 19.081571137972418 N. Operation later loses all robot-door contact.",
+          "scene": "Run-summary config uses handle height 1.0 m and base [0.82,0.38,0.54266] m; it differs from the successful 0.85 m handle scenes.",
+          "missing_fields": "Old summary lacks multiple current monitoring fields, including frame contact, self contact, warnings and completed-duration flag. Missing values must not be reported as zero or false."
+        }
+      }
+    },
+    "additional_failure_evidence": {
+      "retreat_collision": {
+        "source": {
+          "path": "results/p4/pull_60_retreat_collision/clearance.json",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/pull_60_retreat_collision/clearance.json"
+        },
+        "data": {
+          "mode": "KINEMATIC_CLEARANCE_ONLY",
+          "sample_hz": 10,
+          "sampled_configs": 380,
+          "unwanted_penetration_m": {
+            "retreat: door_single_panel / piper_gripper_base_collision_0": -0.0037663748829200004,
+            "final: door_single_panel / piper_gripper_base_collision_0": -0.0029650402494114684
+          },
+          "max_unwanted_penetration_m": 0.0037663748829200004
+        },
+        "interpretation": "Kinematic sampled-path check only, not dynamic stepping; recorded retreat/final gripper-base versus door-panel penetration."
+      },
+      "corrected_pull_candidate_clearance": {
+        "source": {
+          "path": "results/p4/pull_60_candidate/clearance.json",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/results/p4/pull_60_candidate/clearance.json"
+        },
+        "data": {
+          "mode": "KINEMATIC_CLEARANCE_ONLY",
+          "sample_hz": 10,
+          "sampled_configs": 380,
+          "unwanted_penetration_m": {},
+          "max_unwanted_penetration_m": 0
+        },
+        "interpretation": "380 configurations at 10 Hz with no sampled unwanted penetration; not a continuous swept-volume proof."
+      }
+    },
+    "documentation_caveats": [
+      {
+        "source": {
+          "path": "reports/P4_FIXED_BASE_CONTACT.md",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/reports/P4_FIXED_BASE_CONTACT.md"
+        },
+        "lines": [
+          38,
+          38
+        ],
+        "issue": "Legacy statement denying measured-angle correction conflicts with the newer push-feedback section."
+      },
+      {
+        "source": {
+          "path": "reports/P4_FIXED_BASE_CONTACT.md",
+          "url": "https://github.com/kaiwen123-yang/dog-and-arm/blob/9c43f530360ce3398018b954f46eac11b96e0d73/reports/P4_FIXED_BASE_CONTACT.md"
+        },
+        "lines": [
+          80,
+          80
+        ],
+        "issue": "Legacy next-step-is-P4 statement is superseded by current PROJECT_STATE P6 direction."
+      }
+    ]
+  },
+  "p5": {
+    "schema_version": 1,
+    "audit_kind": "read_only_recalculation_of_existing_p5_results",
+    "source_commit": "9c43f530360ce3398018b954f46eac11b96e0d73",
+    "repository": "https://github.com/kaiwen123-yang/dog-and-arm",
+    "sources_for_interpretation": [
+      "scripts/p5_free_base.py",
+      "scripts/p4_fixed_door.py",
+      "config/p5.yaml",
+      "config/p5_heading.yaml",
+      "config/assembly.yaml",
+      "sim/scenes/p5_free_base.xml",
+      "reports/P5_FREE_BASE.md"
+    ],
+    "definitions": {
+      "summary_endpoint_vs_csv": "summary segment deltas and terminal speeds are recorded at integration-step endpoints. CSV samples are 50 Hz (right committed extraction 10 Hz), offset to t=0.002 s; last sample is before the final integration state. A CSV first-to-last phase displacement is not exactly the summary boundary-to-boundary displacement.",
+      "slip": "For each wheel, at loaded floor contacts with normal force >1e-5 N, select the contact point with greatest horizontal velocity norm relative to the stationary ground; decompose that same point velocity along projected axle (lateral) and its horizontal perpendicular (longitudinal). Unloaded wheel values are NaN. Horizontal norm is not purely lateral slip.",
+      "pooled_p95": "Slip P95 pools all finite wheel-contact sample values in a phase. Base-speed P95 pools times within the phase. Sampling can miss integration-step peaks.",
+      "support_count": "Recorded wheel supports count wheels with at least one contact normal force >1e-5 N; this is not a support-polygon stability margin.",
+      "final_yaw_reconstruction": "Final yaw is sum of summary per-phase yaw changes because home yaw=0 and these runs do not cross Euler yaw wrapping.",
+      "right_data_limitation": "Right-turn recorded summary used a 50 Hz original run, but repository preserves only 10 Hz 8-column heading extraction. z/velocity/slip/effort window metrics are unavailable from committed right CSV.",
+      "heading_tolerance": "0.12 deg is the controller latch trigger, not a final settled angle bound. status=completed means the timed experiment completed, not that explicit motion acceptance gates passed."
+    },
+    "root_height_reference": {
+      "p5_initial_home_root_z_m": 0.54266,
+      "p5_initial_home_source": "sim/scenes/p5_free_base.xml:keyframe/home",
+      "p4_fixed_root_z_m": 0.54266,
+      "p4_scene_sources_and_verified_root_z_m": {
+        "sim/scenes/p4_fixed_pull.xml": 0.54266,
+        "sim/scenes/p4_fixed_pull_60.xml": 0.54266,
+        "sim/scenes/p4_fixed_push.xml": 0.54266
+      },
+      "interpretation": "P4 fixes the root at 0.54266 m. P5 starts there but settles near 0.531984 m under gravity and contact, about 10.676 mm lower. P6 should form grasp reachability and world-to-base transforms from measured settled base pose, not assume the P4 fixed-root height remains the free-base height."
+    },
+    "runs": {
+      "free_base_nominal": {
+        "sources": {
+          "summary": "results/p5/free_base_nominal/summary.json",
+          "csv": "results/p5/free_base_nominal/timeseries.csv"
+        },
+        "sampling": {
+          "row_count": 1650,
+          "column_count": 100,
+          "first_sample_time_s": 0.002,
+          "last_sample_time_s": 32.98199999999434,
+          "median_sample_interval_s": 0.019999999999997797,
+          "csv_sample_rate_hz": 50,
+          "summary_recorded_original_sample_rate_hz": 50,
+          "full_50hz_timeseries_committed": true,
+          "last_csv_sample_precedes_final_summary_state": true,
+          "coverage_note": "Committed full 50 Hz sampled base pose/velocity, wheel normal/slip, joint position/velocity/effort data. Actuator commands and post-PI yaw_request are not logged."
+        },
+        "summary_values_and_recalculations": {
+          "simulation_time_s": 32.999999999994365,
+          "integration_steps": 16500,
+          "final_root_xyz_m_from_initial_home_plus_segment_deltas": [
+            0.5821520242834642,
+            0.03997633217531546,
+            0.5319842400576489
+          ],
+          "final_yaw_deg_from_sum_of_segment_yaw_changes": 10.395482477960138,
+          "final_root_z_m_from_initial_home_plus_segment_deltas": 0.5319842400576489,
+          "final_root_z_below_p4_fixed_root_mm": 10.67575994235115,
+          "final_xy_speed_mm_s_recorded_in_summary": 1.0801202971461743,
+          "segment_metrics": {
+            "settle": {
+              "displacement_xyz_m": [
+                1.73585745809428e-05,
+                2.136107011632945e-05,
+                -0.009829381788402536
+              ],
+              "net_xy_displacement_mm": 0.027524814767712725,
+              "yaw_change_deg": 0.0005204320747348837,
+              "end_xy_speed_mm_s": 0.34713141517851825
+            },
+            "stand": {
+              "displacement_xyz_m": [
+                2.08047152191596e-05,
+                -2.3768144459125014e-06,
+                -0.0006625618834006364
+              ],
+              "net_xy_displacement_mm": 0.020940043511431142,
+              "yaw_change_deg": -0.0002741009157725768,
+              "end_xy_speed_mm_s": 0.9589871524459516
+            },
+            "straight": {
+              "displacement_xyz_m": [
+                0.360247138251869,
+                7.2855328747360415e-06,
+                -7.891372194079871e-05
+              ],
+              "net_xy_displacement_mm": 360.24713832553925,
+              "yaw_change_deg": 0.0005344069476738541,
+              "end_xy_speed_mm_s": 0.7511384035388358
+            },
+            "brake": {
+              "displacement_xyz_m": [
+                0.003060261702867606,
+                1.007155159276851e-06,
+                -0.00010518026885164566
+              ],
+              "net_xy_displacement_mm": 3.060261868598773,
+              "yaw_change_deg": -0.00012975463739956178,
+              "end_xy_speed_mm_s": 0.08447119384085279
+            },
+            "turn": {
+              "displacement_xyz_m": [
+                0.0021416535387646096,
+                -3.902184433439579e-05,
+                0.0016560957526035036
+              ],
+              "net_xy_displacement_mm": 2.1420090066193076,
+              "yaw_change_deg": 10.396106032339475,
+              "end_xy_speed_mm_s": 5.757938602220027
+            },
+            "brake_turn": {
+              "displacement_xyz_m": [
+                -0.000893432665575622,
+                -0.00016680258976691924,
+                -0.0013397489710339494
+              ],
+              "net_xy_displacement_mm": 0.9088701952812142,
+              "yaw_change_deg": 0.12797724269838007,
+              "end_xy_speed_mm_s": 0.2227542223692699
+            },
+            "arm_extend": {
+              "displacement_xyz_m": [
+                -0.00020723709276504465,
+                -6.350440047786385e-05,
+                -0.00022401971458752
+              ],
+              "net_xy_displacement_mm": 0.21674875200969587,
+              "yaw_change_deg": -0.030254454066158232,
+              "end_xy_speed_mm_s": 0.18521522381395578
+            },
+            "carry": {
+              "displacement_xyz_m": [
+                0.2174894227499805,
+                0.040239182172111886,
+                -4.776917431792427e-05
+              ],
+              "net_xy_displacement_mm": 221.1805615102741,
+              "yaw_change_deg": -0.008752192395881764,
+              "end_xy_speed_mm_s": 0.9617786652640091
+            },
+            "arm_return": {
+              "displacement_xyz_m": [
+                0.0002806698854391776,
+                5.8184865651338125e-05,
+                -4.585126927214578e-05
+              ],
+              "net_xy_displacement_mm": 0.28663751182164793,
+              "yaw_change_deg": -0.08875732678530923,
+              "end_xy_speed_mm_s": 0.6217132855589771
+            },
+            "park": {
+              "displacement_xyz_m": [
+                -4.6153769160950375e-06,
+                -7.898297157301476e-05,
+                1.5710968525040059e-06
+              ],
+              "net_xy_displacement_mm": 0.07911770663120413,
+              "yaw_change_deg": -0.0014878072996040714,
+              "end_xy_speed_mm_s": 1.0801202971461743
+            }
+          },
+          "max_sample_abs_roll_pitch_deg_recorded": [
+            0.040931681416625336,
+            0.044458209732230046
+          ],
+          "max_sample_slip_m_s_recorded": 0.11679794962692581,
+          "min_sample_root_z_m_recorded": 0.5319786367059705,
+          "free_joints_recorded": 1,
+          "welds_recorded": 0,
+          "other_ground_bodies_recorded": [],
+          "actuator_limits_respected_recorded": true,
+          "warning_counts_recorded": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "max_actuator_effort_nm_by_group_from_summary": {
+            "leg": 20.365533203156588,
+            "wheel": 4.575725308488738,
+            "arm": 6.260668785319297
+          }
+        },
+        "csv_recalculations": {
+          "phase_statistics": {
+            "stand": {
+              "sample_count": 100,
+              "first_sample_time_s": 2.002000000000001,
+              "last_sample_time_s": 3.981999999999783,
+              "sampled_net_xy_displacement_mm_first_to_last": 0.008766363246086116,
+              "sampled_xy_peak_to_peak_mm": [
+                0.02585537984023596,
+                0.005864744239460014
+              ],
+              "sampled_yaw_range_deg": [
+                -0.0009617543557464,
+                0.001026146185948
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.0005405591815423105,
+                "median": 0.059298158690877345,
+                "p95": 0.17743399259547196,
+                "max": 0.2176742632977278,
+                "last_sample": 0.05696842992745706
+              },
+              "sampled_wheel_support_counts": {
+                "4": 100
+              },
+              "sampled_xy_speed_mm_s": {
+                "min": 0.011802505723101996,
+                "median": 0.42849865096010575,
+                "p95": 1.0203768072599178,
+                "max": 1.418536627010839,
+                "last_sample": 0.7424182337901448
+              },
+              "sampled_root_z_m": {
+                "min": 0.5321712497769011,
+                "median": 0.532381824531822,
+                "p95": 0.5327676418171107,
+                "max": 0.5328294690507063,
+                "last_sample": 0.5321712497769011
+              },
+              "sampled_root_z_below_p4_fixed_root_mm": {
+                "min": 9.83053094929376,
+                "median": 10.278175468177997,
+                "p95": 10.475140096851149,
+                "max": 10.488750223098918,
+                "last_sample": 10.488750223098918
+              },
+              "sampled_per_wheel_min_normal_N": {
+                "FAR": 104.80089501343588,
+                "FBL": 106.09149808123284,
+                "RAR": 103.0394619861344,
+                "RBL": 104.13046744055433
+              },
+              "sampled_loaded_contact_point_slip_m_s": {
+                "max_horizontal_norm": 0.0083064470915864,
+                "pooled_wheel_sample_p95_horizontal_norm": 0.007809733529602875,
+                "max_abs_longitudinal_component": 0.0081877388580013,
+                "max_abs_lateral_component": 0.002309562737205
+              }
+            },
+            "brake": {
+              "sample_count": 100,
+              "first_sample_time_s": 10.00200000000001,
+              "last_sample_time_s": 11.98200000000067,
+              "sampled_net_xy_displacement_mm_first_to_last": 3.053295665392344,
+              "sampled_xy_peak_to_peak_mm": [
+                3.5388935668250188,
+                0.0032026178688149775
+              ],
+              "sampled_yaw_range_deg": [
+                -0.0003487690538314,
+                0.0014234801778006
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 2.6389048152687174e-06,
+                "median": 0.0012552701213271874,
+                "p95": 0.08567629376982921,
+                "max": 0.1146207095548926,
+                "last_sample": 0.08171104108274199
+              },
+              "sampled_wheel_support_counts": {
+                "4": 100
+              },
+              "sampled_xy_speed_mm_s": {
+                "min": 0.007818845247180753,
+                "median": 1.7594790114262588,
+                "p95": 6.090168449762738,
+                "max": 7.197031272586565,
+                "last_sample": 0.09326987545323819
+              },
+              "sampled_root_z_m": {
+                "min": 0.5319842641335024,
+                "median": 0.5319965826048827,
+                "p95": 0.5320876981687856,
+                "max": 0.5320891157822097,
+                "last_sample": 0.5319864545047307
+              },
+              "sampled_root_z_below_p4_fixed_root_mm": {
+                "min": 10.570884217790288,
+                "median": 10.663417395117335,
+                "p95": 10.675077141263767,
+                "max": 10.675735866497615,
+                "last_sample": 10.673545495269332
+              },
+              "sampled_per_wheel_min_normal_N": {
+                "FAR": 104.68919796680431,
+                "FBL": 106.2580422927667,
+                "RAR": 102.5727649733171,
+                "RBL": 103.9378651879269
+              },
+              "sampled_loaded_contact_point_slip_m_s": {
+                "max_horizontal_norm": 0.0101169095916647,
+                "pooled_wheel_sample_p95_horizontal_norm": 0.007715114883303839,
+                "max_abs_longitudinal_component": 0.0101097727267422,
+                "max_abs_lateral_component": 0.0003901523157068
+              }
+            },
+            "turn": {
+              "sample_count": 350,
+              "first_sample_time_s": 12.002000000000676,
+              "last_sample_time_s": 18.98200000000036,
+              "sampled_net_xy_displacement_mm_first_to_last": 2.2347615016640257,
+              "sampled_xy_peak_to_peak_mm": [
+                2.4810309055868784,
+                0.5601374850846093
+              ],
+              "sampled_yaw_range_deg": [
+                -0.0392296454485064,
+                10.39157974352875
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.011052549830221189,
+                "median": 1.5633473351225162,
+                "p95": 2.629874398986028,
+                "max": 2.9077131902062385,
+                "last_sample": 0.33586495026681906
+              },
+              "sampled_wheel_support_counts": {
+                "3": 1,
+                "4": 349
+              },
+              "sampled_xy_speed_mm_s": {
+                "min": 0.005843542147075086,
+                "median": 0.6441148033652055,
+                "p95": 2.879563615507236,
+                "max": 5.286614199332089,
+                "last_sample": 5.286614199332089
+              },
+              "sampled_root_z_m": {
+                "min": 0.5319840649776604,
+                "median": 0.5332712963956197,
+                "p95": 0.5347928435053896,
+                "max": 0.5348293053605498,
+                "last_sample": 0.5336706556769484
+              },
+              "sampled_root_z_below_p4_fixed_root_mm": {
+                "min": 7.830694639450186,
+                "median": 9.388703604380321,
+                "p95": 10.668604576965057,
+                "max": 10.675935022339655,
+                "last_sample": 8.98934432305165
+              },
+              "sampled_per_wheel_min_normal_N": {
+                "FAR": 34.226754754664015,
+                "FBL": 106.36529981135402,
+                "RAR": 102.98453184833711,
+                "RBL": 0.0
+              },
+              "sampled_loaded_contact_point_slip_m_s": {
+                "max_horizontal_norm": 0.1167979496269258,
+                "pooled_wheel_sample_p95_horizontal_norm": 0.041089086340257444,
+                "max_abs_longitudinal_component": 0.1132849134675115,
+                "max_abs_lateral_component": 0.0284304311911081
+              }
+            },
+            "park": {
+              "sample_count": 100,
+              "first_sample_time_s": 31.001999999993696,
+              "last_sample_time_s": 32.98199999999434,
+              "sampled_net_xy_displacement_mm_first_to_last": 0.07914128667948685,
+              "sampled_xy_peak_to_peak_mm": [
+                0.02030584308021499,
+                0.07886477603159803
+              ],
+              "sampled_yaw_range_deg": [
+                10.394208782063998,
+                10.397286292520812
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.0008596479933015577,
+                "median": 0.0408405173761802,
+                "p95": 0.10986290940119127,
+                "max": 0.14361467048651425,
+                "last_sample": 0.02984716337659781
+              },
+              "sampled_wheel_support_counts": {
+                "4": 100
+              },
+              "sampled_xy_speed_mm_s": {
+                "min": 0.008864844020687806,
+                "median": 0.5285559925174257,
+                "p95": 1.211981061403194,
+                "max": 1.3060972340107269,
+                "last_sample": 1.2118588141434203
+              },
+              "sampled_root_z_m": {
+                "min": 0.5319811868756003,
+                "median": 0.5319837805027049,
+                "p95": 0.5319855501474972,
+                "max": 0.5319862238102798,
+                "last_sample": 0.5319846230396241
+              },
+              "sampled_root_z_below_p4_fixed_root_mm": {
+                "min": 10.673776189720208,
+                "median": 10.676219497295136,
+                "p95": 10.677865223790755,
+                "max": 10.678813124399777,
+                "last_sample": 10.675376960375903
+              },
+              "sampled_per_wheel_min_normal_N": {
+                "FAR": 104.94478306719289,
+                "FBL": 106.00499027725397,
+                "RAR": 103.00767769531954,
+                "RBL": 104.2740916745242
+              },
+              "sampled_loaded_contact_point_slip_m_s": {
+                "max_horizontal_norm": 0.0082584412306527,
+                "pooled_wheel_sample_p95_horizontal_norm": 0.007861101677274315,
+                "max_abs_longitudinal_component": 0.0082582541097983,
+                "max_abs_lateral_component": 0.0003288306313357
+              }
+            }
+          },
+          "last_csv_row": {
+            "time_s": 32.98199999999434,
+            "phase": "park",
+            "x_m": 0.5821516663386815,
+            "y_m": 0.0399766988322975,
+            "z_m": 0.5319846230396241,
+            "roll_deg": -0.0160866910241282,
+            "pitch_deg": 0.0156100758996057,
+            "yaw_deg": 10.394487457813666,
+            "vx_m_s": -0.0011898168602105,
+            "vy_m_s": -0.000230081778018,
+            "vz_m_s": -0.0001047742118372,
+            "yaw_rate_rad_s": 0.0005209312733023,
+            "v_ref_m_s": 0.0,
+            "yaw_ref_rad_s": 0.0,
+            "wheel_supports": 4,
+            "normal_FAR_N": 106.01987268659173,
+            "normal_FBL_N": 107.08889771735394,
+            "normal_RAR_N": 106.24962485910994,
+            "normal_RBL_N": 108.40252037763518,
+            "slip_FAR_m_s": 0.0063984232627714,
+            "slip_FBL_m_s": 0.0047077478268624,
+            "slip_RAR_m_s": 0.0062608996319724,
+            "slip_RBL_m_s": 0.0001174530773401,
+            "q_m1_FAR_ABAD_JOINT": -0.0274245846566544,
+            "q_m1_FAR_HIP_JOINT": 0.5970466917869779,
+            "q_m1_FAR_KNEE_JOINT": -1.2271466514886753,
+            "q_m1_FAR_FOOT_JOINT": 8.276996378630153,
+            "q_m1_FBL_ABAD_JOINT": 0.0277430251731113,
+            "q_m1_FBL_HIP_JOINT": 0.5968957105220538,
+            "q_m1_FBL_KNEE_JOINT": -1.2275527138060398,
+            "q_m1_FBL_FOOT_JOINT": 5.053316234155354,
+            "q_m1_RAR_ABAD_JOINT": -0.0268316565154006,
+            "q_m1_RAR_HIP_JOINT": -0.5969263564915172,
+            "q_m1_RAR_KNEE_JOINT": 1.2266342998415734,
+            "q_m1_RAR_FOOT_JOINT": 7.26517692730967,
+            "q_m1_RBL_ABAD_JOINT": 0.0271414811860629,
+            "q_m1_RBL_HIP_JOINT": -0.5966521567636334,
+            "q_m1_RBL_KNEE_JOINT": 1.2270639716870817,
+            "q_m1_RBL_FOOT_JOINT": 3.87495060501488,
+            "q_piper_joint1": 7.28314400551989e-08,
+            "q_piper_joint2": 0.7999969812570618,
+            "q_piper_joint3": -1.4000029474060842,
+            "q_piper_joint4": -6.205481824399241e-07,
+            "q_piper_joint5": 0.5999963206452147,
+            "q_piper_joint6": 5.995280212531624e-08,
+            "q_piper_gripper_joint1": 0.0200003942475455,
+            "dq_m1_FAR_ABAD_JOINT": 4.250506691978444e-05,
+            "dq_m1_FAR_HIP_JOINT": -0.016334680333747,
+            "dq_m1_FAR_KNEE_JOINT": -0.003775653578654,
+            "dq_m1_FAR_FOOT_JOINT": 0.0143957800942566,
+            "dq_m1_FBL_ABAD_JOINT": -0.0005622320042549,
+            "dq_m1_FBL_HIP_JOINT": -0.0107453562508691,
+            "dq_m1_FBL_KNEE_JOINT": -0.0045078798230778,
+            "dq_m1_FBL_FOOT_JOINT": 0.0006068546052405,
+            "dq_m1_RAR_ABAD_JOINT": -1.8207060764773703e-05,
+            "dq_m1_RAR_HIP_JOINT": -0.016242964188738,
+            "dq_m1_RAR_KNEE_JOINT": -0.0032549895563659,
+            "dq_m1_RAR_FOOT_JOINT": 0.0135800906090144,
+            "dq_m1_RBL_ABAD_JOINT": 0.0005397848478025,
+            "dq_m1_RBL_HIP_JOINT": 0.0035764171648166,
+            "dq_m1_RBL_KNEE_JOINT": -0.0049184964202951,
+            "dq_m1_RBL_FOOT_JOINT": -0.02906297708108,
+            "dq_piper_joint1": -0.0005085112720762,
+            "dq_piper_joint2": -0.0004474323016601,
+            "dq_piper_joint3": -0.0005889959729744,
+            "dq_piper_joint4": -0.0003320439673462,
+            "dq_piper_joint5": -0.0007651889968366,
+            "dq_piper_joint6": -1.4506528487912373e-05,
+            "dq_piper_gripper_joint1": -8.74308388224217e-06,
+            "effort_m1_FAR_ABAD_JOINT": 11.40053754090875,
+            "effort_m1_FAR_HIP_JOINT": 4.519230527454852,
+            "effort_m1_FAR_KNEE_JOINT": 14.69538422956225,
+            "effort_m1_FAR_FOOT_JOINT": -0.01858790687902,
+            "effort_m1_FBL_ABAD_JOINT": -11.612631649145294,
+            "effort_m1_FBL_HIP_JOINT": 4.475542383272284,
+            "effort_m1_FBL_KNEE_JOINT": 14.962758646100156,
+            "effort_m1_FBL_FOOT_JOINT": 0.0777622630746697,
+            "effort_m1_RAR_ABAD_JOINT": 11.032483533504816,
+            "effort_m1_RAR_HIP_JOINT": -4.218537551908241,
+            "effort_m1_RAR_KNEE_JOINT": -14.22845757619416,
+            "effort_m1_RAR_FOOT_JOINT": -0.015216309823463,
+            "effort_m1_RBL_ABAD_JOINT": -11.230858487425245,
+            "effort_m1_RBL_HIP_JOINT": -4.874071043589481,
+            "effort_m1_RBL_KNEE_JOINT": -14.49665739067416,
+            "effort_m1_RBL_FOOT_JOINT": 0.2881043950793213,
+            "effort_piper_joint1": 0.0082620563143627,
+            "effort_piper_joint2": 0.7524359514038679,
+            "effort_piper_joint3": -3.82545886394928,
+            "effort_piper_joint4": -0.0055057142236615,
+            "effort_piper_joint5": -0.9599831096269398,
+            "effort_piper_joint6": 0.0006142408065702,
+            "effort_piper_gripper_joint1": -0.0011220136107752,
+            "slip_long_FAR_m_s": 0.0063948120542974,
+            "slip_long_FBL_m_s": 0.0047051499318418,
+            "slip_long_RAR_m_s": 0.0062567690769567,
+            "slip_long_RBL_m_s": -1.6182097950604444e-05,
+            "slip_lat_FAR_m_s": 0.0002149396189314,
+            "slip_lat_FBL_m_s": -0.0001563768532007,
+            "slip_lat_RAR_m_s": -0.000227387157226,
+            "slip_lat_RBL_m_s": 0.000116332992236
+          },
+          "support_less_than_four_sample_rows": [
+            {
+              "time_s": 0.002,
+              "phase": "settle",
+              "wheel_supports": 0,
+              "normal_FAR_N": 0.0,
+              "normal_FBL_N": 0.0,
+              "normal_RAR_N": 0.0,
+              "normal_RBL_N": 0.0
+            },
+            {
+              "time_s": 18.142000000000824,
+              "phase": "turn",
+              "wheel_supports": 3,
+              "normal_FAR_N": 34.363570317700066,
+              "normal_FBL_N": 181.0299184289132,
+              "normal_RAR_N": 177.49650961332424,
+              "normal_RBL_N": 0.0
+            }
+          ],
+          "turn_per_wheel_peak_slip_samples": [
+            {
+              "wheel": "FAR",
+              "time_s": 17.722000000001056,
+              "horizontal_slip_m_s": 0.1083693204358118,
+              "longitudinal_component_m_s": -0.1058017036773529,
+              "lateral_component_m_s": 0.023450140952439,
+              "wheel_total_normal_force_N": 34.98786253416083
+            },
+            {
+              "wheel": "FBL",
+              "time_s": 17.562000000001145,
+              "horizontal_slip_m_s": 0.0334998155426124,
+              "longitudinal_component_m_s": 0.0312880728241397,
+              "lateral_component_m_s": 0.0119705530507319,
+              "wheel_total_normal_force_N": 179.18266462294545
+            },
+            {
+              "wheel": "RAR",
+              "time_s": 18.162000000000813,
+              "horizontal_slip_m_s": 0.0329955053757742,
+              "longitudinal_component_m_s": -0.0304802811212593,
+              "lateral_component_m_s": -0.012635499110512,
+              "wheel_total_normal_force_N": 180.27190525355925
+            },
+            {
+              "wheel": "RBL",
+              "time_s": 17.1020000000014,
+              "horizontal_slip_m_s": 0.1167979496269258,
+              "longitudinal_component_m_s": 0.1132849134675115,
+              "lateral_component_m_s": -0.0284304311911081,
+              "wheel_total_normal_force_N": 33.91028360308903
+            }
+          ],
+          "mean_sample_sum_normal_after_2s_N": 427.1089792917438
+        }
+      },
+      "heading_12": {
+        "sources": {
+          "summary": "results/p5/heading_12/summary.json",
+          "csv": "results/p5/heading_12/timeseries.csv"
+        },
+        "sampling": {
+          "row_count": 2000,
+          "column_count": 101,
+          "first_sample_time_s": 0.002,
+          "last_sample_time_s": 39.9820000000029,
+          "median_sample_interval_s": 0.019999999999997797,
+          "csv_sample_rate_hz": 50,
+          "summary_recorded_original_sample_rate_hz": 50,
+          "full_50hz_timeseries_committed": true,
+          "last_csv_sample_precedes_final_summary_state": true,
+          "coverage_note": "Committed full 50 Hz sampled base pose/velocity, wheel normal/slip, joint position/velocity/effort data. Actuator commands and post-PI yaw_request are not logged."
+        },
+        "summary_values_and_recalculations": {
+          "simulation_time_s": 40.00000000000292,
+          "integration_steps": 20000,
+          "final_root_xyz_m_from_initial_home_plus_segment_deltas": [
+            0.5807403997113909,
+            0.04632520236261538,
+            0.5319838229849235
+          ],
+          "final_yaw_deg_from_sum_of_segment_yaw_changes": 12.170087900308587,
+          "final_root_z_m_from_initial_home_plus_segment_deltas": 0.5319838229849235,
+          "final_root_z_below_p4_fixed_root_mm": 10.676177015076505,
+          "final_xy_speed_mm_s_recorded_in_summary": 0.0634333393660811,
+          "segment_metrics": {
+            "settle": {
+              "displacement_xyz_m": [
+                1.73585745809428e-05,
+                2.136107011632945e-05,
+                -0.009829381788402536
+              ],
+              "net_xy_displacement_mm": 0.027524814767712725,
+              "yaw_change_deg": 0.0005204320747348837,
+              "end_xy_speed_mm_s": 0.34713141517851825
+            },
+            "stand": {
+              "displacement_xyz_m": [
+                2.08047152191596e-05,
+                -2.3768144459125014e-06,
+                -0.0006625618834006364
+              ],
+              "net_xy_displacement_mm": 0.020940043511431142,
+              "yaw_change_deg": -0.0002741009157725768,
+              "end_xy_speed_mm_s": 0.9589871524459516
+            },
+            "straight": {
+              "displacement_xyz_m": [
+                0.360247138251869,
+                7.2855328747360415e-06,
+                -7.891372194079871e-05
+              ],
+              "net_xy_displacement_mm": 360.24713832553925,
+              "yaw_change_deg": 0.0005344069476738541,
+              "end_xy_speed_mm_s": 0.7511384035388358
+            },
+            "brake": {
+              "displacement_xyz_m": [
+                0.003060261702867606,
+                1.007155159276851e-06,
+                -0.00010518026885164566
+              ],
+              "net_xy_displacement_mm": 3.060261868598773,
+              "yaw_change_deg": -0.00012975463739956178,
+              "end_xy_speed_mm_s": 0.08447119384085279
+            },
+            "turn": {
+              "displacement_xyz_m": [
+                0.0012424780163525218,
+                -0.0003782519077372931,
+                3.7827815990265634e-05
+              ],
+              "net_xy_displacement_mm": 1.298778705871866,
+              "yaw_change_deg": 12.167424214661136,
+              "end_xy_speed_mm_s": 0.7558355354734254
+            },
+            "brake_turn": {
+              "displacement_xyz_m": [
+                -1.3980365368426728e-05,
+                4.500617090586151e-05,
+                -3.1612985913476166e-05
+              ],
+              "net_xy_displacement_mm": 0.047127550704893634,
+              "yaw_change_deg": 0.002633169628133203,
+              "end_xy_speed_mm_s": 0.21408661008436072
+            },
+            "arm_extend": {
+              "displacement_xyz_m": [
+                4.614924158868883e-05,
+                3.527274514160053e-05,
+                -4.271066028405102e-06
+              ],
+              "net_xy_displacement_mm": 0.058085446103438604,
+              "yaw_change_deg": -0.001140987804289395,
+              "end_xy_speed_mm_s": 0.07089704380838924
+            },
+            "carry": {
+              "displacement_xyz_m": [
+                0.21584672210534556,
+                0.046554912096994236,
+                1.8944992902336644e-05
+              ],
+              "net_xy_displacement_mm": 220.8102517637737,
+              "yaw_change_deg": 0.0012647417609592537,
+              "end_xy_speed_mm_s": 0.3333219360069502
+            },
+            "arm_return": {
+              "displacement_xyz_m": [
+                0.0002921665569145526,
+                4.790504722301109e-05,
+                -2.0462426723821814e-05
+              ],
+              "net_xy_displacement_mm": 0.29606788162302144,
+              "yaw_change_deg": -0.0005154959200535103,
+              "end_xy_speed_mm_s": 0.17776535792515843
+            },
+            "park": {
+              "displacement_xyz_m": [
+                -1.8699087978690798e-05,
+                -6.918733616467776e-06,
+                -5.656827077871185e-07
+              ],
+              "net_xy_displacement_mm": 0.019938023123932322,
+              "yaw_change_deg": -0.00022872548653474212,
+              "end_xy_speed_mm_s": 0.0634333393660811
+            }
+          },
+          "max_sample_abs_roll_pitch_deg_recorded": [
+            0.021093557487147578,
+            0.04847877373992042
+          ],
+          "max_sample_slip_m_s_recorded": 0.11735000145850279,
+          "min_sample_root_z_m_recorded": 0.5319818418390677,
+          "free_joints_recorded": 1,
+          "welds_recorded": 0,
+          "other_ground_bodies_recorded": [],
+          "actuator_limits_respected_recorded": true,
+          "warning_counts_recorded": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "max_actuator_effort_nm_by_group_from_summary": {
+            "leg": 20.485209840308812,
+            "wheel": 4.5839077490346085,
+            "arm": 6.260668785319297
+          }
+        },
+        "csv_recalculations": {
+          "phase_statistics": {
+            "stand": {
+              "sample_count": 100,
+              "first_sample_time_s": 2.002000000000001,
+              "last_sample_time_s": 3.981999999999783,
+              "sampled_net_xy_displacement_mm_first_to_last": 0.008766363246086116,
+              "sampled_xy_peak_to_peak_mm": [
+                0.02585537984023596,
+                0.005864744239460014
+              ],
+              "sampled_yaw_range_deg": [
+                -0.0009617543557464,
+                0.001026146185948
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.0005405591815423105,
+                "median": 0.059298158690877345,
+                "p95": 0.17743399259547196,
+                "max": 0.2176742632977278,
+                "last_sample": 0.05696842992745706
+              },
+              "sampled_wheel_support_counts": {
+                "4": 100
+              },
+              "sampled_xy_speed_mm_s": {
+                "min": 0.011802505723101996,
+                "median": 0.42849865096010575,
+                "p95": 1.0203768072599178,
+                "max": 1.418536627010839,
+                "last_sample": 0.7424182337901448
+              },
+              "sampled_root_z_m": {
+                "min": 0.5321712497769011,
+                "median": 0.532381824531822,
+                "p95": 0.5327676418171107,
+                "max": 0.5328294690507063,
+                "last_sample": 0.5321712497769011
+              },
+              "sampled_root_z_below_p4_fixed_root_mm": {
+                "min": 9.83053094929376,
+                "median": 10.278175468177997,
+                "p95": 10.475140096851149,
+                "max": 10.488750223098918,
+                "last_sample": 10.488750223098918
+              },
+              "sampled_per_wheel_min_normal_N": {
+                "FAR": 104.80089501343588,
+                "FBL": 106.09149808123284,
+                "RAR": 103.0394619861344,
+                "RBL": 104.13046744055433
+              },
+              "sampled_loaded_contact_point_slip_m_s": {
+                "max_horizontal_norm": 0.0083064470915864,
+                "pooled_wheel_sample_p95_horizontal_norm": 0.007809733529602875,
+                "max_abs_longitudinal_component": 0.0081877388580013,
+                "max_abs_lateral_component": 0.002309562737205
+              }
+            },
+            "brake": {
+              "sample_count": 100,
+              "first_sample_time_s": 10.00200000000001,
+              "last_sample_time_s": 11.98200000000067,
+              "sampled_net_xy_displacement_mm_first_to_last": 3.053295665392344,
+              "sampled_xy_peak_to_peak_mm": [
+                3.5388935668250188,
+                0.0032026178688149775
+              ],
+              "sampled_yaw_range_deg": [
+                -0.0003487690538314,
+                0.0014234801778006
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 2.6389048152687174e-06,
+                "median": 0.0012552701213271874,
+                "p95": 0.08567629376982921,
+                "max": 0.1146207095548926,
+                "last_sample": 0.08171104108274199
+              },
+              "sampled_wheel_support_counts": {
+                "4": 100
+              },
+              "sampled_xy_speed_mm_s": {
+                "min": 0.007818845247180753,
+                "median": 1.7594790114262588,
+                "p95": 6.090168449762738,
+                "max": 7.197031272586565,
+                "last_sample": 0.09326987545323819
+              },
+              "sampled_root_z_m": {
+                "min": 0.5319842641335024,
+                "median": 0.5319965826048827,
+                "p95": 0.5320876981687856,
+                "max": 0.5320891157822097,
+                "last_sample": 0.5319864545047307
+              },
+              "sampled_root_z_below_p4_fixed_root_mm": {
+                "min": 10.570884217790288,
+                "median": 10.663417395117335,
+                "p95": 10.675077141263767,
+                "max": 10.675735866497615,
+                "last_sample": 10.673545495269332
+              },
+              "sampled_per_wheel_min_normal_N": {
+                "FAR": 104.68919796680431,
+                "FBL": 106.2580422927667,
+                "RAR": 102.5727649733171,
+                "RBL": 103.9378651879269
+              },
+              "sampled_loaded_contact_point_slip_m_s": {
+                "max_horizontal_norm": 0.0101169095916647,
+                "pooled_wheel_sample_p95_horizontal_norm": 0.007715114883303839,
+                "max_abs_longitudinal_component": 0.0101097727267422,
+                "max_abs_lateral_component": 0.0003901523157068
+              }
+            },
+            "turn": {
+              "sample_count": 700,
+              "first_sample_time_s": 12.002000000000676,
+              "last_sample_time_s": 25.98199999999648,
+              "sampled_net_xy_displacement_mm_first_to_last": 1.2957288804117717,
+              "sampled_xy_peak_to_peak_mm": [
+                2.022594630622654,
+                0.5658980984135935
+              ],
+              "sampled_yaw_range_deg": [
+                -0.0387634989614247,
+                12.168418283297356
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.00015961162532422278,
+                "median": 0.1878604244991479,
+                "p95": 2.6276636818672747,
+                "max": 3.040771668400561,
+                "last_sample": 0.06873554250904731
+              },
+              "sampled_wheel_support_counts": {
+                "3": 2,
+                "4": 698
+              },
+              "sampled_xy_speed_mm_s": {
+                "min": 0.0015261612594245262,
+                "median": 0.5925281690243516,
+                "p95": 3.787603047647767,
+                "max": 7.083666720960238,
+                "last_sample": 0.8229900217229301
+              },
+              "sampled_root_z_m": {
+                "min": 0.5319840649776604,
+                "median": 0.5324205845724193,
+                "p95": 0.534836432171558,
+                "max": 0.5348810390923384,
+                "last_sample": 0.5320224734737569
+              },
+              "sampled_root_z_below_p4_fixed_root_mm": {
+                "min": 7.778960907661614,
+                "median": 10.239415427580724,
+                "p95": 10.658055010865695,
+                "max": 10.675935022339655,
+                "last_sample": 10.637526526243168
+              },
+              "sampled_per_wheel_min_normal_N": {
+                "FAR": 0.0,
+                "FBL": 106.29364034203252,
+                "RAR": 103.28316055973838,
+                "RBL": 0.0
+              },
+              "sampled_loaded_contact_point_slip_m_s": {
+                "max_horizontal_norm": 0.1173500014585027,
+                "pooled_wheel_sample_p95_horizontal_norm": 0.04053498177338277,
+                "max_abs_longitudinal_component": 0.1141043605760198,
+                "max_abs_lateral_component": 0.0274083516441294
+              }
+            },
+            "park": {
+              "sample_count": 100,
+              "first_sample_time_s": 38.00200000000048,
+              "last_sample_time_s": 39.9820000000029,
+              "sampled_net_xy_displacement_mm_first_to_last": 0.013881076890795473,
+              "sampled_xy_peak_to_peak_mm": [
+                0.03171463199147517,
+                0.01198068812460068
+              ],
+              "sampled_yaw_range_deg": [
+                12.168825905364296,
+                12.171584959213716
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.0011481335088727733,
+                "median": 0.06222774647964123,
+                "p95": 0.12611606516744817,
+                "max": 0.1893517981273276,
+                "last_sample": 0.010813965263994396
+              },
+              "sampled_wheel_support_counts": {
+                "4": 100
+              },
+              "sampled_xy_speed_mm_s": {
+                "min": 0.0362116592365437,
+                "median": 0.5395711333615667,
+                "p95": 1.2419018248647915,
+                "max": 1.2662143096060237,
+                "last_sample": 0.3468783339859786
+              },
+              "sampled_root_z_m": {
+                "min": 0.5319818418390677,
+                "median": 0.5319850069999821,
+                "p95": 0.5319863770080379,
+                "max": 0.5319869763281438,
+                "last_sample": 0.5319844941568613
+              },
+              "sampled_root_z_below_p4_fixed_root_mm": {
+                "min": 10.673023671856186,
+                "median": 10.674993000017952,
+                "p95": 10.676716840416372,
+                "max": 10.678158160932316,
+                "last_sample": 10.6755058431387
+              },
+              "sampled_per_wheel_min_normal_N": {
+                "FAR": 104.70000809138638,
+                "FBL": 105.86916347100302,
+                "RAR": 103.06400431604132,
+                "RBL": 104.1977794957372
+              },
+              "sampled_loaded_contact_point_slip_m_s": {
+                "max_horizontal_norm": 0.0080358097682237,
+                "pooled_wheel_sample_p95_horizontal_norm": 0.00770736842269281,
+                "max_abs_longitudinal_component": 0.0080352670937302,
+                "max_abs_lateral_component": 0.0003098810071792
+              }
+            }
+          },
+          "last_csv_row": {
+            "time_s": 39.9820000000029,
+            "phase": "park",
+            "x_m": 0.580747269845106,
+            "y_m": 0.046327315495473,
+            "z_m": 0.5319844941568613,
+            "roll_deg": -0.0144592877727713,
+            "pitch_deg": 0.0150554562239289,
+            "yaw_deg": 12.169948881395856,
+            "vx_m_s": 0.0003128396848287,
+            "vy_m_s": 0.0001498529618832,
+            "vz_m_s": 5.8600933967987247e-05,
+            "yaw_rate_rad_s": -0.000188739299053,
+            "v_ref_m_s": 0.0,
+            "yaw_ref_rad_s": 0.0,
+            "wheel_supports": 4,
+            "normal_FAR_N": 107.75019330894531,
+            "normal_FBL_N": 109.40219354312224,
+            "normal_RAR_N": 103.90726666241844,
+            "normal_RBL_N": 105.79957262181333,
+            "slip_FAR_m_s": 0.0068696779969395,
+            "slip_FBL_m_s": 0.0071572008395424,
+            "slip_RAR_m_s": 0.0053284847719106,
+            "slip_RBL_m_s": 0.0068082204212227,
+            "q_m1_FAR_ABAD_JOINT": -0.0274323598714221,
+            "q_m1_FAR_HIP_JOINT": 0.5970005886039066,
+            "q_m1_FAR_KNEE_JOINT": -1.2271513333628703,
+            "q_m1_FAR_FOOT_JOINT": 8.77322151463283,
+            "q_m1_FBL_ABAD_JOINT": 0.0277470093766648,
+            "q_m1_FBL_HIP_JOINT": 0.5968207192261159,
+            "q_m1_FBL_KNEE_JOINT": -1.227486872862185,
+            "q_m1_FBL_FOOT_JOINT": 4.805557215776302,
+            "q_m1_RAR_ABAD_JOINT": -0.026829604557006,
+            "q_m1_RAR_HIP_JOINT": -0.596997415855779,
+            "q_m1_RAR_KNEE_JOINT": 1.2266952736979366,
+            "q_m1_RAR_FOOT_JOINT": 7.430756750989837,
+            "q_m1_RBL_ABAD_JOINT": 0.0271467063703598,
+            "q_m1_RBL_HIP_JOINT": -0.5968381671740633,
+            "q_m1_RBL_KNEE_JOINT": 1.227045014572791,
+            "q_m1_RBL_FOOT_JOINT": 3.4619475476641064,
+            "q_piper_joint1": 1.4387905603433748e-06,
+            "q_piper_joint2": 0.8000036443183013,
+            "q_piper_joint3": -1.3999969381617434,
+            "q_piper_joint4": -2.1521943373757663e-06,
+            "q_piper_joint5": 0.6000030459464999,
+            "q_piper_joint6": 4.2169775681627474e-08,
+            "q_piper_gripper_joint1": 0.0199997909289734,
+            "dq_m1_FAR_ABAD_JOINT": -2.547543347319369e-05,
+            "dq_m1_FAR_HIP_JOINT": 0.0216130609603441,
+            "dq_m1_FAR_KNEE_JOINT": -3.653913510156311e-05,
+            "dq_m1_FAR_FOOT_JOINT": -0.0424358716112926,
+            "dq_m1_FBL_ABAD_JOINT": 0.0006354909178875,
+            "dq_m1_FBL_HIP_JOINT": 0.0179097211638326,
+            "dq_m1_FBL_KNEE_JOINT": 0.0015998695546453,
+            "dq_m1_FBL_FOOT_JOINT": -0.0231993274793926,
+            "dq_m1_RAR_ABAD_JOINT": 0.0004179967174316,
+            "dq_m1_RAR_HIP_JOINT": 0.0126315571532786,
+            "dq_m1_RAR_KNEE_JOINT": 0.0011678478721417,
+            "dq_m1_RAR_FOOT_JOINT": -0.012172783338762,
+            "dq_m1_RBL_ABAD_JOINT": -0.0002752330574501,
+            "dq_m1_RBL_HIP_JOINT": 0.0202681263643264,
+            "dq_m1_RBL_KNEE_JOINT": 0.0005187322891801,
+            "dq_m1_RBL_FOOT_JOINT": -0.036481278789537,
+            "dq_piper_joint1": -7.90380452000564e-05,
+            "dq_piper_joint2": 8.64485599487619e-05,
+            "dq_piper_joint3": 0.0001201089934666,
+            "dq_piper_joint4": 4.496234195067021e-05,
+            "dq_piper_joint5": 5.46238383285116e-05,
+            "dq_piper_joint6": -2.8931151311370506e-06,
+            "dq_piper_gripper_joint1": -6.562670872574241e-05,
+            "effort_m1_FAR_ABAD_JOINT": 11.409471603659869,
+            "effort_m1_FAR_HIP_JOINT": 3.9970828944878463,
+            "effort_m1_FAR_KNEE_JOINT": 14.607142987583757,
+            "effort_m1_FAR_FOOT_JOINT": 0.2274491918905697,
+            "effort_m1_FBL_ABAD_JOINT": -11.627426729056005,
+            "effort_m1_FBL_HIP_JOINT": 4.230452042878198,
+            "effort_m1_FBL_KNEE_JOINT": 14.79522654031905,
+            "effort_m1_FBL_FOOT_JOINT": 0.0830016256869565,
+            "effort_m1_RAR_ABAD_JOINT": 11.022495335840336,
+            "effort_m1_RAR_HIP_JOINT": -4.489228884720603,
+            "effort_m1_RAR_KNEE_JOINT": -14.368697844680582,
+            "effort_m1_RAR_FOOT_JOINT": 0.0104310430092563,
+            "effort_m1_RBL_ABAD_JOINT": -11.228143971643965,
+            "effort_m1_RBL_HIP_JOINT": -4.796296559334053,
+            "effort_m1_RBL_KNEE_JOINT": -14.580353877743503,
+            "effort_m1_RBL_FOOT_JOINT": 0.1843221854850346,
+            "effort_piper_joint1": 0.0008677247373744,
+            "effort_piper_joint2": 0.7291883480062324,
+            "effort_piper_joint3": -3.8521814123922127,
+            "effort_piper_joint4": -0.0085515140506461,
+            "effort_piper_joint5": -0.966094569718912,
+            "effort_piper_joint6": 0.0006679379051276,
+            "effort_piper_gripper_joint1": 0.0011007430627323,
+            "slip_long_FAR_m_s": -0.0068674291379783,
+            "slip_long_FBL_m_s": -0.0071543789174948,
+            "slip_long_RAR_m_s": -0.0053242839318279,
+            "slip_long_RBL_m_s": -0.0068057507344496,
+            "slip_lat_FAR_m_s": -0.0001757635243193,
+            "slip_lat_FBL_m_s": 0.0002009630872889,
+            "slip_lat_RAR_m_s": 0.0002115433236047,
+            "slip_lat_RBL_m_s": -0.0001833636945894,
+            "yaw_target_deg": null
+          },
+          "support_less_than_four_sample_rows": [
+            {
+              "time_s": 0.002,
+              "phase": "settle",
+              "wheel_supports": 0,
+              "normal_FAR_N": 0.0,
+              "normal_FBL_N": 0.0,
+              "normal_RAR_N": 0.0,
+              "normal_RBL_N": 0.0
+            },
+            {
+              "time_s": 16.602000000001677,
+              "phase": "turn",
+              "wheel_supports": 3,
+              "normal_FAR_N": 36.33856467725506,
+              "normal_FBL_N": 179.1889651591689,
+              "normal_RAR_N": 175.6548389845702,
+              "normal_RBL_N": 0.0
+            },
+            {
+              "time_s": 17.542000000001156,
+              "phase": "turn",
+              "wheel_supports": 3,
+              "normal_FAR_N": 0.0,
+              "normal_FBL_N": 180.41545173543955,
+              "normal_RAR_N": 177.67092856315568,
+              "normal_RBL_N": 34.23771308684074
+            }
+          ],
+          "turn_max_sample_abs_target_yaw_error_deg": 7.106347063438379,
+          "first_sample_after_target_ramp_with_zero_yaw_reference": {
+            "row": {
+              "time_s": 19.641999999999992,
+              "yaw_deg": 11.917765855685712,
+              "yaw_target_deg": 12.000650983469235,
+              "yaw_ref_rad_s": 0.0,
+              "yaw_rate_rad_s": 0.0440724766422747
+            },
+            "preceding_sample": {
+              "time_s": 19.622000000000003,
+              "yaw_deg": 11.87539679780136,
+              "yaw_target_deg": 12.000650983469235,
+              "yaw_ref_rad_s": 0.0055693786802148,
+              "yaw_rate_rad_s": 0.0208269483802181
+            },
+            "later_rotation_to_final_summary_yaw_deg": 0.25232204462287555,
+            "timing_note": "50 Hz detection of zero yaw_ref after the 5 s ramp, not the exact 500 Hz controller latch instant."
+          },
+          "turn_per_wheel_peak_slip_samples": [
+            {
+              "wheel": "FAR",
+              "time_s": 16.062000000001976,
+              "horizontal_slip_m_s": 0.1068942650925072,
+              "longitudinal_component_m_s": -0.1035736443936495,
+              "lateral_component_m_s": 0.0264364161089403,
+              "wheel_total_normal_force_N": 37.148462699434205
+            },
+            {
+              "wheel": "FBL",
+              "time_s": 19.641999999999992,
+              "horizontal_slip_m_s": 0.0683466100149837,
+              "longitudinal_component_m_s": 0.0676194104968104,
+              "lateral_component_m_s": 0.009943561967631,
+              "wheel_total_normal_force_N": 156.6759507416885
+            },
+            {
+              "wheel": "RAR",
+              "time_s": 19.641999999999992,
+              "horizontal_slip_m_s": 0.0659145004414535,
+              "longitudinal_component_m_s": -0.0652054765506744,
+              "lateral_component_m_s": -0.0096419498155622,
+              "wheel_total_normal_force_N": 150.05771116818948
+            },
+            {
+              "wheel": "RBL",
+              "time_s": 17.962000000000923,
+              "horizontal_slip_m_s": 0.1173500014585027,
+              "longitudinal_component_m_s": 0.1141043605760198,
+              "lateral_component_m_s": -0.0274083516441294,
+              "wheel_total_normal_force_N": 34.14292651411882
+            }
+          ],
+          "mean_sample_sum_normal_after_2s_N": 427.1007340356895
+        }
+      },
+      "heading_minus12_check": {
+        "sources": {
+          "summary": "results/p5/heading_minus12_check/summary.json",
+          "csv": "results/p5/heading_minus12_check/heading_10hz.csv"
+        },
+        "sampling": {
+          "row_count": 400,
+          "column_count": 8,
+          "first_sample_time_s": 0.002,
+          "last_sample_time_s": 39.9020000000028,
+          "median_sample_interval_s": 0.09999999999998899,
+          "csv_sample_rate_hz": 10,
+          "summary_recorded_original_sample_rate_hz": 50,
+          "full_50hz_timeseries_committed": false,
+          "last_csv_sample_precedes_final_summary_state": true,
+          "coverage_note": "Committed 10 Hz extraction has only time, phase, x, y, yaw, yaw target, yaw rate, wheel support count. No z, base linear velocity, wheel normal/slip or joint effort time histories; summary maxima and final speed cannot be independently recomputed from this CSV."
+        },
+        "summary_values_and_recalculations": {
+          "simulation_time_s": 40.00000000000292,
+          "integration_steps": 20000,
+          "final_root_xyz_m_from_initial_home_plus_segment_deltas": [
+            0.5889379309834802,
+            -0.045365478968366846,
+            0.5319844655157661
+          ],
+          "final_yaw_deg_from_sum_of_segment_yaw_changes": -12.137390251182287,
+          "final_root_z_m_from_initial_home_plus_segment_deltas": 0.5319844655157661,
+          "final_root_z_below_p4_fixed_root_mm": 10.675534484233973,
+          "final_xy_speed_mm_s_recorded_in_summary": 0.8266836858424389,
+          "segment_metrics": {
+            "settle": {
+              "displacement_xyz_m": [
+                1.73585745809428e-05,
+                2.136107011632945e-05,
+                -0.009829381788402536
+              ],
+              "net_xy_displacement_mm": 0.027524814767712725,
+              "yaw_change_deg": 0.0005204320747348837,
+              "end_xy_speed_mm_s": 0.34713141517851825
+            },
+            "stand": {
+              "displacement_xyz_m": [
+                2.08047152191596e-05,
+                -2.3768144459125014e-06,
+                -0.0006625618834006364
+              ],
+              "net_xy_displacement_mm": 0.020940043511431142,
+              "yaw_change_deg": -0.0002741009157725768,
+              "end_xy_speed_mm_s": 0.9589871524459516
+            },
+            "straight": {
+              "displacement_xyz_m": [
+                0.360247138251869,
+                7.2855328747360415e-06,
+                -7.891372194079871e-05
+              ],
+              "net_xy_displacement_mm": 360.24713832553925,
+              "yaw_change_deg": 0.0005344069476738541,
+              "end_xy_speed_mm_s": 0.7511384035388358
+            },
+            "brake": {
+              "displacement_xyz_m": [
+                0.003060261702867606,
+                1.007155159276851e-06,
+                -0.00010518026885164566
+              ],
+              "net_xy_displacement_mm": 3.060261868598773,
+              "yaw_change_deg": -0.00012975463739956178,
+              "end_xy_speed_mm_s": 0.08447119384085279
+            },
+            "turn": {
+              "displacement_xyz_m": [
+                0.009400157403064824,
+                0.0011001675220179716,
+                1.6802139075178246e-05
+              ],
+              "net_xy_displacement_mm": 9.464318664272541,
+              "yaw_change_deg": -12.139023817447208,
+              "end_xy_speed_mm_s": 0.0601183571437331
+            },
+            "brake_turn": {
+              "displacement_xyz_m": [
+                -6.283025375863893e-06,
+                2.4745802010524894e-06,
+                -1.2945681639897622e-05
+              ],
+              "net_xy_displacement_mm": 0.006752773877836469,
+              "yaw_change_deg": -6.395652565416299e-05,
+              "end_xy_speed_mm_s": 0.4672892202941114
+            },
+            "arm_extend": {
+              "displacement_xyz_m": [
+                4.0754599135661707e-05,
+                4.524990661939092e-06,
+                -3.187656187120247e-06
+              ],
+              "net_xy_displacement_mm": 0.04100503494937072,
+              "yaw_change_deg": 0.0013487790235551245,
+              "end_xy_speed_mm_s": 0.22894152040863214
+            },
+            "carry": {
+              "displacement_xyz_m": [
+                0.2158755933614262,
+                -0.046425858050081904,
+                2.0872654640791133e-05
+              ],
+              "net_xy_displacement_mm": 220.8113042958494,
+              "yaw_change_deg": -0.0007419574914049321,
+              "end_xy_speed_mm_s": 1.3311546120010422
+            },
+            "arm_return": {
+              "displacement_xyz_m": [
+                0.00030460678900712246,
+                -7.388624962071516e-05,
+                -2.108293973723807e-05
+              ],
+              "net_xy_displacement_mm": 0.3134397450743033,
+              "yaw_change_deg": -0.00011906877953826722,
+              "end_xy_speed_mm_s": 0.46035452283977374
+            },
+            "park": {
+              "displacement_xyz_m": [
+                -2.2461388314409803e-05,
+                -1.787052496191044e-07,
+                4.4662209930379504e-08
+              ],
+              "net_xy_displacement_mm": 0.02246209920236634,
+              "yaw_change_deg": 0.0005587865687264326,
+              "end_xy_speed_mm_s": 0.8266836858424389
+            }
+          },
+          "max_sample_abs_roll_pitch_deg_recorded": [
+            0.060941759145571574,
+            0.06656134097637506
+          ],
+          "max_sample_slip_m_s_recorded": 0.11310787119782463,
+          "min_sample_root_z_m_recorded": 0.531982416124763,
+          "free_joints_recorded": 1,
+          "welds_recorded": 0,
+          "other_ground_bodies_recorded": [],
+          "actuator_limits_respected_recorded": true,
+          "warning_counts_recorded": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "max_actuator_effort_nm_by_group_from_summary": {
+            "leg": 21.117705677934623,
+            "wheel": 4.667446862332922,
+            "arm": 6.260668785319297
+          }
+        },
+        "csv_recalculations": {
+          "phase_statistics": {
+            "stand": {
+              "sample_count": 20,
+              "first_sample_time_s": 2.002000000000001,
+              "last_sample_time_s": 3.901999999999792,
+              "sampled_net_xy_displacement_mm_first_to_last": 0.007311448640649871,
+              "sampled_xy_peak_to_peak_mm": [
+                0.018306186795078363,
+                0.0055603938284688945
+              ],
+              "sampled_yaw_range_deg": [
+                -0.0009336754374972,
+                0.001026146185948
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.0011210494557948745,
+                "median": 0.059746551023848765,
+                "p95": 0.16853154786833205,
+                "max": 0.1833968270974925,
+                "last_sample": 0.06097517160254744
+              },
+              "sampled_wheel_support_counts": {
+                "4": 20
+              }
+            },
+            "brake": {
+              "sample_count": 20,
+              "first_sample_time_s": 10.00200000000001,
+              "last_sample_time_s": 11.902000000000644,
+              "sampled_net_xy_displacement_mm_first_to_last": 3.056362037803726,
+              "sampled_xy_peak_to_peak_mm": [
+                3.5388935668250188,
+                0.0024634594542904805
+              ],
+              "sampled_yaw_range_deg": [
+                1.3199390142866666e-05,
+                0.0011097805120533
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.00012213807133246567,
+                "median": 0.0022915157490374133,
+                "p95": 0.08612597951380431,
+                "max": 0.10037002504192209,
+                "last_sample": 0.04693830504396781
+              },
+              "sampled_wheel_support_counts": {
+                "4": 20
+              }
+            },
+            "turn": {
+              "sample_count": 140,
+              "first_sample_time_s": 12.002000000000676,
+              "last_sample_time_s": 25.901999999996523,
+              "sampled_net_xy_displacement_mm_first_to_last": 9.45915636557561,
+              "sampled_xy_peak_to_peak_mm": [
+                10.146220458210731,
+                1.6170971149925673
+              ],
+              "sampled_yaw_range_deg": [
+                -12.138711297333844,
+                0.0387349538406821
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.001287715144584783,
+                "median": 0.18421617480963393,
+                "p95": 2.5829630879307692,
+                "max": 2.8299458764414767,
+                "last_sample": 0.03541572312860704
+              },
+              "sampled_wheel_support_counts": {
+                "4": 140
+              }
+            },
+            "park": {
+              "sample_count": 20,
+              "first_sample_time_s": 38.00200000000048,
+              "last_sample_time_s": 39.9020000000028,
+              "sampled_net_xy_displacement_mm_first_to_last": 0.03212893752774571,
+              "sampled_xy_peak_to_peak_mm": [
+                0.03346017298799797,
+                0.005673008297395199
+              ],
+              "sampled_yaw_range_deg": [
+                -12.138628065210913,
+                -12.137139436092426
+              ],
+              "sampled_abs_yaw_rate_deg_s": {
+                "min": 0.005274658005629413,
+                "median": 0.03651008652998387,
+                "p95": 0.12075038950915706,
+                "max": 0.14738964137855737,
+                "last_sample": 0.027474114390632923
+              },
+              "sampled_wheel_support_counts": {
+                "4": 20
+              }
+            }
+          },
+          "last_csv_row": {
+            "time_s": 39.9020000000028,
+            "phase": "park",
+            "x_m": 0.5889290558311228,
+            "y_m": -0.0453633558050383,
+            "yaw_deg": -12.137992461623693,
+            "yaw_target_deg": null,
+            "yaw_rate_rad_s": -0.0004795137551861,
+            "wheel_supports": 4
+          },
+          "support_less_than_four_sample_rows": [
+            {
+              "time_s": 0.002,
+              "phase": "settle",
+              "wheel_supports": 0
+            }
+          ],
+          "turn_max_sample_abs_target_yaw_error_deg": 7.096836994686416
+        }
+      }
+    },
+    "previous_message_precision_notes": [
+      {
+        "metric": "heading_12 rotation after first 50 Hz zero yaw-reference sample",
+        "previous_approximate_deg": 0.25218302571014384,
+        "previous_endpoint": "last CSV yaw at 39.982 s",
+        "exact_summary_endpoint_recalculation_deg": 0.25232204462287555,
+        "note": "Difference is endpoint sampling only; rounded statement approx 0.252 deg is unchanged."
+      }
+    ],
+    "inference_limits": [
+      "No new simulation or disturbance experiment was run.",
+      "P5 nominal success does not establish free-base door-force rejection.",
+      "Accessory, camera bracket and pedestal additional payload remain omitted per assembly configuration.",
+      "Proposed next-stage acceptance thresholds are recommendations and are intentionally not marked as passed by this audit."
+    ]
+  }
+}

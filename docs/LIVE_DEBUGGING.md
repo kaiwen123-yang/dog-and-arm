@@ -1,5 +1,7 @@
 # 本地 Linux 实时查看装配变化
 
+2026-11-20状态：下文是已完成P3装配预览的操作说明。P4接触和P5基础移动已有独立记录；下一轮按 [P6计划](P6_SINGLE_DOOR_PLAN.md) 做真实动力学可见调试，不重复本页的整套单体检查。本页的双终端、修改说明、真实桌面证据和GitHub节奏继续适用；预览的F10/F11恢复home不能移作连续动力学任务的阶段切换。
+
 本轮在用户桌面逐个打开 **M1 单体、Piper H 单体、M1＋Piper H 整机**，边检查几何与关节关系，边修正模型。默认入口是 [live_assembly.py](../scripts/live_assembly.py)：窗口标题带 `KINEMATIC_PREVIEW`，只调用 `mj_forward`，不推进物理时间。
 
 当前真实工作目录为 `/home/kaiwen/research/dog-and-arm`。H0 已完成，记录以 [PROJECT_STATE.md](../PROJECT_STATE.md) 和 [H0 报告](../reports/H0_HARDWARE_REPORT.md) 为准；本流程不重新验机、不启动相机驱动或真实机械臂/M1，也不把实机反馈实时映射到模型。手眼标定、标定板采购、附件称重和惯量仍后置。
