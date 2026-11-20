@@ -36,6 +36,7 @@ def arguments():
                         default=ROOT / "sim/scenes/assembly_preview.xml")
     parser.add_argument("--events", type=Path,
                         default=ROOT / "results/assembly/live_events.jsonl")
+    parser.add_argument("--mount-detail", action="store_true", help="start with a close side view of the arm mounting interface")
     parser.add_argument("--watch", action="store_true",
                         help="watch the model and recursively referenced XML files")
     parser.add_argument("--scripted-demo", action="store_true",
@@ -80,11 +81,16 @@ def xml_snapshot(model_path):
     return snapshot
 
 
-def load_model(mj, path):
+def load_model(mj, path, mount_detail=False):
     # MjSpec preserves file-relative asset paths. Renaming in memory makes the
     # native window title explicit without modifying any source XML.
     spec = mj.MjSpec.from_file(str(path))
     spec.modelname = f"{MODE} | {path.name}"
+    if mount_detail:
+        # Same camera in both revisions. Fixed to the M1 frame, looking along
+        # the rails at the cover, feet and plate rather than following the arm.
+        spec.body("m1_base_link").add_camera(name="mount_detail", pos=[.38,.12,.144],
+            quat=[.43404976,.39425914,.54463928,.59960703], fovy=30)
     model = spec.compile()
     data = mj.MjData(model)
     home = mj.mj_name2id(model, mj.mjtObj.mjOBJ_KEY, "home")
@@ -173,14 +179,14 @@ def run(args, mj, viewer_api, glfw, record):
           "  手动调整关节、夹爪或 home 会停止 scripted demo。", flush=True)
     print(f"事件日志：{args.events}\n日志只证明本程序收到/执行了事件，不证明用户已看到画面。", flush=True)
 
-    loaded = load_model(mj, args.model)
+    loaded = load_model(mj, args.model, args.mount_detail)
     demo = args.scripted_demo
     next_load_event = "load"
     selected_name = None
     collisions_visible = False
     use_wrist_camera = False
     free_camera = None
-    inspection_camera = None
+    inspection_camera = "mount_detail" if args.mount_detail else None
     keys = queue.SimpleQueue()
 
     while True:
@@ -286,7 +292,7 @@ def run(args, mj, viewer_api, glfw, record):
                             # MuJoCo's native F6 also cycles frame axes before
                             # invoking this callback; keep our inspection view clean.
                             viewer.opt.frame = mj.mjtFrame.mjFRAME_NONE
-                            names = [name for name in ("overview", "side", "front", "wrist_detail")
+                            names = [name for name in ("overview", "side", "front", "wrist_detail", "mount_detail")
                                      if mj.mj_name2id(model, mj.mjtObj.mjOBJ_CAMERA, name) >= 0]
                             if names:
                                 current = mj.mj_id2name(model, mj.mjtObj.mjOBJ_CAMERA, viewer.cam.fixedcamid) if viewer.cam.type == mj.mjtCamera.mjCAMERA_FIXED else None
@@ -357,7 +363,7 @@ def run(args, mj, viewer_api, glfw, record):
                 if reload_reason and not quit_requested:
                     record("reload_requested", reason=reload_reason)
                     try:
-                        candidate = load_model(mj, args.model)
+                        candidate = load_model(mj, args.model, args.mount_detail)
                         gripper_limits(mj, candidate[0])
                     except Exception as exc:
                         candidate = None

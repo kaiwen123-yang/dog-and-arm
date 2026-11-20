@@ -732,29 +732,53 @@
     "mount": {
       "parent_link": "m1_base_link",
       "child_link": "piper_base_link",
+      "revision": "rail_bridge_v1",
       "xyz_m": [
         0.05,
         0.0,
-        0.18
+        0.0945
       ],
       "rpy_rad": [
         0.0,
         0.0,
         0.0
       ],
-      "pedestal_size_xyz_m": [
-        0.15,
-        0.15,
-        0.0979106429
-      ],
-      "pedestal_local_xyz_m": [
-        0.0,
-        0.0,
-        -0.04895532145
-      ],
       "pedestal_payload_mode": "omitted",
+      "bridge": {
+        "interface": "config/mount_interface_reference.json",
+        "rail_pattern_origin_xy_m": [
+          0.0,
+          0.0
+        ],
+        "plate_center_xy_m": [
+          0.01,
+          0.0
+        ],
+        "plate_size_xyz_m": [
+          0.18,
+          0.18,
+          0.008
+        ],
+        "cover_top_z_m": 0.072,
+        "cover_clearance_m": 0.0145,
+        "seat_top_z_m_by_y": [
+          0.0805,
+          0.0804
+        ],
+        "support_size_xy_m": [
+          0.15,
+          0.014
+        ],
+        "piper_pattern_center_in_root_xy_m": [
+          -0.005,
+          0.0
+        ],
+        "piper_flange_thickness_m": 0.004,
+        "m4_plate_clearance_diameter_m": 0.0045,
+        "m5_plate_minor_diameter_m": 0.0042
+      },
       "status": "simulation_assumption",
-      "note": "从此名义值开始；按M1网格顶面与Piper基座调整，不是实测安装外参。"
+      "note": "板与支座为名义外形；两侧支座横跨各自导轨翻边。附加质量省略。"
     },
     "accessories": {
       "accessory_payload_mode": "omitted",

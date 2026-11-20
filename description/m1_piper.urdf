@@ -843,26 +843,236 @@
     <origin xyz="-0.092 0 0.042" rpy="0 0 -1.570796326794897" />
   </joint>
   <link name="m1_arm_mount">
-    <visual>
-      <origin xyz="0 0 -0.04895532145" rpy="0 0 0" />
+    <visual name="m1_mount_plate_visual">
+      <origin xyz="-0.04 0 -0.004000000000000004" rpy="-0 0 0" />
       <geometry>
-        <box size="0.15 0.15 0.0979106429" />
+        <mesh filename="../assets/converted/m1_rail_bridge_plate.obj" />
       </geometry>
-      <material name="m1_arm_mount_material">
-        <color rgba="0.22 0.32 0.44 1" />
+      <material name="m1_mount_plate_visual_material">
+        <color rgba="0.3 0.39 0.48 1" />
       </material>
     </visual>
-    <collision>
-      <origin xyz="0 0 -0.04895532145" rpy="0 0 0" />
+    <collision name="m1_mount_plate_collision">
+      <origin xyz="-0.04 0 -0.004000000000000004" rpy="-0 0 0" />
       <geometry>
-        <box size="0.15 0.15 0.0979106429" />
+        <box size="0.18 0.18 0.008" />
       </geometry>
     </collision>
+    <visual name="m1_mount_rail_right_visual">
+      <origin xyz="-0.05 -0.077 -0.01100000000000001" rpy="-0 0 0" />
+      <geometry>
+        <box size="0.15 0.014 0.005999999999999991" />
+      </geometry>
+      <material name="m1_mount_rail_right_visual_material">
+        <color rgba="0.19 0.23 0.27 1" />
+      </material>
+    </visual>
+    <collision name="m1_mount_rail_right_collision">
+      <origin xyz="-0.05 -0.077 -0.01100000000000001" rpy="-0 0 0" />
+      <geometry>
+        <box size="0.15 0.014 0.005999999999999991" />
+      </geometry>
+    </collision>
+    <visual name="m1_mount_rail_left_visual">
+      <origin xyz="-0.05 0.077 -0.01105" rpy="-0 0 0" />
+      <geometry>
+        <box size="0.15 0.014 0.006099999999999994" />
+      </geometry>
+      <material name="m1_mount_rail_left_visual_material">
+        <color rgba="0.19 0.23 0.27 1" />
+      </material>
+    </visual>
+    <collision name="m1_mount_rail_left_collision">
+      <origin xyz="-0.05 0.077 -0.01105" rpy="-0 0 0" />
+      <geometry>
+        <box size="0.15 0.014 0.006099999999999994" />
+      </geometry>
+    </collision>
+    <visual name="m1_mount_m4_1_head">
+      <origin xyz="-0.11 -0.077 0.001399999999999998" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0035" length="0.0028" />
+      </geometry>
+      <material name="m1_mount_m4_1_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_1_shaft">
+      <origin xyz="-0.11 -0.077 -0.004500000000000004" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.002" length="0.009000000000000008" />
+      </geometry>
+      <material name="m1_mount_m4_1_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_2_head">
+      <origin xyz="-0.05 -0.077 0.001399999999999998" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0035" length="0.0028" />
+      </geometry>
+      <material name="m1_mount_m4_2_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_2_shaft">
+      <origin xyz="-0.05 -0.077 -0.004500000000000004" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.002" length="0.009000000000000008" />
+      </geometry>
+      <material name="m1_mount_m4_2_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_3_head">
+      <origin xyz="0.009999999999999995 -0.077 0.001399999999999998" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0035" length="0.0028" />
+      </geometry>
+      <material name="m1_mount_m4_3_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_3_shaft">
+      <origin xyz="0.009999999999999995 -0.077 -0.004500000000000004" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.002" length="0.009000000000000008" />
+      </geometry>
+      <material name="m1_mount_m4_3_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_4_head">
+      <origin xyz="-0.11 0.077 0.001399999999999998" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0035" length="0.0028" />
+      </geometry>
+      <material name="m1_mount_m4_4_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_4_shaft">
+      <origin xyz="-0.11 0.077 -0.004500000000000004" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.002" length="0.009000000000000008" />
+      </geometry>
+      <material name="m1_mount_m4_4_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_5_head">
+      <origin xyz="-0.05 0.077 0.001399999999999998" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0035" length="0.0028" />
+      </geometry>
+      <material name="m1_mount_m4_5_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_5_shaft">
+      <origin xyz="-0.05 0.077 -0.004500000000000004" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.002" length="0.009000000000000008" />
+      </geometry>
+      <material name="m1_mount_m4_5_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_6_head">
+      <origin xyz="0.009999999999999995 0.077 0.001399999999999998" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0035" length="0.0028" />
+      </geometry>
+      <material name="m1_mount_m4_6_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m4_6_shaft">
+      <origin xyz="0.009999999999999995 0.077 -0.004500000000000004" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.002" length="0.009000000000000008" />
+      </geometry>
+      <material name="m1_mount_m4_6_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m5_1_head">
+      <origin xyz="-0.04 -0.035 0.005750000000000005" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.00425" length="0.0035" />
+      </geometry>
+      <material name="m1_mount_m5_1_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m5_1_shaft">
+      <origin xyz="-0.04 -0.035 -0.001000000000000001" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0025" length="0.010000000000000009" />
+      </geometry>
+      <material name="m1_mount_m5_1_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m5_2_head">
+      <origin xyz="-0.04 0.035 0.005750000000000005" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.00425" length="0.0035" />
+      </geometry>
+      <material name="m1_mount_m5_2_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m5_2_shaft">
+      <origin xyz="-0.04 0.035 -0.001000000000000001" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0025" length="0.010000000000000009" />
+      </geometry>
+      <material name="m1_mount_m5_2_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m5_3_head">
+      <origin xyz="0.03 -0.035 0.005750000000000005" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.00425" length="0.0035" />
+      </geometry>
+      <material name="m1_mount_m5_3_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m5_3_shaft">
+      <origin xyz="0.03 -0.035 -0.001000000000000001" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0025" length="0.010000000000000009" />
+      </geometry>
+      <material name="m1_mount_m5_3_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m5_4_head">
+      <origin xyz="0.03 0.035 0.005750000000000005" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.00425" length="0.0035" />
+      </geometry>
+      <material name="m1_mount_m5_4_head_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
+    <visual name="m1_mount_m5_4_shaft">
+      <origin xyz="0.03 0.035 -0.001000000000000001" rpy="-0 0 0" />
+      <geometry>
+        <cylinder radius="0.0025" length="0.010000000000000009" />
+      </geometry>
+      <material name="m1_mount_m5_4_shaft_material">
+        <color rgba="0.62 0.65 0.68 1" />
+      </material>
+    </visual>
   </link>
   <joint name="m1_arm_mount_fixed" type="fixed">
     <parent link="m1_base_link" />
     <child link="m1_arm_mount" />
-    <origin xyz="0.05 0 0.18" rpy="0 0 0" />
+    <origin xyz="0.05 0 0.0945" rpy="0 0 0" />
   </joint>
   <joint name="piper_base_mount_fixed" type="fixed">
     <parent link="m1_arm_mount" />

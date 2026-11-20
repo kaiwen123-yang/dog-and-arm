@@ -21,6 +21,7 @@ import yaml
 
 from model_parts.m1 import build_m1
 from model_parts.piper import build_piper
+from model_parts.rail_bridge import geometry as bridge_geometry
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -54,16 +55,18 @@ def fixed_link(robot, parent, name, xyz, rpy):
     return link
 
 
-def urdf_shape(link, role, shape, values, xyz=(0, 0, 0), rpy=(0, 0, 0), rgba=None):
-    item = ET.SubElement(link, role)
+def urdf_shape(link, role, shape, values, xyz=(0, 0, 0), rpy=(0, 0, 0), rgba=None, name=None):
+    item = ET.SubElement(link, role, {"name": name} if name else {})
     ET.SubElement(item, "origin", xyz=numbers(xyz), rpy=numbers(rpy))
     geometry = ET.SubElement(item, "geometry")
     if shape == "mesh":
         ET.SubElement(geometry, "mesh", filename=values)
+    elif shape == "cylinder":
+        ET.SubElement(geometry, "cylinder", radius=str(values[0]), length=str(values[1]))
     else:
         ET.SubElement(geometry, shape, size=numbers(values))
     if rgba is not None and role == "visual":
-        material = ET.SubElement(item, "material", name=link.get("name") + "_material")
+        material = ET.SubElement(item, "material", name=(name or link.get("name")) + "_material")
         ET.SubElement(material, "color", rgba=numbers(rgba))
 
 
@@ -284,14 +287,33 @@ def main():
         ET.SubElement(joint, "parent", link="m1_arm_mount")
         ET.SubElement(joint, "child", link=mount["child_link"])
         ET.SubElement(joint, "origin", xyz="0 0 0", rpy="0 0 0")
-        for role in ("visual", "collision"):
-            urdf_shape(frame, role, "box", mount["pedestal_size_xyz_m"], mount["pedestal_local_xyz_m"], rgba=[.22, .32, .44, 1])
         parent_body = mjcf.find(f".//body[@name='{mount['parent_link']}']")
         site(parent_body, "m1_arm_mount", mount["xyz_m"], mount["rpy_rad"])
-        pedestal_center = np.asarray(mount["xyz_m"]) + Rotation.from_euler("xyz", mount["rpy_rad"]).apply(mount["pedestal_local_xyz_m"])
-        for collision in (False, True):
-            box(parent_body, "m1_mount_" + ("collision" if collision else "visual"), pedestal_center,
-                mount["rpy_rad"], mount["pedestal_size_xyz_m"], [.22, .32, .44, 1], collision)
+        mesh, solids, bolts = bridge_geometry(ROOT, mount)
+        ET.SubElement(section(mjcf, "asset"), "mesh", name="m1_rail_bridge_plate", file=mesh)
+        mount_inv = Rotation.from_euler("xyz", mount["rpy_rad"]).inv()
+        local_rpy = mount_inv.as_euler("xyz")
+        for part, center, size in solids:
+            name = "m1_mount_" + part
+            local = mount_inv.apply(center - mount["xyz_m"])
+            color = [.30, .39, .48, 1] if part == "plate" else [.19, .23, .27, 1]
+            if part == "plate":
+                urdf_shape(frame, "visual", "mesh", "../" + mesh, local, local_rpy, color, name=name + "_visual")
+                ET.SubElement(parent_body, "geom", name=name+"_visual", type="mesh", mesh="m1_rail_bridge_plate",
+                              pos=numbers(center), rgba=numbers(color), group="2", mass="0", density="0",
+                              contype="0", conaffinity="0")
+            else:
+                urdf_shape(frame, "visual", "box", size, local, local_rpy, color, name=name + "_visual")
+                box(parent_body, name+"_visual", center, [0,0,0], size, color)
+            urdf_shape(frame, "collision", "box", size, local, local_rpy, name=name + "_collision")
+            box(parent_body, name+"_collision", center, [0,0,0], size, color, True)
+        for part, center, radius, length in bolts:
+            local = mount_inv.apply(center - mount["xyz_m"])
+            color = [.62,.65,.68,1]
+            urdf_shape(frame, "visual", "cylinder", [radius, length], local, local_rpy, color, name="m1_mount_" + part)
+            ET.SubElement(parent_body, "geom", name="m1_mount_"+part, type="cylinder", pos=numbers(center),
+                          size=numbers([radius,length/2]), rgba=numbers(color), group="2",
+                          mass="0", density="0", contype="0", conaffinity="0")
         arm = copy.deepcopy(piper["mjcf"].find("worldbody/body"))
         arm.set("pos", numbers(mount["xyz_m"]))
         arm.set("quat", quaternion(mount["rpy_rad"]))

@@ -4,9 +4,9 @@
 
 ## 当前阶段
 
-**连接件更新决定：2026-11-20。** 用户选定双导轨跨接转接板，板下避让M1机盖；已读取用户指定Piper H官方手册，确认70×70mm四孔、M5螺钉，附图标4×Ø5.4贯穿。示意图、官方尺寸图、来源和实施约定见 [MOUNT_RAIL_BRIDGE.md](docs/MOUNT_RAIL_BRIDGE.md)。当前只是已确定下一版结构，生成器及已提交场景仍为旧方块安装座；下个模型切换节点先实际替换、桌面查看，再建立新安装版本的名义任务记录。下面已完成的P6证据保留原版本含义。
+**双导轨安装座 rail_bridge_v1 已完成模型替换与桌面检查。** 运行 `bash scripts/project_env.sh python scripts/build_assembly.py --stage combined` 与 `bash scripts/project_env.sh python scripts/check_assembly.py --report results/assembly/rail_bridge_v1/kinematics.json`，重建组合 URDF、MJCF 和安装板网格。固定近景重载旧座与新座并切换碰撞/整机视图。Piper 臂根降低 85.5 mm；名义板下外观净空 14.5 mm，板中心到机身碰撞凸包净空约 4.41 mm。三组 FK 通过，整机质量 43.5371 kg，附加载荷继续省略。[连接件说明与桌面截图](docs/MOUNT_RAIL_BRIDGE.md)
 
-**当前阶段：旧方块安装座 P6 自由底盘前拉已在 Linux 桌面完成。** 20 个预先列明的条件全部完成驶近、停稳、双指拉门、松爪、退臂、保持、收臂、底盘倒车和终点稳定。最终门角 59.9698°–60.2421°，20 例最大抓持偏移 3.133 mm、操作漂移 2.912 mm、倾角 0.2433°。C13 开门段用时 54.898 s，55 s 时限的余量很小。完整条件与逐案限制见 [P6 报告](reports/P6_FREE_BASE_DOOR.md) 和 [最终清单](results/p6/conditions_final.csv)。
+**旧方块安装座 P6 自由底盘前拉已在 Linux 桌面完成。** 20 个预先列明的条件全部完成驶近、停稳、双指拉门、松爪、退臂、保持、收臂、底盘倒车和终点稳定。最终门角 59.9698°–60.2421°，20 例最大抓持偏移 3.133 mm、操作漂移 2.912 mm、倾角 0.2433°。C13 开门段用时 54.898 s，55 s 时限的余量很小。完整条件与逐案限制见 [P6 报告](reports/P6_FREE_BASE_DOOR.md) 和 [最终清单](results/p6/conditions_final.csv)。
 
 **旧座背推完成。** `bash scripts/project_env.sh python scripts/p6_single_door.py push --live --video --hold-final --output results/p6/push_02`。首次背推沿指深滑脱触发 5 mm 门槛；改为斜入竖杆后 54.200 s / 27,100 步完成 25.055163°、释放和底盘退离，仅两指接触背侧目标杆。[背推视频](results/p6/push_02/motion.mp4)。新座结构与名义基准另列。
 

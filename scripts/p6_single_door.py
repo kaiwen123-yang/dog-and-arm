@@ -38,6 +38,9 @@ def quat(mat):
 
 def run(cfg, out, live, video, hold_final, view_factory=None):
     model = build(cfg)
+    bridge_id = mj.mj_name2id(model, mj.mjtObj.mjOBJ_GEOM, "m1_mount_plate_collision")
+    cfg["assembly_revision"] = "rail_bridge_v1" if bridge_id >= 0 else "block_v1"
+    cfg["arm_root_in_m1_m"] = model.body("piper_base_link").pos.tolist()
     d = mj.MjData(model)
     mj.mj_resetDataKeyframe(model, d, model.key('home').id)
     stage, case = cfg['stage'], cfg['perturbation']

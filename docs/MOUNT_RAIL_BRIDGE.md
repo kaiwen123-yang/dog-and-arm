@@ -2,7 +2,7 @@
 
 更新：2026-11-20（Asia/Shanghai）。用户决定后续仿真按下图的连接形式进行；随后指定Piper H官方手册核对孔位。
 
-**已确定结构方案和接口参考；当前生成器仍是旧方块安装座，尚未完成新连接件的模型替换和本机可见验证。** 后续在现有生成器中落实，不重建整套机器人。
+**当前组合 URDF 和 MJCF 已采用 rail_bridge_v1。** 本机 Linux 桌面已用同一近景展示旧方块座与新板，再查看整臂和碰撞外形。[旧座](../results/assembly/rail_bridge_v1/old_block.png) · [新座](../results/assembly/rail_bridge_v1/bridge_exterior.png) · [碰撞](../results/assembly/rail_bridge_v1/bridge_collision.png) · [整机](../results/assembly/rail_bridge_v1/bridge_overview.png)
 
 ## 1. 用户选定的结构
 
@@ -34,22 +34,23 @@
 
 附图另有6个Ø4.5沉头孔，属于另一组孔，不能与四角安装孔混用。孔阵列中心、图示Ø72圆心和模型根坐标也不自动重合；生成器应明确安装基准变换。
 
-上述数值及来源已结构化记录于 [mount_interface_reference.json](../config/mount_interface_reference.json)。该文件当前是参考数据，旧生成器尚不消费其中参数，不能仅因文件存在就声称模型已更换。
+上述数值及来源已结构化记录于 [mount_interface_reference.json](../config/mount_interface_reference.json)。生成器读取其中两组孔中心。沿导轨的名义基准、板尺寸、支承面和 Piper 孔组相对根的偏移见 [assembly.yaml](../config/assembly.yaml)。
 
-## 3. 下一次模型修改如何落实
+## 3. 已生成的名义几何
 
-在 `scripts/build_assembly.py` 中，将旧单一方块安装座换成跨接板及必要的两侧支承/安装几何，同时更新URDF与MJCF中的对应外形、碰撞和安装变换。复用已有Piper H底座，不重复附加第二个原生底座。
+坐标均在 M1 机身系中。Piper 原生底座原点从 [50, 0, 180] mm 降至 [50, 0, 94.5] mm。板长宽各 180 mm、厚 8 mm，板中心 x 为 10 mm。两支座各长 150 mm、宽 14 mm，位于 y = ±77 mm，分别从导轨承面延伸到板底。原生 Piper 法兰与四孔在官方碰撞 STL 上可见，孔阵列中心相对臂根 x 偏 −5 mm。板的视觉网格包含六个 M4 安装孔和四个承接 M5 的名义底孔，细螺纹省略。
 
-板外形、板厚、盖板间隙、沿导轨位置和臂安装高度分别参数化。图不按比例，不能按像素推尺寸；可以结合现有官方网格选取明确标注的名义值。图中两组孔的居中对齐只表达布置思路，不强制把机械臂移到M1几何中心。
+板底 z 为 86.5 mm，盖板原始网格上表面约 72 mm，名义间隙 14.5 mm。MuJoCo 对原机身网格使用凸包接触，在板中心计算出的碰撞净空约 4.41 mm。板与两个支座用三个盒体参与碰撞，小孔与螺钉仅保留视觉细节。模型的安装座和腕部附件附加载荷均省略，整机名义质量 43.5371 kg。上述尺寸用于仿真，连接强度和实物净空仍未经测量。[几何数据](../results/assembly/rail_bridge_v1/geometry.json)
 
-保留安装座、相机/腕支架额外载荷 `omitted` 的既有阶段假设；不能让新增几何默认密度隐式增加质量。官方机器人本体惯性保持来源清楚。手眼、标定板和称重后置，不阻塞这次名义几何更新。
+在已有官方资产的工作区执行以下命令。第一条同时恢复板网格及组合模型。桌面查看器支持 F6 查看全机，F9 切换碰撞显示。
 
-MuJoCo刚体任务阶段可以简化螺钉、螺纹和小孔碰撞，重点保留转接板外包络、板下间隙和臂对机身的相对位姿。当前不声称已验证连接件强度、螺钉载荷或真实承载能力。
+```bash
+bash scripts/project_env.sh python scripts/build_assembly.py --stage combined
+bash scripts/project_env.sh python scripts/live_assembly.py --watch --mount-detail
+```
 
-## 4. 与正在推进的P6衔接
+2026-11-20 在用户桌面开窗后重建，近景对照使用相同相机重载旧、新 XML。对照窗口在新座加载后退出，重新打开当前模型完成碰撞与整机检查。独立 URDF/MJCF 的三组 FK 最大位置差为 2.6×10⁻¹⁶ m，最大旋转矩阵差为 9.9×10⁻¹⁶，腕部相机保持刚性。联合机器人保留一个自由根、23 个控制输入和一个夹爪耦合约束。[重载日志](../results/assembly/rail_bridge_v1/comparison.jsonl) · [显示检查日志](../results/assembly/rail_bridge_v1/inspection.jsonl) · [FK 结果](../results/assembly/rail_bridge_v1/kinematics.json)
 
-当前仓库已有旧安装座下的P6名义整任务 `mobile_01`，不得覆盖或重新标成新连接件验证。若旧版本条件组已经开始，让其按既定流程结束并保留；在下一个模型切换节点采用本方案。
+## 4. P6 版本记录
 
-切换时先在用户Linux桌面显示：两侧连接、板下间隙、原生底座、完整机械臂，以及碰撞几何。保持窗口可见，在另一终端重建，说明安装高度/偏移和碰撞外形实际变化。只补做这次连接件改动涉及的装配检查，不重新跑整套P0–P3或H0。
-
-新几何完成后，用新的结果目录复跑一条名义连续单门任务，作为该安装版本的基准，再继续对应条件组。不同连接件或安装变换的结果单独标注，不混在同一组成功率中。后续顺序仍按最新 `PROJECT_STATE.md` 与 `NEXT_RUN.txt`，不倒退覆盖已完成的P6进度。
+旧座名义任务为 `results/p6/mobile_01`，20 例最终前拉清单与背推 `push_02` 也使用旧座。新座单独保存动力学结果并在每次运行的 config.json 写入安装版本与臂根坐标。[P6 报告](../reports/P6_FREE_BASE_DOOR.md)
