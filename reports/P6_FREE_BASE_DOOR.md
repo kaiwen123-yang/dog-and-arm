@@ -190,3 +190,11 @@ bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --vid
 前拉 C01，流程完成。终态 60.05158°，37,138 步。开门段 34.190 s。六轴最小余量依次为 3.707° / 31.250° / 34.144° / 45.862° / 1.748° / 98.065°。J5 最小值发生在 52.650 s（release）。两段停车分别为 3.0 s、3.0 s。使用与 C13 相同的 0.40° 上限。退臂/收臂采样净空分别为 11.53/18.93 mm。
 
 实际命令为 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --case 1 --live --video --hold-final --output results/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C01`。每步六轴原表与 25 Hz 接触/状态留在本机 `results/raw_large/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C01/`。核对物理步数、六轴极小值和视频解码帧数。[运行证据](../results/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C01/)
+
+### clear_push_C01
+
+背推 C01，流程完成。终态 25.08521°，27,125 步。开门段 14.568 s。六轴最小余量依次为 41.678° / 36.500° / 27.775° / 12.182° / 21.303° / 53.171°。J5 最小值发生在 12.260 s（approach_arm）。两段停车分别为 3.0 s、3.0 s。背侧 X=1.935 m，预抓取距离 105 mm、入杆腕偏航 125°、终态腕偏航 137.5°。退臂/收臂/倒车实测采样净空依次 16.99/38.49/55.68 mm。
+
+实际命令为 `bash scripts/project_env.sh python scripts/p6_single_door.py push --case 1 --live --video --hold-final --output results/p6/rail_bridge_front60_v2_20261120T133724Z/clear_push_C01`。每步六轴原表与 25 Hz 接触/状态留在本机 `results/raw_large/p6/rail_bridge_front60_v2_20261120T133724Z/clear_push_C01/`。核对物理步数、六轴极小值和视频解码帧数。[运行证据](../results/p6/rail_bridge_front60_v2_20261120T133724Z/clear_push_C01/)
+
+上述背侧站位在 C01–C20 初态的最小机门间距为 21.695 mm。预抓取路径的运动学筛查取初始门角 0/2/5° 和到站航向误差 ±1°，展开取 65 点，局部 IK 筛查不列入任务成绩。后续用同一实际控制版本分组复测。[初态距离](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_deployment_initial_clearance.csv) · [路径筛查](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_deployment_ik.csv)。
