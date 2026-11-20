@@ -33,3 +33,11 @@ bash scripts/project_env.sh python scripts/p6_single_door.py support --live --vi
 小角通过样本共 29.02 s，14,510 物理步。抓持几何偏移峰值 1.807 mm，操作漂移 0.496 mm，最大倾角 0.191°。开门阶段四轮最小载荷分别为 115.2、100.0、106.2、88.2 N；门对整机合力模全程峰值 2.405 N。无非预期接触、持续饱和或求解警告。开门时两指对竖杆的接触范数之和峰值 8.091 N，含方向相反的夹紧力。下一节点 60° 采用 6 N 合力诊断上限，约为此样本全程峰值的 2.5 倍，仅用于本仿真。
 
 [小角时序图](../results/p6/small_03/signals.png) · [小角同窗视频](../results/p6/small_03/motion.mp4)。失败样本的配置、汇总和曲线随仓库保存，完整 CSV 和视频在本机 results/raw_large/p6/ 下对应目录。接触求解设置参考 [MuJoCo 3.3 模型说明](https://mujoco.readthedocs.io/en/3.3.0/modeling.html#solver-settings)。
+
+## B　操作站位前拉 60°
+
+桌面命令 `bash scripts/project_env.sh python scripts/p6_single_door.py pull --live --video --hold-final --output results/p6/pull_01`。同一自由根连续步进 61.982 s（30,991 步）。开门阶段 42.134 s 持续双指接触，实测末角 60.120818°。抓取点对实际把手的最大偏移 2.568 mm；全程门对机器人合力峰值 2.689 N，小于开跑前的 6 N。操作漂移 0.496 mm，最大倾角 0.191°；开门中四轮各自最小载荷 107.2、93.7、106.2、88.2 N。
+
+松爪、退臂后持续稳定 3 s；结束时实际开口 90.0 mm，抓取点距把手 107.4 mm。无非预期接触、饱和或求解警告。此样本在操作站位起步；下一步接入短程行驶。
+
+[事件与汇总](../results/p6/pull_01/summary.json) · [同时序曲线](../results/p6/pull_01/signals.png) · [57.84° 的桌面截图](../results/p6/pull_01/desktop.png) · [运行视频](../results/p6/pull_01/motion.mp4)
