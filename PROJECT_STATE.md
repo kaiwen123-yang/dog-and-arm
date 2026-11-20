@@ -6,7 +6,11 @@
 
 **P3 桌面装配检查已完成。P4 固定底盘从前侧拉门，单次名义 60° 试验实际达到 59.963319°。** 随后松爪退离，38 秒 / 19,000 步。门与机器人只有前把手和两夹指接触，接触力范数之和峰值 2.2433 N。严格 60° 阈值尚差 0.0367°。背侧实测已从 22.098° 提升至 25.076°，P5 已在自由整机上跑通承重、慢行、转向、停车和伸臂试验。
 
-P5 自由根实测 33 s / 16,500 步。直行 0.360 m，速率控制左转 10.40°（参考积分 28.42°），伸臂行驶 0.221 m 后停稳。转弯存在轮地滑动，下一项为航向反馈和停车角误差。实际入口 `bash scripts/project_env.sh python scripts/p5_free_base.py --live --video`。 [P5 报告](reports/P5_FREE_BASE.md) · [视频与数据](results/p5/free_base_nominal/)。固定基座背推节点已提交 `e13a48f`。
+**P5 当前结果。** 自由根整机在平地承重、前进、按车头方向转弯、伸臂慢行并停车。左转 12° 的桌面试验最终为 12.170°，右转 −12° 的无窗口对照最终为 −12.139°。两次各 40 s / 20,000 步。左转试验先直行 0.360 m，转后伸臂慢行 0.221 m，最终水平速度 0.063 mm/s。轮地切向滑动峰值 0.117 m/s。当前证据覆盖名义平地，下一阶段为 P6 自由底盘接近并操作单门。
+
+实际运行 `bash scripts/project_env.sh python scripts/p5_free_base.py --config config/p5_heading.yaml --live --video --hold-final --output results/p5/heading_12`，用 `scripts/plot_p5.py results/p5/heading_12` 绘图。复跑省略 `--output` 自动保留新目录。视频完整解码 1,000 帧。最终桌面查看窗口可手动关闭，结果已落盘。 [P5 报告](reports/P5_FREE_BASE.md) · [40 秒视频](results/p5/heading_12/motion.mp4)。
+
+P5 自由根实测 33 s / 16,500 步。直行 0.360 m，速率控制左转 10.40°（参考积分 28.42°），伸臂行驶 0.221 m 后停稳。这个基准位于提交 `e7e4556`，后续航向反馈结果见上。实际入口 `bash scripts/project_env.sh python scripts/p5_free_base.py --live --video`。 [P5 报告](reports/P5_FREE_BASE.md) · [视频与数据](results/p5/free_base_nominal/)。固定基座背推节点已提交 `e13a48f`。
 
 背侧固定根 [1.88, 0, 0.54266] m、朝向 90°。35 s / 17,500 步，门角反馈补偿 3.015°，退爪后门停在 25.076°。两夹指及夹爪基座接触背把手。运行 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --config config/p4_push.yaml --live --video`。[详细数据](results/p4/push_feedback/summary.json) · [报告](reports/P4_FIXED_BASE_CONTACT.md)。前侧提交 `29eab00`。
 
@@ -27,7 +31,7 @@ P5 自由根实测 33 s / 16,500 步。直行 0.360 m，速率控制左转 10.40
 - 实际桌面运行 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --live --video --output results/p4/pull_20deg`，26 s / 13,000 步。门无执行器、无状态写入、无把手 weld，只有两指与把手接触；力矩未超限、无警告/非零自接触力。并非 60° 任务完成，也并非轮足站稳。
 - 保存 `results/p4/pull_20deg/` 的 26 s/650 帧视频、2,600 行/100 Hz CSV、JSON、曲线与视频解码图；`trial_02_obstructed/` 为真实碰撞失败；`trial_03/` 保留实际桌面图与有效初试汇总。重复初试的完整视频/CSV 仍留 `results/tmp/p4_trial_03_full/`，不重复上传。未新建压缩归档。
 - `plot_p4.py` 从真实 CSV 绘图；只在项目 .venv 增加 Matplotlib，未动系统 ROS/Conda/CUDA。视频完整解码、代码编译和 MJCF 维度复核通过。
-- 详见 [P4 报告](reports/P4_FIXED_BASE_CONTACT.md)。剩余：名义 20° 与实际 19.261° 的偏差、60° 连续可达性及碰撞路径、另一侧推门、跨条件重复。P5/P6/P7 未开始。
+- 详见 [P4 报告](reports/P4_FIXED_BASE_CONTACT.md)。剩余：名义 20° 与实际 19.261° 的偏差、60° 连续可达性及碰撞路径、另一侧推门、跨条件重复。此处为 19° 节点当时的未完成项，后续结果见顶部。
 - 下一条复跑命令：`bash scripts/project_env.sh python scripts/p4_fixed_door.py --live --video`（默认新时间目录）。继续开发先读 P4 报告，不能把复跑近 20° 当成解决 60°。
 
 ## 本机可见检查收尾：2026-11-20
@@ -117,7 +121,7 @@ P5 自由根实测 33 s / 16,500 步。直行 0.360 m，速率控制左转 10.40
 
 开工包已有环境隔离/源下载脚本、来源锁定清单、门生成器、配置/查看器、支架 OBJ/预览/来源说明、四张用户安装照片和装配规则。既有单/双门 XML 曾在独立准备环境用 MuJoCo 3.3.0 编译并静止步进 2 s；[开工验证](reports/KICKOFF_VALIDATION.md) 不含机器人控制，也不是本轮 Linux 的整机验证。
 
-当前模型生成和准备侧离线检查已完成；本机环境/资产、单体及整机开窗已完成，未完成项与暂停点见上方本机记录。本机可见调试已完成，P4 首个真实接触片段已记录；自由基座和双门任务仍待后续。使用已有生成器，不重新从零编写整套装配逻辑。
+当前模型生成和准备侧离线检查已完成；本机环境/资产、单体及整机开窗已完成，未完成项与暂停点见上方本机记录。本机可见调试已完成，P4 首个真实接触片段已记录；本机自由整机基础移动已有上方 P5 记录，单门移动操作与双门任务仍待后续。使用已有生成器，不重新从零编写整套装配逻辑。
 
 遵守 `accessory_payload_mode=omitted` 和 `synthetic_aligned_rgbd`：附件显式零质量，仿真理想对齐 RGB-D 不冒充本次实物标定。手眼及称重不阻塞名义装配。
 

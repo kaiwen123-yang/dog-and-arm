@@ -1,3 +1,5 @@
-继续 /home/kaiwen/research/dog-and-arm。先 git status，保留已有修改，正常 pull main；读 AGENTS.md、PROJECT_STATE.md、reports/P4_FIXED_BASE_CONTACT.md 和 docs/BUILD_PLAN.md 的 P4。环境和官方资产齐全，不重装。H0 已完成，本轮不操作实机。
+继续 /home/kaiwen/research/dog-and-arm。先查看工作区、保留已有修改、正常拉取 main，读 AGENTS.md、PROJECT_STATE.md、reports/P4_FIXED_BASE_CONTACT.md、reports/P5_FREE_BASE.md 及 docs/BUILD_PLAN.md 的 P6。复用现有生成器和项目环境，本轮继续原生 MuJoCo 仿真。H0 已完成。
 
-前侧固定基座单次达到 59.963319°，38 s。配置 config/p4_pull_60.yaml，证据 results/p4/pull_60_trial01/。背侧推门完成名义 25° 实验，实际 25.076°，见 results/p4/push_feedback/。P5 已完成一次自由根站稳、直行、左转、停车和伸臂慢行。结果 results/p5/free_base_nominal/，入口 scripts/p5_free_base.py。继续读 reports/P5_FREE_BASE.md，解决转向时参考积分 28.42° 与实转 10.40° 的偏差，再推进 P6 自由底盘接近单门。
+固定底盘前拉 59.963°，后推 25.076°。后推补偿阶段夹爪基座也接触了背侧把手。P5 自由底盘在平地站稳、直行 0.360 m、按 ±12° 航向转弯、伸臂再行驶 0.221 m 并停车。左转最终 12.170°，右转 −12.139°，转向存在侧滑。复看可运行 bash scripts/project_env.sh python scripts/p5_free_base.py --config config/p5_heading.yaml --live --video --hold-final 。
+
+下个节点是 P6 自由基座单门。先在桌面显示自由底盘低速接近关门与制动，对准把手后复用 P4 有限力矩抓取和门角反馈，记录轮地接触/侧滑、底盘位姿、臂与夹爪力矩、门角及释放后停稳情况。P6 完成后再进入双门。每个实际节点普通提交推送。

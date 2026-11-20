@@ -36,13 +36,19 @@ def build(cfg):
             actuator.tag = 'velocity'
             del actuator.attrib['kp']
             actuator.set('kv', str(cfg['wheel_speed_kv']))
-    camera_lookat(root.find('worldbody'), 'p5_overview', [1.7, -2.25, 1.4], [.24, 0, .62], 37)
+    world = root.find('worldbody')
+    # Ten-centimetre floor markings make slow motion visible in the fixed camera.
+    for index in range(-4, 11):
+        ET.SubElement(world, 'geom', name=f'p5_tick_{index+4}', type='box',
+                      pos=f'{index/10:.2f} -0.31 0.001', size='0.002 0.028 0.0005',
+                      rgba='.24 .34 .39 1', mass='0', contype='0', conaffinity='0')
+    camera_lookat(world, 'p5_overview', [1.7, -2.25, 1.4], [.24, 0, .62], 37)
     path = ROOT/'sim/scenes/p5_free_base.xml'
     write_xml(root, path)
     return mj.MjModel.from_xml_path(str(path))
 
 
-def experiment(model, cfg, out, live, video):
+def experiment(model, cfg, out, live, video, hold_final):
     data = mj.MjData(model)
     mj.mj_resetDataKeyframe(model, data, model.key('home').id)
     mj.mj_forward(model, data)
@@ -81,7 +87,8 @@ def experiment(model, cfg, out, live, video):
               'wheel_supports', *[f'normal_{n}_N' for n in wheel_labels],
               *[f'slip_{n}_m_s' for n in wheel_labels],
               *[f'q_{n}' for n in names], *[f'dq_{n}' for n in names], *[f'effort_{n}' for n in names],
-              *[f'slip_long_{n}_m_s' for n in wheel_labels], *[f'slip_lat_{n}_m_s' for n in wheel_labels]]
+              *[f'slip_long_{n}_m_s' for n in wheel_labels], *[f'slip_lat_{n}_m_s' for n in wheel_labels], 'yaw_target_deg']
+    keep_view = False
     try:
         if live:
             import mujoco.viewer
@@ -98,15 +105,28 @@ def experiment(model, cfg, out, live, video):
             writer = imageio.get_writer(out/'motion.mp4', fps=25, codec='libx264', quality=7)
         wall = time.monotonic()
         for phase, duration in SEGMENTS:
+            heading_control = phase == 'turn' and 'turn_angle_deg' in cfg
+            if heading_control:
+                duration = cfg['turn_duration_s']
             start = data.qpos[:3].copy()
             start_yaw = Rotation.from_quat(data.qpos[[4,5,6,3]]).as_euler('xyz', degrees=True)[2]
             yaw_integral = 0.
+            heading_stopped = False
             print(f'{data.time:.1f} s  {phase}', flush=True)
             for i in range(round(duration/dt)):
                 t = i*dt
                 envelope = smooth(min(t, duration-t)/.8)
                 speed = cfg['straight_speed_m_s']*envelope if phase in ('straight','carry') else 0.
                 desired_yaw = cfg['yaw_rate_rad_s']*envelope if phase == 'turn' else 0.
+                target_yaw_deg = np.nan
+                if heading_control:
+                    target_yaw_deg = start_yaw + cfg['turn_angle_deg']*smooth(t/cfg['turn_target_ramp_s'])
+                    measured_yaw = Rotation.from_quat(data.qpos[[4,5,6,3]]).as_euler('xyz', degrees=True)[2]
+                    error_deg = (target_yaw_deg-measured_yaw+180.) % 360. - 180.
+                    rate_limit = cfg['yaw_rate_rad_s']
+                    desired_yaw = np.clip(cfg['heading_gain_per_s']*np.deg2rad(error_deg), -rate_limit, rate_limit)
+                    if t >= cfg['turn_target_ramp_s'] and abs(error_deg) <= cfg['heading_tolerance_deg']:
+                        heading_stopped = True
                 yaw_error = desired_yaw - data.qvel[5]
                 yaw_request = desired_yaw
                 if phase == 'turn':
@@ -114,6 +134,8 @@ def experiment(model, cfg, out, live, video):
                     limit = cfg['max_differential_yaw_command_rad_s']
                     yaw_request = np.clip(desired_yaw + cfg['yaw_rate_kp']*yaw_error
                                           + cfg['yaw_rate_ki']*yaw_integral, -limit, limit)*envelope
+                if heading_stopped:
+                    desired_yaw = yaw_request = 0.
                 arm_fraction = {'carry': 1., 'arm_extend': smooth(t/duration),
                                 'arm_return': 1.-smooth(t/duration)}.get(phase, 0.)
                 data.ctrl[:] = home
@@ -156,7 +178,7 @@ def experiment(model, cfg, out, live, video):
                 if i % sample_every == 0:
                     rows.append([float(data.time),phase,*data.qpos[:3],*angles,*data.qvel[:3],
                                  data.qvel[5],speed,desired_yaw,int(np.count_nonzero(normal)),
-                                 *normal,*slip,*data.qpos[q],*data.qvel[dof],*data.actuator_force,*slip_long,*slip_lat])
+                                 *normal,*slip,*data.qpos[q],*data.qvel[dof],*data.actuator_force,*slip_long,*slip_lat,target_yaw_deg])
                 if i % frame_every == 0:
                     if writer:
                         renderer.update_scene(data, camera=cam, scene_option=opt)
@@ -176,10 +198,11 @@ def experiment(model, cfg, out, live, video):
                                 end_speed_xy_m_s=float(np.linalg.norm(data.qvel[:2])))
             if status != 'completed':
                 break
+        keep_view = hold_final and viewer and status == 'completed'
     finally:
         if writer: writer.close()
         if renderer: renderer.close()
-        if viewer: close_viewer(viewer)
+        if viewer and not keep_view: close_viewer(viewer)
     with (out/'timeseries.csv').open('w') as f:
         csvout = csv.writer(f, lineterminator='\n')
         csvout.writerow(header)
@@ -197,6 +220,14 @@ def experiment(model, cfg, out, live, video):
                    warning_counts=[int(w.number) for w in data.warning], config=cfg)
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
     print(status, out, flush=True)
+    if keep_view:
+        print('Final pose on screen. Data saved. Close the window to exit.', flush=True)
+        try:
+            while viewer.is_running():
+                viewer.sync()
+                time.sleep(.1)
+        finally:
+            close_viewer(viewer)
 
 
 def main():
@@ -204,15 +235,19 @@ def main():
     parser.add_argument('--config', type=Path, default=ROOT/'config/p5.yaml')
     parser.add_argument('--live', action='store_true')
     parser.add_argument('--video', action='store_true')
+    parser.add_argument('--hold-final', action='store_true', help='keep the completed live view open after saving')
     parser.add_argument('--output',type=Path)
     args = parser.parse_args()
+    if args.hold_final and not args.live:
+        parser.error('--hold-final requires --live')
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S_%fZ')
     out = args.output or ROOT/'results/p5'/stamp
     out.mkdir(parents=True, exist_ok=False)
     arm_settings = yaml.safe_load((ROOT/'config/p4.yaml').read_text())
     cfg = {k: v for k, v in arm_settings.items() if k.startswith(('arm_', 'gripper_'))}
+    cfg.update(yaml.safe_load((ROOT/'config/p5.yaml').read_text()))
     cfg.update(yaml.safe_load(args.config.read_text()))
-    experiment(build(cfg),cfg,out,args.live,args.video)
+    experiment(build(cfg),cfg,out,args.live,args.video,args.hold_final)
 
 
 if __name__ == '__main__':

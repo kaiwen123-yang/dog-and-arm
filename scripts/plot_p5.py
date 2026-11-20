@@ -27,7 +27,7 @@ def main():
     axes[0].plot(t, series('y_m'), label='World Y')
     axes[0].set_ylabel('Position (m)')
     axes[1].plot(t, series('yaw_deg'), label='Measured yaw')
-    if 'yaw_target_deg' in rows[0]:
+    if 'yaw_target_deg' in rows[0] and np.isfinite(series('yaw_target_deg')).any():
         axes[1].plot(t, series('yaw_target_deg'), '--', label='Turn target')
     else:
         axes[1].plot(t, np.rad2deg(np.cumsum(series('yaw_ref_rad_s')*np.diff(t,prepend=t[0]))),
