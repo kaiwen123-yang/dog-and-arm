@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+前拉 C01，流程完成。终态 60.04388°，40,824 步。开门段 41.554 s。六轴最小余量依次为 3.704° / 31.250° / 34.144° / 45.862° / 1.752° / 98.056°。J5 最小值发生在 60.038 s（release）。两段停车分别为 3.0 s、3.0 s。前侧操作位 X 从 0.650 m 改为 0.600 m，Y 和腕姿保持。开门全段双指接触，退臂/收臂 25 Hz 最小机门间距为 11.46/19.04 mm。 下一项为用原背侧站位运行名义背推。[事件、桌面视频与精简时序](results/p6/rail_bridge_front60_v2_20261120T133724Z/station_mobile_C01/)
+
 前拉 C01，unexpected_contact:robot_panel。终态 61.18086°，29,951 步。开门段 39.472 s。六轴最小余量依次为 0.931° / 39.099° / 37.424° / 44.082° / -0.081° / 95.632°。J5 最小值发生在 52.210 s（open）。两段停车分别为 未完成、未完成。59.900 s 的接触点落在夹爪基座与门板之间。 下一项为修正站位后可见复跑名义前拉。[事件、桌面视频与精简时序](results/p6/rail_bridge_front60_v2_20261120T133724Z/baseline_mobile_C01/)
 
 **本机复测启动。** main 快进至 5cb8403，原未跟踪 P5 数据保留。用 `bash scripts/project_env.sh python scripts/build_assembly.py --stage combined` 重建，在 `live_assembly.py --watch --mount-detail` 窗口观察 XML 重载、板和碰撞近景、收臂侧视和腕相机，并用 `check_assembly.py --report results/assembly/rail_bridge_front60_v2/local_desktop/kinematics.json` 核对 FK。收臂时活动臂、夹爪及腕附件相对机身/前腿的最近碰撞面间距分别为 92.420/260.216 mm。下一项为连续动力学名义复测。[本机桌面证据](results/assembly/rail_bridge_front60_v2/local_desktop/)
