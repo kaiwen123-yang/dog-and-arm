@@ -4,7 +4,9 @@
 
 ## 当前阶段
 
-**P6-A 已在本机桌面通过。** 运行 `bash scripts/project_env.sh python scripts/p6_single_door.py support --live --video --hold-final --output results/p6/support_01`。25.32 s 连续自由根承重、伸臂、空中扫弧和停车，门 0°；操作漂移峰值 0.82 mm、最大倾角 0.176°。输出场景、控制器、曲线源数据和实时画面见 [P6 报告](reports/P6_FREE_BASE_DOOR.md)。下一节点为 15° 小角前拉，继而约 60°、短程驶近与底盘退离。
+**P6-A 已在本机桌面通过。** 运行 `bash scripts/project_env.sh python scripts/p6_single_door.py support --live --video --hold-final --output results/p6/support_01`。25.32 s 连续自由根承重、伸臂、空中扫弧和停车，门 0°；操作漂移峰值 0.82 mm、最大倾角 0.176°。输出场景、控制器、曲线源数据和实时画面见 [P6 报告](reports/P6_FREE_BASE_DOOR.md)。
+
+**P6-B 小角已通过。** 在桌面运行 `small --live --video --hold-final`。默认锥两次停在 3.401° / 7.839°；椭圆锥、阻抗比 10 的第三次在 29.02 s 内拉到 14.958°、松爪退臂并连续稳定 3 s。抓持偏移峰值 1.81 mm，门对整机合力峰值 2.405 N。[时序与视频](results/p6/small_03/)。下一节点为 60° 驻停拉门，再从 0.30 m 外驶近。
 
 **P3 桌面装配检查已完成。P4 固定底盘从前侧拉门，单次名义 60° 试验实际达到 59.963319°。** 随后松爪退离，38 秒 / 19,000 步。门与机器人只有前把手和两夹指接触，接触力范数之和峰值 2.2433 N。严格 60° 阈值尚差 0.0367°。背侧实测已从 22.098° 提升至 25.076°，P5 已在自由整机上跑通承重、慢行、转向、停车和伸臂试验。
 

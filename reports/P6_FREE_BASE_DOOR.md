@@ -19,3 +19,17 @@ bash scripts/project_env.sh python scripts/p6_single_door.py support --live --vi
 - 操作点位于夹爪主体局部 z=0.115 m。100 Hz IK 从当前物理状态复制实际根、腿、轮、门、夹指坐标到独立 scratch。物理门扇由接触驱动。25 Hz CSV 使用每个积分区间的起始时刻，控制输出与接触量取该步求解；峰值及持续时间按 500 Hz 统计。命令、每个执行器实际输出及限幅分别记录。
 - contacts.csv 的点力和点力矩是世界系对 geom2 的作用。timeseries.csv 的 door_F 和 door_M_base 分别为门对机器人的合力及绕当步底盘原点的力矩，hand_F 仅含手端，door_norm_sum_N 为逐点力模之和。支撑力独立记录。正纵向为车头方向，正横向为车体左侧。
 - 各次 config.json 固定实际站位、门参数、角度、判据和时限。结果区分 stage_pass（所选节点）、script_completed（阶段序列全部完成）、task_success（含驶近和退离的整任务）。最新阶段见下文；每次重跑请省略 --output 或提供新目录。
+
+## B　操作站位前拉 15°
+
+三次均从同一名义初态独立启动 `bash scripts/project_env.sh python scripts/p6_single_door.py small --live --video --hold-final`，依次指定新目录 small_01、small_02 和 small_03。碰撞模型和铰链参数保留，严格按持续接触/停稳条件转换阶段。
+
+| 试验 | 抓取和求解条件 | 结果 |
+| --- | --- | --- |
+| [small_01](../results/p6/small_01/summary.json) | 闭爪指令 18 mm，角速率上限 2.6°/s，默认锥 | 保持双指接触，55 s 开门阶段超时；门角 3.401° |
+| [small_02](../results/p6/small_02/summary.json) | 闭爪指令 10 mm，1.5 s 起步斜坡，速率上限 1.8°/s，默认锥 | 门角增至 7.839° 后超时。实际夹持开口约 21 mm |
+| [small_03](../results/p6/small_03/summary.json) | 同一指令；椭圆锥，切向/法向阻抗比 10，Newton 容差 1e−10 | 14.957607°；释放、退臂和连续 3 s 门角/底盘稳定均通过 |
+
+小角通过样本共 29.02 s，14,510 物理步。抓持几何偏移峰值 1.807 mm，操作漂移 0.496 mm，最大倾角 0.191°。开门阶段四轮最小载荷分别为 115.2、100.0、106.2、88.2 N；门对整机合力模全程峰值 2.405 N。无非预期接触、持续饱和或求解警告。开门时两指对竖杆的接触范数之和峰值 8.091 N，含方向相反的夹紧力。下一节点 60° 采用 6 N 合力诊断上限，约为此样本全程峰值的 2.5 倍，仅用于本仿真。
+
+[小角时序图](../results/p6/small_03/signals.png) · [小角同窗视频](../results/p6/small_03/motion.mp4)。失败样本的配置、汇总和曲线随仓库保存，完整 CSV 和视频在本机 results/raw_large/p6/ 下对应目录。接触求解设置参考 [MuJoCo 3.3 模型说明](https://mujoco.readthedocs.io/en/3.3.0/modeling.html#solver-settings)。

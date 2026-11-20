@@ -27,6 +27,8 @@ def settings(stage, case):
     cfg = load('p4_push.yaml' if stage == 'push' else 'p4_pull_60.yaml')
     cfg.update(load('p5.yaml'))
     cfg.update(load('p6_pull.yaml'))
+    for old_key in ('scene_file', 'phase_duration_s', 'arm_excursion_deg'):
+        cfg.pop(old_key, None)
     cfg.update(stage=stage, case=case, perturbation=deepcopy(CASES[case]))
     if stage == 'small':
         cfg['target_angle_deg'] = cfg['small_angle_deg']
@@ -37,6 +39,7 @@ def build(cfg, scene_path=None):
     root = ET.parse(ROOT / 'sim/scenes/assembly_preview.xml').getroot()
     root.set('model', 'P6_FREE_BASE_mj_step')
     root.find('option').attrib.update(integrator='implicitfast', iterations='100', timestep=str(cfg['timestep_s']))
+    root.find('option').attrib.update(cone=cfg['cone'], impratio=str(cfg['impratio']), tolerance=str(cfg['solver_tolerance']))
     configure_position_servos(root, cfg)
     for actuator in root.find('actuator'):
         if actuator.get('joint').endswith('FOOT_JOINT'):

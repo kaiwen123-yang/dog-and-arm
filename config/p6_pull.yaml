@@ -1,9 +1,15 @@
 # P6 simulated single door. Arm/door geometry starts from p4_pull_60, leg and wheel servos from p5.
+cone: elliptic
+impratio: 10
+solver_tolerance: 1.0e-10
 travel_m: 0.30
 small_angle_deg: 15
 angle_tolerance_deg: 2
-angle_rate_deg_s: 2.6
+angle_rate_deg_s: 1.8
+angle_accel_ramp_s: 1.5
+closed_command_width_m: 0.010
 angle_lead_deg: 0.30
+grip_net_force_limit_n: 6.0  # about 2.5 x the 15-degree measured peak; simulation diagnostic
 settle_speed_m_s: 0.005
 settle_yaw_rate_deg_s: 0.5
 settle_time_s: 1

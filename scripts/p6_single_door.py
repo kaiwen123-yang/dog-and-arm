@@ -125,9 +125,10 @@ def run(cfg, out, live, video, hold_final):
             angle = float(np.rad2deg(d.qpos[door_q]))
             width = float(d.joint('piper_gripper_joint1').qpos[0] - d.joint('piper_gripper_joint2').qpos[0])
             if phase == 'open':
-                raw = min(goal, raw + dt * cfg['angle_rate_deg_s'])
+                rate = cfg['angle_rate_deg_s'] * min(1., elapsed/cfg['angle_accel_ramp_s'])
+                raw = min(goal, raw + dt * rate)
                 if not lost and not sliding and in_zone and not np.any(sat_time):
-                    effective = min(raw, angle + cfg['angle_lead_deg'], effective + dt * cfg['angle_rate_deg_s'])
+                    effective = min(raw, angle + cfg['angle_lead_deg'], effective + dt * rate)
             elif phase in ('pregrasp','approach_arm','grasp'):
                 raw = effective = angle
             # Refresh world sites/anchors from today's actual qpos before the scratch IK.
