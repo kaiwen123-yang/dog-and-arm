@@ -4,7 +4,9 @@
 
 ## 当前阶段
 
-**P3 桌面装配检查已完成。P4 固定底盘从前侧拉门，单次名义 60° 试验实际达到 59.963319°。** 随后松爪退离，38 秒 / 19,000 步。门与机器人只有前把手和两夹指接触，接触力范数之和峰值 2.2433 N。严格 60° 阈值尚差 0.0367°。背侧实测已从 22.098° 提升至 25.076°，准备开展 P5 轮足地面保持。
+**P3 桌面装配检查已完成。P4 固定底盘从前侧拉门，单次名义 60° 试验实际达到 59.963319°。** 随后松爪退离，38 秒 / 19,000 步。门与机器人只有前把手和两夹指接触，接触力范数之和峰值 2.2433 N。严格 60° 阈值尚差 0.0367°。背侧实测已从 22.098° 提升至 25.076°，P5 已在自由整机上跑通承重、慢行、转向、停车和伸臂试验。
+
+P5 自由根实测 33 s / 16,500 步。直行 0.360 m，速率控制左转 10.40°（参考积分 28.42°），伸臂行驶 0.221 m 后停稳。转弯存在轮地滑动，下一项为航向反馈和停车角误差。实际入口 `bash scripts/project_env.sh python scripts/p5_free_base.py --live --video`。 [P5 报告](reports/P5_FREE_BASE.md) · [视频与数据](results/p5/free_base_nominal/)。固定基座背推节点已提交 `e13a48f`。
 
 背侧固定根 [1.88, 0, 0.54266] m、朝向 90°。35 s / 17,500 步，门角反馈补偿 3.015°，退爪后门停在 25.076°。两夹指及夹爪基座接触背把手。运行 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --config config/p4_push.yaml --live --video`。[详细数据](results/p4/push_feedback/summary.json) · [报告](reports/P4_FIXED_BASE_CONTACT.md)。前侧提交 `29eab00`。
 
@@ -15,7 +17,7 @@
 - P1 官方资产、P2 单体生成、P3 名义联合模型：**准备环境已实现并编译／离线检查**；[装配报告](reports/assembly_report.md)。
 - 本机 `.venv`：Python 3.10.12 / MuJoCo 3.3.0 已建立；M1/Piper/整机已实际桌面显示；关节/夹爪、检查相机和碰撞视图有桌面证据；Piper 的 F10 与 XML watch 重载完成。
 - 手眼标定、标定板采购、相机/支架称重及惯量：**继续后置**。
-- 继续按 [prompts/NEXT_RUN.txt](prompts/NEXT_RUN.txt) 推进 P4；不重做 H0、不重复安装环境。
+- 继续按 [prompts/NEXT_RUN.txt](prompts/NEXT_RUN.txt) 推进轮足阶段；不重做 H0、不重复安装环境。
 
 ## P4 首个有效接触片段：2026-11-20
 

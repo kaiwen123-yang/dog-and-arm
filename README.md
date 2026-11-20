@@ -4,6 +4,8 @@
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
+自由底盘可用 `bash scripts/project_env.sh python scripts/p5_free_base.py --live --video` 查看站立、慢行、转向与伸臂。 [P5 报告](reports/P5_FREE_BASE.md)
+
 本机桌面装配检查已完成，并已显示 P4 固定基座动力学运行。结果和边界见 [P4 接触报告](reports/P4_FIXED_BASE_CONTACT.md)、[26 秒视频](results/p4/pull_20deg/contact.mp4) 和 [时序图](results/p4/pull_20deg/contact_timeseries.png)。实时装配说明见 [LIVE_DEBUGGING.md](docs/LIVE_DEBUGGING.md)。
 
 ![基础联合模型运动学预览](results/assembly/overview.png)
@@ -22,7 +24,7 @@
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前下一轮是继续 P4 固定基座接触，详见 **reports/P4_FIXED_BASE_CONTACT.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前已进入 P5 自由底盘，详见 **reports/P5_FREE_BASE.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -32,7 +34,7 @@
 
 ## 用户现在需要做什么
 
-本机目录 `/home/kaiwen/research/dog-and-arm` 已创建，H0 已有真实结果。下一轮继续 P4 仿真，无需重复克隆或再次启动机械臂验机。H0 结束时采集进程已退出，机械臂保持 MOVE_J 使能。手眼标定、购买标定板、附件称重和惯量测量全部后置。
+本机目录 `/home/kaiwen/research/dog-and-arm` 已创建，H0 已有真实结果。下一轮继续自由底盘仿真，无需重复克隆或再次启动机械臂验机。H0 结束时采集进程已退出，机械臂保持 MOVE_J 使能。手眼标定、购买标定板、附件称重和惯量测量全部后置。
 
 ## H0：相机和机械臂联合运行
 

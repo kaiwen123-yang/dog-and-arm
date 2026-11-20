@@ -30,6 +30,24 @@ def motion_name(cfg):
     return 'push' if cfg['handle_site'] == 'door_single_back_handle' else 'pull'
 
 
+def configure_position_servos(root, cfg):
+    for actuator in root.find('actuator'):
+        joint = actuator.get('joint')
+        actuator.tag = 'position'
+        actuator.attrib.pop('ctrlrange', None)
+        actuator.set('ctrllimited', 'false')
+        if joint in ARM:
+            i = ARM.index(joint)
+            kp, kv, limit = cfg['arm_kp'][i], cfg['arm_kv'][i], cfg['arm_torque_limit_nm'][i]
+        elif joint == 'piper_gripper_joint1':
+            kp, kv, limit = cfg['gripper_kp'], cfg['gripper_kv'], cfg['gripper_force_limit_n']
+        else:
+            kp, kv = cfg['base_joint_kp'], cfg['base_joint_kv']
+            limit = cfg['base_wheel_torque_limit_nm'] if 'FOOT' in joint else cfg['base_leg_torque_limit_nm']
+        actuator.set('kp', str(kp)); actuator.set('kv', str(kv))
+        actuator.set('forcelimited', 'true'); actuator.set('forcerange', numbers([-limit, limit]))
+
+
 def build(cfg):
     root = ET.parse(ROOT / 'sim/robots/m1_piper.xml').getroot()
     root.set('model', 'P4_FIXED_BASE_CONTACT_' + motion_name(cfg).upper())
@@ -48,21 +66,7 @@ def build(cfg):
     gripper = root.find(".//body[@name='piper_gripper_base']")
     ET.SubElement(gripper, 'site', name='p4_grasp', pos=numbers(cfg['grasp_local_xyz_m']),
                   size='.003', group='4', rgba='0 1 0 1')
-    for actuator in root.find('actuator'):
-        joint = actuator.get('joint')
-        actuator.tag = 'position'
-        actuator.attrib.pop('ctrlrange', None)
-        actuator.set('ctrllimited', 'false')
-        if joint in ARM:
-            i = ARM.index(joint)
-            kp, kv, limit = cfg['arm_kp'][i], cfg['arm_kv'][i], cfg['arm_torque_limit_nm'][i]
-        elif joint == 'piper_gripper_joint1':
-            kp, kv, limit = cfg['gripper_kp'], cfg['gripper_kv'], cfg['gripper_force_limit_n']
-        else:
-            kp, kv = cfg['base_joint_kp'], cfg['base_joint_kv']
-            limit = cfg['base_wheel_torque_limit_nm'] if 'FOOT' in joint else cfg['base_leg_torque_limit_nm']
-        actuator.set('kp', str(kp)); actuator.set('kv', str(kv))
-        actuator.set('forcelimited', 'true'); actuator.set('forcerange', numbers([-limit, limit]))
+    configure_position_servos(root, cfg)
     world = root.find('worldbody')
     door_cfg = yaml.safe_load((ROOT/'config/door.yaml').read_text())
     door_cfg['handle']['height'] = cfg['door_handle_height_m']
