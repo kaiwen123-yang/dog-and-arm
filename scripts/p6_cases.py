@@ -58,10 +58,10 @@ class LiveFrames:
         self.send('DONE', '', result)
 
 
-def worker(case, control, raw, destination, arrival_only):
+def worker(case, control, raw, destination, arrival_only, stage):
     out = raw/f'C{case:02}'
     out.mkdir(parents=True, exist_ok=False)
-    cfg = settings('mobile',case)
+    cfg = settings(stage,case)
     cfg['arrival_only'] = arrival_only
     run(cfg,out,True,False,False,partial(LiveFrames,control))
     compact_case(out, destination/f'C{case:02}')
@@ -76,7 +76,8 @@ def compact_case(out, compact):
         fields = ['time_s','phase','door_deg','effective_deg','tilt_deg','planar_error_m','heading_error_deg',
                   'tracking_m','grip_error_m','actual_width_m','both','door_F_x','door_F_y','door_F_z',
                   'door_norm_sum_N','finger_N_1','finger_N_2','root_x','root_y','root_z']
-        fields.extend(k for k in reader.fieldnames if k.startswith(('normal_N_', 'lat_slip_', 'long_slip_')))
+        fields.extend(k for k in reader.fieldnames if k.startswith(
+            ('normal_N_', 'lat_slip_', 'long_slip_', 'q_piper_joint', 'joint_margin_rad_piper_joint')))
         writer = csv.DictWriter(dest, fields, extrasaction='ignore', lineterminator='\n')
         writer.writeheader()
         for i,row in enumerate(reader):
@@ -90,15 +91,16 @@ def compact_case(out, compact):
     (compact/'contact_friction.json').write_text(json.dumps({k:sorted(v) for k,v in friction.items()}, indent=2)+'\n')
 
 
-def display(cases, destination, raw, arrival_only):
+def display(cases, destination, raw, arrival_only, stage='mobile'):
     if not glfw.init():
         raise RuntimeError('GLFW failed on the Linux desktop')
-    window = glfw.create_window(1500,900,'P6 / FREE_BASE / mj_step  |  live condition trials',None,None)
+    motion = 'PULL' if stage == 'mobile' else 'PUSH'
+    window = glfw.create_window(1500,900,f'P6 / FREE_BASE / mj_step  |  {motion} live condition trials',None,None)
     if not window:
         raise RuntimeError('Cannot open condition viewer')
     glfw.make_context_current(window)
     glfw.swap_interval(0)
-    m = build(settings('mobile',1))
+    m = build(settings(stage,1))
     visual = mj.MjData(m)
     opt = mj.MjvOption()
     opt.geomgroup[3:5] = 0
@@ -116,8 +118,8 @@ def display(cases, destination, raw, arrival_only):
         if action == glfw.PRESS and key == glfw.KEY_ESCAPE:
             glfw.set_window_should_close(window, True)
     glfw.set_key_callback(window, keyboard)
-    configs = {case:settings('mobile',case)['perturbation'] for case in cases}
-    processes = {case:context.Process(target=worker,args=(case,(packets,start,play,stop),raw,destination,arrival_only)) for case in cases}
+    configs = {case:settings(stage,case)['perturbation'] for case in cases}
+    processes = {case:context.Process(target=worker,args=(case,(packets,start,play,stop),raw,destination,arrival_only,stage)) for case in cases}
     for process in processes.values():
         process.start()
     latest = {}
@@ -153,7 +155,7 @@ def display(cases, destination, raw, arrival_only):
             mj.mjr_rectangle(full,.04,.055,.07,1.)
             for index,case in enumerate(cases):
                 rect = mj.MjrRect((index%columns)*w//columns,(rows-1-index//columns)*h//rows,w//columns,h//rows)
-                heading = f'C{case:02}  |  '+(', '.join(f'{k}={v:+g}' for k,v in configs[case].items()) or 'nominal')
+                heading = f'{motion} C{case:02}  |  '+(', '.join(f'{k}={v:+g}' for k,v in configs[case].items()) or 'nominal')
                 if case in latest:
                     q,status,left,right = latest[case]
                     visual.qpos[:] = q
@@ -207,14 +209,17 @@ def display(cases, destination, raw, arrival_only):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('cases', type=int, choices=range(1,21), nargs='+')
+    parser.add_argument('--stage',choices=('mobile','push'),default='mobile',
+                        help='complete front pull or back push (default: mobile front pull)')
     parser.add_argument('--output',type=Path)
     parser.add_argument('--arrival-only',action='store_true',help='end this diagnostic after the sustained station stop')
     args=parser.parse_args()
     if len(set(args.cases))!=len(args.cases) or len(args.cases)>6:
         parser.error('Use one to six distinct conditions per live window')
     stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S_%fZ')
-    out=args.output or ROOT/'results/p6'/f'conditions_{stamp}'
+    prefix = 'conditions' if args.stage == 'mobile' else 'conditions_push'
+    out=args.output or ROOT/'results/p6'/f'{prefix}_{stamp}'
     out.mkdir(parents=True,exist_ok=False)
     raw=ROOT/'results/raw_large/p6'/out.name
     raw.mkdir(parents=True,exist_ok=False)
-    raise SystemExit(0 if display(args.cases,out,raw,args.arrival_only) else 1)
+    raise SystemExit(0 if display(args.cases,out,raw,args.arrival_only,args.stage) else 1)

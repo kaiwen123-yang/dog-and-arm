@@ -38,8 +38,13 @@ def quat(mat):
 
 def run(cfg, out, live, video, hold_final, view_factory=None):
     model = build(cfg)
-    bridge_id = mj.mj_name2id(model, mj.mjtObj.mjOBJ_GEOM, "m1_mount_plate_collision")
-    cfg["assembly_revision"] = "rail_bridge_v1" if bridge_id >= 0 else "block_v1"
+    revision_id = mj.mj_name2id(model, mj.mjtObj.mjOBJ_TEXT, 'mount_revision')
+    if revision_id >= 0:
+        start = int(model.text_adr[revision_id])
+        end = start + int(model.text_size[revision_id]) - 1
+        cfg['assembly_revision'] = model.text_data[start:end].decode('utf-8')
+    else:
+        cfg['assembly_revision'] = 'legacy_unlabeled'
     cfg["arm_root_in_m1_m"] = model.body("piper_base_link").pos.tolist()
     d = mj.MjData(model)
     mj.mj_resetDataKeyframe(model, d, model.key('home').id)
@@ -75,6 +80,12 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
         seq = ['approach_base', 'settle']
     labels = [model.joint(j).name for j in model.actuator_trnid[:, 0]]
     arm_ids = np.r_[drive.arms, drive.grip]
+    arm_names = [labels[i] for i in drive.arms]
+    arm_lower, arm_upper = arm.ik.bounds.T
+    arm_min_q = d.qpos[arm.ik.q].copy()
+    arm_min_margin = np.minimum(arm_min_q - arm_lower, arm_upper - arm_min_q)
+    arm_min_time = np.full(len(arm_names), float(d.time))
+    arm_min_phase = ['initial'] * len(arm_names)
     arm_dof = model.jnt_dofadr[model.actuator_trnid[arm_ids, 0]]
     all_q = model.jnt_qposadr[model.actuator_trnid[:, 0]]
     all_v = model.jnt_dofadr[model.actuator_trnid[:, 0]]
@@ -149,6 +160,15 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
             v0 = d.qvel.copy()
             d.ctrl[:] = command
             mj.mj_step(model, d)
+            # Actual integrated joint positions at every physics step, including
+            # extrema that fall between the 25 Hz CSV samples. Negative = outside.
+            actual_arm_q = d.qpos[arm.ik.q]
+            actual_margin = np.minimum(actual_arm_q - arm_lower, arm_upper - actual_arm_q)
+            for i in np.flatnonzero(actual_margin < arm_min_margin):
+                arm_min_margin[i] = actual_margin[i]
+                arm_min_q[i] = actual_arm_q[i]
+                arm_min_time[i] = float(d.time)
+                arm_min_phase[i] = phase
             sample = step % sample_every == 0
             c = meter.measure(d, details=sample)
             step += 1
@@ -208,6 +228,10 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
                     ('q',labels,q0[all_q]),('dq',labels,v0[all_v]),('ctrl',labels,command),('effort',labels,d.actuator_force)]:
                     # Quaternion columns are explicitly distinguished from XYZ position columns.
                     vector(row, 'root_quat' if prefix=='root' and fields=='wxyz' else prefix, fields, values)
+                # Like the existing q columns, CSV margins use step-start q0.
+                sampled_arm_q = q0[arm.ik.q]
+                vector(row, 'joint_margin_rad', arm_names,
+                       np.minimum(sampled_arm_q - arm_lower, arm_upper - sampled_arm_q))
                 if writer is None:
                     writer = csv.DictWriter(log_stream, list(row), lineterminator='\n')
                     writer.writeheader()
@@ -300,6 +324,14 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
         summary = dict(stage=stage, case=cfg['case'], script_completed=completed, task_success=completed and mobile and not cfg.get('arrival_only', False),
                        stage_pass=completed, failure=reason, last_phase=last_phase, events=events, planned_phases=seq,
                        samples=samples, frames=view.frames if view else 0, physics_steps=step, dt_s=dt,
+                       assembly_revision=cfg['assembly_revision'], arm_root_in_m1_m=cfg['arm_root_in_m1_m'],
+                       arm_joint_limit_min={name: dict(min_margin_rad=float(arm_min_margin[i]),
+                           min_margin_deg=float(np.rad2deg(arm_min_margin[i])), time_s=float(arm_min_time[i]),
+                           phase=arm_min_phase[i], q_rad=float(arm_min_q[i]),
+                           lower_rad=float(arm_lower[i]), upper_rad=float(arm_upper[i]),
+                           nearest_limit='lower' if arm_min_q[i]-arm_lower[i] <= arm_upper[i]-arm_min_q[i] else 'upper')
+                           for i, name in enumerate(arm_names)},
+                       arm_joint_limit_sampling='initial and every post-mj_step actual qpos; signed nearest-limit margin',
                        sim_time_s=d.time, wall_s=wall, realtime_factor=d.time/max(wall,.001), desktop=bool(view),
                        mujoco=mj.__version__, source='native MuJoCo mj_step; step-start observations, 25 Hz point log',
                        initial_qpos=initial_q, final_qpos=d.qpos.tolist(), target_deg=goal, tolerance_deg=cfg['angle_tolerance_deg'],
@@ -318,7 +350,8 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('stage', choices=('support','small','pull','mobile','push'))
-    parser.add_argument('--case', type=int, choices=range(1,21), default=1)
+    parser.add_argument('--case', type=int, choices=range(1,21), default=1,
+                        help='C01 is nominal; C02-C20 apply to mobile or push')
     parser.add_argument('--live', action='store_true')
     parser.add_argument('--video', action='store_true')
     parser.add_argument('--hold-final', action='store_true')
@@ -326,8 +359,8 @@ def main():
     args = parser.parse_args()
     if (args.video or args.hold_final) and not args.live:
         parser.error('--video and --hold-final require --live')
-    if args.case != 1 and args.stage != 'mobile':
-        parser.error('C02-C20 apply to the mobile pull')
+    if args.case != 1 and args.stage not in ('mobile', 'push'):
+        parser.error('C02-C20 apply to complete mobile pull or push tasks')
     cfg = settings(args.stage, args.case)
     stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S_%fZ')
     out = args.output or ROOT/'results/p6'/f'{args.stage}_C{args.case:02}_{stamp}'

@@ -59,10 +59,13 @@ def geometry(root, mount):
     solids = [("plate", np.r_[center, (top + under) / 2], cfg["plate_size_xyz_m"])]
     for i, y in enumerate(np.unique(rail_xy[:, 1])):
         z = cfg["seat_top_z_m_by_y"][i]
+        # Support follows the selected holes, while the full rail datum stays fixed.
+        row_x = rail_xy[rail_xy[:, 1] == y, 0]
+        support_x = (row_x.min() + row_x.max()) / 2
         solids.append(
             (
                 "rail_" + ("left" if y > 0 else "right"),
-                np.array([origin[0], y, (z + under) / 2]),
+                np.array([support_x, y, (z + under) / 2]),
                 [*cfg["support_size_xy_m"], under - z],
             )
         )

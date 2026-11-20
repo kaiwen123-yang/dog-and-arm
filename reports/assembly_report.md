@@ -139,3 +139,7 @@ M1/Piper 节点 `f8786a8`、`728fc8a` 已普通推送。HTTPS 首次 TLS 中断�
 `mjv_defaultFreeCamera` 修正初始取景，[默认窗口](../results/assembly/live_20261120/default_view.png) 包含腕部与四轮。保持窗口时由另一桌面终端运行 `build_assembly.py --stage combined`，实际 watch 重载成功，[重载画面](../results/assembly/live_20261120/reloaded_view.png) 和事件日志对应。安装参数没有改变。
 
 [本机腕相机看门](../results/assembly/live_20261120/wrist_door.png) 实际显示门板和 U 形把手，未改变外参。`check_assembly.py` 新增 9 个开合/腕姿态检查：手指运动引起相机世界位姿变化 0；相对 gripper_base 位姿误差不超过 5.93e-17 m、5.55e-16。三组 FK 继续通过。全部是名义运动学结果，非手眼标定或开门成功。下一步是独立 P4 固定基座真实接触场景。
+
+## 2026-11-20：安装向狗头前移一个 60 mm 孔距
+
+更新 `config/assembly.yaml` 和选孔数据，板心 X=0.070 m、臂根 X=0.110 m，支座按新孔组居中到 X=0.060 m。高度和旋转不变，版本 `rail_bridge_front60_v2`。独立云端 MuJoCo 3.3.0 重建及三组 FK 通过，最大位置差 2.457e-16 m，最大旋转矩阵差 9.806e-16；相机刚性通过。完整源网格与模型检查、同视角前后渲染位于 [results/assembly/rail_bridge_front60_v2](../results/assembly/rail_bridge_front60_v2/)。本次未执行用户 Linux 桌面查看、mj_step 或实机动作，完整推拉待本机可见复测。

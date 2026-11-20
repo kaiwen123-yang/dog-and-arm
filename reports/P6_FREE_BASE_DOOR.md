@@ -134,3 +134,11 @@ bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --vid
 | 接触与执行器 | 机器人与门仅两指接触前侧竖杆，意外接触和求解警告均为零，各通道连续饱和时间为零 |
 
 新臂根降低 85.5 mm。在 25 Hz 实际关节时序中，松爪段 60.80 s 时 J5 为 −1.5596143 rad，距模型下限 −1.5620696 rad 仅 **0.141°**。后续针对同一安装版本复查条件变化时，要同时跟踪这个余量。当前新座证据覆盖一个名义前拉。桌面终态保留界面的重复文字已修正，通过本次保存的最终姿态重新显示并截图。[关节与受力时序](../results/p6/rail_bridge_v1_mobile_01/timeseries.csv) · [接触明细](../results/p6/rail_bridge_v1_mobile_01/contacts.csv) · [时序图](../results/p6/rail_bridge_v1_mobile_01/signals.png) · [保存终态的桌面视图](../results/p6/rail_bridge_v1_mobile_01/desktop.png)
+
+## 安装整体前移 60 mm：准备完成，动力学复测待执行
+
+2026-11-20 用户要求安装板向狗头靠近，并重做完整推拉。当前 `rail_bridge_front60_v2` 把板、支座、臂同步沿机身 +X 移动 60 mm，臂根 [0.110,0,0.0945] m；完整模型/运动学离线记录见 [连接件说明](../docs/MOUNT_RAIL_BRIDGE.md)。本次没有 GUI 或 mj_step，既有 v1 成绩仍属于 v1。
+
+为避免把前移模型误记为 v1，P6 改从编译模型 custom text 读取安装版本；summary/config 均记录实际臂根坐标。新增六轴每物理步的带符号最小关节限位余量及发生时间、阶段，字段 `arm_joint_limit_min`；25 Hz 时序与条件精简 trace 也保留六轴角及余量。未更改控制、目标、碰撞或任务门槛。
+
+分格入口新增 `--stage mobile|push`，单次 `push --case N` 也可使用原 C01–C20 扰动。静态加载前拉/背推各 20 份配置确认目标分别为 60°/25°；两侧名义派生场景编译成功。背推 20 条是新增待运行覆盖，不是已有结果。下一轮先桌面核对装配，名义推拉及 C13，再统一版本完成两侧条件清单，重点检查 J5 余量、开门耗时、松爪/收臂净空和两次停车窗口。[执行提示](../prompts/MOUNT_FORWARD_PUSH_PULL.txt)

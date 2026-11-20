@@ -3,19 +3,19 @@
   "decision_date": "2026-11-20",
   "timezone": "Asia/Shanghai",
   "purpose": "Reference hole patterns consumed by scripts/build_assembly.py for the rail bridge. Nominal installation parameters are in config/assembly.yaml.",
-  "implementation_status": "rail_bridge_v1_generated_and_checked_on_linux_desktop",
+  "implementation_status": "rail_bridge_front60_v2_generated_offline_checks_passed_linux_live_push_pull_pending",
   "user_selected_design": {
     "structure": "rigid_adapter_plate_spanning_two_m1_mounting_rails",
     "user_reference_image": "assets/mounting/m1_piper_bridge_user_reference.png",
     "cover_clearance_required": true,
     "selected_m1_holes_per_row": 3,
     "selected_m1_hole_indices_zero_based": [
-      2,
       3,
-      4
+      4,
+      5
     ],
     "selected_hole_count": 6,
-    "selection_status": "project_choice_from_user_schematic_not_a_vendor_mandate"
+    "selection_status": "project_choice_shift_one_60_mm_pitch_toward_head_from_v1"
   },
   "m1_interface": {
     "source": "user_supplied_schematic",
@@ -29,12 +29,7 @@
     "pattern_frame_convention": "x along rail rows, y across rows, z up; diagram datum, not an identified m1_base_link transform",
     "selected_hole_centers_m": [
       [
-        -0.06,
-        -0.077,
-        0
-      ],
-      [
-        0,
+        0.0,
         -0.077,
         0
       ],
@@ -44,21 +39,27 @@
         0
       ],
       [
-        -0.06,
-        0.077,
+        0.12,
+        -0.077,
         0
       ],
       [
-        0,
+        0.0,
         0.077,
         0
       ],
       [
         0.06,
+        0.077,
+        0
+      ],
+      [
+        0.12,
         0.077,
         0
       ]
-    ]
+    ],
+    "selection_note": "Full rail datum remains unchanged; selected triplet advances by +60 mm along nominal m1_base_link +X. The datum-to-body alignment remains a simulation assumption."
   },
   "piper_h_interface": {
     "verification_status": "official_piper_h_manual_text_and_embedded_drawing_verified",

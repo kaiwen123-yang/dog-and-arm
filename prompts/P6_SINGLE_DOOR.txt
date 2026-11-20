@@ -1,6 +1,6 @@
 继续 /home/kaiwen/research/dog-and-arm，实施 P6 自由底盘单门。先读本提示，实际执行并让我在 Linux 桌面看见变化；不要只再列一份计划。
 
-2026-11-20 当前安装座为 rail_bridge_v1。已依 docs/MOUNT_RAIL_BRIDGE.md 和 config/mount_interface_reference.json 替换为双导轨跨接板，已核对桌面几何及组合 URDF/MJCF 的 FK。新座名义前拉 rail_bridge_v1_mobile_01 最终 60.048936°。旧座的 20/20 清单及背推独立保留。下一轮新座条件验证见 NEXT_RUN.txt。
+2026-11-20 最新用户决定：当前模型为 rail_bridge_front60_v2，整套安装沿狗头方向 +X 前移 60 mm。云端编译/FK/静态净空检查完成，本机可见装配与完整推拉尚待执行。优先按 prompts/MOUNT_FORWARD_PUSH_PULL.txt 和 NEXT_RUN.txt 接续：显示前移、名义前拉60°/背推25°、C13，再两侧各C01–C20。原 rail_bridge_v1 名义60.048936°、旧座前拉20/20及名义背推作为历史独立保留。下面保留P6原始实现约定，不重复已完成的控制器搭建。
 
 先查看 git status，保留已有修改并正常拉取 main，不重置/强推。阅读 AGENTS.md、PROJECT_STATE.md、prompts/NEXT_RUN.txt、docs/P6_SINGLE_DOOR_PLAN.md、reports/P6_NEXT_STAGE_REVIEW_20261120.md，以及相关 P4/P5 脚本和配置。docs/LIVE_DEBUGGING.md 的桌面/重载原则继续有效，但 P0–P3 已完成，不重新逐个验机或重做装配。复用已有 .venv、官方资产和生成器，命令使用 bash scripts/project_env.sh ...。
 

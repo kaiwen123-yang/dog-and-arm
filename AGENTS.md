@@ -27,7 +27,7 @@
 - 当前 Piper 第一版采用官方 collision STL 同时作为简化 visual，不解析/转换原 DAE；这是记录在案的外观简化，不改变官方质量和惯量。后续如切换 DAE 精细外观，再完整保留其场景变换。M1 原生 MJCF 保留物理数值，衍生 URDF 以等价完整张量表达惯量。
 - MuJoCo 3.3.0 下显式处理夹爪 mimic；保留两真实夹指并用一个耦合约束、一个控制输入。整机只有一个自由基座。
 - config/assembly.yaml 为名义安装参数入口。依据官方网格和已有四张照片完成初始装配；有据可依的名义参数可直接确定并注明，不等待实测。
-- 2026-11-20用户确定后续连接件采用双导轨跨接转接板、板下避让M1机盖，见 docs/MOUNT_RAIL_BRIDGE.md 和 config/mount_interface_reference.json。Piper H官方手册已确认70×70mm四孔/M5螺钉；附图为4×Ø5.4通孔，与正文孔型措辞的差别应保留。当前生成器使用 rail_bridge_v1，已在 Linux 桌面核对旧座、新座、整臂和碰撞几何。保留既有实验结果，按安装版本单独验证和统计。
+- 2026-11-20用户确定后续连接件采用双导轨跨接转接板、板下避让M1机盖，见 docs/MOUNT_RAIL_BRIDGE.md 和 config/mount_interface_reference.json。Piper H官方手册已确认70×70mm四孔/M5螺钉；附图为4×Ø5.4通孔，与正文孔型措辞的差别应保留。当前生成器使用 rail_bridge_front60_v2：板、两支座和臂沿机身 +X 同步前移 60mm，整体导轨基准与安装高度不变。云端已编译和做静态检查；新位置的 Linux 桌面检查及完整推拉待执行，见 prompts/MOUNT_FORWARD_PUSH_PULL.txt。rail_bridge_v1 的本机验证保留为历史，按安装版本分别记录与统计。
 - accessory_payload_mode=omitted：首版不计相机/支架额外载荷，附件几何显式零质量/零密度以免默认密度隐式加重，仍保留外形、碰撞和相机视角。
 - 相机先用 synthetic_aligned_rgbd：同一虚拟相机输出 RGB 和深度。它不是实物 DC1 标定结果。
 

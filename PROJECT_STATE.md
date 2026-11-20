@@ -4,9 +4,15 @@
 
 ## 当前阶段
 
-**当前模型的 P6 名义前拉通过。** `rail_bridge_v1_mobile_01` 在 Linux 桌面连续运行 82.474 s / 41,237 步，从 0.30 m 外驶近、停车、双指前拉、松爪、退臂及保持、收臂、倒车至终点停车。最终 60.048936°，操作漂移 0.949 mm，抓持偏移 2.670 mm，门对机器人合力峰值 2.840 N。机器人与门仅两指接触目标杆。两个 3 s 窗口通过，2,062 帧全程录像已解码。松爪附近的 25 Hz 日志中，J5 距下限仅 0.141°。新座目前仅有这条名义前拉。[视频](results/p6/rail_bridge_v1_mobile_01/motion.mp4) · [报告与逐阶段记录](reports/P6_FREE_BASE_DOOR.md)
+**当前模型已前移 60 mm，完整推拉复测待在用户 Linux 桌面执行。** 用户要求安装板靠近狗头，故将板、两支座和整台 Piper 沿 M1 机身 +X 前移一档孔距，版本为 `rail_bridge_front60_v2`。臂根由 [0.050, 0, 0.0945] m 改为 [0.110, 0, 0.0945] m，板心 X 由 0.010 改为 0.070 m，选孔由每排第 3/4/5 改为第 4/5/6（按 X 递增编号）；完整导轨基准与高度不变。
 
-实际命令为 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final --output results/p6/rail_bridge_v1_mobile_01`，完成后用 `scripts/plot_p6.py results/p6/rail_bridge_v1_mobile_01` 出图。下一轮在新目录先复查 C13，重点看开门时限和 J5 余量，再接续同版本剩余条件与背推。保留旧版 20 案例和背推汇总。H0 本轮无操作，手眼、标定板与称重继续后置。
+本轮在独立云端检查环境（Python 3.12.14 / MuJoCo 3.3.0）实际重建 URDF/MJCF、编译前拉/背推场景，三组 FK 与腕相机刚性检查通过。板下机身凸包净空下界 4.410643 mm，相同 home 姿态的整机质心前移 6.500053 mm，质量仍 43.537064 kg。保存 [前后静态对照](results/assembly/rail_bridge_front60_v2/forward_comparison.png)、[模型检查](results/assembly/rail_bridge_front60_v2/model_check.json) 和 [源网格净空](results/assembly/rail_bridge_front60_v2/source_mesh_clearance.json)。**本轮无 GUI、无 mj_step、无硬件操作；没有新增推拉通过结果。** 用户的 `/home/kaiwen/research/dog-and-arm` 未从本会话直接访问。
+
+P6 现在从编译模型读取真实安装版本，每个物理步记录六臂关节限位最小余量；分组入口增加 `--stage mobile|push`，可分别执行前拉 60°与背推 25°的 C01–C20。下一轮先可见检查前移装配，再做名义前拉、名义背推及 C13，最后按同一安装/控制版本完成两侧条件清单。背推 20 条是新增待测覆盖；旧座 20/20 前拉与旧版名义背推不能算作新座结果。[完整本机提示](prompts/MOUNT_FORWARD_PUSH_PULL.txt)
+
+**前一安装版本 rail_bridge_v1 的 P6 名义前拉通过。** `rail_bridge_v1_mobile_01` 在 Linux 桌面连续运行 82.474 s / 41,237 步，从 0.30 m 外驶近、停车、双指前拉、松爪、退臂及保持、收臂、倒车至终点停车。最终 60.048936°，操作漂移 0.949 mm，抓持偏移 2.670 mm，门对机器人合力峰值 2.840 N。机器人与门仅两指接触目标杆。两个 3 s 窗口通过，2,062 帧全程录像已解码。松爪附近的 25 Hz 日志中，J5 距下限仅 0.141°。新座目前仅有这条名义前拉。[视频](results/p6/rail_bridge_v1_mobile_01/motion.mp4) · [报告与逐阶段记录](reports/P6_FREE_BASE_DOOR.md)
+
+实际命令为 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final --output results/p6/rail_bridge_v1_mobile_01`，完成后用 `scripts/plot_p6.py results/p6/rail_bridge_v1_mobile_01` 出图。该版本当时安排先复查 C13；现由上文 front60_v2 的完整推拉复测替代，C13 仍是重点。保留旧版 20 案例和背推汇总。H0 本轮无操作，手眼、标定板与称重继续后置。
 
 **双导轨安装座 rail_bridge_v1 已完成模型替换与桌面检查。** 运行 `bash scripts/project_env.sh python scripts/build_assembly.py --stage combined` 与 `bash scripts/project_env.sh python scripts/check_assembly.py --report results/assembly/rail_bridge_v1/kinematics.json`，重建组合 URDF、MJCF 和安装板网格。固定近景重载旧座与新座并切换碰撞/整机视图。Piper 臂根降低 85.5 mm；名义板下外观净空 14.5 mm，板中心到机身碰撞凸包净空约 4.41 mm。三组 FK 通过，整机质量 43.5371 kg，附加载荷继续省略。[连接件说明与桌面截图](docs/MOUNT_RAIL_BRIDGE.md)
 

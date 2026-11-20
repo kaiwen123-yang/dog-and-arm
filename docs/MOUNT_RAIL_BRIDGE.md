@@ -2,7 +2,7 @@
 
 更新：2026-11-20（Asia/Shanghai）。用户决定后续仿真按下图的连接形式进行；随后指定Piper H官方手册核对孔位。
 
-**当前组合 URDF 和 MJCF 已采用 rail_bridge_v1。** 本机 Linux 桌面已用同一近景展示旧方块座与新板，再查看整臂和碰撞外形。[旧座](../results/assembly/rail_bridge_v1/old_block.png) · [新座](../results/assembly/rail_bridge_v1/bridge_exterior.png) · [碰撞](../results/assembly/rail_bridge_v1/bridge_collision.png) · [整机](../results/assembly/rail_bridge_v1/bridge_overview.png)
+**当前组合 URDF 和 MJCF 已更新为向狗头前移 60 mm 的 rail_bridge_front60_v2，详见第 5 节；新位置的本机可见推拉测试尚未运行。** 前一版本 rail_bridge_v1 已在本机 Linux 桌面用同一近景展示旧方块座与新板，再查看整臂和碰撞外形。[旧座](../results/assembly/rail_bridge_v1/old_block.png) · [新座](../results/assembly/rail_bridge_v1/bridge_exterior.png) · [碰撞](../results/assembly/rail_bridge_v1/bridge_collision.png) · [整机](../results/assembly/rail_bridge_v1/bridge_overview.png)
 
 ## 1. 用户选定的结构
 
@@ -36,7 +36,7 @@
 
 上述数值及来源已结构化记录于 [mount_interface_reference.json](../config/mount_interface_reference.json)。生成器读取其中两组孔中心。沿导轨的名义基准、板尺寸、支承面和 Piper 孔组相对根的偏移见 [assembly.yaml](../config/assembly.yaml)。
 
-## 3. 已生成的名义几何
+## 3. rail_bridge_v1 的既有名义几何
 
 坐标均在 M1 机身系中。Piper 原生底座原点从 [50, 0, 180] mm 降至 [50, 0, 94.5] mm。板长宽各 180 mm、厚 8 mm，板中心 x 为 10 mm。两支座各长 150 mm、宽 14 mm，位于 y = ±77 mm，分别从导轨承面延伸到板底。原生 Piper 法兰与四孔在官方碰撞 STL 上可见，孔阵列中心相对臂根 x 偏 −5 mm。板的视觉网格包含六个 M4 安装孔和四个承接 M5 的名义底孔，细螺纹省略。
 
@@ -54,3 +54,32 @@ bash scripts/project_env.sh python scripts/live_assembly.py --watch --mount-deta
 ## 4. P6 版本记录
 
 旧座名义任务为 `results/p6/mobile_01`，20 例最终前拉清单与背推 `push_02` 也使用旧座。新座单独保存动力学结果并在每次运行的 config.json 写入安装版本与臂根坐标。[P6 报告](../reports/P6_FREE_BASE_DOOR.md)
+
+## 5. rail_bridge_front60_v2：整套安装向狗头前移 60 mm
+
+用户于 2026-11-20 要求板靠近狗头，并重新进行完整推拉测试。M1 机身前向为 +X：官方前腿 FAR/FBL 根坐标 X=+0.2698 m，后腿为 −0.2698 m；项目 `p6_base.py` 的正向行驶约定相同。按一个 60 mm 孔距移动整套板、支座和机械臂。
+
+| 项目（M1 机身坐标） | v1 | front60_v2 |
+| --- | --- | --- |
+| 臂根 X / Z | 50 / 94.5 mm | 110 / 94.5 mm |
+| 板中心 X | 10 mm | 70 mm |
+| 两支座中心 X | 0 mm | 60 mm |
+| 每排安装孔 X | −60 / 0 / 60 mm | 0 / 60 / 120 mm |
+| 每排 7 孔中的选择（按 X 递增，1 起计） | 第 3 / 4 / 5 孔 | 第 4 / 5 / 6 孔 |
+| 板长宽厚 | 180 × 180 × 8 mm | 相同 |
+| 板底 Z | 86.5 mm | 相同 |
+
+完整导轨阵列的 `rail_pattern_origin_xy_m` 仍为 [0,0]。生成器按所选孔 X 范围的中点布置支座，避免只移动板/臂而把支座留在原位。Piper 70 × 70 mm 孔组、板局部孔形、相机/夹爪相对关系均保持。默认附加载荷仍省略。
+
+![前移前后的实际模型静态渲染](../results/assembly/rail_bridge_front60_v2/forward_comparison.png)
+
+这张图是同一相机和 home 关节姿态的 MuJoCo 离线渲染，不是用户桌面截图。实际云端验证命令：
+
+```bash
+bash scripts/project_env.sh python scripts/build_assembly.py --stage combined
+bash scripts/project_env.sh python scripts/check_assembly.py --report results/assembly/rail_bridge_front60_v2/kinematics.json
+```
+
+生成器及前拉/背推派生场景均编译成功；保持唯一自由根、23 个控制输入与单个夹爪耦合。三组 FK 最大位置差 2.457×10⁻¹⁶ m、最大旋转矩阵差 9.806×10⁻¹⁶。机身最高凸包面至板底的净空下界为 4.410643 mm；两侧导轨支承面高度仍匹配既有名义值。相同 home 姿态下，整机质心向 +X 移动 6.500053 mm，整机总质量 43.537064 kg 不变。这意味着前移会改变承重分配，旧版开门结果不能直接沿用。[模型记录](../results/assembly/rail_bridge_front60_v2/model_check.json) · [源网格计算](../results/assembly/rail_bridge_front60_v2/source_mesh_clearance.json) · [FK](../results/assembly/rail_bridge_front60_v2/kinematics.json)
+
+本轮只完成代码/模型与离线静态检查，未执行 mj_step、用户桌面展示或新位置下的推拉门。接续 [MOUNT_FORWARD_PUSH_PULL.txt](../prompts/MOUNT_FORWARD_PUSH_PULL.txt)，先在 Linux 桌面确认前移，再前拉 60°/背推 25°及两侧各 C01–C20。所有新运行从实际模型读取 `mount_revision`，不要覆盖旧结果。

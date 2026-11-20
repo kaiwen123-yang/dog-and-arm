@@ -1,0 +1,146 @@
+{
+  "revision": "rail_bridge_front60_v2",
+  "date": "2026-11-20",
+  "scope": "Source-mesh geometry review for a proposed 60 mm body +X mount translation. This report is not a robot collision sweep, dynamics result or desktop inspection.",
+  "source": {
+    "repository": "https://github.com/zsibot/MATRiX_Python_SDK",
+    "revision": "7c63590c21beba2f633c344b96bc29a695d7a807",
+    "path": "vendor/matrix_python_sdk/model/zgws/assets/BASE_LINK.STL",
+    "raw_url": "https://raw.githubusercontent.com/zsibot/MATRiX_Python_SDK/7c63590c21beba2f633c344b96bc29a695d7a807/model/zgws/assets/BASE_LINK.STL",
+    "bytes": 10000034,
+    "triangles": 199999
+  },
+  "method": {
+    "frame": "m1_base_link; source mesh is attached without local pose change",
+    "forward_evidence": "FAR/FBL parent anchors x=+0.2698 m, RAR/RBL x=-0.2698 m; p6_base.py defines positive drive velocity along body +X",
+    "algorithm": "Decode binary STL; unique mesh vertices; scipy.spatial.ConvexHull; at each XY use the minimum of upward-facing halfspace plane heights. Compare with the nominal plate underside.",
+    "finite_sample_limitation": "Footprint results sample a 73 by 73 grid. The global mesh maximum is also an upper bound for its convex hull everywhere, so its height bound applies continuously to plate-body vertical clearance.",
+    "support_limitation": "Support checks compare vertices within the proposed rectangular footprint; they do not certify a manufactured seat, bolt engagement or load path."
+  },
+  "mesh_bounds_m": [
+    [
+      -0.41664087772369385,
+      -0.1150001585483551,
+      -0.12607580423355103
+    ],
+    [
+      0.41664087772369385,
+      0.11524659395217896,
+      0.08208935707807541
+    ]
+  ],
+  "global_mesh_max_z_m": 0.08208935707807541,
+  "global_height_bound_clearance_to_plate_under_m": 0.004410642921924585,
+  "comparison": [
+    {
+      "revision": "rail_bridge_v1",
+      "arm_root_in_m1_m": [
+        0.05,
+        0.0,
+        0.0945
+      ],
+      "plate_center_xy_m": [
+        0.01,
+        0.0
+      ],
+      "plate_xy_bounds_m": [
+        [
+          -0.08,
+          -0.09
+        ],
+        [
+          0.09999999999999999,
+          0.09
+        ]
+      ],
+      "plate_underside_z_m": 0.0865,
+      "hull_top_at_plate_center_m": 0.08208586233535324,
+      "hull_clearance_at_plate_center_m": 0.004414137664646753,
+      "sample_grid_shape": [
+        73,
+        73
+      ],
+      "sample_count": 5329,
+      "sampled_max_hull_top_m": 0.08208935707807541,
+      "sampled_max_location_xy_m": [
+        0.0,
+        0.0
+      ],
+      "sampled_min_hull_clearance_m": 0.004410642921924585,
+      "mesh_vertices_within_plate_footprint_max_z_m": 0.08049999922513962
+    },
+    {
+      "revision": "rail_bridge_front60_v2",
+      "arm_root_in_m1_m": [
+        0.11,
+        0.0,
+        0.0945
+      ],
+      "plate_center_xy_m": [
+        0.07,
+        0.0
+      ],
+      "plate_xy_bounds_m": [
+        [
+          -0.01999999999999999,
+          -0.09
+        ],
+        [
+          0.16,
+          0.09
+        ]
+      ],
+      "plate_underside_z_m": 0.0865,
+      "hull_top_at_plate_center_m": 0.08206489387902019,
+      "hull_clearance_at_plate_center_m": 0.004435106120979804,
+      "sample_grid_shape": [
+        73,
+        73
+      ],
+      "sample_count": 5329,
+      "sampled_max_hull_top_m": 0.08208935707807541,
+      "sampled_max_location_xy_m": [
+        1.0408340855860843e-17,
+        0.0
+      ],
+      "sampled_min_hull_clearance_m": 0.004410642921924585,
+      "mesh_vertices_within_plate_footprint_max_z_m": 0.08049999922513962
+    }
+  ],
+  "proposed_support_seats": [
+    {
+      "center_xy_m": [
+        0.06,
+        -0.077
+      ],
+      "xy_size_m": [
+        0.15,
+        0.014
+      ],
+      "nominal_seat_z_m": 0.0805,
+      "source_vertex_subset_count": 2328,
+      "source_vertex_subset_max_z_m": 0.08049999922513962,
+      "seat_minus_subset_max_z_m": 7.748603841895019e-10
+    },
+    {
+      "center_xy_m": [
+        0.06,
+        0.077
+      ],
+      "xy_size_m": [
+        0.15,
+        0.014
+      ],
+      "nominal_seat_z_m": 0.0804,
+      "source_vertex_subset_count": 2029,
+      "source_vertex_subset_max_z_m": 0.0803999975323677,
+      "seat_minus_subset_max_z_m": 2.4676322929462202e-09
+    }
+  ],
+  "runtime_scope": {
+    "mujoco_step_executed": false,
+    "gui_opened": false,
+    "hardware_operated": false
+  },
+  "interpretation": "A nominal 60 mm forward shift preserves positive plate clearance above the source body mesh and its convex hull at the existing mounting height. Full arm/robot contact, trajectory reachability, dynamic push/pull and user-visible inspection remain separate checks."
+}

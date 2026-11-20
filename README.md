@@ -4,7 +4,7 @@
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
-**P6 自由底盘单门。** 在 Linux 桌面运行 `bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final`，可看到驶近、停车、双指接触拉门、松爪、收臂和倒车。当前双导轨安装座的名义整任务最终门角为 60.049°。旧方块座的固定清单为 20/20。首次拉取新座模型后，已有官方资产的工作区先执行 `bash scripts/project_env.sh python scripts/build_assembly.py --stage combined` 生成板网格。Space 暂停，Esc 关窗，复跑默认写新目录。[分版本 P6 结果](reports/P6_FREE_BASE_DOOR.md) · [当前安装座连续任务视频](results/p6/rail_bridge_v1_mobile_01/motion.mp4)
+**P6 自由底盘单门。** 当前模型为向狗头前移60 mm的 `rail_bridge_front60_v2`，离线模型编译/FK通过，本机可见完整推拉尚待执行，按 [前移后推拉提示](prompts/MOUNT_FORWARD_PUSH_PULL.txt) 接续。已有官方资产的工作区先运行 `bash scripts/project_env.sh python scripts/build_assembly.py --stage combined`，再桌面查看装配；之后前拉60°、背推25°及两侧C01–C20。前一版本 `rail_bridge_v1` 的名义门角60.049°和旧方块座前拉20/20作为历史独立保留。[分版本P6记录](reports/P6_FREE_BASE_DOOR.md) · [v1历史视频](results/p6/rail_bridge_v1_mobile_01/motion.mp4)
 
 自由底盘可用 `bash scripts/project_env.sh python scripts/p5_free_base.py --config config/p5_heading.yaml --live --video --hold-final` 查看站立、慢行、按 12° 航向转弯、伸臂行走和停车。 [P5 报告](reports/P5_FREE_BASE.md)
 

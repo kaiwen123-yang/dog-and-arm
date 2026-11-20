@@ -281,6 +281,7 @@ def main():
         urdf, mjcf = copy.deepcopy(m1["urdf"]), copy.deepcopy(m1["mjcf"])
         urdf.set("name", "m1_piper_h_with_gripper_and_nominal_camera")
         mjcf.set("model", "m1_piper_h_with_gripper_and_nominal_camera")
+        ET.SubElement(section(mjcf, "custom"), "text", name="mount_revision", data=mount["revision"])
         urdf.extend(copy.deepcopy(list(piper["urdf"])))
         frame = fixed_link(urdf, mount["parent_link"], "m1_arm_mount", mount["xyz_m"], mount["rpy_rad"])
         joint = ET.SubElement(urdf, "joint", name="piper_base_mount_fixed", type="fixed")

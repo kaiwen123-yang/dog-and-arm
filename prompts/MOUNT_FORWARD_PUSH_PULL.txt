@@ -1,0 +1,34 @@
+继续 /home/kaiwen/research/dog-and-arm。用户已要求把双导轨安装板向狗头靠近，然后重新做完整推拉测试。实际执行，不只再列计划；本轮仅仿真，不操作实机。
+
+先检查 git status，保留已有修改和未跟踪 P5 数据，正常拉取 main，不 reset、不强推。读取 AGENTS.md、PROJECT_STATE.md、docs/MOUNT_RAIL_BRIDGE.md、docs/LIVE_DEBUGGING.md 和 reports/P6_FREE_BASE_DOOR.md。复用现有 .venv/官方资产，不重装 ROS/CUDA，不重做 H0 或整套 P0–P3。
+
+已经准备：rail_bridge_front60_v2 将板、两支座和整台 Piper 沿 M1 机身 +X（狗头方向）前移一档 60 mm。臂根 [0.050,0,0.0945]→[0.110,0,0.0945] m；板心 X 0.010→0.070 m；支座 X 0→0.060 m。选孔由每排第3/4/5改为第4/5/6（按X递增编号），完整导轨基准、板厚和高度不变。云端只完成模型编译、FK、源网格净空和静态渲染，没有新版本桌面或mj_step通过结果。相同姿态整机质心前移约6.5 mm，需要重新验证承重和驻停。
+
+一、先在桌面显示前移装配。
+说明本轮目的，打开一个整机窗口，近景看连接件，F6切侧面/概览看完整臂、夹爪和腕相机，F9看碰撞。若本机仍有旧窗口，保留它并在第二终端重建，观察重载；无旧窗口不必回滚main，可对照已保存前后图。默认生成文件已是新位置，但板网格被git忽略，本机拉取后必须用当前配置重建。
+bash scripts/project_env.sh python scripts/build_assembly.py --stage combined
+bash scripts/project_env.sh python scripts/live_assembly.py --watch --mount-detail
+窗口运行期间可在第二终端再次build，同步说明板、支座、臂根的变化；仅网格变化用F10重载。检查新位置收臂、前腿/机身净空和相机刚性。在新本机结果目录保存桌面截图、事件和check_assembly.py报告，不覆盖云端静态证据。装配节点完成就更新状态并普通提交推送。
+
+二、完整名义推拉与C13。
+首测保持已有站位、门参数、腕朝向和门槛，明确前移的直接影响。省略--output会自动建新目录；指定时使用带时间戳的rail_bridge_front60_v2_*新目录。
+bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --video --hold-final
+bash scripts/project_env.sh python scripts/p6_single_door.py push --live --video --hold-final
+bash scripts/project_env.sh python scripts/p6_single_door.py mobile --case 13 --live --video --hold-final
+前拉目标60°，背推目标25°。每场包括0.30 m外驶近、持续停车、伸臂双指抓取、接触开门、松爪退臂、3 s保持、收臂、倒车、最后3 s停车。阶段间一个自由根/连续状态，不重置、固定底盘、写门角或焊接把手。先让我看清代表流程再批量，每个终态先保存并解释，再正常关闭进入下一场。--hold-final会保留查看窗口，不把等待查看当卡死强杀；后台任务不设墙钟终止时间。
+上一版25Hz记录J5距限位仅0.141°，旧座C13距55s开门时限仅0.102s。现在summary.arm_joint_limit_min按每个500Hz物理步统计六轴实际余量、时刻和阶段；负数是实际越界，不能只看完成标志。检查J5及其他轴、开门用时、双指抓持、退离/收臂净空、承重/滑动/饱和和两次停车窗口。失败先落盘，据证据调整站位/腕朝向/退离或控制并可见复跑，不删碰撞或只放宽门槛冒充通过。
+
+三、两侧各C01–C20完整条件清单。
+名义可运行后冻结安装与控制版本。背推20条是本轮新增待测覆盖，旧版只有名义背推证据；dx/dy仍是世界坐标扰动，不改成机体系语义。p6_cases.py现支持--stage mobile|push，默认mobile，每窗最多6个分格。可用以下组，前拉完成后换--stage push接续：
+bash scripts/project_env.sh python scripts/p6_cases.py 1 2 3 4 5 6 --stage mobile
+bash scripts/project_env.sh python scripts/p6_cases.py 7 8 9 10 11 12 --stage mobile
+bash scripts/project_env.sh python scripts/p6_cases.py 13 14 15 16 17 18 --stage mobile
+bash scripts/project_env.sh python scripts/p6_cases.py 19 20 --stage mobile
+bash scripts/project_env.sh python scripts/p6_cases.py 1 2 3 4 5 6 --stage push
+bash scripts/project_env.sh python scripts/p6_cases.py 7 8 9 10 11 12 --stage push
+bash scripts/project_env.sh python scripts/p6_cases.py 13 14 15 16 17 18 --stage push
+bash scripts/project_env.sh python scripts/p6_cases.py 19 20 --stage push
+前面C01/C13若属于完全相同最终配置，可从组参数移除并在清单引用真实记录，避免重复。中途改参数后按版本分组，最终同组统计必须用同一安装/控制版本。失败如实计入，修正原因后重跑固定清单，不事后改条件定义。
+
+四、逐节点更新PROJECT_STATE、P6报告、安装说明和NEXT_RUN，普通提交推送，不强推、不做压缩归档。
+至少保留config/summary、六轴余量、精简时序/接触数据、代表视频和桌面证据；分组trace已保留六轴q与余量。分别报告新版本前拉20条、背推20条的通过/失败、门角/时间、关节余量、接触和驻停情况。不能用block_v1或rail_bridge_v1成绩替代front60_v2；保留原记录。手眼、标定板和附件称重/惯量继续后置。
