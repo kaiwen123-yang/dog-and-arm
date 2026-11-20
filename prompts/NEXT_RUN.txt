@@ -1,24 +1,11 @@
-继续 /home/kaiwen/research/dog-and-arm，从 2026-11-16 用户要求暂停的位置接续。只有用户明确要求继续时执行；当前任务已暂停。
+继续 /home/kaiwen/research/dog-and-arm。2026-11-20 用户已恢复任务，P3 本机可见装配检查已收尾，下一步 P4 固定基座单门接触。
+先检查 git status，保留修改并正常 pull main，读 AGENTS.md、PROJECT_STATE.md 和当前阶段文档。环境/官方源已存在，不重装。H0 已完成，不操作实机。
 
-先查看 git status，保留已有修改，正常拉取 main；阅读 AGENTS.md、PROJECT_STATE.md、reports/assembly_report.md 和 docs/LIVE_DEBUGGING.md。
+已完成：M1/Piper/联合模型桌面顺序展示；关节与夹爪、碰撞视图、默认自由视角修正、联合 XML watch 重载、同一虚拟腕相机看门和把手。三组 FK 和 9 个开合/腕姿态的相机固定关系量化通过。新证据 results/assembly/live_20261120/，安装名义参数未改。
 
-已完成：
-- 本机 .venv 为 Python 3.10.12 / MuJoCo 3.3.0；固定官方资产已恢复，不重装/重下载。
-- M1、Piper H、联合模型均已在 X11 :1 实际显示。M1 腿/轮微调；Piper J1/J2/J3 微调、0–100 mm 双指开合、腕部局部/相机/碰撞视图及 F10 重载。用户对 Piper 腕部近景与开合明确回复“能看到，继续”。
-- F6 轮换概览/侧面/正面/腕部局部；F9 已改为碰撞专用凸包视图，隐藏重合视觉组，避免闪白。真实碰撞参数不变。
-- 联合模型侧面/正面/腕部局部和开合/碰撞已显示；三组 FK 本机通过，误差约 3.044e-16 m、9.806e-16（数字模型一致性，非实物精度）。
-- 名义安装 config/assembly.yaml 未改。所有模型仍 KINEMATIC_PREVIEW；H0 未操作，无 mj_step、接触开门或轮足保持控制。
-- 结果在 results/assembly/live_local/；M1/Piper 节点 f8786a8、728fc8a 已推送，暂停节点另有普通提交。所有本轮查看窗口已正常关闭。
+接下来按 docs/BUILD_PLAN.md 的 P4：从既有组合 MJCF 衍生专用固定基座场景，保留主模型唯一自由基座；有限执行器、被动门和真实 mj_step，记录门角/接触力/力矩及视频。先单门，再自由基座轮足保持/慢行。不能写门角轨迹或焊接把手冒充接触开门。手眼/标定板/称重继续后置。
 
-下一步从联合可见检查收尾开始：
-1. bash scripts/project_env.sh python scripts/live_assembly.py --watch
-   初始自由视角可能裁掉腕部上缘；F6 命名相机正常。先修正默认取景并在桌面验证，不只做离线图。
-2. 独立量化夹爪开合时相机相对 piper_gripper_base 不变；打开 --model sim/scenes/assembly_with_door.xml --watch，实际用 F8 检查同一虚拟腕相机中的门/把手。此项本机尚未完成。
-3. 有证据需要改安装参数时，保持 viewer 可见，在终端 B 修改 config/assembly.yaml 并运行 build_assembly.py --stage combined，核对 watch 重载及实际画面。当前没有依据要求修改安装位置，不为演示制造无用修改。Piper 单体 F10/XML_changed 已验证，联合场景重载收尾尚待完成。
-4. 完成可见装配检查后再进入 P4 固定基座单门真实接触，随后 P5 自由基座轮足保持/慢行；不得把 qpos + mj_forward 当成动力学。
+GUI 仍须真实打开供用户观看；首次命令 bash scripts/project_env.sh python scripts/live_assembly.py --model sim/scenes/assembly_with_door.xml --watch。它只有运动学预览，不是 P4 控制入口。
 
-H0 已完成，本轮续接不启动任何 h0_*、SDK、CAN 或实物相机。手眼/标定板/附件称重继续后置，accessory_payload_mode=omitted，synthetic_aligned_rgbd。
-
-每个有意义节点普通提交并推送到 kaiwen123-yang/dog-and-arm，不强推、不另建压缩归档。HTTPS remote 没有默认 helper；本轮成功使用已有 gh keyring 登录：
+每个有意义节点更新 PROJECT_STATE.md、报告和提示，普通提交/推送，不强推、不建立压缩归档。已有 gh keyring 可用：
 git -c http.version=HTTP/1.1 -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin main
-不要输出认证 token，不改全局认证设置。

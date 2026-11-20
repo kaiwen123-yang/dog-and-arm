@@ -133,3 +133,9 @@ Piper home 为 `[0, 0.8, -1.4, 0, 0.6, 0] rad`，夹爪开口 40 mm。这是独�
 名义安装参数未改变，不为了演示重载制造安装修改。Piper 单体已验证 F10，且在 combined 构建重写其 XML 时实际完成 watch 重载。联合场景的带门腕视角、相机固定关系量化与重载收尾尚未完成；初始自由视角曾裁掉腕部上缘，F6 命名视角正常，默认取景仍待修正。不能把整个本机装配检查或后续动力学标为完成。
 
 M1/Piper 节点 `f8786a8`、`728fc8a` 已普通推送。HTTPS 首次 TLS 中断，随后缺少 credential helper；最终命令 `git -c http.version=HTTP/1.1 -c credential.helper= -c 'credential.helper=!gh auth git-credential' push origin main` 复用本机已有登录成功。
+
+## 13. 2026-11-20：本机可见检查收尾
+
+`mjv_defaultFreeCamera` 修正初始取景，[默认窗口](../results/assembly/live_20261120/default_view.png) 包含腕部与四轮。保持窗口时由另一桌面终端运行 `build_assembly.py --stage combined`，实际 watch 重载成功，[重载画面](../results/assembly/live_20261120/reloaded_view.png) 和事件日志对应。安装参数没有改变。
+
+[本机腕相机看门](../results/assembly/live_20261120/wrist_door.png) 实际显示门板和 U 形把手，未改变外参。`check_assembly.py` 新增 9 个开合/腕姿态检查：手指运动引起相机世界位姿变化 0；相对 gripper_base 位姿误差不超过 5.93e-17 m、5.55e-16。三组 FK 继续通过。全部是名义运动学结果，非手眼标定或开门成功。下一步是独立 P4 固定基座真实接触场景。

@@ -307,6 +307,47 @@ def run(args, report: dict) -> None:
                   max_rotation_matrix_error=max(case["max_rotation_matrix_error"] for case in report["cases"]))
 
 
+def camera_rigidity(model_path):
+    """Measure the wrist camera relative to its rigid parent while fingers move."""
+    model = mujoco.MjModel.from_xml_path(str(model_path))
+    data = mujoco.MjData(model)
+    camera = model.camera("wrist_rgbd").id
+    parent = model.body("piper_gripper_base").id
+    home = model.key("home").id
+    j6 = model.joint("piper_joint6").qposadr[0]
+    fingers = [model.joint(name).qposadr[0] for name in FINGERS]
+    reference = None
+    cases = []
+    for wrist_deg in (0, 5, -5):
+        world_reference = None
+        for width in (0.0, 0.04, 0.1):
+            mujoco.mj_resetDataKeyframe(model, data, home)
+            data.qpos[j6] += math.radians(wrist_deg)
+            data.qpos[fingers] = [width / 2, -width / 2]
+            mujoco.mj_forward(model, data)
+            parent_rotation = data.xmat[parent].reshape(3, 3)
+            world = (data.cam_xpos[camera].copy(), data.cam_xmat[camera].reshape(3, 3).copy())
+            relative = (parent_rotation.T @ (world[0] - data.xpos[parent]), parent_rotation.T @ world[1])
+            if reference is None:
+                reference = relative
+            if world_reference is None:
+                world_reference = world
+            cases.append({"wrist_delta_deg": wrist_deg, "width_m": width,
+                          "relative_position_m": relative[0].tolist(),
+                          "relative_rotation_matrix": relative[1].tolist(),
+                          "relative_position_error_m": float(np.linalg.norm(relative[0] - reference[0])),
+                          "relative_rotation_error": float(np.max(np.abs(relative[1] - reference[1]))),
+                          "world_position_change_from_fingers_m": float(np.linalg.norm(world[0] - world_reference[0])),
+                          "world_rotation_change_from_fingers": float(np.max(np.abs(world[1] - world_reference[1]))),
+                          "simulation_time_s": float(data.time)})
+    metrics = {key: max(case[key] for case in cases) for key in (
+        "relative_position_error_m", "relative_rotation_error",
+        "world_position_change_from_fingers_m", "world_rotation_change_from_fingers")}
+    return {"passed": int(model.cam_bodyid[camera]) == parent and max(metrics.values()) < 1e-12,
+            "camera": "wrist_rgbd", "rigid_parent": "piper_gripper_base", "max_errors": metrics,
+            "cases": cases, "meaning": "Nominal digital attachment only; not hardware hand-eye calibration."}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--urdf", type=Path, default=ROOT / "description/m1_piper.urdf")
@@ -329,6 +370,9 @@ def main() -> int:
                         "Only mj_forward is called: no dynamics, contact-task, controller or hardware validation."]}
     try:
         run(args, report)
+        report["camera_rigidity"] = camera_rigidity(args.model)
+        if not report["camera_rigidity"]["passed"]:
+            report["status"] = "failed"
     except Exception as error:
         report["error"] = f"{type(error).__name__}: {error}"
         print(report["error"], file=sys.stderr)

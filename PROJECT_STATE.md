@@ -1,17 +1,27 @@
 # 项目状态
 
-更新日期：2026-11-16（Asia/Shanghai）。
+更新日期：2026-11-20（Asia/Shanghai）。
 
 ## 当前阶段
 
-**用户于 2026-11-16 要求“今天就这样吧，先暂停”，当前已暂停。M1、Piper H 和联合模型均已在本机桌面显示，联合装配检查尚未全部收尾。** 本机工作目录为 `/home/kaiwen/research/dog-and-arm`。本次从 H0 提交 `284c1f3` 继续，新增 M1＋Piper H 组合 URDF/MJCF、名义附件、实时查看入口和离线验证；这些结果不代表本机桌面已经打开，也不代表动力学站稳或接触开门。
+**2026-11-20 用户要求继续；P3 本机可见装配检查已收尾，下一阶段为 P4 固定基座单门接触。** M1、Piper H 和联合模型此前已依次桌面显示；本轮补齐默认取景、联合 XML 重载、腕相机看门和夹爪/相机固定关系量化。仍未完成动力学开门，不操作实机。
 
 - 机械臂本体验机：**用户此前已完成**，本轮复用现有 OSCBF-learn / pyAgxArm。
 - H0 相机＋机械臂联调：**此前回合实机完成**；[报告](reports/H0_HARDWARE_REPORT.md)、[会话清单](results/hardware/h0/20261116_2051/manifest.json)、[操作说明](docs/H0_RUNBOOK.md)。
 - P1 官方资产、P2 单体生成、P3 名义联合模型：**准备环境已实现并编译／离线检查**；[装配报告](reports/assembly_report.md)。
 - 本机 `.venv`：Python 3.10.12 / MuJoCo 3.3.0 已建立；M1/Piper/整机已实际桌面显示；关节/夹爪、检查相机和碰撞视图有桌面证据；Piper 的 F10 与 XML watch 重载完成。
 - 手眼标定、标定板采购、相机/支架称重及惯量：**继续后置**。
-- 下一轮：仅在用户要求继续后，按 [prompts/NEXT_RUN.txt](prompts/NEXT_RUN.txt) 从联合模型的带门腕视角与重载检查续接；不重做 H0，不重复安装环境。
+- 继续按 [prompts/NEXT_RUN.txt](prompts/NEXT_RUN.txt) 推进 P4；不重做 H0、不重复安装环境。
+
+## 本机可见检查收尾：2026-11-20
+
+- 从 `078839e` 接续，工作区干净；正常 `pull --ff-only origin main` 已是最新。复用既有 Python 3.10.12 / MuJoCo 3.3.0 / X11 :1。
+- `live_assembly.py` 显式调用 `mjv_defaultFreeCamera`，按已有 scene statistic 初始化自由视角；本次截图确认腕部和四轮完整入画。没有改安装参数。
+- 终端 A `bash scripts/project_env.sh python scripts/live_assembly.py --watch --events results/assembly/live_20261120/combined_events.jsonl`；终端 B `build_assembly.py --stage combined`，实际发生 XML_changed → 编译 → 关闭旧窗口 → 新窗口恢复 home，桌面截图确认重载后画面。
+- `bash scripts/project_env.sh python scripts/check_assembly.py`：三组独立 FK 继续通过；新增 3 个腕关节姿态 × 0/40/100 mm 夹爪开口共 9 个名义关系检查。开合引起的相机世界位姿变化为 0；相对 gripper_base 的位置/旋转最大差约 5.93e-17 m / 5.55e-16。
+- 实际打开 `live_assembly.py --model sim/scenes/assembly_with_door.xml --watch --events results/assembly/live_20261120/door_events.jsonl`，F8 桌面显示被动门板和 U 形把手。使用既有同一 optical frame 和 synthetic_aligned_rgbd；不是实物标定。
+- 证据：`results/assembly/live_20261120/` 的 default_view、reloaded_view、wrist_door PNG 及事件；量化数据在 `reports/assembly_kinematics.json`。本轮没有新的用户明确观看确认，不代填反馈。
+- 以上仅 `mj_forward`，时间为 0；P4 实验将单独生成固定基座场景并使用有限执行器与 `mj_step`，不更改主模型自由基座。
 
 ## 本机可见调试：2026-11-16
 
@@ -29,7 +39,7 @@
 - 本机 `bash scripts/project_env.sh python scripts/check_assembly.py` 通过三组 FK，最大位置差 3.044e-16 m、旋转矩阵差 9.806e-16；仍仅运动学一致性。
 - 用户暂停后已 F12 关闭本轮 viewer，关闭本轮桌面终端；没有启动任何硬件、接触或轮足动力学。
 - 未完成：联合带门场景的本机腕视角、开合时相机固定关系的单独量化、联合场景重建/重载收尾；初始自由视角上沿裁掉部分腕部，F6 侧面/正面/局部视角正常，默认取景待修正。Piper 在 combined 构建重写单体 XML 后已收到 XML_changed 并成功重载。
-- 下次先完成上述可见检查，之后才进入固定基座单门接触，再进入自由基座轮足保持/慢行。当前已暂停，不自动继续。
+- 下次先完成上述可见检查，之后才进入固定基座单门接触，再进入自由基座轮足保持/慢行。当时已暂停；2026-11-20 已按用户要求恢复，当前进度见上。
 
 ## 基础联合模型回合：实际成果
 

@@ -209,3 +209,5 @@ bash scripts/project_env.sh python scripts/live_assembly.py --watch
 每个里程碑更新 `PROJECT_STATE.md`、`reports/assembly_report.md` 和 `prompts/NEXT_RUN.txt`，留下实际命令、所见变化、当前问题和下一步。交付完整模型时，仍需完成 [模型首轮](../prompts/FIRST_RUN.txt) 的 URDF/MJCF、映射和少量 FK 检查；能打开 viewer 只是其中一项。
 
 本机执行更新（2026-11-16）：M1 已有桌面截图、18 s 屏幕录像与实际按键记录，详见 PROJECT_STATE.md 的本机节点；上文准备环境描述保留为历史来源。
+
+2026-11-20：联合默认视角已显式用 scene statistic 初始化，避免启动时腕部裁切。本机联合 watch 重载、腕相机中的被动门/把手已显示；`check_assembly.py` 同时输出开合时的名义相机固定关系。证据和剩余动力学任务见 PROJECT_STATE.md。

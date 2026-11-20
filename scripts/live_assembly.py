@@ -208,6 +208,10 @@ def run(args, mj, viewer_api, glfw, record):
         try:
             with viewer.lock():
                 collision_view(mj, viewer, args.collision_group, collisions_visible)
+                # launch_passive's camera can still reflect qpos0, whose base
+                # height differs from home. Initialise from the scene framing
+                # explicitly before applying any saved interactive view.
+                mj.mjv_defaultFreeCamera(model, viewer.cam)
                 if free_camera:
                     viewer.cam.lookat[:] = free_camera[0]
                     viewer.cam.distance, viewer.cam.azimuth, viewer.cam.elevation = free_camera[1:]
@@ -227,6 +231,8 @@ def run(args, mj, viewer_api, glfw, record):
                    joints=[name for name, _ in joints], camera_available=camera_id >= 0,
                    collision_group=args.collision_group,
                    collision_geom_count=int(sum(model.geom_group == args.collision_group)),
+                   free_camera_lookat=viewer.cam.lookat.tolist(),
+                   free_camera_distance=float(viewer.cam.distance),
                    scripted_demo=demo, user_visibility="not_observed_by_script")
             print(f"已{ '重载' if next_load_event == 'reload' else '打开' }预览窗口：{args.model.name}", flush=True)
             if joints:
