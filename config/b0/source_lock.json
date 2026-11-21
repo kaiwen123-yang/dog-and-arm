@@ -1,0 +1,161 @@
+{
+  "upstream": {
+    "supermimic": {
+      "url": "https://github.com/HybridRobotics/supermimic",
+      "commit": "abc124c1bd5976341034668af3d12c087f2f1f55"
+    },
+    "mjlab_research": {
+      "url": "https://github.com/HybridRobotics/mjlab_research",
+      "commit": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd"
+    }
+  },
+  "engineering": {
+    "url": "https://github.com/kaiwen123-yang/dog-and-arm",
+    "planning_commit": "f6333ec4f9b55a94050f19301f0c4c8a3a94ce41",
+    "controller_commit": "86ade863de712dd6cd402714229b12b1bdae5b13",
+    "results_commit": "dc961f35034ad3083a46eecd1c0ff5f21607eb0c",
+    "mount": "rail_bridge_front60_v2",
+    "push_yaw_deg": 95,
+    "native_mujoco": "3.3.0",
+    "robot_source_manifest": "config/sources.lock.json"
+  },
+  "o1_records": {
+    "url": "https://github.com/kaiwen123-yang/Supermimic",
+    "commit": "00e45d400e6bbe5f35d549f7fe08e5d014cb41a5",
+    "campaign_dir": "results/20261111-o1-official-lafan40-s0",
+    "resolved_lock": "configs/o1_official_resolved.uv.lock",
+    "metadata_patch": "configs/o1_official_environment.patch",
+    "documents": [
+      "docs/O1_OFFICIAL_RUN_20261111.md",
+      "docs/O1_REVIEW_20261111.md",
+      "docs/REPRODUCTION_CLOSEOUT_AND_DYNAMICS_STUDY_20261117.md"
+    ],
+    "input_files": [
+      "actual_config.json",
+      "source_resolution.json",
+      "environment.json",
+      "review_20261111.json",
+      "summary.json"
+    ],
+    "historical_python": "3.13.18 (main, Oct 26 2026, 14:08:20) [Clang 23.1.3 ]",
+    "historical_packages": {
+      "supermimic": "0.1.0",
+      "mjlab": "1.6.0",
+      "torch": "2.14.0",
+      "mujoco": "3.16.0",
+      "mujoco-warp": "3.16.0",
+      "warp-lang": "1.18.0",
+      "rsl-rl-lib": "5.5.2",
+      "numpy": "2.4.2",
+      "tyro": "1.0.6",
+      "tensordict": "0.11.0",
+      "triton": "3.8.0",
+      "wandb": "0.24.2"
+    },
+    "status": "completed",
+    "final_evaluation": {
+      "completed": 40,
+      "clip_count": 40,
+      "mean_normalized_return": 0.8744398924149845
+    },
+    "historical_runner": {
+      "wandb_project": "supermimic",
+      "run_name": "o1-official-lafan40-s0",
+      "wandb_run_path": null,
+      "headless": true,
+      "buffer_size": 1000,
+      "representation": "gencoord",
+      "actor_obs": "proprio",
+      "log_interval": 10,
+      "save_interval": 1000,
+      "history_length": 10,
+      "termination_softness": 0.05,
+      "dynamics_hidden_dims": [
+        2048,
+        2048,
+        2048
+      ],
+      "wm": {
+        "lr": 0.0002,
+        "num_batches": 10,
+        "batch_size": 2048,
+        "horizon": 8,
+        "nominal_error_root_pose_pos": 0.01,
+        "nominal_error_root_pose_ori": 0.02,
+        "nominal_error_joint_pos": 0.1,
+        "nominal_error_joint_vel": 3.14,
+        "nominal_error_body_pos": 0.05,
+        "nominal_error_body_rot": 0.1,
+        "nominal_error_body_vel": 1.0,
+        "nominal_error_body_avel": 3.14
+      },
+      "max_iterations": 1000000,
+      "replay_ratio": 16,
+      "latent_dim": 32,
+      "actor_hidden_dims": [
+        2048,
+        1024,
+        512,
+        256
+      ],
+      "critic_hidden_dims": [
+        256,
+        128
+      ],
+      "latent_bc_weight": 0.1,
+      "tasks": {
+        "velocity": {
+          "lin_vel_x_range": [
+            -1.5,
+            1.5
+          ],
+          "lin_vel_y_range": [
+            -0.5,
+            0.5
+          ],
+          "ang_vel_z_range": [
+            -3.14,
+            3.14
+          ],
+          "window_frames": 25,
+          "command_noise": [
+            0.5,
+            0.5,
+            0.785
+          ]
+        }
+      },
+      "slot_mix": {
+        "motion": 1.0,
+        "velocity": 0.0
+      },
+      "policy": {
+        "lr": 0.0002,
+        "num_batches": 1,
+        "batch_size": 4096,
+        "noise": 0.1,
+        "horizon": 32,
+        "gamma": 0.99,
+        "survival_masking": true,
+        "beta2": 0.95,
+        "grad_clip_value": 0.1,
+        "lam": 0.95
+      },
+      "sampling_mode": "return",
+      "return_sampler": {
+        "gamma": 0.99,
+        "horizon": 20,
+        "memory": 256,
+        "steepness": 25.0,
+        "explore": 0.5,
+        "keep": 0.1
+      }
+    },
+    "historical_num_envs": 4096,
+    "g1_campaign_state": "closed"
+  },
+  "candidate_not_applied": {
+    "supermimic": "5fb92297ab4fe3d86629d9f0c635334791bb0d5f",
+    "change": "heading-relative tracked body velocity rewards"
+  }
+}

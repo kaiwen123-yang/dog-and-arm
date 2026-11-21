@@ -36,7 +36,7 @@ def quat(mat):
     return result
 
 
-def run(cfg, out, live, video, hold_final, view_factory=None):
+def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None):
     model = build(cfg)
     revision_id = mj.mj_name2id(model, mj.mjtObj.mjOBJ_TEXT, 'mount_revision')
     if revision_id >= 0:
@@ -162,6 +162,12 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
             command[arm_ids] = np.r_[q_arm, q_finger] + d.qfrc_bias[arm_dof] / model.actuator_gainprm[arm_ids, 0]
             q0 = d.qpos.copy()
             v0 = d.qvel.copy()
+            if step_observer is not None:
+                # Undo the exact bias used above before mj_step replaces qfrc_bias.
+                target = command.copy()
+                position_ids = np.r_[drive.legs, arm_ids]
+                target[position_ids] -= d.qfrc_bias[all_v[position_ids]] / model.actuator_gainprm[position_ids, 0]
+                target[drive.grip] *= 2.0  # full jaw opening in metres
             d.ctrl[:] = command
             mj.mj_step(model, d)
             # Actual integrated joint positions at every physics step, including
@@ -176,6 +182,8 @@ def run(cfg, out, live, video, hold_final, view_factory=None):
                 arm_min_phase[i] = phase
             sample = step % sample_every == 0
             c = meter.measure(d, details=sample)
+            if step_observer is not None:
+                step_observer(model, d, t, q0, v0, target, phase, c)
             step += 1
             xyz = d.site_xpos[arm.grasp_id]
             handle_xyz = d.site_xpos[arm.handle_id]

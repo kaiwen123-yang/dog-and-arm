@@ -2,7 +2,16 @@
 
 更新日期：2026-11-21（Asia/Shanghai）。
 
-## 当前研究阶段：R0 → B0
+## 当前研究阶段：B0 环境迁移与无接触学习
+
+2026-11-21 本机 `git pull --ff-only origin main` 快进至规划提交 `f6333ec`，保留未跟踪 P5 数据。现场 GPU 为 RTX 5080 Laptop 16 GiB，主机内存 30 GiB。固定双源和 O1 实际配置已核对。单门仍用 `rail_bridge_front60_v2` 与冻结 P6 控制 `86ade86`。
+
+- 三类无接触参考各实跑 350 个 20 ms 转移，另有独立扰动验证回合。按名映射 12 腿＋4 轮＋6 臂＋1 夹爪，原生 3.3.0 重放四条，共 1,400 个策略步。最大 TCP RMSE 为 1.81e-13 m。
+- 为补采整条 500 Hz 参考，冻结教师额外实跑前拉和背推 nominal 各一次。终态 60.052° 和 25.081°。门操作命令随子步变化，仅无接触恒定目标回合可直接用于本版动作 replay。
+- 原始数组在 `results/raw_large/b0/native_teacher_20261121_r1/`，执行命令与字段见 [数据报告](reports/B0_DATA_READINESS.md)。[来源锁](config/b0/source_lock.json)、[索引](data/b0/reference_manifest.json)、[重放数值](data/b0/native_teacher_checks.json)。
+- 此节点尚未取得学习成绩。下一步为固定 mjlab 后端对照、独立学习环境中的真实交互与官方 WM/Actor/Critic 闭环。
+
+## 历史规划节点：R0 → B0
 
 2026-11-21 用户已明确要求读取当前仓库，将“先在本场景跑通官方 SuperMimic，再开展多模态融合”的详细规划推送到 GitHub，并提供 Codex 提示词。本次新增的是规划与续接入口；没有运行 B0 训练、P6 复跑、双门实验或实机动作。
 
