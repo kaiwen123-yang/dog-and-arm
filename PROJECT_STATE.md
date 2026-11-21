@@ -85,6 +85,7 @@ P5 自由根实测 33 s / 16,500 步。直行 0.360 m，速率控制左转 10.40
 固定根移至 [0.65, 0.30, 0.54266] m 并转 45°，把手高度 0.85 m。松爪后退 0.10 m 并抬高 0.04 m。桌面运行命令为 `bash scripts/project_env.sh python scripts/p4_fixed_door.py --config config/p4_pull_60.yaml --live --video --hold-final --output results/p4/pull_60_trial01`。3,800 行时序与 950 帧视频已核对，按本次记录结束时仍为 59.963319°。 [桌面截图](results/p4/pull_60_trial01/desktop_final.png) · [曲线](results/p4/pull_60_trial01/contact_timeseries.png)
 
 - 机械臂本体验机：**用户此前已完成**，本轮不启动 SDK 或实机。
+- 2026-11-21 π 棋盘标定复用 H0。唯一发送入口增加单次标定定位和独立显式近零返回。现场已核对灯灭、示教记录停止，执行一次待机→CAN→六轴零角。独立反馈六轴均为 0.000°、全部使能；主机发送 1,088 帧，仅有模式与关节目标。详见 [H0 入口](docs/H0_RUNBOOK.md)。本动作没有生成相机标定结果。
 - H0 相机＋机械臂联调：**此前回合实机完成**；[报告](reports/H0_HARDWARE_REPORT.md)、[会话清单](results/hardware/h0/20261116_2051/manifest.json)、[操作说明](docs/H0_RUNBOOK.md)。
 - P1 官方资产、P2 单体生成、P3 名义联合模型：**准备环境已实现并编译／离线检查**；[装配报告](reports/assembly_report.md)。
 - 本机 `.venv`：Python 3.10.12 / MuJoCo 3.3.0 已建立；M1/Piper/整机已实际桌面显示；关节/夹爪、检查相机和碰撞视图有桌面证据；Piper 的 F10 与 XML watch 重载完成。
