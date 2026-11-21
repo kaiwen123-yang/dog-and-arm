@@ -44,3 +44,14 @@ boundary 变体 u50 在固定的 60 条条件上都连续走完 7 s，三类均 
 replay/home seed0 完成 10,000 次 WM 小批更新、1,000 次 H32 Actor 更新和其配套 Critic 更新，共产生 136,000 个真实策略转移。第 1000 次更新的留出 TCP RMSE 为 0.84 / 4.22 / 12.59 mm。原生和 Warp 对三类物理任务分别给出 0/20。后续尺度变体在第 50 次更新完成权重写入、尚在评测时按用户隔离要求停止。其已写逐案仅供诊断。[训练记录](../results/b0/free_s0_boundary_r1/outcome.json) · [实测预测误差](../results/b0/free_s0_boundary_r1/eval_001000/model_errors.csv) · [三类 Warp 评测](../results/b0/free_s0_boundary_u1000_warp/physical/summary.json)
 
 云端从零单独检验伺服尺度和更大批量。128 个并行物理环境，WM 和 Actor 每批各 256，H32 rollout 保留输入梯度。按累计状态数交替执行 8 和 9 个物理交互策略步，再训练 10 个 WM minibatch 和 1 个 Actor update。预设 0、50、200、1000 和 5000 节点，观察完整 3×20 物理表现。若达到三类门槛，冻结并独立复核后停止。[云端配置](../config/b0/free_servo_cloud.yaml)
+
+云端实测 Python 3.13.13、MuJoCo 3.16、RTX PRO 6000。原生对照使用另一个项目内 MuJoCo 3.3.0 解释器。双端可在载入各自 Conda shell 后执行以下命令，激活用户指定的环境名。云端与本机均执行过激活和依赖兼容性检查。[云端实测](../results/b0/runtime_autodl.json)
+
+```bash
+export CONDA_ENVS_PATH="$PWD/.conda/envs"
+conda activate "arm and dog"
+```
+
+云端首次启动在更新 0 因部署缺少关节映射而停止。补齐 `description/joint_map.yaml` 后实际验证 23 路模型及 EGL 渲染器，再用新 run `free_s0_cloud_servo_r2` 从零启动。使用的命令为 `bash scripts/b0/env.sh python -u scripts/b0/train.py --seed 0 --run free_s0_cloud_servo_r2 --config config/b0/free_servo_cloud.yaml --updates 1000`。
+
+已有实测轨迹也暴露出奖励尺度问题。在 u50 的 F01 中，三条完整但未过门槛的轨迹仍分别取得原奖励上限的 94.7%、91.5%、92.3%。纯状态增益变体在原有六项及惩罚之外，引入世界坐标 TCP、根位置、轮中心高度和轮角速度的可微参考误差。在相同轨迹上分别为新上限的 75.9%、63.3%、64.7%，三条教师均在 99.8% 以上。它保留监督 WM、H32 Actor/Critic、所有物理阈值及 23 路网络输出。此处是相同实测状态的目标函数对照，训练结果需单独记录。[奖励对照](../results/b0/free_s0_boundary_r1/eval_000050/tracking_objective.json) · [变体配置](../config/b0/free_metric_cloud.yaml)

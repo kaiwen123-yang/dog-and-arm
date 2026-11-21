@@ -15,7 +15,8 @@ from supermimic.replay_buffer import ReplayBuffer, FieldSpec
 from supermimic.runners.reset_sampling import ReturnSampler, ReturnSamplerCfg
 from supermimic.tasks.task_spec import make_motion_task, make_velocity_task, build_actor_obs_td
 
-from .model import RobotRepresentation, RobotActor, EffortScaledActor, B0WorldModelCfg, full_state, native_state, tensor
+from .model import (RobotRepresentation, FreeTrackingRepresentation, RobotActor, EffortScaledActor,
+                    B0WorldModelCfg, full_state, native_state, tensor)
 from .physics import make_model, ActionMap, ROOT
 from .reference import load_episode
 
@@ -80,7 +81,9 @@ class FreeRun:
         self.validation = load_episode(Path(cfg['reference_root'])/'moving_arm_wm_validation')
         self.raw = ROOT/'results/raw_large/b0'/run_id
         self.raw.mkdir(exist_ok=False)
-        self.rep = RobotRepresentation(self.model, device)
+        scales = cfg.get('free_tracking_reward')
+        self.rep = (FreeTrackingRepresentation(self.model, scales, device) if scales
+                    else RobotRepresentation(self.model, device))
         self.motion = MotionBank(self.refs, self.rep.fk, self.raw/'motion', device)
         self.starts = torch.nn.functional.pad(self.motion.motion_ends[:-1], (1, 0))
         self.ctx_dim = 1  # fixed nominal model, all samples have the same context
@@ -129,7 +132,7 @@ class FreeRun:
                  [('anchor_pos', .10), ('anchor_ori', .12)]}
         env = SimpleNamespace(num_actions=23, unwrapped=SimpleNamespace(step_dt=.02,
                               command_manager=MotionCommand(self.motion)),
-                              cfg=SimpleNamespace(rewards={'tracking': SimpleNamespace(weight=5.)},
+                              cfg=SimpleNamespace(rewards={'tracking': SimpleNamespace(weight=10. if scales else 5.)},
                                                   terminations=terms))
         wm_env_class = RecordedHistoryEnv if self.mixed else MultiTaskWorldModelEnv
         self.wenv = wm_env_class(self.dyn, self.rep, env, self.pc.batch_size, self.replay,

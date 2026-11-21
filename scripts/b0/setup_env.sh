@@ -13,6 +13,11 @@ prefix="$CONDA_ENVS_PATH/arm-and-dog"
 if [[ ! -f "$prefix/conda-meta/history" ]]; then
     "${CONDA_EXE:-conda}" create --no-default-packages -y --prefix "$prefix" python=3.13.13 pip
 fi
+# Conda rejects spaces on creation, but its shell activation can resolve a project-local alias.
+activation_path="$CONDA_ENVS_PATH/arm and dog"
+if [[ ! -e "$activation_path" && ! -L "$activation_path" ]]; then
+    ln -s arm-and-dog "$activation_path"
+fi
 py="$prefix/bin/python"
 "$py" -c 'import sys; assert sys.version_info[:2] == (3,13), sys.version'
 "$py" -m pip install --disable-pip-version-check 'uv==0.13.9'

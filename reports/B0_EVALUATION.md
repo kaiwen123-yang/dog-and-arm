@@ -131,3 +131,21 @@ OMP_NUM_THREADS=3 TORCH_COMPILE_DISABLE=1 bash scripts/b0/env.sh python -u scrip
 对 replay/home 变体在同一 0.8 s 原生 3.3.0 窗口重复分组实验。u50 首条腿动作最大偏转 4.84°，全部 11 组都能维持到 0.8 s。u200 首条腿动作最大偏转达 9.74°，完整策略和仅腿组均在 0.100 s 失载，固定腿 home 后其余通道由策略输出可维持至 0.8 s。u200 仅臂组也完成了窗口，但终端 TCP 偏差达 106 mm。优化后该点的一步 TCP 局部灵敏度改善，与实际首条腿动作是否保有轮载是不同的观测。[u50 逐组](../results/b0/free_boundary_u50_init_blocks/action_blocks/results.csv)与 [u200 逐组](../results/b0/free_boundary_u200_init_blocks/action_blocks/results.csv)
 
 以上 u1000 的物理评测和 Jacobian 均为旧隔离环境已结束的实验。u1000 的局部模型方向改善，三个实际跟踪组均未越过自由运动门槛。[逐案物理结果](../results/b0/free_s0_boundary_u1000_warp/physical/cases.csv)和 [局部梯度](../results/b0/free_s0_boundary_r1/eval_001000/action_tcp_jacobian.json)
+
+## 冻结参考与 60 个扰动初态的物理可行性
+
+在原生 MuJoCo 3.3.0 CPU 上，每类参考只用其名义教师已记录的 350 条 23 维命令，依次从同一份 F01–F20 初态表运行。对同一参考的 20 次试验，各帧目标完全相同。固定伺服按现场仿真状态每 2 ms 计算补偿。相机、额外对象真值和 case 身份均未参与选择动作。全程使用与 Actor 相同的 NativePlant、原始世界系参考和完整物理评分。60 个回合均运行到 7.000 s，共 210,000 个真实物理子步。[逐案教师对照](../results/b0/free_reference_feasibility_native33_r1/cases.csv)
+
+| 教师命令对应参考 | 物理及误差判据均通过 | 最大根位置 RMSE | 最大根姿态 RMSE | 最大 TCP RMSE |
+| --- | ---: | ---: | ---: | ---: |
+| 支撑伸收臂 | 20/20 | 13.28 mm | 1.747° | 17.26 mm |
+| 移动变臂姿 | 20/20 | 14.19 mm | 1.747° | 20.58 mm |
+| 减速停车收臂 | 20/20 | 14.02 mm | 1.747° | 19.90 mm |
+
+三类的根位置、姿态、TCP 门槛分别为 50 mm、5°、30 mm。三类全部有限关节的最大归一化 RMSE 低于 2.1e−14，门槛为 0.05。所有试验均无子步物理失败。三类最差 TCP 均出现在 F10，本轮最小 TCP 门槛余量为 9.42 mm。[完整指标范围](../results/b0/free_reference_feasibility_native33_r1/summary.json)
+
+**对固定参考和观测的结论。** 这 20 个初态每类 ≥18/20 的目标有直接可行解。同一参考下重放一条命令序列即可达到 20/20。进一步按固定 O1 的 Actor 可见参考字段，取未来偏移 0、5、…、45 帧的 24 维目标关节位置和 24 维速度，以 float32 拼接。1050 个实际动作对应 1043 个不同参考窗口；7 对完全相同的窗口均要求相同动作。按此参考字段查回名义命令，最大误差为 0，不需要从观测辨认初态 XY 扰动。该查表只核查这三条已知参考上的精确可辨性，学习网络能否提取并泛化这一映射仍依赖独立训练和物理评测；此处 20/20 均属于教师命令对照。[参考字段核查](../results/b0/free_reference_feasibility_native33_r1/reference_keys.json)
+
+```bash
+CUDA_VISIBLE_DEVICES='' bash scripts/project_env.sh python scripts/b0/check_free_reference_feasibility.py results/raw_large/b0/native_teacher_20261121_r1 results/b0/free_reference_feasibility_native33_r1
+```

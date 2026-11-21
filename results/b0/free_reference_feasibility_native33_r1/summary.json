@@ -1,0 +1,107 @@
+{
+  "test": "open-loop replay of one nominal 23-channel teacher command sequence per reference",
+  "backend": "native MuJoCo 3.3.0 CPU",
+  "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+  "protocol": "b0_free_dev_v1",
+  "split": "development/regression",
+  "per_type_target": 18,
+  "pass_thresholds": {
+    "root_position_rmse_m": 0.05,
+    "root_orientation_rmse_deg": 5,
+    "tcp_position_rmse_m": 0.03,
+    "max_joint_range_normalized_rmse": 0.05
+  },
+  "physics_dt_s": 0.002,
+  "policy_dt_s": 0.02,
+  "initial_conditions": "fixed F01-F20, original world reference unchanged",
+  "inputs": "Reference type and frame index only. All 20 initial conditions receive identical commands for a given type. Fixed servo/bias uses live state at 500 Hz.",
+  "learning_policy_used": false,
+  "teacher_replanned": false,
+  "real_simulated_substeps": 210000,
+  "by_reference": {
+    "support": {
+      "teacher_command_passes": 20,
+      "attempted": 20,
+      "full_length": 20,
+      "failures": {},
+      "observed_metric_ranges": {
+        "root_position_rmse_m": {
+          "min": 0.00019218501638014135,
+          "max": 0.013282317723416044,
+          "worst_case": "F07"
+        },
+        "root_orientation_rmse_deg": {
+          "min": 0.4771599999974215,
+          "max": 1.746959999999292,
+          "worst_case": "F02"
+        },
+        "tcp_position_rmse_m": {
+          "min": 0.003697894138157433,
+          "max": 0.017257423517587554,
+          "worst_case": "F10"
+        },
+        "max_joint_range_normalized_rmse": {
+          "min": 7.800611007461002e-16,
+          "max": 1.8804935034721928e-14,
+          "worst_case": "F08"
+        }
+      }
+    },
+    "moving_arm": {
+      "teacher_command_passes": 20,
+      "attempted": 20,
+      "full_length": 20,
+      "failures": {},
+      "observed_metric_ranges": {
+        "root_position_rmse_m": {
+          "min": 0.0018726350376981212,
+          "max": 0.014189557136613554,
+          "worst_case": "F07"
+        },
+        "root_orientation_rmse_deg": {
+          "min": 0.4771599999975695,
+          "max": 1.7469599999993586,
+          "worst_case": "F02"
+        },
+        "tcp_position_rmse_m": {
+          "min": 0.0033594036779483385,
+          "max": 0.020584128954907046,
+          "worst_case": "F10"
+        },
+        "max_joint_range_normalized_rmse": {
+          "min": 2.299054897517908e-15,
+          "max": 2.093512023787729e-14,
+          "worst_case": "F08"
+        }
+      }
+    },
+    "park": {
+      "teacher_command_passes": 20,
+      "attempted": 20,
+      "full_length": 20,
+      "failures": {},
+      "observed_metric_ranges": {
+        "root_position_rmse_m": {
+          "min": 0.0011834028524561888,
+          "max": 0.014019076185506187,
+          "worst_case": "F07"
+        },
+        "root_orientation_rmse_deg": {
+          "min": 0.47715999999748243,
+          "max": 1.7469599999993062,
+          "worst_case": "F02"
+        },
+        "tcp_position_rmse_m": {
+          "min": 0.0033289177872917928,
+          "max": 0.019897993934047755,
+          "worst_case": "F10"
+        },
+        "max_joint_range_normalized_rmse": {
+          "min": 5.425087451364207e-16,
+          "max": 1.1875410893980878e-14,
+          "worst_case": "F18"
+        }
+      }
+    }
+  }
+}

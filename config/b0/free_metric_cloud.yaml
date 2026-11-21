@@ -1,0 +1,36 @@
+# AutoDL B0-03, seed 0. A distinct run from the local eight-world study.
+reference_root: results/raw_large/b0/native_teacher_20261121_r1
+worlds: 128
+wm_batch: 256
+wm_batches: 10
+actor_batch: 256
+wm_hidden: [2048, 2048, 2048]
+actor_hidden: [2048, 1024, 512, 256]
+critic_hidden: [256, 128]
+buffer_size: 1000
+replay_ratio: 16
+physics_dt: 0.002
+policy_dt: 0.020
+history_length: 10
+free_motion_clip_frames: 351
+actor_horizon: 32
+wm_window: 8
+collection_noise: 0.1
+milestones: [0, 1000, 5000, 10000]
+periodic_updates: 10000
+diagnostic_block: 50000
+
+# Keep study B's data/boundary treatment. The O1 G1 source scales positions by
+# 0.25 * force limit / position gain and uses home offsets. Generalize the
+# same rule to wheel (velocity gain) and full jaw width (2x linear change).
+window_recipe: terminal_one_step_and_seven_step
+one_step_batches: 2
+network_output_units: quarter_effort_over_servo_gain
+additional_physical_checks: [50, 200]
+# Absolute task tolerances; height bandwidth exceeds the held-out WM's 2.16 mm P95 error.
+free_tracking_reward:
+  root_m: 0.05
+  tcp_m: 0.03
+  wheel_z_m: 0.005
+  wheel_ang_rad_s: 0.25
+hypothesis: A state-only addition to the O1 reward makes reference TCP, root, wheel height and wheel speed observable at platform tracking tolerances without any additional action labels.

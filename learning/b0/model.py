@@ -8,6 +8,7 @@ from mjlab.utils.lab_api.math import quat_apply, quat_apply_inverse, quat_mul
 from supermimic.learners.wm_learner import WorldModelLearnerCfg
 from supermimic.representations import GenCoordRepresentation
 from supermimic.models import MultiEncoderAE
+from supermimic.utils.tracking_reward import tracking_reward
 
 from .physics import FINGERS, LIMBS, WHEELS
 
@@ -97,6 +98,37 @@ class RobotRepresentation(GenCoordRepresentation):
             blocks['finger_' + quantity] = blocks[name][..., -2:]
             blocks[name] = blocks[name][..., :-2]
         return blocks
+
+
+class FreeTrackingRepresentation(RobotRepresentation):
+    """O1 reward with four measured tracking quantities for the wheeled arm."""
+
+    def __init__(self, model, scales, device):
+        super().__init__(model, device)
+        self.wheels = [self.fk.names.index(f'm1_{limb}_FOOT_LINK') for limb in LIMBS]
+        self.tcp = self.fk.names.index('site:p4_grasp')
+        self.scales = scales
+
+    def compute_wm_reward_from_reference(self, next_rep_state, next_aux_state, next_joint_state,
+                                         action, last_action, target_pos, target_quat,
+                                         target_lin_vel, target_ang_vel):
+        pos, rot, lin, ang = self.world_frame_bodies(next_aux_state, next_rep_state)
+        original = tracking_reward(next_aux_state, pos, rot, lin, ang, next_joint_state,
+                                   action, last_action, target_pos, target_quat, target_lin_vel,
+                                   target_ang_vel, self._soft_joint_pos_limits, self.dt)
+        # Use only current simulated/predicted bodies and the reference motion.
+        # The positive kernels preserve the O1 survival objective's reward ceiling.
+        def score(squared_error, scale):
+            return 1. / (1. + squared_error / scale**2)
+
+        root = (pos[..., 0, :] - target_pos[..., 0, :]).square().sum(-1)
+        tcp = (pos[..., self.tcp, :] - target_pos[..., self.tcp, :]).square().sum(-1)
+        dz = pos[..., self.wheels, 2] - target_pos[..., self.wheels, 2]
+        spin = ang[..., self.wheels, :] - target_ang_vel[..., self.wheels, :]
+        extra = (score(root, self.scales['root_m']) + 2 * score(tcp, self.scales['tcp_m'])
+                 + score(dz.square(), self.scales['wheel_z_m']).mean(-1)
+                 + score(spin.square().sum(-1), self.scales['wheel_ang_rad_s']).mean(-1))
+        return original + self.dt * extra
 
 
 class RobotActor(MultiEncoderAE):
