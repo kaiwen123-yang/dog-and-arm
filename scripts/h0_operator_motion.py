@@ -182,6 +182,82 @@ def log_calibration_submissions(comm, writer, device):
     comm.send = checked_send
 
 
+def select_can_while_disabled(device, args):
+    """Select the position-command channel with all drives off; issue no targets."""
+    args.directory.mkdir(parents=True, exist_ok=False)
+    report = {"operation": "select_can_while_disabled", "execute": args.execute,
+              "request_count": 0, "confirmed": False}
+
+    def observe(after=0.):
+        row, status = device.state(enabled=False)
+        arm = device.robot.get_arm_status()
+        if arm is None or arm.timestamp <= after:
+            raise RuntimeError("No fresh controller status after mode request")
+        if (int(status["ctrl_mode"]) not in (0, 1) or int(status["arm_status"]) != 0
+                or int(status["motion_status"]) != 0 or any(status["err_status"].values())):
+            raise RuntimeError(f"Controller not in a healthy stationary state: {status}")
+        for joint in range(1, 7):
+            drv = device.robot.get_driver_states(joint)
+            if drv is None or drv.timestamp <= after or not 0 <= time.time()-drv.timestamp < .2:
+                raise RuntimeError(f"J{joint}: missing fresh driver status")
+            if any(drv.msg.foc_status.to_dict().values()):
+                raise RuntimeError(f"J{joint}: drive is powered or has a fault")
+        return {"ctrl_mode": int(status["ctrl_mode"]), "mode_feedback": int(status["mode_feedback"]),
+                "q_deg": list(map(math.degrees, device.angles(row))), "enabled": [False]*6}
+
+    try:
+        device.connect()
+        start = observe()
+        report["before"] = start
+        if start["ctrl_mode"] == 1:
+            if start["mode_feedback"] != 1:
+                raise RuntimeError("Another CAN motion mode is selected")
+            report.update(after=start, confirmed=True)
+            return
+        if not args.execute:
+            return
+        if args.recording_directory is None:
+            raise RuntimeError("An independent H0 receiver is required")
+        live = args.recording_directory/"arm_live.json"
+        if not live.is_file() or not 0 <= time.time()-live.stat().st_mtime < 4:
+            raise RuntimeError("Independent receiver is stale")
+        time.sleep(.3)
+        before_tx = observe()
+        if before_tx["ctrl_mode"] != 0 or max(abs(a-b) for a,b in zip(
+                before_tx["q_deg"], start["q_deg"])) > .1:
+            raise RuntimeError("Measured arm or control mode changed during preview")
+        with (args.directory/"mode_sdk_tx.csv").open("x", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["submit_start_ns", "submit_end_ns", "phase", "id", "data", "result", "error"])
+            device.phase = "select_unpowered_can"
+            comm = device.robot.get_context().get_comm()
+            log_calibration_submissions(comm, writer, device)
+            # The same typed mode frame used by handoff_near_zero. All six
+            # drives stay off. This operation has no target or enable path.
+            msg = device.robot._MSG_ModeCtrl(ctrl_mode=1, move_mode=1, move_spd_rate_ctrl=10)
+            sent = time.time()
+            report["request_count"] = 1
+            device.robot._send_msg(msg)
+            deadline = time.monotonic()+2.
+            while time.monotonic() < deadline:
+                time.sleep(.1)
+                current = observe(after=sent)
+                report["after"] = current
+                if max(abs(a-b) for a,b in zip(current["q_deg"], start["q_deg"])) > .2:
+                    raise RuntimeError("Unexpected joint displacement after mode request")
+                if current["ctrl_mode"] == 1 and current["mode_feedback"] == 1:
+                    report["confirmed"] = True
+                    return
+            raise RuntimeError("Position-command mode was not acknowledged; no repeat sent")
+    except BaseException as exc:
+        report["error"] = repr(exc)
+        raise
+    finally:
+        device.disconnect()
+        (args.directory/"mode_summary.json").write_text(json.dumps(report, indent=2)+"\n")
+        print(json.dumps(report), flush=True)
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("directory", type=Path)
@@ -194,6 +270,8 @@ def main():
                       help="Single absolute joint target; already enabled, stationary CAN control required")
     mode.add_argument("--handoff-near-zero", action="store_true",
                       help="Explicit stopped-teaching handoff and one physical six-axis return near zero")
+    mode.add_argument("--select-can-disabled", action="store_true",
+                      help="Select CAN position mode once while all six drives are off")
     p.add_argument("--execute", action="store_true")
     a = p.parse_args()
     # Only this explicit operator entry sends motion. Independent recorders never import it.
@@ -202,6 +280,9 @@ def main():
     sys.path.insert(0, str(a.arm_project.resolve()))
     from piper_oscbf.device import PiperDevice
     device = PiperDevice()
+    if a.select_can_disabled:
+        select_can_while_disabled(device, a)
+        return
     # PiperDevice turns this off for its CPV loop. For MOVE_J restore the same
     # mode-before-target sequence as the verified home_zero_simple.py entry.
     device.robot.set_auto_set_motion_mode_enabled(True)
