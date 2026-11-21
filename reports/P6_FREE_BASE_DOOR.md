@@ -210,3 +210,5 @@ bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --vid
 **2026-11-21 · push_A**　背推 C02–C06 完整任务通过 5/5。本组 J5 最小余量 20.396°。 按每个 2 ms 物理步复核六轴最小余量与对应时刻，并核对完整案例的两个 3 s 停车窗口。分格录像完整解码 467 帧。实际命令为 `bash scripts/project_env.sh python scripts/p6_cases.py 2 3 4 5 6 --stage push --output results/p6/rail_bridge_front60_v2_20261120T133724Z/push_A`。[本组轨迹与录像](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push_A/)
 
 **2026-11-21 · push_B**　背推 C07–C11 完整任务通过 5/5。本组 J5 最小余量 20.990°。 按每个 2 ms 物理步复核六轴最小余量与对应时刻，并核对完整案例的两个 3 s 停车窗口。分格录像完整解码 444 帧。实际命令为 `bash scripts/project_env.sh python scripts/p6_cases.py 7 8 9 10 11 --stage push --output results/p6/rail_bridge_front60_v2_20261120T133724Z/push_B`。[本组轨迹与录像](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push_B/)
+
+**2026-11-21 · push_C**　背推 C12–C16 完整任务通过 5/5。本组 J5 最小余量 21.303°。 按每个 2 ms 物理步复核六轴最小余量与对应时刻，并核对完整案例的两个 3 s 停车窗口。分格录像完整解码 436 帧。实际命令为 `bash scripts/project_env.sh python scripts/p6_cases.py 12 13 14 15 16 --stage push --output results/p6/rail_bridge_front60_v2_20261120T133724Z/push_C`。[本组轨迹与录像](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push_C/)
