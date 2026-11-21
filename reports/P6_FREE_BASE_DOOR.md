@@ -226,3 +226,47 @@ bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --vid
 **2026-11-21 · push95_C**　背推 C11–C16 完整任务通过 6/6。本组 J5 最小余量 20.367°。 按每个 2 ms 物理步复核六轴最小余量与对应时刻，并核对完整案例的两个 3 s 停车窗口。分格录像完整解码 435 帧。实际命令为 `bash scripts/project_env.sh python scripts/p6_cases.py 11 12 13 14 15 16 --stage push --output results/p6/rail_bridge_front60_v2_20261120T133724Z/push95_C`。[本组轨迹与录像](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push95_C/)
 
 **2026-11-21 · push95_D**　背推 C17、C19 完整任务通过 2/2。本组 J5 最小余量 20.042°。 按每个 2 ms 物理步复核六轴最小余量与对应时刻，并核对完整案例的两个 3 s 停车窗口。分格录像完整解码 437 帧。实际命令为 `bash scripts/project_env.sh python scripts/p6_cases.py 17 19 --stage push --output results/p6/rail_bridge_front60_v2_20261120T133724Z/push95_D`。[本组轨迹与录像](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push95_D/)
+
+## 2026-11-21　前移安装的最终双侧清单
+
+冻结控制 `86ade86`、`rail_bridge_front60_v2` 安装的同版固定清单已在 Linux 桌面全部执行。前拉 20/20、背推 20/20 通过。前侧世界站位 [0.600, 0.300] m、45°、角度领先上限 0.40°；背侧 [1.935, 0.000] m、95°、预抓取距离 105 mm、腕部入杆/退离偏航 125°/137.5°、领先上限 0.30°。先补齐原 90° 背侧航向的 25 例，得到前拉 20/20、背推 19/20；随后仅将背侧名义航向增大 5°，重新实际运行背推 C01–C20。起点按操作位沿车尾方向取 0.30 m，航向调整也把 C20 的初始 XY 从 [1.8850, −0.3000] m 改为 [1.9111, −0.2989] m；两版均叠加原定义的世界坐标扰动。前拉 20 份记录的有效配置与最终版本逐项一致，沿用其原始动力学数据。每侧分别比对实际生效的完整控制配置与预定世界坐标扰动。机器人自由根、无执行器的单扇门与初始 0.30 m 驶近均贯穿各案例。
+
+| 指标 | 前拉，目标 60° | 背推，目标 25° |
+| --- | ---: | ---: |
+| 完整通过 / 预定条件 | 20 / 20 | 20 / 20 |
+| 终态门角（°） | 59.963–60.224 | 25.043–25.089 |
+| 开门段用时（s） | 31.394–35.382 | 11.766–14.586 |
+| 全任务用时（s） | 71.480–75.758 | 51.436–57.646 |
+| 开门段双指同时接触的最低占比 | 100.000% | 100.000% |
+| 开门段指 1 / 指 2 最小法向力（N，25 Hz） | 2.467 / 1.748 | 2.522 / 2.420 |
+| J1–J6 各轴全组最小余量（°，500 Hz） | 2.822 / 30.634 / 32.545 / 45.773 / 1.473 / 97.627 | 44.644 / 40.496 / 35.480 / 15.225 / 20.042 / 57.455 |
+| 最小 J5 余量（°） | 1.473（C20） | 20.042（C05、C19 并列） |
+| 退臂 / 收臂 / 倒车最近机门距离（mm，25 Hz） | 9.394（C14） / 16.431（C14） / 66.046（C07） | 15.155（C06） / 15.046（C06） / 16.252（C06） |
+| 退臂后保持、倒车后停车各满 3 s | 20/20 | 20/20 |
+| 上述两窗口各自的最大水平速度（mm/s，25 Hz） | 1.742 / 4.947 | 1.691 / 4.820 |
+| 上述两窗口各自的最大偏航速率绝对值（°/s，25 Hz） | 0.277 / 0.364 | 0.248 / 0.430 |
+| 最大抓持偏移 / 操作位漂移（mm） | 3.202 / 2.414 | 2.724 / 2.525 |
+| 开门时四轮中最低法向载荷（N） | 75.14 | 69.91 |
+| 抓取至松爪期间最大轮地切向滑速（m/s） | 0.0131 | 0.0131 |
+| 门对机器人峰值合力（N）/ 最大倾角（°） | 3.499 / 0.249 | 1.789 / 0.292 |
+| 最长连续执行器饱和（s） | 0.000 | 0.000 |
+
+总计 1,290,099 个 2 ms 物理步，六轴有符号余量越界步数 0。各案的极小值和发生时刻均与原始 500 Hz 记录一致。出现非预期接触的案例数为 0，有原生求解器警告的案例数为 0。按原验收条件，终态门角允许偏离目标 ±2°，两次停车窗口分别要求连续 3 s、水平速度 <5 mm/s、偏航速率绝对值 <0.5°/s。用 25 Hz 详细时序另外复核了窗口内速度、门角及机门接触力。退臂、收臂、倒车的净空取所有实际参与碰撞的机器人和门几何对的 25 Hz 最小值。净空数值受 25 Hz 采样限制，接触门槛在每个 500 Hz 物理步评估。
+
+背侧驶近和到站停稳的 25 Hz 已积分位姿中，整机碰撞面到两门柱及顶梁的最近距离为 **16.881 mm**，发生于 C06、7.800 s，几何对为 `m1_FBL_FOOT_LINK[geom45]` 与 `door_single_right_post`。该工况起点有 155.070 mm 净空。C20 在 90° 版本于 1.642 s 停于左后轮碰柱，接触力峰值 18.495 N；在 95° 版本驶近时全机器人到门框的最小采样距离（同一对几何）为 43.653 mm，并完成开门和两段停车。距离复核使用日志中的世界根位姿、各关节角、两指实际开口和被动门角。只在独立数据副本更新运动学，开门与停车成绩均取自原始连续动力学。
+
+[40 条逐案清单](../results/p6/rail_bridge_front60_v2_20261120T133724Z/conditions.csv) · [逐步限位与停车复核](../results/p6/rail_bridge_front60_v2_20261120T133724Z/parking_audit.csv) · [20 条背侧驶近净空](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_approach_frame.csv) · [逐案时间、关节与净空图](../results/p6/rail_bridge_front60_v2_20261120T133724Z/condition_metrics.png)
+
+前拉最紧的几项来自不同条件。C20 在 51.070 s 松爪时 J5 距下限 1.473°；C14 退臂时夹爪基座与门板最近 9.394 mm。C13 的开门时间最长，为 35.382 s，距 55 s 时限 19.618 s。C09 的终点停车窗口内最大采样水平速度为 4.947 mm/s，接近 5 mm/s 门槛。背推六轴中实际最紧的是 C06 的 J4，余量 15.225°。
+
+可复算清单，以下命令在项目根目录执行。
+
+```bash
+runs=results/p6/rail_bridge_front60_v2_20261120T133724Z
+bash scripts/project_env.sh python scripts/p6_condition_report.py --output "$runs/conditions.csv" "$runs/lead_mobile_C01" "$runs/lead_mobile_C13" "$runs"/{mobile_A,mobile_B,mobile_C_resumed,push95_A,push95_B,push95_C,push95_D}/C*
+raw=results/raw_large/p6/rail_bridge_front60_v2_20261120T133724Z
+bash scripts/project_env.sh python scripts/p6_physics_audit.py "$runs/conditions.csv" "$raw" --output "$runs/parking_audit.csv"
+bash scripts/project_env.sh python scripts/p6_approach_clearance.py "$raw"/push95_{A,B,C,D}/C* --output "$runs/back_approach_frame.csv"
+```
+
+上文保留早期前拉碰板、C13 超时、背推展开碰上支杆的失败尝试、90° 背侧 C20 左后轮碰门柱及 11 月 20 日主动中断的 mobile_C。各旧安装座成果沿用原目录和统计。[原 90° 背侧航向的全清单](../results/p6/rail_bridge_front60_v2_20261120T133724Z/conditions_90deg.csv) · [90° 背侧驶近距离](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_approach_frame_90deg.csv)。[冻结版前拉名义视频](../results/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C01/motion.mp4) · [95° 背推含 C01、C20 的分格视频](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push95_A/live_grid.mp4) · [前拉 C13 视频](../results/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C13/motion.mp4)

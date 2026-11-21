@@ -1,8 +1,8 @@
 # M1 与 Piper H：双导轨跨接转接板
 
-更新：2026-11-20（Asia/Shanghai）。用户决定后续仿真按下图的连接形式进行；随后指定Piper H官方手册核对孔位。
+更新：2026-11-21（Asia/Shanghai）。用户决定后续仿真按下图的连接形式进行；随后指定Piper H官方手册核对孔位。
 
-**当前组合 URDF 和 MJCF 已更新为向狗头前移 60 mm 的 rail_bridge_front60_v2，详见第 5 节；本机可见装配检查见第 6 节，单门推拉复测现按用户要求暂停。** 前一版本 rail_bridge_v1 已在本机 Linux 桌面用同一近景展示旧方块座与新板，再查看整臂和碰撞外形。[旧座](../results/assembly/rail_bridge_v1/old_block.png) · [新座](../results/assembly/rail_bridge_v1/bridge_exterior.png) · [碰撞](../results/assembly/rail_bridge_v1/bridge_collision.png) · [整机](../results/assembly/rail_bridge_v1/bridge_overview.png)
+**当前组合 URDF 和 MJCF 已更新为向狗头前移 60 mm 的 rail_bridge_front60_v2，详见第 5 节；本机可见装配检查见第 6 节，单门推拉固定清单结果见第 7 节。** 前一版本 rail_bridge_v1 已在本机 Linux 桌面用同一近景展示旧方块座与新板，再查看整臂和碰撞外形。[旧座](../results/assembly/rail_bridge_v1/old_block.png) · [新座](../results/assembly/rail_bridge_v1/bridge_exterior.png) · [碰撞](../results/assembly/rail_bridge_v1/bridge_collision.png) · [整机](../results/assembly/rail_bridge_v1/bridge_overview.png)
 
 ## 1. 用户选定的结构
 
@@ -82,8 +82,12 @@ bash scripts/project_env.sh python scripts/check_assembly.py --report results/as
 
 生成器及前拉/背推派生场景均编译成功；保持唯一自由根、23 个控制输入与单个夹爪耦合。三组 FK 最大位置差 2.457×10⁻¹⁶ m、最大旋转矩阵差 9.806×10⁻¹⁶。机身最高凸包面至板底的净空下界为 4.410643 mm；两侧导轨支承面高度仍匹配既有名义值。相同 home 姿态下，整机质心向 +X 移动 6.500053 mm，整机总质量 43.537064 kg 不变。这意味着前移会改变承重分配，旧版开门结果不能直接沿用。[模型记录](../results/assembly/rail_bridge_front60_v2/model_check.json) · [源网格计算](../results/assembly/rail_bridge_front60_v2/source_mesh_clearance.json) · [FK](../results/assembly/rail_bridge_front60_v2/kinematics.json)
 
-本轮只完成代码/模型与离线静态检查，未执行 mj_step、用户桌面展示或新位置下的推拉门。接续 [MOUNT_FORWARD_PUSH_PULL.txt](../prompts/MOUNT_FORWARD_PUSH_PULL.txt)，先在 Linux 桌面确认前移，再前拉 60°/背推 25°及两侧各 C01–C20。所有新运行从实际模型读取 `mount_revision`，不要覆盖旧结果。
+云端准备阶段只完成代码、模型与离线静态检查。后续本机复测依据 [MOUNT_FORWARD_PUSH_PULL.txt](../prompts/MOUNT_FORWARD_PUSH_PULL.txt)，先在 Linux 桌面确认前移，再前拉 60°/背推 25°及两侧各 C01–C20。所有新运行从实际模型读取 `mount_revision`，不要覆盖旧结果。
 
 ## 6. 本机 Linux 桌面前移检查
 同日从 main 快进至 5cb8403，重建当前组合件后，在已打开的 MuJoCo 3.3.0 窗口再次重建并观察 XML 重载。近景可见底座紧固于跨轨板，碰撞视图显示简化板及支座，整机侧视显示 home 收臂姿态。碰撞距离按机身凸包、前腿代理和机械臂活动件（含腕附件）计算，距机身 92.420 mm，距前腿 260.216 mm，home 接触数为零。三个 FK 姿态最大位移差 2.457e−16 m、最大旋转矩阵差 9.806e−16。仅为真实桌面的运动学检查。
 [板近景](../results/assembly/rail_bridge_front60_v2/local_desktop/mount.png) · [近景碰撞](../results/assembly/rail_bridge_front60_v2/local_desktop/mount_collision.png) · [收臂侧视](../results/assembly/rail_bridge_front60_v2/local_desktop/stow_side.png) · [收臂碰撞](../results/assembly/rail_bridge_front60_v2/local_desktop/stow_collision.png) · [事件、距离和 FK 数据](../results/assembly/rail_bridge_front60_v2/local_desktop/)
+
+## 7. 前移安装的单门物理复测
+
+冻结控制 `86ade86`、`rail_bridge_front60_v2` 安装的同版固定清单已在 Linux 桌面全部执行。前拉 20/20、背推 20/20 通过。背侧驶近和到站停稳的 25 Hz 已积分位姿中，整机碰撞面到两门柱及顶梁的最近距离为 **16.881 mm**，发生于 C06、7.800 s，几何对为 `m1_FBL_FOOT_LINK[geom45]` 与 `door_single_right_post`。该工况起点有 155.070 mm 净空。 六轴余量、开门时间、双指接触、释放退离和停车证据见 [逐案清单](../results/p6/rail_bridge_front60_v2_20261120T133724Z/conditions.csv) 及 [P6 报告](../reports/P6_FREE_BASE_DOOR.md)。
