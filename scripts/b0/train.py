@@ -60,7 +60,7 @@ def main():
         run.updates, run.collected = previous['updates'], previous['collected']
         del previous
     spec = dict(cfg=cfg, run=args.run, initial_actor_update=run.updates, target_actor_update=args.updates,
-                hypothesis='O1 initialized from scratch can improve free-base reference tracking via supervised GenCoord and H32 BPTT.',
+                hypothesis=cfg.get('hypothesis', 'O1 initialized from scratch can improve free-base reference tracking via supervised GenCoord and H32 BPTT.'),
                 seed=args.seed, gpu=torch.cuda.get_device_name(), torch=torch.__version__,
                 compile_disable=os.environ['TORCH_COMPILE_DISABLE'],
                 revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
@@ -87,20 +87,28 @@ def main():
     run.start_plant()
     checkpoint()
     checkpoint_eval(run, out/f'eval_{run.updates:06d}', full=not args.integration)
-    vector_steps = cfg['wm_batches'] * cfg['wm_batch'] * run.wmc.horizon / (cfg['worlds'] * cfg['replay_ratio'])
+    short_count = cfg.get('one_step_batches', 0)
+    state_count = (cfg['wm_batches'] - short_count) * run.wmc.horizon + 2 * short_count
+    vector_steps = state_count * cfg['wm_batch'] / (cfg['worlds'] * cfg['replay_ratio'])
     if not vector_steps.is_integer():
         raise ValueError('this batch configuration requires a non-integral interaction interval')
     log_path = out/'updates.jsonl'
     while run.updates < args.updates:
         evidence = run.updates in (0,1) or run.updates in cfg['milestones']
         stats = run.collect(int(vector_steps), save=evidence)
-        stats.update(run.update(), actor_update=run.updates)
+        try:
+            stats.update(run.update(), actor_update=run.updates)
+        except (RuntimeError, ValueError, FloatingPointError) as exc:
+            save_json(out/'failure.json', dict(completed_or_attempted_update=run.updates,
+                      policy_transitions=run.collected, error=str(exc),
+                      interruption_checkpoint=str(checkpoint())))
+            raise
         with log_path.open('a') as f:
             f.write(json.dumps(stats,allow_nan=False)+'\n')
         if run.updates <= 5 or run.updates % 25 == 0:
             print(json.dumps(stats), flush=True)
         if (run.updates in cfg['milestones'] or run.updates % cfg['periodic_updates'] == 0
-                or run.updates == args.updates):
+                or run.updates in cfg.get('additional_physical_checks', []) or run.updates == args.updates):
             checkpoint()
             checkpoint_eval(run,out/f'eval_{run.updates:06d}',full=not args.integration)
     save_json(out/'outcome.json',dict(actor_updates=run.updates, wm_minibatch_updates=run.updates*run.wmc.num_batches,

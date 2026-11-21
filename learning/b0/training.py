@@ -53,6 +53,18 @@ class MotionCommand:
         return self
 
 
+class RecordedHistoryEnv(MultiTaskWorldModelEnv):
+    """Restore the actual clean sensor prefix, including the reference prefix used at RSI."""
+    def sample_initial_states(self):
+        b = self.replay_buffer.sample(1, self.num_envs).squeeze(1)
+        b['sensor_window'] = b['sensor_frames'].unflatten(-1, (10, 77))
+        clip = torch.searchsorted(self.motion.motion_ends, b['motion_time'], right=True)
+        starts = torch.nn.functional.pad(self.motion.motion_ends[:-1], (1, 0))
+        offsets = torch.arange(-9, 1, device=self.device)
+        b['pad_mask'] = b['motion_time'][:, None] + offsets < starts[clip, None]
+        return b
+
+
 class FreeRun:
     def __init__(self, cfg, run_id, seed=0, device='cuda:0'):
         self.cfg, self.seed, self.device = cfg, seed, device
@@ -81,13 +93,30 @@ class FreeRun:
         self.critic = build_mlp(self.rep.rep_state_dim + goal_width + 1,
                                 tuple(cfg['critic_hidden']), 1).to(device)
         self.n = cfg['worlds']
+        self.mixed = cfg.get('window_recipe') == 'terminal_one_step_and_seven_step'
+        if cfg.get('initial_output') == 'home_small_residual':
+            # The last layer remains trainable. Home comes only from the model keyframe.
+            home = self.model.key('home').qpos[self.map.q].copy()
+            home[12:16] = 0.
+            home[-1] *= 2
+            with torch.no_grad():
+                self.actor.decoder[-1].weight.mul_(.02)
+                self.actor.decoder[-1].bias.copy_(tensor((home-self.map.offset)/self.map.scale, device))
+
         self.wmc = B0WorldModelCfg(batch_size=cfg['wm_batch'], num_batches=cfg['wm_batches'])
         self.pc = ActorCriticPolicyLearnerCfg(batch_size=cfg['actor_batch'], horizon=32)
         self.wml = WorldModelLearner(self.dyn, self.rep, self.wmc, device)
+        if self.mixed:
+            self.short_wml = WorldModelLearner(self.dyn, self.rep, B0WorldModelCfg(
+                batch_size=cfg['wm_batch'], num_batches=cfg['one_step_batches'], horizon=2), device)
+            self.short_wml.optimizers = self.wml.optimizers
         widths = dict(state=61, next_state=61, action=23, prev_action=23, actor_obs=77, sim_ctx=1)
         schema = {k: FieldSpec(v) for k, v in widths.items()}
         schema.update({k: FieldSpec(dtype=torch.bool) for k in ('terminated', 'truncated', 'teacher')})
         schema['motion_time'] = FieldSpec(dtype=torch.long)
+        if self.mixed:
+            schema['sensor_frames'] = FieldSpec(10 * 77)
+            self.teacher_replay = ReplayBuffer(schema, cfg['buffer_size'], self.n, device)
         self.replay = ReplayBuffer(schema, cfg['buffer_size'], self.n, device)
         terms = {k: SimpleNamespace(params={'threshold': val}) for k, val in
                  [('anchor_pos', .10), ('anchor_ori', .12)]}
@@ -95,7 +124,8 @@ class FreeRun:
                               command_manager=MotionCommand(self.motion)),
                               cfg=SimpleNamespace(rewards={'tracking': SimpleNamespace(weight=5.)},
                                                   terminations=terms))
-        self.wenv = MultiTaskWorldModelEnv(self.dyn, self.rep, env, self.pc.batch_size, self.replay,
+        wm_env_class = RecordedHistoryEnv if self.mixed else MultiTaskWorldModelEnv
+        self.wenv = wm_env_class(self.dyn, self.rep, env, self.pc.batch_size, self.replay,
                                            [motion_task], 10, .05, device)
         self.policy = ActorCriticPolicyLearner(self.actor, self.critic, self.wenv, self.pc, device)
         self.sampler = ReturnSampler(ReturnSamplerCfg(), 21, self.motion.time_step_total, self.n,
@@ -134,7 +164,11 @@ class FreeRun:
             term = torch.zeros_like(clock, dtype=torch.bool)
             td = self.transition(self.ref_states[clock], self.ref_states[clock+1], self.motion.prev[clock],
                                  A[lanes, i], clock, term, term | (i == length-1), True)
-            self.replay.insert(td)
+            if self.mixed:
+                td['sensor_frames'] = self.reference_history(clock, noisy=False).flatten(1)
+                self.teacher_replay.insert(td)
+            else:
+                self.replay.insert(td)
         idx = torch.cat([torch.arange(start, end-1, device=self.device)
                          for start, end in zip(self.starts.tolist(), self.motion.motion_ends.tolist())])
         self.wml.update_normalization(self.ref_states[idx], A.flatten(0, 1))
@@ -143,12 +177,19 @@ class FreeRun:
         self.actor.update_normalization(self.actor_obs(self.ref_states[idx], idx, sensor[:,None,:].expand(-1,10,-1)))
         self.actor.eval()
 
-    def reference_history(self, frames):
+    def reference_history(self, frames, noisy=True):
         ids = torch.searchsorted(self.motion.motion_ends, frames, right=True)
         past = frames[:, None] + torch.arange(-9, 1, device=self.device)
         past = past.maximum(self.starts[ids, None])
         clean = self.ref_sensor[past]
-        return self.rep.add_proprio_noise(clean)
+        if not noisy:
+            return clean
+        result = self.rep.add_proprio_noise(clean)
+        # One noise realization for duplicates before frame zero (O1 history convention).
+        oldest = (9 - (frames - self.starts[ids])).clamp(0, 9)
+        mask = torch.arange(10, device=self.device)[None, :] < oldest[:, None]
+        first = result[torch.arange(len(frames), device=self.device), oldest]
+        return torch.where(mask[..., None], first[:, None], result)
 
     @torch.no_grad()
     def start_plant(self):
@@ -158,6 +199,7 @@ class FreeRun:
         self.plant.reset(self.motion.qpos[self.frames], self.motion.qvel[self.frames])
         self.prev = self.motion.prev[self.frames].clone()
         self.history = self.reference_history(self.frames)
+        self.clean_history = self.reference_history(self.frames, noisy=False)
         self.episode_id = torch.arange(self.n, device=self.device)
 
     @torch.no_grad()
@@ -182,6 +224,8 @@ class FreeRun:
             ends = self.motion.motion_ends[torch.searchsorted(self.motion.motion_ends, self.frames, right=True)]
             end = self.frames + 1 >= ends - 1
             td = self.transition(s, ns, self.prev, a, self.frames, bad, end, False)
+            if self.mixed:
+                td['sensor_frames'] = self.clean_history.flatten(1)
             self.replay.insert(td)
             weights = self.sampler.record(self.frames, reward, bad, end, torch.zeros_like(end))
             if weights is not None:
@@ -198,7 +242,9 @@ class FreeRun:
             self.actor.eval()
             self.prev = a
             self.frames = self.frames + 1
-            sensor = self.rep.add_proprio_noise(self.sensor(ns, a))
+            clean_sensor = self.sensor(ns, a)
+            self.clean_history = torch.cat([self.clean_history[:, 1:], clean_sensor[:, None]], 1)
+            sensor = self.rep.add_proprio_noise(clean_sensor)
             self.history = torch.cat([self.history[:, 1:], sensor[:, None]], 1)
             ids = torch.where(bad | end)[0]
             if len(ids):
@@ -211,6 +257,7 @@ class FreeRun:
                 self.frames[ids] = new
                 self.prev[ids] = self.motion.prev[new]
                 self.history[ids] = self.reference_history(new)
+                self.clean_history[ids] = self.reference_history(new, noisy=False)
                 self.episode_id[ids] += self.n
             rewards.append(reward.mean())
             fail_count += int(bad.sum())
@@ -223,13 +270,37 @@ class FreeRun:
         return dict(transitions=self.collected, mean_step_reward=torch.stack(rewards).mean().item(),
                     physical_failures=fail_count)
 
+    def long_batch(self):
+        if not self.mixed:
+            return self.replay.sample(self.wmc.horizon, self.wmc.batch_size)
+        teacher_count = self.wmc.batch_size // 4
+        try:
+            online = self.replay.sample(self.wmc.horizon, self.wmc.batch_size - teacher_count)
+        except RuntimeError as error:
+            if 'no valid sequences' not in str(error):
+                raise
+            return self.teacher_replay.sample(self.wmc.horizon, self.wmc.batch_size)
+        teacher = self.teacher_replay.sample(self.wmc.horizon, teacher_count)
+        return torch.cat([online, teacher])
+
+    def short_batch(self):
+        # The learner reads action[:,0] only for a two-state window.
+        before = self.replay.sample(1, self.wmc.batch_size)
+        states = torch.cat([before['state'], before['next_state']], dim=1)
+        return TensorDict(dict(state=states, action=before['action'].expand(-1,2,-1),
+                               sim_ctx=before['sim_ctx'].expand(-1,2,-1)), batch_size=states.shape[:2])
+
     def update(self):
-        batches = [self.replay.sample(self.wmc.horizon, self.wmc.batch_size) for _ in range(self.wmc.num_batches)]
+        short_count = self.cfg.get('one_step_batches', 0)
+        batches = [self.long_batch() for _ in range(self.wmc.num_batches-short_count)]
         for td in batches:
             # No one-tick or cross-reset shifts are admissible in the supervised targets.
             if not torch.equal(td['next_state'][:, :-1], td['state'][:, 1:]):
                 raise ValueError('replay successor mismatch')
         wm = self.wml.update(batches)
+        if short_count:
+            short = self.short_wml.update([self.short_batch() for _ in range(short_count)])
+            wm = {**wm, **{'one_step/' + k: val for k, val in short.items()}}
         before = self.actor.decoder[-1].weight.detach().clone()
         pol = self.policy.update()
         delta = (before-self.actor.decoder[-1].weight).abs().max()
@@ -249,8 +320,10 @@ class FreeRun:
         history = None
         self.actor.eval()
         @torch.no_grad()
-        def action(q, v, frame):
+        def action(q, v, frame, previous_applied=None):
             nonlocal prev, history
+            if previous_applied is not None:
+                prev = tensor(np.asarray(previous_applied)[None], self.device)
             s = full_state(tensor(q[None], self.device), tensor(v[None], self.device))
             sensor = self.sensor(s, prev)[:, None]
             history = sensor.expand(-1, 10, -1) if history is None else torch.cat([history[:, 1:], sensor], 1)

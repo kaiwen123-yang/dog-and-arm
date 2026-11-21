@@ -57,3 +57,33 @@ bash scripts/project_env.sh python scripts/b0/register_eval_cases.py results/raw
 ```bash
 bash scripts/b0/env.sh python -u scripts/b0/train.py --run free_s0_u2_independent_eval --seed 0 --updates 2 --eval-only --from-checkpoint results/b0/free_s0_integration_r1/checkpoint_000002.pt
 ```
+
+原工程 MuJoCo 3.3.0 也已执行同一 u2 Actor 的三个 nominal 从头评测。推理进程使用独立 B0 环境，原物理进程每 20 ms 发送实际 qpos/qvel、接收 23 维策略动作，序列内没有重置或教师动作。三类均在 0.100 s 首次出现持续轮载不足，支撑/移动/停车的实测 TCP RMSE 为 81.28/81.28/85.73 mm（终止前 6 帧）。同一检查点原 integration 的 3.16.0 CPU nominal 结果为 0.174 s 倾斜终止。两版均未完成任一完整 7 s 轨迹。[3.3.0 逐案结果](../results/b0/free_s0_u2_native33/physical/cases.csv)
+
+```bash
+bash scripts/b0/env.sh python -u scripts/b0/eval_native33.py --run free_s0_u2_native33 --checkpoint results/b0/free_s0_integration_r1/checkpoint_000002.pt
+```
+
+## 冷启动动作的受控实验
+
+从 support 的规定初态进入最前 0.8 s 静止目标，使用原 MuJoCo 3.3.0，每个子步读取四轮法向载荷、实际倾角、饱和和抓持点偏差。共 11 种操作，两个冻结检查点分别执行。动作分组修改后，把实际施加的上一动作送回 Actor 历史。以下数据属于故障诊断，各条件均不作为策略通过案例。[u0 完整逐项结果](../results/b0/free_s0_u0_init_blocks/action_blocks/results.csv)和 [u2 完整逐项结果](../results/b0/free_s0_u2_init_blocks/action_blocks/results.csv)
+
+| 条件 | u0 的物理结果 | u2 的物理结果 |
+| --- | --- | --- |
+| 原策略或保持首条完整动作 | 两者均 0.100 s 失载 | 两者均 0.100 s 失载 |
+| 仅腿使用策略 | 0.100 s 失载 | 0.100 s 失载 |
+| 腿保持 home，其余由策略控制 | 0.518 s 非预期接触，终点 TCP 误差 711 mm | 0.600 s 非预期接触，终点 TCP 误差 428 mm |
+| 仅臂使用策略 | 0.796 s 非预期接触 | 0.026 s 非预期接触 |
+| 仅轮或仅夹爪使用策略 | 两者均完成 0.8 s | 两者均完成 0.8 s |
+| 全组使用冻结 home | 0.8 s，最大倾角 0.029°，最长失载 0.016 s | 同左 |
+
+u0 首条策略命令相对 home 的组内最大偏差为腿 16.19°、轮 4.44 rad/s、臂 110.35°、夹爪 24.64 mm；u2 分别为 9.28°、3.57 rad/s、83.14°、13.40 mm。三类参考共 1050 条教师转移，全部 12 个腿目标恒定，6 个臂目标中有 3 个恒定。u0 首条动作 23/23 通道越出三条教师命令的各自范围；u2 为 22/23。前两轮在线采集 320 条真实转移，8 个 lane 跨 41 个 episode_id。264 个候选连续八帧起点中，65 个位于同一物理 episode。教师采样占比在这两次 WM update 分别为 99.375% 与 98.125%。[u0 覆盖](../results/b0/free_s0_u0_init_blocks/action_blocks/teacher_coverage.json)和 [u2 覆盖](../results/b0/free_s0_u2_init_blocks/action_blocks/teacher_coverage.json)
+
+早期两个 Actor 的腿动作单独就足以造成持续失载，臂动作也能独立触发碰撞。有效教师动作范围与策略首条命令的差距，给出了后续核查早期 WM 外推和动作初始尺度的直接依据。该消融只解释这两个检查点和所测初态；其他检查点需要独立评测。
+
+```bash
+bash scripts/b0/env.sh python -u scripts/b0/eval_native33.py --action-blocks --run free_s0_u0_init_blocks --checkpoint results/b0/free_s0_integration_r1/checkpoint_000000.pt
+bash scripts/b0/env.sh python -u scripts/b0/eval_native33.py --action-blocks --run free_s0_u2_init_blocks --checkpoint results/b0/free_s0_integration_r1/checkpoint_000002.pt
+```
+
+另从三类名义初态分别将冻结教师的第一条 home 动作恒定执行完整 7 s，三个实际物理回合均站稳。支撑、移动、停车参考的 TCP RMSE 分别为 81.4、217.2、175.4 mm，后两类根位置 RMSE 为 177.4、133.3 mm。三类均未通过追踪门槛。该对照区分了维持站姿与实际跟踪目标。[全 7 s 恒定命令对照](../results/b0/native_replay_audit_r1/home_only_comparison.json)

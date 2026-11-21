@@ -36,8 +36,10 @@ def quat(mat):
     return result
 
 
-def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None):
+def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None, integrator=None):
     model = build(cfg)
+    advance = mj.mj_step if integrator is None else integrator.step
+    physics_source = 'native MuJoCo mj_step' if integrator is None else integrator.source
     revision_id = mj.mj_name2id(model, mj.mjtObj.mjOBJ_TEXT, 'mount_revision')
     if revision_id >= 0:
         start = int(model.text_adr[revision_id])
@@ -153,7 +155,7 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
             elif phase in ('pregrasp','approach_arm','grasp'):
                 raw = effective = angle
             # Refresh world sites/anchors from today's actual qpos before the scratch IK.
-            # This updates derived transforms only. mj_step is the sole state integrator.
+            # This updates derived transforms only. advance() is the sole state integrator.
             mj.mj_kinematics(model, d)
             if new_phase or step % 5 == 0:
                 q_arm, q_finger = arm.update(d, phase, fraction, raw, effective)
@@ -169,7 +171,7 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
                 target[position_ids] -= d.qfrc_bias[all_v[position_ids]] / model.actuator_gainprm[position_ids, 0]
                 target[drive.grip] *= 2.0  # full jaw opening in metres
             d.ctrl[:] = command
-            mj.mj_step(model, d)
+            advance(model, d)
             # Actual integrated joint positions at every physics step, including
             # extrema that fall between the 25 Hz CSV samples. Negative = outside.
             actual_arm_q = d.qpos[arm.ik.q]
@@ -350,9 +352,10 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
                            lower_rad=float(arm_lower[i]), upper_rad=float(arm_upper[i]),
                            nearest_limit='lower' if arm_min_q[i]-arm_lower[i] <= arm_upper[i]-arm_min_q[i] else 'upper')
                            for i, name in enumerate(arm_names)},
-                       arm_joint_limit_sampling='initial and every post-mj_step actual qpos; signed nearest-limit margin',
+                       arm_joint_limit_sampling=('initial and every post-mj_step actual qpos; signed nearest-limit margin' if integrator is None
+                                                 else 'initial and every post-Warp-step actual qpos; signed nearest-limit margin'),
                        sim_time_s=d.time, wall_s=wall, realtime_factor=d.time/max(wall,.001), desktop=bool(view),
-                       mujoco=mj.__version__, source='native MuJoCo mj_step; step-start observations, 25 Hz point log',
+                       mujoco=mj.__version__, source=physics_source+'; step-start observations, 25 Hz point log',
                        initial_qpos=initial_q, final_qpos=d.qpos.tolist(), target_deg=goal, tolerance_deg=cfg['angle_tolerance_deg'],
                        final_deg=float(np.rad2deg(d.qpos[door_q])), max_base_drift_m=peak_drift,
                        max_tilt_deg=peak_tilt, max_grip_error_m=peak_grip, max_door_force_N=peak_wrench,

@@ -55,4 +55,28 @@ bash scripts/project_env.sh python scripts/b0/collect_reference.py --output resu
 | 移动变臂姿 | 3.993 | 0.00557 | 3.990 | 0.001321 / 0.000040 | 0.03437 |
 | 减速停车并收臂 | 2.383 | 0.00501 | 2.387 | 0.001307 / 0.000036 | 0.02965 |
 
-根、关节和 TCP 按全部 351 个 50 Hz 状态边界对齐。另按 5 Hz 从研究后端导出已求解接触，在同一子步按 FAR/FBL/RAR/RBL 对照真实轮载。三条各 35 次采样，按 1 N 分类的四轮支撑均与 native 一致，逐轮法向力 RMSE 为 0.966–1.587 N，非预期接触采样力峰均为 0 N。3.16/Warp 的步进检查没有报告臂限位、持续饱和或失稳。这些数值只覆盖自由运动教师回合，双侧操作还需在训练后端验证真实接触与完整事件。[对照入口](../scripts/b0/compare_reference.py)
+根、关节和 TCP 按全部 351 个 50 Hz 状态边界对齐。另按 5 Hz 从研究后端导出已求解接触，在同一子步按 FAR/FBL/RAR/RBL 对照真实轮载。三条各 35 次采样，按 1 N 分类的四轮支撑均与 native 一致，逐轮法向力 RMSE 为 0.966–1.587 N，非预期接触采样力峰均为 0 N。3.16/Warp 的步进检查没有报告臂限位、持续饱和或失稳。这些数值覆盖自由运动教师回合，双侧操作使用下节的完整事件与子步数据。[对照入口](../scripts/b0/compare_reference.py)
+
+## 训练后端完整门任务的教师可行性
+
+在同一固定 mjlab/Warp 后端，用 C01 前拉和 95° 背推分别连续执行一次冻结 P6 控制。每个回合只在初态设置自由根和门角。随后唯一积分入口为 `Simulation.step`，主机用 `get_data_into` 读回每个求解步的状态、真实接触和执行力，供原 P6 事件判据与下一步教师反馈读取。此处保留 P6 500 Hz 基座命令和 100 Hz / 新阶段六轴命令，记录在新目录的 `substeps/`。从始至终由教师控制，只确认训练物理后端可以完成两种接触任务。[训练后端教师入口](../scripts/b0/check_door_teacher.py) · [前拉事件与物理核对](../results/b0/backend_r1/pull_teacher.json) · [背推事件与物理核对](../results/b0/backend_r1/push_teacher.json)
+
+| 指标 | 前拉 C01 | 背推 C01 |
+| --- | ---: | ---: |
+| 物理步数 × 2 ms | 36,863 × 2 ms | 27,043 × 2 ms |
+| 终态门角 | 60.04931° | 25.07761° |
+| 六轴逐步最小限位余量 | 1.504° | 16.880° |
+| 抓持最大偏移 | 2.693 mm | 2.611 mm |
+| 门对机器人的合力峰 | 2.698 N | 1.561 N |
+| 退臂后 / 终点独立连续保持步数 | 1,500 / 1,500 | 1,500 / 1,500 |
+| 两窗口最大平速（mm/s） | 0.269 / 4.992 | 0.178 / 4.911 |
+| 两窗口最大偏航速率（°/s） | 0.035 / 0.105 | 0.019 / 0.070 |
+
+用保存的 500 Hz 子步独立复读两个保持窗口。两侧四个窗口的指载均为 0 N，最小单轮载荷分别高于 100 N（前拉）与 89 N（背推）。全程无超过 P6 判据的非预期接触。Warp 的 float32 时钟分别累加到 73.70875 s 和 54.07954 s，步数乘 2 ms 分别为 73.726 s 和 54.086 s。物理步号对齐和保持窗口按实际步数计。主机 MjData 的 warning 向量没有覆盖所有 GPU 运行时警告。启动时 Warp 提示 CAPSULE–MESH 的 MULTICCD 最多生成一个接触点，此约束保留在运行记录中。[前拉核对](../results/b0/backend_r1/pull_teacher.json) · [背推核对](../results/b0/backend_r1/push_teacher.json)
+
+实际命令如下。两次完整数据及其配置与逐步记录保存在 `results/raw_large/b0/research_teacher_20261121_r1/`。
+
+```bash
+bash scripts/b0/env.sh python -u -m scripts.b0.check_door_teacher pull --output results/raw_large/b0/research_teacher_20261121_r1/pull --evidence results/b0/backend_r1/pull_teacher.json
+bash scripts/b0/env.sh python -u -m scripts.b0.check_door_teacher push --output results/raw_large/b0/research_teacher_20261121_r1/push --evidence results/b0/backend_r1/push_teacher.json
+```

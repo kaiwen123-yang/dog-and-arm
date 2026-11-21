@@ -1,0 +1,56 @@
+{
+  "cfg": {
+    "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+    "worlds": 8,
+    "wm_batch": 32,
+    "wm_batches": 10,
+    "actor_batch": 16,
+    "wm_hidden": [
+      2048,
+      2048,
+      2048
+    ],
+    "actor_hidden": [
+      2048,
+      1024,
+      512,
+      256
+    ],
+    "critic_hidden": [
+      256,
+      128
+    ],
+    "buffer_size": 1000,
+    "replay_ratio": 16,
+    "physics_dt": 0.002,
+    "policy_dt": 0.02,
+    "history_length": 10,
+    "free_motion_clip_frames": 351,
+    "actor_horizon": 32,
+    "wm_window": 8,
+    "collection_noise": 0.1,
+    "milestones": [
+      0,
+      1000,
+      5000,
+      10000
+    ],
+    "periodic_updates": 10000,
+    "diagnostic_block": 50000
+  },
+  "run": "free_s0_formal_r1",
+  "initial_actor_update": 0,
+  "target_actor_update": 1000,
+  "hypothesis": "O1 initialized from scratch can improve free-base reference tracking via supervised GenCoord and H32 BPTT.",
+  "seed": 0,
+  "gpu": "NVIDIA GeForce RTX 5080 Laptop GPU",
+  "torch": "2.14.0+cu130",
+  "compile_disable": "1",
+  "revision": "fe311ebcae484e5aadc0eb4b2f759cb3ee63ff90",
+  "checkpoint_restart": null,
+  "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+  "teacher_unique_steps": 1050,
+  "evaluation": "3 x 20 frozen",
+  "backend": "mjlab_research.Simulation",
+  "update": "10 WM minibatches, one H32 actor step, 20 critic minibatches"
+}

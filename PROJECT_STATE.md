@@ -13,6 +13,14 @@
 - seed0 实际运行 `bash scripts/b0/env.sh python scripts/b0/train.py --run free_s0_integration_r1 --updates 2 --integration`。GPU 8 个场景累计 320 个策略转移（3,200 个 2 ms 物理步）、20 个 WM minibatch、2 次 H32 Actor 与 40 个 Critic minibatch，均从新初始化的网络起步。权重在 `results/b0/free_s0_integration_r1/checkpoint_000002.pt`。
 - 独立加载同一权重，3 类各 0/20。第 2 次更新的留出 TCP 误差为 5.81 / 21.89 / 767.86 mm（1/7/32 步）。[学习记录](reports/B0_FREE_MOTION.md)。继续 B0-03；接触片段与完整学习任务待无接触通过。
 
+### 后端接触验证及 seed0 第一次正式训练
+
+训练后端额外完成两侧 C01 教师的原任务全程。前拉 36,863 步、60.04931°，背推 27,043 步、25.07761°，两侧退臂后和终点的 1,500 步保持独立通过。原生工程的 MuJoCo 3.3.0 也独立执行了更新 2 的冻结策略，三类 nominal 均在 0.100 s 触发持续失载。[两侧教师、保持和警告范围](reports/B0_DATA_READINESS.md) · [冷启动动作分块诊断](reports/B0_EVALUATION.md)
+
+启动 `bash scripts/b0/env.sh python scripts/b0/train.py --run free_s0_formal_r1 --updates 1000`，每 2 ms 加入 GPU 轮载和异常接触审计。实际完成 160 次 Actor 更新，共采集 25,760 个当前策略转移。随后官方 replay 报错 `no valid sequences L=8 n=1000`。该次退出前最后一个已保存的此配置检查点是更新 0；更新 160 无可恢复权重。原始整数步计数和采样比例在 [失败记录](results/b0/free_s0_formal_r1/failure.json)。
+
+已以独立 run 启动 **free_s0_boundary_r1**。每批分开从真实终止后继做一步监督，并保留长窗口教师和策略数据。输出层从模型 home 附近的小随机残差开始；冻结评测仍由网络独立输出全部 23 路命令。实际入口为 `bash scripts/b0/env.sh python scripts/b0/train.py --config config/b0/free_replay_home.yaml --run free_s0_boundary_r1 --updates 1000`。检查更新 0、50、200、1000 的真实物理结果。阶段结论依冻结评测。[变体定义](config/b0/free_replay_home.yaml)
+
 ## 历史规划节点：R0 → B0
 
 2026-11-21 用户已明确要求读取当前仓库，将“先在本场景跑通官方 SuperMimic，再开展多模态融合”的详细规划推送到 GitHub，并提供 Codex 提示词。本次新增的是规划与续接入口；没有运行 B0 训练、P6 复跑、双门实验或实机动作。

@@ -272,12 +272,16 @@ def evaluate_cases(model, references, policy_factory, output_dir, *, seed, check
             q, v, times = [plant.data.qpos.copy()], [plant.data.qvel.copy()], [float(plant.data.time)]
             total_steps = 0
             reason = None
+            actions, substep_counts = [], []
             for frame in range(len(reference['qpos']) - 1):
                 cmd = np.asarray(action(q[-1], v[-1], frame), dtype=float)
                 if cmd.shape != (model.nu,) or not np.isfinite(cmd).all():
                     reason = 'invalid_policy_action'
                     break
-                info = plant.step(np.clip(cmd, -1., 1.))
+                clipped = np.clip(cmd, -1., 1.)
+                info = plant.step(clipped)
+                actions.append(clipped)
+                substep_counts.append(info['physics_steps'])
                 total_steps += info['physics_steps']
                 q.append(plant.data.qpos.copy())
                 v.append(plant.data.qvel.copy())
@@ -298,6 +302,8 @@ def evaluate_cases(model, references, policy_factory, output_dir, *, seed, check
                 dest.mkdir(parents=True, exist_ok=False)
                 for key, value in observed.items():
                     np.save(dest / f'{key}.npy', value)
+                np.save(dest / 'action_clipped.npy', np.asarray(actions).reshape(-1, model.nu))
+                np.save(dest / 'substep_count.npy', np.asarray(substep_counts, dtype=int))
     summary = {}
     for reference_id in references:
         by_ref = [row for row in rows if row['reference_id'] == reference_id]
@@ -311,7 +317,7 @@ def evaluate_cases(model, references, policy_factory, output_dir, *, seed, check
                'expected_physics_steps', 'scored_frames', 'physical_duration_s',
                *PROTOCOL['thresholds'], 'wheel_speed_rmse_rad_s', 'gripper_width_rmse_m']
     with (output_dir / 'cases.csv').open('w') as stream:
-        writer = csv.DictWriter(stream, fieldnames=columns, extrasaction='ignore')
+        writer = csv.DictWriter(stream, lineterminator='\n', fieldnames=columns, extrasaction='ignore')
         writer.writeheader()
         for row in rows:
             writer.writerow({**row, **(row['metrics'] or {}), 'failures': '|'.join(row['failures'])})
