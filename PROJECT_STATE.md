@@ -1,14 +1,24 @@
 # 项目状态
 
-更新日期：2026-11-21（Asia/Shanghai）。
+更新日期：2026-11-22（Asia/Shanghai）。
 
-## B0-03 已通过，等待用户检查
+## 当前入口：B0-03 已冻结，下一步计划与每日日志已建立
+
+用户在完成仓库梳理后要求：增加一个单独文件详细记录每天的工作与解决的问题，并将下一步计划和 Codex 启动提示词推送 GitHub。本次新增 [DAILY_WORK_LOG.md](DAILY_WORK_LOG.md) 和 [B0 接触执行计划](docs/B0_CONTACT_EXECUTION_PLAN.md)，同步更新项目规则、总路线与启动入口；只做文档编辑和一致性检查，没有启动新训练、仿真任务或实机动作。
+
+下一轮由用户下达 [B0_START.txt](prompts/B0_START.txt) 后，按 B0-04 动态门与接触片段 → B0-05 连续前拉/背推和统一模型 → B0-06 独立训练种子与留出测试推进。已完成的 P6、环境与 B0-03 seed0 不无条件重跑。每个有意义节点维护当日日志；详细记录问题证据、修复与复测、失败、未完成项、命令与产物。
+
+首先处理的是与 20 ms 策略周期一致的真实接触转移、独立门动态表示、变长参考和只读物理事件评估器。已有高频完整门教师成功只证明后端可行，不能直接作为恒定 20 ms 动作 replay。`door_held_out.json` 仍只做了几何有效性检查，保留到冻结策略后的 B0-06 任务测试。
+
+## B0-03 已通过的冻结结果
 
 seed0 的第 1000 次更新是本轮冻结检查点。训练用固定 O1 双源、原 tracking 奖励和 23 路全身策略，实际产生 1,088,000 个在线物理转移，完成 10,000 次 WM 小批更新、1,000 次 H32 Actor 更新及 20,000 次 Critic 小批更新。1000 次 Actor 更新均记录了冻结 WM 和非零 Actor 权重变化。CUDA 梯度链路另有七步物理输出反传诊断。支撑伸收臂、移动变臂姿、停车在 MuJoCo-Warp 3.16 和 CPU MuJoCo 3.16 上均为 20/20，原工程 MuJoCo 3.3.0 分别为 20/20、20/20、19/20。停车 F02 完成 7 s，TCP RMSE 为 30.75 mm，超过 30 mm 门槛。三个名义任务也在 Warp 和 3.3.0 全部通过。每案从完整初态连续执行 7 s，逐个检查 3,500 个物理子步。留出回合的 1、7、32 步 TCP 预测 RMSE 为 0.36、2.04、2.82 mm。[检查清单](results/b0/free_s0_cloud_servo_r2/review.json) · [逐案与视频](reports/B0_FREE_MOTION.md)
 
-完整权重在本机与云端项目内的 `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt`。云端目录为 `/root/autodl-tmp/dog-and-arm-b0`。本轮研发停在 B0-03，等待用户检查后决定是否进入接触片段。复核入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
+完整权重在本机与云端项目内的 `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt`。云端目录为 `/root/autodl-tmp/dog-and-arm-b0`。已执行研发仍停在 B0-03；本次仅发布 B0-04～06 后续计划，不把待执行任务写成完成。当前执行与冻结复核入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
 
-## B0 环境迁移与初期无接触学习记录
+## B0 环境迁移与初期无接触学习历史记录
+
+下文保留当时的启动和失败过程；其中“已启动”“继续 B0-03”等表述由顶部冻结结果和当前入口更新，不代表此刻又启动了历史 run。
 
 2026-11-21 本机 `git pull --ff-only origin main` 快进至规划提交 `f6333ec`，保留未跟踪 P5 数据。现场 GPU 为 RTX 5080 Laptop 16 GiB，主机内存 30 GiB。固定双源和 O1 实际配置已核对。单门仍用 `rail_bridge_front60_v2` 与冻结 P6 控制 `86ade86`。
 

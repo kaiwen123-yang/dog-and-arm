@@ -1,8 +1,8 @@
 # B0：SuperMimic 在 M1＋Piper H 上的迁移与基线验证
 
-规划日期：2026-11-21（Asia/Shanghai）。
+首次规划日期：2026-11-21；接续更新：2026-11-22（Asia/Shanghai）。
 
-**当前状态：本文件是待执行的研究计划。P6 工程基线已完成；B0 的环境、模型训练和学习策略评测尚未完成。** 本次只提交规划、当前状态和启动提示，不执行训练、P6 复跑或硬件运动。
+**当前状态：P6 工程基线、目标环境与 B0-03 seed0 无接触学习已通过并冻结；B0-04～06 尚待执行。** 本文件保留总阶段和方法约定，当前具体工作按 [B0 接触执行计划](B0_CONTACT_EXECUTION_PLAN.md) 接续，不重复从 R0/B0-01 开始。本次只发布后续计划、每日工作记录与启动提示，不启动新训练或硬件。
 
 总路线见 [RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md)，状态/动作/数据细节见 [B0_DATA_MODEL_CONTRACT.md](B0_DATA_MODEL_CONTRACT.md)，执行入口见 [B0_START.txt](../prompts/B0_START.txt)。
 
@@ -67,7 +67,7 @@ O1 记录中的 Python/Torch/MuJoCo/Warp 版本仅是重建依据，实际安装
 
 ### 3.2 O1 配方与目标平台适配分开记录
 
-默认继承 GenCoord、proprio/history10、motion slot=1、velocity slot=0、latent32、官方 normalizer/replay/return sampler；WM 主网络 `[2048,2048,2048]`，Actor `[2048,1024,512,256]`，Critic `[256,128]`，学习率 2e-4，WM 10×2048、8 状态窗口，Actor batch4096/H32，replay_ratio16，collection noise0.1，原 Muon/Adam 参数分组。起始环境数以 O1 的 4096 为参考，按实际编译与吞吐调整批量，完整记录，不为保持字面一致牺牲运行正确性。
+O1 配方来源为 GenCoord、proprio/history10、motion slot=1、velocity slot=0、latent32、官方 normalizer/replay/return sampler；WM 主网络 `[2048,2048,2048]`，Actor `[2048,1024,512,256]`，Critic `[256,128]`，学习率 2e-4，WM 10×2048、8 状态窗口，Actor batch4096/H32，replay_ratio16，collection noise0.1，原 Muon/Adam 参数分组。以上是原始来源说明；已通过的目标平台实际配方见 `config/b0/free_servo_cloud.yaml`，当前为 128 worlds 等实际批量与平台动作尺度。下一轮从该已验证配置另建接触变体，不恢复旧的 4096 环境等数值来追求字面一致。
 
 O6/O7 的全 Adam、cosine 和删采集噪声属于另外的实验配方。B0 初始不混用；如出现针对性证据，再建立命名变体。
 
@@ -259,11 +259,11 @@ held-out 的初版范围沿用已知可行邻域：世界初始 XY 各±5 cm、y
 
 1. 使用已有 `dog-and-arm` 工作区；本机常见路径 `/home/kaiwen/research/dog-and-arm`，AutoDL 则先发现实际路径，不假定 H 盘归档和旧训练目录仍在线。
 2. 先读 AGENTS、PROJECT_STATE、NEXT_RUN，再读本计划与数据约定；核对新的 GitHub 提交，若事实更新，以实际新证据修正执行起点。
-3. 从 R0/B0-01 开始实现，优先形成“可执行目标环境＋第一组参考＋第一轮真实 WM/Actor 闭环”。B0-03 是第一个重要交付节点，正常完成后继续 B0-04～06，不因只完成目录或代码导入就结束。
+3. B0-03 seed0 已通过，从 [B0 接触执行计划](B0_CONTACT_EXECUTION_PLAN.md) 的 04-A 开始，闭合动态门、真实接触数据、变长参考和只读事件评估，再依次推进 B0-04～06。已完成的 R0/B0-01～03 不无条件重做，不因只完成目录或代码导入就结束。
 4. 允许并行做来源/依赖、数据审计、独立评测模块；共享动作定义、组合环境和状态记录由主任务集成。避免多个进程同时覆盖同一结果目录或配置。
-5. 每个自然节点提交必要代码/配置/轻量结果，普通 push；没有实验成绩就写未执行。遇到真正阻塞则交付具体错误、已完成内容和下一条可运行任务。
+5. 每个自然节点更新根目录 `DAILY_WORK_LOG.md`，按北京时间记录实际工作、问题证据与原因、修复复测、失败、未完成项和下一步，同时维护当前状态与阶段报告。必要代码/配置/轻量结果普通 push；没有实验成绩就写未执行。遇到真正阻塞则交付具体错误、已完成内容和下一条可运行任务。
 
-规划中的 `learning/b0/`、`scripts/b0/` 和新配置应在实现轮次创建；**本提交没有可直接运行的 B0 训练命令**。执行者须先实现并确认真实 CLI，再把实际命令写入报告和 NEXT_RUN，不复制假命令冒充已经跑通。
+`learning/b0/`、`scripts/b0/` 与无接触配置已经存在且真实运行。接触版训练能力尚待实现；执行者须确认新增/扩展 CLI 的真实支持范围，再把实际命令写入报告和 NEXT_RUN，不能直接用旧无接触入口声称接触学习已开始。
 
 ## 13. 主要来源
 

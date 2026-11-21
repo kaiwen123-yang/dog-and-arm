@@ -1,13 +1,23 @@
-当前暂停，等待用户检查 B0-03。用户提出新的明确指示后再启动后续阶段。
+当前已执行状态：B0-03 seed0 已通过并冻结。下一步 B0-04～06 计划和每日详细工作记录已建立，本次文档发布未启动新实验。
 
-实际通过的 seed0 权重为 results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt。训练源码 56f6396，配置 config/b0/free_servo_cloud.yaml。三类无门接触任务在训练后端各 20/20。查 reports/B0_FREE_MOTION.md、PROJECT_STATE.md 顶部和 results/b0/free_s0_cloud_servo_r2/review.json。完整权重与原始数据在本机项目和 AutoDL 独立目录 /root/autodl-tmp/dog-and-arm-b0；GitHub 保存源码、配置、逐案、预测表与必要视频。
+用户将 prompts/B0_START.txt 交给执行 Codex 后，按 docs/B0_CONTACT_EXECUTION_PLAN.md 连续推进：
+1. 动态门状态、20ms恒目标真实接触转移、变长参考与只读物理事件评估。
+2. B0-04 抓持/保持/小角度推拉/释放片段，分项nominal与20条件开发评测。
+3. B0-05 连续前拉60°、背推25°及同一WM/Actor的两侧共同参考库。
+4. B0-06 独立seed0/1/2、冻结H条件与跨后端结果，完成成功或准确的限制基线。
 
-本机或 AutoDL 从项目根目录执行下列命令可以独立复核冻结策略。使用新输出名，保留此前的结果。
+先读 AGENTS.md、PROJECT_STATE.md、DAILY_WORK_LOG.md 最近日期，再读详细接触计划、总计划与数据契约。每个自然节点按北京时间更新 DAILY_WORK_LOG.md，写实际工作、问题证据、原因/假设、修复与复测、失败、未完成项、命令/run/产物、决定与下一步；同时更新当前状态和阶段报告并普通push。
 
+已完成P6、环境和B0-03不无条件重做。旧高频门教师已在Warp完整成功，但其500Hz腿轮/100Hz臂目标不能直接当20ms恒动作WM监督。现有train.py默认无接触训练；接触能力和真实CLI须按计划实现后才启动。H01–H50仍只做过初态几何检查，留到最终候选冻结后，不能取来调片段。
+
+保留冻结复核入口（仅当确需复核时运行，不作为无条件重跑任务）：
+实际权重 results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt，训练源码56f6396，配置config/b0/free_servo_cloud.yaml。Warp/CPU3.16三类各20/20，native3.3.0为20/20、20/20、19/20。查 reports/B0_FREE_MOTION.md 和 results/b0/free_s0_cloud_servo_r2/review.json。
+完整权重与原始数据在本机项目和AutoDL独立目录 /root/autodl-tmp/dog-and-arm-b0，须核对实际可读性；GitHub保存轻量源码、配置、逐案、预测表与必要视频。
+
+从项目根目录独立复核冻结策略，使用新输出名：
 bash scripts/b0/env.sh python scripts/b0/eval_warp.py --run review_b003_seed0 --checkpoint results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt
 
-如需在本机桌面观看真实 3.3.0 名义执行：
-
+本机桌面观看真实3.3.0名义执行：
 bash scripts/b0/env.sh python scripts/b0/eval_native33.py --run review_b003_desktop --checkpoint results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt --live
 
-项目独立 Conda 的物理前缀为 .conda/envs/arm-and-dog。在已载入 Conda 的 shell 中执行 export CONDA_ENVS_PATH="$PWD/.conda/envs" 后可以 conda activate "arm and dog"。仍保留原生 3.3.0 基准环境。新机器缺少大资产和数组时按 reports/B0_DATA_READINESS.md 的记录恢复。B0-04、完整单门学习、多 seed 测试留待用户复核。
+项目独立Conda物理前缀 .conda/envs/arm-and-dog；原生3.3.0环境保留。新机器按reports/B0_DATA_READINESS.md恢复必要资产/数组。完整B0接触启动提示词以prompts/B0_START.txt为准。
