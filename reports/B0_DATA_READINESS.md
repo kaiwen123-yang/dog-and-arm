@@ -44,3 +44,15 @@ bash scripts/project_env.sh env OPENBLAS_NUM_THREADS=1 python scripts/b0/collect
 bash scripts/project_env.sh env OPENBLAS_NUM_THREADS=1 python scripts/b0/collect_reference.py push --output results/raw_large/b0/native_teacher_20261121_r1
 bash scripts/project_env.sh python scripts/b0/collect_reference.py --output results/raw_large/b0/native_teacher_20261121_r1 --index-dir data/b0
 ```
+
+## 同一真实命令在两种物理后端的响应
+
+独立训练环境已用 `bash scripts/b0/env.sh python -u -m scripts.b0.compare_reference --output results/b0/backend_r1/native33_teacher_vs_mjlab.json` 执行三个 7 s 回合。每个研究后端世界从对应 native 3.3.0 参考的初始完整状态开始，连续重放 350 个实测动作，使用相同的 2 ms 固定伺服。下表比较研究后端的 MuJoCo 3.16.0/Warp 与原 native 3.3.0。每个世界完成 3,500 个物理步，三个被动门均维持 0°。[完整逐案数据](../results/b0/backend_r1/native33_teacher_vs_mjlab.json)
+
+| native 教师目标 | 根位置 RMSE（mm） | 根姿态 RMSE（°） | TCP RMSE（mm） | 腿角/臂角 RMSE（rad） | 轮速 RMSE（rad/s） |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 支撑伸收臂 | 0.746 | 0.00425 | 0.779 | 0.001974 / 0.000012 | 0.02349 |
+| 移动变臂姿 | 3.993 | 0.00557 | 3.990 | 0.001321 / 0.000040 | 0.03437 |
+| 减速停车并收臂 | 2.383 | 0.00501 | 2.387 | 0.001307 / 0.000036 | 0.02965 |
+
+根、关节和 TCP 按全部 351 个 50 Hz 状态边界对齐。另按 5 Hz 从研究后端导出已求解接触，在同一子步按 FAR/FBL/RAR/RBL 对照真实轮载。三条各 35 次采样，按 1 N 分类的四轮支撑均与 native 一致，逐轮法向力 RMSE 为 0.966–1.587 N，非预期接触采样力峰均为 0 N。3.16/Warp 的步进检查没有报告臂限位、持续饱和或失稳。这些数值只覆盖自由运动教师回合，双侧操作还需在训练后端验证真实接触与完整事件。[对照入口](../scripts/b0/compare_reference.py)

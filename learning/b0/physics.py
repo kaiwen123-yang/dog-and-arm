@@ -78,19 +78,21 @@ class NativePlant:
             contact = self.meter.measure(d)
             arm = d.qpos[a.q[16:22]]
             q = d.qpos[3:7]
-            tilt = np.arccos(np.clip(1 - 2 * (q[1]**2 + q[2]**2), -1, 1))
+            roll = np.arctan2(2*(q[0]*q[1] + q[2]*q[3]), 1 - 2*(q[1]**2 + q[2]**2))
+            pitch = np.arcsin(np.clip(2*(q[0]*q[2] - q[3]*q[1]), -1, 1))
+            tilt = max(abs(roll), abs(pitch))
             self.unloaded_time = 0. if all(contact.supported) else self.unloaded_time + m.opt.timestep
             self.sat_time = np.where(abs(d.actuator_force) >= .98 * self.limit,
                                      self.sat_time + m.opt.timestep, 0.)
             if np.any(arm < self.arm_range[:, 0]) or np.any(arm > self.arm_range[:, 1]):
                 reason = 'arm_joint_limit'
-            elif contact.unexpected or np.any(contact.finger_normal > .01):
+            elif contact.unexpected or contact.force_norm_sum > .01:
                 reason = 'unexpected_contact'
-            elif tilt > np.deg2rad(5):
+            elif tilt >= np.deg2rad(5):
                 reason = 'tilt'
-            elif self.unloaded_time > .1:
+            elif self.unloaded_time >= .1:
                 reason = 'wheel_unloaded'
-            elif self.sat_time.max() > .25:
+            elif self.sat_time.max() >= .25:
                 reason = 'saturation'
             elif not np.isfinite(d.qvel).all() or any(w.number for w in d.warning):
                 reason = 'solver_warning'

@@ -1,0 +1,161 @@
+{
+  "version": "b0_free_dev_v1",
+  "split": "development/regression",
+  "references": [
+    "support",
+    "moving_arm",
+    "park"
+  ],
+  "initialization": "Frame 0, perturb only free-root world XY and left-multiply orientation by a rotation about world Z. Retain recorded initial qvel. No reference alignment or in-episode reset.",
+  "generator": "numpy.random.default_rng(20261121), draw world dx_m,dy_m uniform in [-0.01,0.01], then dyaw_deg uniform in [-2,2].",
+  "policy_dt_s": 0.02,
+  "physics_dt_s": 0.002,
+  "thresholds": {
+    "root_position_rmse_m": 0.05,
+    "root_orientation_rmse_deg": 5,
+    "tcp_position_rmse_m": 0.03,
+    "max_joint_range_normalized_rmse": 0.05
+  },
+  "pass_count_per_reference": 18,
+  "denominator_per_reference": 20,
+  "joint_metric": "Per-joint RMSE / official joint range, maximum across 12 leg and 6 arm hinges. Wheel angular speed and physical finger separation scored separately.",
+  "reference_comparison": "World-frame root and TCP Euclidean distance, wxyz quaternion SO(3) geodesic angle. All actual policy boundary frames, including frame zero and terminal successor.",
+  "completion": "Every 2 ms physics substep accounted for; no substep audit failure or reset; full trajectory and all four thresholds pass.",
+  "model_diagnostics": {
+    "horizons": [
+      1,
+      7,
+      32
+    ],
+    "policy_dt_s": 0.02,
+    "max_starts_per_episode": 128,
+    "starts": "Deterministic evenly spaced starts that have all 32 transitions available within this held-out episode, including last valid start.",
+    "baselines": [
+      "persistence",
+      "constant_velocity_mj_integratePos"
+    ],
+    "action": "Executed post-clamp actions in chronological order, open-loop recursion from measured start."
+  },
+  "cases": [
+    {
+      "id": "F01",
+      "dx_m": 0.002741,
+      "dy_m": 0.009317,
+      "dyaw_deg": 1.11029
+    },
+    {
+      "id": "F02",
+      "dx_m": 0.00924,
+      "dy_m": 0.000852,
+      "dyaw_deg": -1.74696
+    },
+    {
+      "id": "F03",
+      "dx_m": 0.00059,
+      "dy_m": 0.001612,
+      "dyaw_deg": -0.88936
+    },
+    {
+      "id": "F04",
+      "dx_m": 0.00019,
+      "dy_m": 2.2e-05,
+      "dyaw_deg": -1.56287
+    },
+    {
+      "id": "F05",
+      "dx_m": 0.006185,
+      "dy_m": -0.001195,
+      "dyaw_deg": -1.39138
+    },
+    {
+      "id": "F06",
+      "dx_m": -0.007992,
+      "dy_m": -0.001411,
+      "dyaw_deg": -0.96157
+    },
+    {
+      "id": "F07",
+      "dx_m": 0.008971,
+      "dy_m": -0.009795,
+      "dyaw_deg": -0.47716
+    },
+    {
+      "id": "F08",
+      "dx_m": 0.007978,
+      "dy_m": 0.001597,
+      "dyaw_deg": 0.67229
+    },
+    {
+      "id": "F09",
+      "dx_m": -0.002543,
+      "dy_m": -0.007132,
+      "dyaw_deg": 0.6355
+    },
+    {
+      "id": "F10",
+      "dx_m": -0.005725,
+      "dy_m": 0.007125,
+      "dyaw_deg": 1.37133
+    },
+    {
+      "id": "F11",
+      "dx_m": -0.008148,
+      "dy_m": 0.007,
+      "dyaw_deg": -0.54253
+    },
+    {
+      "id": "F12",
+      "dx_m": 0.005082,
+      "dy_m": -0.007281,
+      "dyaw_deg": -0.65076
+    },
+    {
+      "id": "F13",
+      "dx_m": 0.004198,
+      "dy_m": -0.009183,
+      "dyaw_deg": -1.13323
+    },
+    {
+      "id": "F14",
+      "dx_m": -0.004232,
+      "dy_m": 0.000436,
+      "dyaw_deg": -0.5212
+    },
+    {
+      "id": "F15",
+      "dx_m": 0.003517,
+      "dy_m": 0.004025,
+      "dyaw_deg": -0.60663
+    },
+    {
+      "id": "F16",
+      "dx_m": -0.00496,
+      "dy_m": -0.006855,
+      "dyaw_deg": -0.94243
+    },
+    {
+      "id": "F17",
+      "dx_m": 0.007835,
+      "dy_m": 0.005112,
+      "dyaw_deg": 1.11369
+    },
+    {
+      "id": "F18",
+      "dx_m": -0.006282,
+      "dy_m": 0.001809,
+      "dyaw_deg": -0.70347
+    },
+    {
+      "id": "F19",
+      "dx_m": 0.006803,
+      "dy_m": -0.000698,
+      "dyaw_deg": 0.65939
+    },
+    {
+      "id": "F20",
+      "dx_m": -0.006747,
+      "dy_m": 0.004306,
+      "dyaw_deg": -1.49057
+    }
+  ]
+}

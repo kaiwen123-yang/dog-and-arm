@@ -1,0 +1,1376 @@
+{
+  "version": "b0_door_held_out_v1",
+  "split": "held_out_sealed_until_B0-06",
+  "rng": "numpy.random.default_rng(2026112106), pull then push, one uniform vector in field order per candidate, rounded to 8 decimals.",
+  "fields": [
+    "dx",
+    "dy",
+    "yaw",
+    "door",
+    "wheel_mu",
+    "finger_mu",
+    "hinge_friction",
+    "hinge_damping"
+  ],
+  "lower": [
+    -0.05,
+    -0.05,
+    -5.0,
+    0.0,
+    0.8,
+    0.8,
+    0.5,
+    0.5
+  ],
+  "upper": [
+    0.05,
+    0.05,
+    5.0,
+    5.0,
+    1.2,
+    1.2,
+    1.5,
+    1.5
+  ],
+  "regression_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "geometry": "Any non-wheel-ground penetration deeper than 1e-6 m, any non-positive robot-door clearance, or wheel-floor depth > nominal + 1e-6 m excludes the sample, before policy evaluation.",
+  "application": "Apply perturbation via p6_scene.settings and build exactly as for C01-C20. XY / yaw modify only initial pose. Friction and damping multipliers are static per episode.",
+  "target_per_side": 40,
+  "denominator_per_side": 50,
+  "independent_seeds": [
+    0,
+    1,
+    2
+  ],
+  "cases": {
+    "pull": [
+      {
+        "id": "H01",
+        "perturbation": {
+          "dx": -0.00678689,
+          "dy": -0.04376632,
+          "yaw": 3.51533787,
+          "door": 2.91539137,
+          "wheel_mu": 1.08394618,
+          "finger_mu": 0.9662501,
+          "hinge_friction": 0.65721455,
+          "hinge_damping": 0.75407177
+        }
+      },
+      {
+        "id": "H02",
+        "perturbation": {
+          "dx": 0.04445489,
+          "dy": 0.01964018,
+          "yaw": 1.23401351,
+          "door": 4.05882322,
+          "wheel_mu": 1.02696531,
+          "finger_mu": 0.95116235,
+          "hinge_friction": 1.49527431,
+          "hinge_damping": 1.27164332
+        }
+      },
+      {
+        "id": "H03",
+        "perturbation": {
+          "dx": -0.04600195,
+          "dy": 0.00115644,
+          "yaw": 4.1647522,
+          "door": 1.08458459,
+          "wheel_mu": 1.047315,
+          "finger_mu": 1.06437288,
+          "hinge_friction": 1.17119704,
+          "hinge_damping": 0.65020021
+        }
+      },
+      {
+        "id": "H04",
+        "perturbation": {
+          "dx": 0.01827451,
+          "dy": 0.01589649,
+          "yaw": -3.50184,
+          "door": 4.72417015,
+          "wheel_mu": 0.90124737,
+          "finger_mu": 1.14616452,
+          "hinge_friction": 0.71276783,
+          "hinge_damping": 1.104505
+        }
+      },
+      {
+        "id": "H05",
+        "perturbation": {
+          "dx": 0.01898352,
+          "dy": -0.03428549,
+          "yaw": 3.35406505,
+          "door": 3.57886679,
+          "wheel_mu": 0.85793128,
+          "finger_mu": 1.19861418,
+          "hinge_friction": 0.61868866,
+          "hinge_damping": 1.11616994
+        }
+      },
+      {
+        "id": "H06",
+        "perturbation": {
+          "dx": 0.00714194,
+          "dy": -0.04817741,
+          "yaw": -1.04743545,
+          "door": 4.32089719,
+          "wheel_mu": 1.12285779,
+          "finger_mu": 0.81712502,
+          "hinge_friction": 1.36053926,
+          "hinge_damping": 1.11015365
+        }
+      },
+      {
+        "id": "H07",
+        "perturbation": {
+          "dx": 0.00017379,
+          "dy": 0.04028186,
+          "yaw": 2.85566381,
+          "door": 4.12132144,
+          "wheel_mu": 0.83725664,
+          "finger_mu": 0.91861407,
+          "hinge_friction": 0.59112422,
+          "hinge_damping": 0.8043831
+        }
+      },
+      {
+        "id": "H08",
+        "perturbation": {
+          "dx": -0.01102523,
+          "dy": -0.04291992,
+          "yaw": 3.85210003,
+          "door": 0.69889084,
+          "wheel_mu": 0.85601908,
+          "finger_mu": 1.11951844,
+          "hinge_friction": 0.87823299,
+          "hinge_damping": 1.16563126
+        }
+      },
+      {
+        "id": "H09",
+        "perturbation": {
+          "dx": 0.01310358,
+          "dy": -0.02212604,
+          "yaw": 2.45798501,
+          "door": 4.42381034,
+          "wheel_mu": 0.8932965,
+          "finger_mu": 0.94547832,
+          "hinge_friction": 1.39212634,
+          "hinge_damping": 0.51795838
+        }
+      },
+      {
+        "id": "H10",
+        "perturbation": {
+          "dx": 0.03093309,
+          "dy": 0.0304641,
+          "yaw": 4.70556771,
+          "door": 3.69663323,
+          "wheel_mu": 1.14375148,
+          "finger_mu": 1.19912924,
+          "hinge_friction": 0.92378916,
+          "hinge_damping": 0.79716395
+        }
+      },
+      {
+        "id": "H11",
+        "perturbation": {
+          "dx": 0.013014,
+          "dy": -0.02725367,
+          "yaw": 0.88200955,
+          "door": 4.28705216,
+          "wheel_mu": 0.90350917,
+          "finger_mu": 1.09395722,
+          "hinge_friction": 1.08496572,
+          "hinge_damping": 1.1651426
+        }
+      },
+      {
+        "id": "H12",
+        "perturbation": {
+          "dx": 0.04096036,
+          "dy": 0.02711798,
+          "yaw": 2.8086401,
+          "door": 1.49353979,
+          "wheel_mu": 1.18157733,
+          "finger_mu": 1.07477888,
+          "hinge_friction": 1.20715173,
+          "hinge_damping": 1.19640509
+        }
+      },
+      {
+        "id": "H13",
+        "perturbation": {
+          "dx": -0.02362947,
+          "dy": 0.01638875,
+          "yaw": 3.98016641,
+          "door": 1.08902929,
+          "wheel_mu": 1.00962886,
+          "finger_mu": 0.96766458,
+          "hinge_friction": 0.51690006,
+          "hinge_damping": 0.98937177
+        }
+      },
+      {
+        "id": "H14",
+        "perturbation": {
+          "dx": 0.02768356,
+          "dy": 0.02619261,
+          "yaw": 2.40468898,
+          "door": 0.55469245,
+          "wheel_mu": 1.19758602,
+          "finger_mu": 0.85931568,
+          "hinge_friction": 0.98109478,
+          "hinge_damping": 1.44123819
+        }
+      },
+      {
+        "id": "H15",
+        "perturbation": {
+          "dx": 0.01728173,
+          "dy": -0.01508562,
+          "yaw": 2.6941567,
+          "door": 1.46911079,
+          "wheel_mu": 0.87588427,
+          "finger_mu": 1.03906554,
+          "hinge_friction": 1.17843073,
+          "hinge_damping": 0.55454298
+        }
+      },
+      {
+        "id": "H16",
+        "perturbation": {
+          "dx": 0.00431427,
+          "dy": 0.02572322,
+          "yaw": -4.52464789,
+          "door": 0.51753957,
+          "wheel_mu": 1.19113895,
+          "finger_mu": 1.16176573,
+          "hinge_friction": 1.39093285,
+          "hinge_damping": 0.86735846
+        }
+      },
+      {
+        "id": "H17",
+        "perturbation": {
+          "dx": 0.0405281,
+          "dy": -0.02819241,
+          "yaw": 3.67766331,
+          "door": 0.9755062,
+          "wheel_mu": 0.81437848,
+          "finger_mu": 0.95446252,
+          "hinge_friction": 1.02596114,
+          "hinge_damping": 1.3142761
+        }
+      },
+      {
+        "id": "H18",
+        "perturbation": {
+          "dx": -0.02947729,
+          "dy": 0.04488813,
+          "yaw": 0.18414447,
+          "door": 3.48331236,
+          "wheel_mu": 1.14287678,
+          "finger_mu": 1.04461165,
+          "hinge_friction": 1.44281297,
+          "hinge_damping": 0.53141069
+        }
+      },
+      {
+        "id": "H19",
+        "perturbation": {
+          "dx": 0.02842269,
+          "dy": 0.02383991,
+          "yaw": -4.124081,
+          "door": 0.72794229,
+          "wheel_mu": 1.1844163,
+          "finger_mu": 1.0105348,
+          "hinge_friction": 0.9203797,
+          "hinge_damping": 1.18012631
+        }
+      },
+      {
+        "id": "H20",
+        "perturbation": {
+          "dx": 0.03158403,
+          "dy": 0.0049813,
+          "yaw": 2.28772304,
+          "door": 1.25959111,
+          "wheel_mu": 1.11266355,
+          "finger_mu": 0.94560374,
+          "hinge_friction": 0.84008483,
+          "hinge_damping": 1.22921215
+        }
+      },
+      {
+        "id": "H21",
+        "perturbation": {
+          "dx": 0.02778053,
+          "dy": 0.01671531,
+          "yaw": -0.40778178,
+          "door": 2.98576614,
+          "wheel_mu": 0.91177765,
+          "finger_mu": 0.97968645,
+          "hinge_friction": 0.57138662,
+          "hinge_damping": 0.87607199
+        }
+      },
+      {
+        "id": "H22",
+        "perturbation": {
+          "dx": 0.03462227,
+          "dy": -0.01010048,
+          "yaw": -0.17328924,
+          "door": 2.83194274,
+          "wheel_mu": 0.83136884,
+          "finger_mu": 0.8203885,
+          "hinge_friction": 0.70025713,
+          "hinge_damping": 0.64421225
+        }
+      },
+      {
+        "id": "H23",
+        "perturbation": {
+          "dx": 0.00629776,
+          "dy": 0.00303009,
+          "yaw": 1.57869027,
+          "door": 0.63405086,
+          "wheel_mu": 0.89238904,
+          "finger_mu": 0.96058977,
+          "hinge_friction": 0.75729376,
+          "hinge_damping": 1.27365808
+        }
+      },
+      {
+        "id": "H24",
+        "perturbation": {
+          "dx": -0.04027261,
+          "dy": 0.02586926,
+          "yaw": -0.15642366,
+          "door": 0.61175843,
+          "wheel_mu": 0.88449367,
+          "finger_mu": 1.03424655,
+          "hinge_friction": 0.73113574,
+          "hinge_damping": 0.89342089
+        }
+      },
+      {
+        "id": "H25",
+        "perturbation": {
+          "dx": -0.00602386,
+          "dy": 0.03427957,
+          "yaw": 2.8834702,
+          "door": 0.21976473,
+          "wheel_mu": 1.09246521,
+          "finger_mu": 1.12955307,
+          "hinge_friction": 0.66002646,
+          "hinge_damping": 0.60404757
+        }
+      },
+      {
+        "id": "H26",
+        "perturbation": {
+          "dx": -0.02638409,
+          "dy": -0.01678785,
+          "yaw": 3.36249852,
+          "door": 3.91494601,
+          "wheel_mu": 0.8880805,
+          "finger_mu": 1.16577695,
+          "hinge_friction": 0.88601761,
+          "hinge_damping": 1.43647621
+        }
+      },
+      {
+        "id": "H27",
+        "perturbation": {
+          "dx": -0.00095954,
+          "dy": 0.04467007,
+          "yaw": 2.76657233,
+          "door": 4.05875339,
+          "wheel_mu": 1.15966573,
+          "finger_mu": 0.85525067,
+          "hinge_friction": 0.90342675,
+          "hinge_damping": 1.36279656
+        }
+      },
+      {
+        "id": "H28",
+        "perturbation": {
+          "dx": 0.02098431,
+          "dy": 0.04004097,
+          "yaw": 4.66195692,
+          "door": 3.13396516,
+          "wheel_mu": 1.06936069,
+          "finger_mu": 1.06284629,
+          "hinge_friction": 1.11189917,
+          "hinge_damping": 1.11255244
+        }
+      },
+      {
+        "id": "H29",
+        "perturbation": {
+          "dx": 0.01483532,
+          "dy": -0.01932495,
+          "yaw": 1.28989519,
+          "door": 3.38446254,
+          "wheel_mu": 1.14174695,
+          "finger_mu": 0.81917641,
+          "hinge_friction": 1.10274783,
+          "hinge_damping": 0.51856285
+        }
+      },
+      {
+        "id": "H30",
+        "perturbation": {
+          "dx": 0.02077489,
+          "dy": -0.04328681,
+          "yaw": 3.86813283,
+          "door": 1.42125785,
+          "wheel_mu": 1.1174753,
+          "finger_mu": 0.81195355,
+          "hinge_friction": 0.83284341,
+          "hinge_damping": 1.22511733
+        }
+      },
+      {
+        "id": "H31",
+        "perturbation": {
+          "dx": 0.04799317,
+          "dy": -0.0316924,
+          "yaw": -2.74933488,
+          "door": 2.87753641,
+          "wheel_mu": 1.11204411,
+          "finger_mu": 1.02924528,
+          "hinge_friction": 1.46511859,
+          "hinge_damping": 0.93025461
+        }
+      },
+      {
+        "id": "H32",
+        "perturbation": {
+          "dx": -0.00403896,
+          "dy": 0.01085315,
+          "yaw": -2.97568197,
+          "door": 2.43411766,
+          "wheel_mu": 0.82894639,
+          "finger_mu": 1.11877012,
+          "hinge_friction": 1.3867037,
+          "hinge_damping": 1.22642995
+        }
+      },
+      {
+        "id": "H33",
+        "perturbation": {
+          "dx": 0.04739753,
+          "dy": 0.02432492,
+          "yaw": -1.30301678,
+          "door": 1.21935557,
+          "wheel_mu": 0.98574628,
+          "finger_mu": 0.84184678,
+          "hinge_friction": 1.41895908,
+          "hinge_damping": 1.10647449
+        }
+      },
+      {
+        "id": "H34",
+        "perturbation": {
+          "dx": -0.00180921,
+          "dy": -0.01575495,
+          "yaw": -4.54687859,
+          "door": 1.24636051,
+          "wheel_mu": 0.80577842,
+          "finger_mu": 0.80661006,
+          "hinge_friction": 1.48782095,
+          "hinge_damping": 1.08564644
+        }
+      },
+      {
+        "id": "H35",
+        "perturbation": {
+          "dx": 0.01812843,
+          "dy": 0.0377277,
+          "yaw": 4.73983734,
+          "door": 0.38629949,
+          "wheel_mu": 1.07280929,
+          "finger_mu": 0.86316875,
+          "hinge_friction": 0.79240911,
+          "hinge_damping": 0.57382302
+        }
+      },
+      {
+        "id": "H36",
+        "perturbation": {
+          "dx": 0.03316349,
+          "dy": 0.01046658,
+          "yaw": -3.36672147,
+          "door": 1.93338105,
+          "wheel_mu": 1.07983153,
+          "finger_mu": 0.84017679,
+          "hinge_friction": 1.28528767,
+          "hinge_damping": 1.21774727
+        }
+      },
+      {
+        "id": "H37",
+        "perturbation": {
+          "dx": 0.02010028,
+          "dy": 0.01654799,
+          "yaw": -3.0255546,
+          "door": 1.14365583,
+          "wheel_mu": 1.12782312,
+          "finger_mu": 1.14246394,
+          "hinge_friction": 0.97411598,
+          "hinge_damping": 1.05691477
+        }
+      },
+      {
+        "id": "H38",
+        "perturbation": {
+          "dx": -0.03279206,
+          "dy": -0.03023293,
+          "yaw": -1.26701358,
+          "door": 1.91328786,
+          "wheel_mu": 0.86655996,
+          "finger_mu": 0.85343385,
+          "hinge_friction": 0.59220242,
+          "hinge_damping": 1.29115909
+        }
+      },
+      {
+        "id": "H39",
+        "perturbation": {
+          "dx": 0.02271586,
+          "dy": -0.0171635,
+          "yaw": -0.43493697,
+          "door": 3.97652907,
+          "wheel_mu": 1.09643933,
+          "finger_mu": 1.01814738,
+          "hinge_friction": 1.40304805,
+          "hinge_damping": 0.50923453
+        }
+      },
+      {
+        "id": "H40",
+        "perturbation": {
+          "dx": 0.03207839,
+          "dy": -0.04917005,
+          "yaw": 3.12396097,
+          "door": 4.31163653,
+          "wheel_mu": 1.07540001,
+          "finger_mu": 0.91039814,
+          "hinge_friction": 0.50408836,
+          "hinge_damping": 0.76600544
+        }
+      },
+      {
+        "id": "H41",
+        "perturbation": {
+          "dx": 0.01453233,
+          "dy": 0.00186705,
+          "yaw": 3.91969145,
+          "door": 2.68118513,
+          "wheel_mu": 0.85794843,
+          "finger_mu": 1.13896317,
+          "hinge_friction": 1.24353369,
+          "hinge_damping": 0.63387922
+        }
+      },
+      {
+        "id": "H42",
+        "perturbation": {
+          "dx": 0.01709111,
+          "dy": -0.04852496,
+          "yaw": 3.05470591,
+          "door": 3.00135776,
+          "wheel_mu": 0.81065231,
+          "finger_mu": 1.03750914,
+          "hinge_friction": 0.75078339,
+          "hinge_damping": 0.90910423
+        }
+      },
+      {
+        "id": "H43",
+        "perturbation": {
+          "dx": -0.02650979,
+          "dy": 0.01417531,
+          "yaw": -1.37151866,
+          "door": 3.020184,
+          "wheel_mu": 1.18080786,
+          "finger_mu": 0.84277752,
+          "hinge_friction": 1.45695371,
+          "hinge_damping": 1.02304385
+        }
+      },
+      {
+        "id": "H44",
+        "perturbation": {
+          "dx": 0.01821788,
+          "dy": 0.01493971,
+          "yaw": -2.9828877,
+          "door": 4.04914173,
+          "wheel_mu": 1.19217118,
+          "finger_mu": 0.96110599,
+          "hinge_friction": 0.58527513,
+          "hinge_damping": 1.34511016
+        }
+      },
+      {
+        "id": "H45",
+        "perturbation": {
+          "dx": -0.0263623,
+          "dy": -0.00835599,
+          "yaw": -2.34912624,
+          "door": 2.6483103,
+          "wheel_mu": 0.86622032,
+          "finger_mu": 1.00921387,
+          "hinge_friction": 0.51735383,
+          "hinge_damping": 0.55853585
+        }
+      },
+      {
+        "id": "H46",
+        "perturbation": {
+          "dx": 0.03559644,
+          "dy": 0.04368669,
+          "yaw": 1.52457191,
+          "door": 1.35084613,
+          "wheel_mu": 0.8521979,
+          "finger_mu": 0.93543807,
+          "hinge_friction": 0.86303847,
+          "hinge_damping": 0.77392228
+        }
+      },
+      {
+        "id": "H47",
+        "perturbation": {
+          "dx": -0.03076345,
+          "dy": -0.03976153,
+          "yaw": -2.98670855,
+          "door": 2.59090163,
+          "wheel_mu": 1.08614517,
+          "finger_mu": 0.86573246,
+          "hinge_friction": 0.54743512,
+          "hinge_damping": 1.06782812
+        }
+      },
+      {
+        "id": "H48",
+        "perturbation": {
+          "dx": 0.03070066,
+          "dy": -0.04124256,
+          "yaw": 4.92096091,
+          "door": 0.92882365,
+          "wheel_mu": 0.88577714,
+          "finger_mu": 1.12342152,
+          "hinge_friction": 0.6707915,
+          "hinge_damping": 0.65627162
+        }
+      },
+      {
+        "id": "H49",
+        "perturbation": {
+          "dx": -0.03103684,
+          "dy": -0.01554582,
+          "yaw": 2.98074932,
+          "door": 4.8972627,
+          "wheel_mu": 0.83114939,
+          "finger_mu": 1.01234697,
+          "hinge_friction": 1.03208698,
+          "hinge_damping": 1.19890547
+        }
+      },
+      {
+        "id": "H50",
+        "perturbation": {
+          "dx": 0.03463944,
+          "dy": -0.04518583,
+          "yaw": 3.63163067,
+          "door": 4.8676654,
+          "wheel_mu": 0.92683426,
+          "finger_mu": 0.80845674,
+          "hinge_friction": 0.73837365,
+          "hinge_damping": 0.63938609
+        }
+      }
+    ],
+    "push": [
+      {
+        "id": "H01",
+        "perturbation": {
+          "dx": 0.04005405,
+          "dy": -0.01148912,
+          "yaw": 4.91488546,
+          "door": 2.37005805,
+          "wheel_mu": 1.0907068,
+          "finger_mu": 1.12790051,
+          "hinge_friction": 1.07114413,
+          "hinge_damping": 1.37825095
+        }
+      },
+      {
+        "id": "H02",
+        "perturbation": {
+          "dx": -0.04413942,
+          "dy": 0.02482075,
+          "yaw": 0.48364296,
+          "door": 1.40822686,
+          "wheel_mu": 1.10687898,
+          "finger_mu": 1.07099177,
+          "hinge_friction": 1.13625715,
+          "hinge_damping": 1.31404982
+        }
+      },
+      {
+        "id": "H03",
+        "perturbation": {
+          "dx": -0.00170011,
+          "dy": 0.02666651,
+          "yaw": -2.75248027,
+          "door": 0.48202505,
+          "wheel_mu": 0.84029129,
+          "finger_mu": 1.1601297,
+          "hinge_friction": 0.77546187,
+          "hinge_damping": 0.80118211
+        }
+      },
+      {
+        "id": "H04",
+        "perturbation": {
+          "dx": 0.03042907,
+          "dy": 0.02407465,
+          "yaw": -3.2214719,
+          "door": 4.7176434,
+          "wheel_mu": 1.18442024,
+          "finger_mu": 0.86789204,
+          "hinge_friction": 0.62669044,
+          "hinge_damping": 0.69818156
+        }
+      },
+      {
+        "id": "H05",
+        "perturbation": {
+          "dx": 0.0159309,
+          "dy": 0.04983585,
+          "yaw": -3.04815995,
+          "door": 4.93424016,
+          "wheel_mu": 0.8916568,
+          "finger_mu": 1.17629382,
+          "hinge_friction": 0.98058073,
+          "hinge_damping": 1.28072954
+        }
+      },
+      {
+        "id": "H06",
+        "perturbation": {
+          "dx": -0.00968183,
+          "dy": 0.04155572,
+          "yaw": 2.5426676,
+          "door": 0.74257201,
+          "wheel_mu": 1.04218258,
+          "finger_mu": 1.17623212,
+          "hinge_friction": 1.07377867,
+          "hinge_damping": 0.53089858
+        }
+      },
+      {
+        "id": "H07",
+        "perturbation": {
+          "dx": -0.04111662,
+          "dy": -0.01028251,
+          "yaw": 4.21716887,
+          "door": 1.00430607,
+          "wheel_mu": 1.01917663,
+          "finger_mu": 1.1115326,
+          "hinge_friction": 0.66499364,
+          "hinge_damping": 1.2101138
+        }
+      },
+      {
+        "id": "H08",
+        "perturbation": {
+          "dx": -0.03613432,
+          "dy": 0.03807587,
+          "yaw": -2.11809767,
+          "door": 2.72223942,
+          "wheel_mu": 1.08634957,
+          "finger_mu": 1.09014903,
+          "hinge_friction": 0.968473,
+          "hinge_damping": 1.40640176
+        }
+      },
+      {
+        "id": "H09",
+        "perturbation": {
+          "dx": 0.00582562,
+          "dy": 0.01388046,
+          "yaw": 2.07705546,
+          "door": 3.23563059,
+          "wheel_mu": 1.15744347,
+          "finger_mu": 1.0882265,
+          "hinge_friction": 1.06174061,
+          "hinge_damping": 0.67600699
+        }
+      },
+      {
+        "id": "H10",
+        "perturbation": {
+          "dx": -0.01107131,
+          "dy": -0.00840726,
+          "yaw": -3.9323144,
+          "door": 4.1860329,
+          "wheel_mu": 0.84515053,
+          "finger_mu": 1.00955142,
+          "hinge_friction": 1.19426023,
+          "hinge_damping": 0.88521722
+        }
+      },
+      {
+        "id": "H11",
+        "perturbation": {
+          "dx": 0.03807554,
+          "dy": 0.04702917,
+          "yaw": 4.69866456,
+          "door": 2.25535511,
+          "wheel_mu": 0.91742046,
+          "finger_mu": 1.1961554,
+          "hinge_friction": 1.41802082,
+          "hinge_damping": 0.73040976
+        }
+      },
+      {
+        "id": "H12",
+        "perturbation": {
+          "dx": 0.02508968,
+          "dy": 0.04964539,
+          "yaw": 4.29715573,
+          "door": 3.58055066,
+          "wheel_mu": 1.1155162,
+          "finger_mu": 0.81526863,
+          "hinge_friction": 0.9148916,
+          "hinge_damping": 1.04486005
+        }
+      },
+      {
+        "id": "H13",
+        "perturbation": {
+          "dx": 0.02191808,
+          "dy": 0.044217,
+          "yaw": 1.34105681,
+          "door": 3.17557098,
+          "wheel_mu": 0.94213103,
+          "finger_mu": 0.84923197,
+          "hinge_friction": 0.87989573,
+          "hinge_damping": 1.21921636
+        }
+      },
+      {
+        "id": "H14",
+        "perturbation": {
+          "dx": 0.01967953,
+          "dy": -0.04351923,
+          "yaw": -2.50450964,
+          "door": 2.30043483,
+          "wheel_mu": 1.10737872,
+          "finger_mu": 1.13118877,
+          "hinge_friction": 1.12536993,
+          "hinge_damping": 0.66758328
+        }
+      },
+      {
+        "id": "H15",
+        "perturbation": {
+          "dx": 0.03910977,
+          "dy": 0.01159892,
+          "yaw": -1.81689057,
+          "door": 4.18200275,
+          "wheel_mu": 0.97003232,
+          "finger_mu": 1.09228756,
+          "hinge_friction": 0.80526395,
+          "hinge_damping": 1.0582373
+        }
+      },
+      {
+        "id": "H16",
+        "perturbation": {
+          "dx": -0.01044663,
+          "dy": 0.02949884,
+          "yaw": -1.27025347,
+          "door": 4.38714436,
+          "wheel_mu": 1.06860384,
+          "finger_mu": 1.19223864,
+          "hinge_friction": 1.24206589,
+          "hinge_damping": 0.60420736
+        }
+      },
+      {
+        "id": "H17",
+        "perturbation": {
+          "dx": -0.01054017,
+          "dy": -0.02670708,
+          "yaw": -1.96615824,
+          "door": 2.89179328,
+          "wheel_mu": 1.06458302,
+          "finger_mu": 1.07016515,
+          "hinge_friction": 1.17928571,
+          "hinge_damping": 0.9097563
+        }
+      },
+      {
+        "id": "H18",
+        "perturbation": {
+          "dx": -0.03442339,
+          "dy": 0.02722788,
+          "yaw": 1.18101639,
+          "door": 1.38224449,
+          "wheel_mu": 1.0655015,
+          "finger_mu": 1.15669601,
+          "hinge_friction": 1.14037252,
+          "hinge_damping": 0.7321323
+        }
+      },
+      {
+        "id": "H19",
+        "perturbation": {
+          "dx": 0.00828745,
+          "dy": 0.02608566,
+          "yaw": -2.07144945,
+          "door": 1.72314511,
+          "wheel_mu": 1.12571413,
+          "finger_mu": 0.91485055,
+          "hinge_friction": 1.11492499,
+          "hinge_damping": 0.74983786
+        }
+      },
+      {
+        "id": "H20",
+        "perturbation": {
+          "dx": 0.01950023,
+          "dy": 0.02587288,
+          "yaw": -3.04506603,
+          "door": 2.97517014,
+          "wheel_mu": 1.05195193,
+          "finger_mu": 0.90265751,
+          "hinge_friction": 0.99386862,
+          "hinge_damping": 0.5601146
+        }
+      },
+      {
+        "id": "H21",
+        "perturbation": {
+          "dx": 0.03802887,
+          "dy": 0.03746784,
+          "yaw": 0.18640314,
+          "door": 1.44027087,
+          "wheel_mu": 0.85536724,
+          "finger_mu": 0.83896951,
+          "hinge_friction": 1.12583805,
+          "hinge_damping": 1.44505414
+        }
+      },
+      {
+        "id": "H22",
+        "perturbation": {
+          "dx": -0.00641664,
+          "dy": -0.0309492,
+          "yaw": -4.74566452,
+          "door": 3.98345762,
+          "wheel_mu": 0.9447014,
+          "finger_mu": 0.8197915,
+          "hinge_friction": 0.93538204,
+          "hinge_damping": 0.7145709
+        }
+      },
+      {
+        "id": "H23",
+        "perturbation": {
+          "dx": -0.00981669,
+          "dy": 0.00780623,
+          "yaw": 3.92899563,
+          "door": 1.22495391,
+          "wheel_mu": 1.11523242,
+          "finger_mu": 0.98049704,
+          "hinge_friction": 1.35401696,
+          "hinge_damping": 0.71295651
+        }
+      },
+      {
+        "id": "H24",
+        "perturbation": {
+          "dx": 0.01126655,
+          "dy": -0.04919145,
+          "yaw": -0.74445231,
+          "door": 3.95819311,
+          "wheel_mu": 1.1876419,
+          "finger_mu": 0.85079091,
+          "hinge_friction": 0.62368436,
+          "hinge_damping": 0.75080639
+        }
+      },
+      {
+        "id": "H25",
+        "perturbation": {
+          "dx": -0.0052857,
+          "dy": -0.0314846,
+          "yaw": -4.28151653,
+          "door": 3.43815482,
+          "wheel_mu": 1.08201701,
+          "finger_mu": 1.09591401,
+          "hinge_friction": 0.56230367,
+          "hinge_damping": 1.42742173
+        }
+      },
+      {
+        "id": "H26",
+        "perturbation": {
+          "dx": -0.03418956,
+          "dy": -0.04301681,
+          "yaw": -4.70756661,
+          "door": 4.14714675,
+          "wheel_mu": 1.11724458,
+          "finger_mu": 0.85188837,
+          "hinge_friction": 0.83215889,
+          "hinge_damping": 0.62363092
+        }
+      },
+      {
+        "id": "H27",
+        "perturbation": {
+          "dx": -0.04698427,
+          "dy": -0.04647178,
+          "yaw": 0.29772928,
+          "door": 4.04676836,
+          "wheel_mu": 1.12723513,
+          "finger_mu": 1.03423078,
+          "hinge_friction": 0.75555907,
+          "hinge_damping": 0.71147276
+        }
+      },
+      {
+        "id": "H28",
+        "perturbation": {
+          "dx": 0.0376699,
+          "dy": 0.01453595,
+          "yaw": 4.34169735,
+          "door": 1.87245007,
+          "wheel_mu": 1.01067531,
+          "finger_mu": 0.99770426,
+          "hinge_friction": 0.79043565,
+          "hinge_damping": 1.48721644
+        }
+      },
+      {
+        "id": "H29",
+        "perturbation": {
+          "dx": 0.04088909,
+          "dy": 0.02617168,
+          "yaw": -2.41593575,
+          "door": 0.53399546,
+          "wheel_mu": 0.84382041,
+          "finger_mu": 0.93933757,
+          "hinge_friction": 0.97238857,
+          "hinge_damping": 1.27436918
+        }
+      },
+      {
+        "id": "H30",
+        "perturbation": {
+          "dx": 0.00874154,
+          "dy": 0.0350193,
+          "yaw": -0.35610497,
+          "door": 4.99991391,
+          "wheel_mu": 0.9371925,
+          "finger_mu": 0.97275732,
+          "hinge_friction": 1.04453994,
+          "hinge_damping": 0.95224085
+        }
+      },
+      {
+        "id": "H31",
+        "perturbation": {
+          "dx": -0.00183521,
+          "dy": 0.02801804,
+          "yaw": 3.56086607,
+          "door": 4.72417864,
+          "wheel_mu": 1.03753098,
+          "finger_mu": 0.80978561,
+          "hinge_friction": 0.52136689,
+          "hinge_damping": 0.72747495
+        }
+      },
+      {
+        "id": "H32",
+        "perturbation": {
+          "dx": -0.03196752,
+          "dy": -0.01195525,
+          "yaw": -3.61489082,
+          "door": 4.70856029,
+          "wheel_mu": 1.119856,
+          "finger_mu": 1.06966109,
+          "hinge_friction": 0.51899712,
+          "hinge_damping": 1.31211408
+        }
+      },
+      {
+        "id": "H33",
+        "perturbation": {
+          "dx": 0.02696215,
+          "dy": 0.01538931,
+          "yaw": -0.60842436,
+          "door": 0.74982305,
+          "wheel_mu": 0.88952743,
+          "finger_mu": 0.88285595,
+          "hinge_friction": 1.42711245,
+          "hinge_damping": 0.72407898
+        }
+      },
+      {
+        "id": "H34",
+        "perturbation": {
+          "dx": -0.00481767,
+          "dy": -0.03448247,
+          "yaw": -1.96525782,
+          "door": 1.80707145,
+          "wheel_mu": 0.97244479,
+          "finger_mu": 1.07493847,
+          "hinge_friction": 0.50794159,
+          "hinge_damping": 1.24841443
+        }
+      },
+      {
+        "id": "H35",
+        "perturbation": {
+          "dx": 0.00368359,
+          "dy": -0.02505215,
+          "yaw": -0.07370063,
+          "door": 0.50262099,
+          "wheel_mu": 1.17422505,
+          "finger_mu": 1.19127988,
+          "hinge_friction": 1.49705025,
+          "hinge_damping": 1.19389787
+        }
+      },
+      {
+        "id": "H36",
+        "perturbation": {
+          "dx": -0.01495262,
+          "dy": 0.01791524,
+          "yaw": -4.17380851,
+          "door": 2.15630119,
+          "wheel_mu": 0.80249013,
+          "finger_mu": 0.97775512,
+          "hinge_friction": 0.58816106,
+          "hinge_damping": 1.46261086
+        }
+      },
+      {
+        "id": "H37",
+        "perturbation": {
+          "dx": -0.04356466,
+          "dy": -0.01989551,
+          "yaw": -0.94446789,
+          "door": 0.41335584,
+          "wheel_mu": 0.81783937,
+          "finger_mu": 0.94870935,
+          "hinge_friction": 1.17535644,
+          "hinge_damping": 1.22701778
+        }
+      },
+      {
+        "id": "H38",
+        "perturbation": {
+          "dx": -0.02379726,
+          "dy": 0.01278191,
+          "yaw": 2.70078928,
+          "door": 2.94741015,
+          "wheel_mu": 1.13689433,
+          "finger_mu": 0.94018962,
+          "hinge_friction": 1.16595314,
+          "hinge_damping": 1.12857003
+        }
+      },
+      {
+        "id": "H39",
+        "perturbation": {
+          "dx": -0.04887074,
+          "dy": 0.04401105,
+          "yaw": 1.91515147,
+          "door": 2.33069359,
+          "wheel_mu": 0.93271308,
+          "finger_mu": 0.92527667,
+          "hinge_friction": 1.42705598,
+          "hinge_damping": 1.43094665
+        }
+      },
+      {
+        "id": "H40",
+        "perturbation": {
+          "dx": 0.03496781,
+          "dy": 0.02722579,
+          "yaw": 1.363003,
+          "door": 2.2448234,
+          "wheel_mu": 1.18098172,
+          "finger_mu": 0.95868432,
+          "hinge_friction": 1.2978426,
+          "hinge_damping": 1.29802464
+        }
+      },
+      {
+        "id": "H41",
+        "perturbation": {
+          "dx": -0.00436288,
+          "dy": -0.04496746,
+          "yaw": 3.86174427,
+          "door": 1.75706739,
+          "wheel_mu": 1.00896129,
+          "finger_mu": 1.06782983,
+          "hinge_friction": 0.81603372,
+          "hinge_damping": 1.47659592
+        }
+      },
+      {
+        "id": "H42",
+        "perturbation": {
+          "dx": -0.02652025,
+          "dy": -0.0054486,
+          "yaw": 4.23939793,
+          "door": 1.82887089,
+          "wheel_mu": 1.03135107,
+          "finger_mu": 1.065774,
+          "hinge_friction": 0.89092786,
+          "hinge_damping": 1.49161873
+        }
+      },
+      {
+        "id": "H43",
+        "perturbation": {
+          "dx": -0.01782421,
+          "dy": -0.03915939,
+          "yaw": 0.43425702,
+          "door": 4.63258109,
+          "wheel_mu": 0.84716113,
+          "finger_mu": 1.03903664,
+          "hinge_friction": 1.13212026,
+          "hinge_damping": 1.03087792
+        }
+      },
+      {
+        "id": "H44",
+        "perturbation": {
+          "dx": 0.00701347,
+          "dy": -0.02753207,
+          "yaw": -2.99639088,
+          "door": 4.58403855,
+          "wheel_mu": 1.06861491,
+          "finger_mu": 0.93017847,
+          "hinge_friction": 1.33565804,
+          "hinge_damping": 1.24412755
+        }
+      },
+      {
+        "id": "H45",
+        "perturbation": {
+          "dx": 0.00790824,
+          "dy": -0.03369076,
+          "yaw": 2.73374458,
+          "door": 0.95569556,
+          "wheel_mu": 1.15294894,
+          "finger_mu": 0.8041316,
+          "hinge_friction": 0.52610344,
+          "hinge_damping": 1.42394767
+        }
+      },
+      {
+        "id": "H46",
+        "perturbation": {
+          "dx": 0.01529027,
+          "dy": -0.02561466,
+          "yaw": 3.77001189,
+          "door": 0.83689123,
+          "wheel_mu": 1.0127512,
+          "finger_mu": 0.83961114,
+          "hinge_friction": 0.801395,
+          "hinge_damping": 1.25236093
+        }
+      },
+      {
+        "id": "H47",
+        "perturbation": {
+          "dx": 0.00586127,
+          "dy": 0.02777847,
+          "yaw": -4.14527397,
+          "door": 4.94685982,
+          "wheel_mu": 0.85684366,
+          "finger_mu": 0.80903662,
+          "hinge_friction": 1.1560317,
+          "hinge_damping": 1.25941547
+        }
+      },
+      {
+        "id": "H48",
+        "perturbation": {
+          "dx": -0.03799149,
+          "dy": 0.04606119,
+          "yaw": -4.94017726,
+          "door": 3.28672918,
+          "wheel_mu": 0.84766344,
+          "finger_mu": 0.93004037,
+          "hinge_friction": 0.91570558,
+          "hinge_damping": 1.41792025
+        }
+      },
+      {
+        "id": "H49",
+        "perturbation": {
+          "dx": 0.01814399,
+          "dy": -0.02551987,
+          "yaw": 4.12432088,
+          "door": 4.72713933,
+          "wheel_mu": 0.80285357,
+          "finger_mu": 0.85609004,
+          "hinge_friction": 1.37618609,
+          "hinge_damping": 1.02051515
+        }
+      },
+      {
+        "id": "H50",
+        "perturbation": {
+          "dx": 0.00173298,
+          "dy": 0.01922414,
+          "yaw": -1.13062332,
+          "door": 0.9662344,
+          "wheel_mu": 0.98801415,
+          "finger_mu": 0.93703953,
+          "hinge_friction": 1.49595728,
+          "hinge_damping": 1.27643144
+        }
+      }
+    ]
+  },
+  "rejected": {
+    "pull": [],
+    "push": []
+  }
+}

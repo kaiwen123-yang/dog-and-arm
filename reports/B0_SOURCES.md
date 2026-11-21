@@ -22,3 +22,9 @@ bash scripts/b0/env.sh python scripts/b0/runtime.py
 ```
 
 安装脚本以固定 O1 lock 导出 Linux 运行依赖，使用 PyPI 下载所列版本，并以 editable 方式安装两个固定源码。首次创建的 Python 环境位于 `.venv-b0`，安装元数据和临时解析文件位于 `vendor/b0/o1-resolved`。训练入口应由 `scripts/b0/env.sh` 启动，以清除其他 Python 或动态库环境的路径影响。
+
+## 本机执行结果
+
+已在 Ubuntu 22.04 本机实际执行安装和 `python -m pip check`，129 个 B0 运行包解析、安装成功，依赖一致性检查通过。CPython 实际为 3.13.13，复用已有解释器创建独立 venv。当前硬件为 RTX 5080 Laptop、16,303 MiB 显存、580.159.03 驱动。历史 O1 的 96 GB 显存和 Python 3.13.18 仅用于来源对照。
+
+本机的 `Simulation`、`MultiTaskWorldModelEnv`、`WorldModelLearner` 与 `ActorCriticPolicyLearner` 均从两个指定 checkout 成功导入。`bash scripts/b0/env.sh python scripts/b0/runtime.py --output config/b0/runtime_local.json` 已在真实 CUDA 设备上用官方 optimizer builder 完成一次参数更新，内部权重的最大绝对变化可在[运行记录](../config/b0/runtime_local.json)中核对。该记录列出完整已装包版本。学习策略的环境交互和任务成绩由 B0 训练及评估报告单独记录。

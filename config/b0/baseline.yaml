@@ -1,0 +1,21 @@
+# Isolated local integration experiment, at the two O1 pins.
+reference_root: results/raw_large/b0/native_teacher_20261121_r1
+worlds: 8
+wm_batch: 32
+wm_batches: 10
+actor_batch: 16
+wm_hidden: [2048, 2048, 2048]
+actor_hidden: [2048, 1024, 512, 256]
+critic_hidden: [256, 128]
+buffer_size: 1000
+replay_ratio: 16
+physics_dt: 0.002
+policy_dt: 0.020
+history_length: 10
+free_motion_clip_frames: 351
+actor_horizon: 32
+wm_window: 8
+collection_noise: 0.1
+milestones: [0, 1000, 5000, 10000]
+periodic_updates: 10000
+diagnostic_block: 50000

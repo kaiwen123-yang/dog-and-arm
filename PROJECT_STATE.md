@@ -9,7 +9,9 @@
 - 三类无接触参考各实跑 350 个 20 ms 转移，另有独立扰动验证回合。按名映射 12 腿＋4 轮＋6 臂＋1 夹爪，原生 3.3.0 重放四条，共 1,400 个策略步。最大 TCP RMSE 为 1.81e-13 m。
 - 为补采整条 500 Hz 参考，冻结教师额外实跑前拉和背推 nominal 各一次。终态 60.052° 和 25.081°。门操作命令随子步变化，仅无接触恒定目标回合可直接用于本版动作 replay。
 - 原始数组在 `results/raw_large/b0/native_teacher_20261121_r1/`，执行命令与字段见 [数据报告](reports/B0_DATA_READINESS.md)。[来源锁](config/b0/source_lock.json)、[索引](data/b0/reference_manifest.json)、[重放数值](data/b0/native_teacher_checks.json)。
-- 此节点尚未取得学习成绩。下一步为固定 mjlab 后端对照、独立学习环境中的真实交互与官方 WM/Actor/Critic 闭环。
+- 独立环境 `bash scripts/b0/setup_env.sh`，O1 双 pin、129 个包，Torch 2.14.0/cu130、MuJoCo/Warp 3.16.0。四阶段 GPU/CPU 对照和固定 3.3.0 的三条教师轨迹见 [环境报告](reports/B0_ENV_ADAPTATION.md)。
+- seed0 实际运行 `bash scripts/b0/env.sh python scripts/b0/train.py --run free_s0_integration_r1 --updates 2 --integration`。GPU 8 个场景累计 320 个策略转移（3,200 个 2 ms 物理步）、20 个 WM minibatch、2 次 H32 Actor 与 40 个 Critic minibatch，均从新初始化的网络起步。权重在 `results/b0/free_s0_integration_r1/checkpoint_000002.pt`。
+- 独立加载同一权重，3 类各 0/20。第 2 次更新的留出 TCP 误差为 5.81 / 21.89 / 767.86 mm（1/7/32 步）。[学习记录](reports/B0_FREE_MOTION.md)。继续 B0-03；接触片段与完整学习任务待无接触通过。
 
 ## 历史规划节点：R0 → B0
 

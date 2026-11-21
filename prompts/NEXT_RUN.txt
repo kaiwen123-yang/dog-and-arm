@@ -2,4 +2,4 @@
 
 2026-11-21 本机已取得固定 O1 双源、front60_v2 三类无接触参考、1条独立未见 WM 验证交互及两侧完整 native 教师参考。查看 data/b0/reference_manifest.json，不重复采集已有回合。若迁移到新机器，按 reports/B0_DATA_READINESS.md 重建缺少的本地数组。已有教师成绩见该报告。
 
-继续固定 mjlab 后端物理对照及 B0-03 的真实训练、held-out 多步误差、冻结物理评测；随后依原计划推进接触任务。当前仅仿真，G1 已结项。权重、大数组及第三方仓库均留训练机。执行命令和每次验证状态以 PROJECT_STATE 顶部为准。
+B0-03 真实 CLI 和训练闭环已在 seed0 的 2 次更新诊断中运行，三类完整概况各 0/20。读 reports/B0_FREE_MOTION.md 及 reports/B0_ENV_ADAPTATION.md。优先续接 PROJECT_STATE 记录中的最新训练节点；跨机器需先重建缺少的本地数据和环境。旧检查点不含 replay 与仿真内态，--from-checkpoint 为带优化器的重新采集，不作精确延续。B0-04 以 B0-03 的 3×20 通过和两侧训练后端教师验证为起点。
