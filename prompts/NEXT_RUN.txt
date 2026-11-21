@@ -1,1 +1,8 @@
-继续 /home/kaiwen/research/dog-and-arm。先保留工作区和未跟踪 P5 数据，再正常拉取 main，读 PROJECT_STATE.md 与 reports/P6_FREE_BASE_DOOR.md。冻结控制 `86ade86`、`rail_bridge_front60_v2` 安装的同版固定清单已在 Linux 桌面全部执行。前拉 20/20、背推 20/20 通过。逐案表在 results/p6/rail_bridge_front60_v2_20261120T133724Z/conditions.csv。下轮按项目顺序准备自由底盘双扇普通铰链门，沿用被动门、无锁舌与固定 U 形把手，在新目录记录。先以 bash scripts/project_env.sh python scripts/view_model.py sim/scenes/door_double.xml 查看双门几何。历史尝试和中断记录保留。只做仿真。
+继续当前 dog-and-arm 工作区，进入 R0＋B0：先将官方 SuperMimic 迁移到现有 M1＋Piper H＋夹爪＋被动单门，再开展后续多模态融合。
+
+先读取 git status、AGENTS.md、PROJECT_STATE.md；保留未提交修改、未跟踪 P5 数据和原始记录后正常拉取。读取 docs/RESEARCH_ROADMAP.md、docs/B0_SUPERMIMIC_PLAN.md、docs/B0_DATA_MODEL_CONTRACT.md，随后按 prompts/B0_START.txt 的完整执行提示推进。
+
+当前 front60_v2、冻结控制86ade86的前拉/背推各20/20已经完成；不补跑旧14＋1暂停批次，不默认进入双门，不重做整机装配。官方G1复现已关闭，不重跑旧实验。B0从来源/环境/状态动作适配、参考与真实replay开始，优先完成第一个实际WM＋Actor学习闭环，再按B0-04～06推进。
+
+当前提交只有规划，尚无B0训练CLI或目标平台学习成绩。实施时创建真实入口并记录实际命令、结果和失败。普通提交并推送轻量代码/配置/结果，不强推、不制作本机归档。本轮B0仅仿真，腕部RGB-D＋语言＋本体＋世界模型/可微动力学及实机目标按后续路线保留。
+

@@ -1,6 +1,8 @@
-# dog-and-arm：M1＋Piper H 开门仿真
+# dog-and-arm：M1＋Piper H 腿臂协同控制
 
-本仓库是智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机的 MuJoCo 开工工程。
+本仓库基于智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机，开展 MuJoCo 腿臂协同与后续实机研究。最终目标是融合腕部 RGB-D、语言、本体历史的多模态/VLA 模型，与世界模型、可微动力学和 SuperMimic 式策略训练联合。
+
+**当前下一步：R0＋B0，先把官方 SuperMimic 迁移到已经完成联调的整机与单门场景。** P1–P6 工程基线直接继承；先无接触跟踪、再接触片段、再完整单门，之后发展多模态融合。B0 目前为待执行规划，尚无目标平台学习策略成绩。[总路线](docs/RESEARCH_ROADMAP.md) · [B0 详细执行计划](docs/B0_SUPERMIMIC_PLAN.md) · [数据/动作/模型约定](docs/B0_DATA_MODEL_CONTRACT.md) · [Codex 启动提示词](prompts/B0_START.txt)
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
@@ -36,7 +38,9 @@
 
 ## 用户现在需要做什么
 
-本机目录 `/home/kaiwen/research/dog-and-arm` 已创建，H0 已有真实结果。下一轮继续自由底盘仿真，无需重复克隆或再次启动机械臂验机。H0 结束时采集进程已退出，机械臂保持 MOVE_J 使能。手眼标定、购买标定板、附件称重和惯量测量全部后置。
+在已有工作区把 [B0_START.txt](prompts/B0_START.txt) 交给 Codex，从 R0/B0-01 开始落实官方方法迁移。先读取真实状态、保留工作区修改，再普通拉取；无需重复装配、重复 P6 全清单或重做 H0。B0 使用独立训练环境，原 MuJoCo 工程基线保留。双门安排到后续扩展阶段；手眼标定、标定板及附件称重在实机适配时落实，不作为当前名义仿真的前置条件。
+
+本机已知路径是 `/home/kaiwen/research/dog-and-arm`，AutoDL 以实际工作区为准。本次提交仅更新规划与入口，没有启动训练或硬件。
 
 ## H0：相机和机械臂联合运行
 
@@ -144,3 +148,4 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 本仓库是项目代码与阶段记录的保存位置。按有意义的可见调试节点提交并及时推送代码、配置、报告及必要小规模结果。无需另外制作本机压缩归档。vendor/、assets/converted/ 和 .venv 可按脚本重建，默认不提交；新拉取模型后先执行 fetch_sources.py 和 build_assembly.py，才能解析所引用的本地网格。四张实物照片已在仓库，无需重新下载或补拍。
 
 源码引用和第三方资产许可见 THIRD_PARTY_NOTICES.md。
+

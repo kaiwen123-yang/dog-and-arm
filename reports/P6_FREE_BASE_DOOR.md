@@ -1,6 +1,8 @@
 # P6 自由轮足底盘单门试验
 
-当前双导轨安装座的名义整任务已完成，最终门角 60.048936°。文末单列该版结果。A–D、mobile_01、两轮 20 案例和背推使用旧方块安装座。[安装座版本决定](../docs/MOUNT_RAIL_BRIDGE.md)
+> **当前有效基线（2026-11-21）：** `rail_bridge_front60_v2`、冻结控制 `86ade86`，前拉 60°与背推 25°各 20/20（背推名义底盘航向 95°），通过依据见本文末尾“2026-11-21 前移安装的最终双侧清单”及[最终逐案表](../results/p6/rail_bridge_front60_v2_20261120T133724Z/conditions.csv)。此前各节是分版本历史，不能混合统计。下一步研究入口已改为 [B0 官方方法迁移](../docs/B0_SUPERMIMIC_PLAN.md)，没有因为本次规划新增实验结果。
+
+历史 `rail_bridge_v1` 双导轨安装座的名义前拉整任务已完成，最终门角 60.048936°，其结果在后文单列。A–D、mobile_01、旧版两轮 20 案例和旧版背推使用方块安装座，不归入当前 front60_v2 清单。[安装座版本决定](../docs/MOUNT_RAIL_BRIDGE.md)
 
 ## A　操作站位承重与伸臂
 
@@ -270,3 +272,4 @@ bash scripts/project_env.sh python scripts/p6_approach_clearance.py "$raw"/push9
 ```
 
 上文保留早期前拉碰板、C13 超时、背推展开碰上支杆的失败尝试、90° 背侧 C20 左后轮碰门柱及 11 月 20 日主动中断的 mobile_C。各旧安装座成果沿用原目录和统计。[原 90° 背侧航向的全清单](../results/p6/rail_bridge_front60_v2_20261120T133724Z/conditions_90deg.csv) · [90° 背侧驶近距离](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_approach_frame_90deg.csv)。[冻结版前拉名义视频](../results/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C01/motion.mp4) · [95° 背推含 C01、C20 的分格视频](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push95_A/live_grid.mp4) · [前拉 C13 视频](../results/p6/rail_bridge_front60_v2_20261120T133724Z/lead_mobile_C13/motion.mp4)
+
