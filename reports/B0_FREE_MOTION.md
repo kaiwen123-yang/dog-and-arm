@@ -31,3 +31,16 @@ bash scripts/b0/env.sh python scripts/b0/train.py --run free_s0_u2_independent_e
 ### free_s0_boundary_r1 的预设修改
 
 动作拆分实验证实，原初始策略腿目标足以在 0.1 s 触发失载，大幅臂目标单独执行也会碰撞。新配置从零建立相同网络，将末层权重乘 0.02，偏置设为模型 home 的 23 路编码。训练后所有层均可更新，评测没有 home 接管。训练用官方同一个 WM 网络及优化器，按固定顺序先做 8 个七步监督批次，再做 2 个一步监督批次，合计仍为 10 次 WM minibatch。一步批次的监督包含真实末状态，保留短失败片段。长窗每批优先抽 75% 合法在线窗口，加 25% 训练参考教师窗口。在线池尚无长窗时长窗批次使用教师数据，一步批次仍全部来自在线。Actor 始终从在线 replay 的真实起点采样，带入采集器保存的完整十帧历史。该配置的新 replay 比例仍按官方状态窗口数量定义，8 个世界每 17 个策略步更新一次。节点为 0/50/200/1000，收集策略和独立物理门槛见配置。[配置](../config/b0/free_replay_home.yaml)
+
+### 执行至更新 200 的诊断与下一组尺度
+
+boundary 变体 u50 在固定的 60 条条件上都连续走完 7 s，三类均 0/20。Warp 的支撑/移动/停车 TCP RMSE 分别为 81.7–98.1 / 240.1–255.4 / 194.1–210.7 mm。u200 的 CPU 3.16 评测中 60 条均在 0.100 s 持续失载。仅使腿回到站姿的独立 3.3.0 消融可走完 0.8 s。冻结 WM 在同一验证点的一步动作→TCP Jacobian 对真实物理差分的余弦从 u50 的 0.789 提高到 u200 的 0.942，七步为 0.334 和 0.484。独立桌面 nominal 实测用 `bash scripts/b0/env.sh python scripts/b0/eval_native33.py --run free_s0_boundary_u50_desktop --checkpoint results/b0/free_s0_boundary_r1/checkpoint_000050.pt --live`。真实求解每步推进，显示窗口从独立 MjData 只读呈现实测状态。[桌面截图](../results/b0/free_s0_boundary_u50_desktop/mujoco_desktop.jpg) · [u50 GPU 物理结果](../results/b0/free_s0_boundary_u50_warp/physical/summary.json)
+
+为检验动作量纲是否使探索过于激烈，另预注册 **free_s0_servo_units_r1**，从 seed0 独立随机初始化，端点 1,000 次 Actor 更新，增加 50、200 两个开发评测节点。原 G1 固定源码将一个动作单位设为 0.25 × 力矩上限 / 位置增益，并以站姿为偏置。将此原则应用到 P6 位置和轮速伺服，得到腿 0.01923 rad、轮 0.5 rad/s、六臂 0.025–0.050 rad、夹口 0.003333 m。0.1 采集噪声在这个网络输出坐标中施加；动作仍映射到同一 23 维规范并使用原物理限幅，参考与真动作数据不重标也不变更。独立结果保留原 O1 tracking 奖励和之前的边界采样适配。[固定 G1 代码](https://github.com/HybridRobotics/mjlab_research/blob/dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd/src/mjlab/asset_zoo/robots/unitree_g1/g1_constants.py) · [实验配置](../config/b0/free_servo_units.yaml)
+
+
+### 本机 1000 次更新与云端独立环境
+
+replay/home seed0 完成 10,000 次 WM 小批更新、1,000 次 H32 Actor 更新和其配套 Critic 更新，共产生 136,000 个真实策略转移。第 1000 次更新的留出 TCP RMSE 为 0.84 / 4.22 / 12.59 mm。原生和 Warp 对三类物理任务分别给出 0/20。后续尺度变体在第 50 次更新完成权重写入、尚在评测时按用户隔离要求停止。其已写逐案仅供诊断。[训练记录](../results/b0/free_s0_boundary_r1/outcome.json) · [实测预测误差](../results/b0/free_s0_boundary_r1/eval_001000/model_errors.csv) · [三类 Warp 评测](../results/b0/free_s0_boundary_u1000_warp/physical/summary.json)
+
+云端从零单独检验伺服尺度和更大批量。128 个并行物理环境，WM 和 Actor 每批各 256，H32 rollout 保留输入梯度。按累计状态数交替执行 8 和 9 个物理交互策略步，再训练 10 个 WM minibatch 和 1 个 Actor update。预设 0、50、200、1000 和 5000 节点，观察完整 3×20 物理表现。若达到三类门槛，冻结并独立复核后停止。[云端配置](../config/b0/free_servo_cloud.yaml)

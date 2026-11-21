@@ -73,11 +73,13 @@ def main():
         checkpoint_eval(run, out/f'eval_{run.updates:06d}', full=not args.integration)
         return
 
-    def checkpoint():
+    def checkpoint(interrupted=False):
         weights = {n:getattr(run,n).state_dict() for n in ('actor','critic','dyn')}
         weights.update(cfg=cfg, seed=args.seed, updates=run.updates, collected=run.collected,
                        optimizers=[o.state_dict() for o in opts])
-        path = out/f'checkpoint_{run.updates:06d}.pt'
+        prefix = 'interrupted' if interrupted else 'checkpoint'
+        weights['interrupted_during_update'] = interrupted
+        path = out/f'{prefix}_{run.updates:06d}.pt'
         torch.save(weights, path.with_suffix('.pt.tmp'))
         path.with_suffix('.pt.tmp').replace(path)
         return path
@@ -89,19 +91,23 @@ def main():
     checkpoint_eval(run, out/f'eval_{run.updates:06d}', full=not args.integration)
     short_count = cfg.get('one_step_batches', 0)
     state_count = (cfg['wm_batches'] - short_count) * run.wmc.horizon + 2 * short_count
-    vector_steps = state_count * cfg['wm_batch'] / (cfg['worlds'] * cfg['replay_ratio'])
-    if not vector_steps.is_integer():
-        raise ValueError('this batch configuration requires a non-integral interaction interval')
+    states_per_update = state_count * cfg['wm_batch']
+    states_per_tick = cfg['worlds'] * cfg['replay_ratio']
+    if states_per_update < states_per_tick:
+        raise ValueError('each learner update needs at least one fresh physics tick')
     log_path = out/'updates.jsonl'
     while run.updates < args.updates:
         evidence = run.updates in (0,1) or run.updates in cfg['milestones']
-        stats = run.collect(int(vector_steps), save=evidence)
+        # Difference of cumulative quotients preserves the configured replay ratio.
+        ticks = ((run.updates + 1) * states_per_update // states_per_tick
+                 - run.updates * states_per_update // states_per_tick)
+        stats = run.collect(ticks, save=evidence)
         try:
             stats.update(run.update(), actor_update=run.updates)
         except (RuntimeError, ValueError, FloatingPointError) as exc:
             save_json(out/'failure.json', dict(completed_or_attempted_update=run.updates,
                       policy_transitions=run.collected, error=str(exc),
-                      interruption_checkpoint=str(checkpoint())))
+                      interruption_checkpoint=str(checkpoint(interrupted=True))))
             raise
         with log_path.open('a') as f:
             f.write(json.dumps(stats,allow_nan=False)+'\n')

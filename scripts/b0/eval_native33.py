@@ -48,8 +48,44 @@ def native_worker(args):
         record_action_coverage(refs, output_dir / 'action_blocks',
                                ROOT / 'results/raw_large/b0' / args.checkpoint.parent.name)
     else:
-        evaluate_cases(make_model(), refs, policy_factory, output_dir / 'physical', seed=setup['seed'],
-                       cases=cases, checkpoint=str(args.checkpoint), trace_directory=raw)
+        model = make_model()
+        plant_factory = None
+        viewer = None
+        if args.live:
+            import time
+            import mujoco.viewer
+            from learning.b0.physics import NativePlant
+            from live_assembly import close_viewer
+
+            plant = NativePlant(model)
+            display = mj.MjData(model)
+            viewer = mujoco.viewer.launch_passive(model, display, show_left_ui=False, show_right_ui=False)
+            with viewer.lock():
+                viewer.cam.distance = 2.15
+                viewer.cam.azimuth, viewer.cam.elevation = 134, -17
+                viewer.cam.lookat[:] = [0.1, 0., .61]
+                viewer.opt.geomgroup[3:5] = 0
+            original_step = plant.step
+            def display_step(cmd):
+                result = original_step(cmd)
+                if viewer.is_running():
+                    with viewer.lock():
+                        display.qpos[:] = plant.data.qpos
+                        display.qvel[:] = plant.data.qvel
+                        display.time = plant.data.time
+                        mj.mj_forward(model, display)
+                    viewer.sync()
+                    time.sleep(result['physics_steps'] * model.opt.timestep)
+                return result
+            plant.step = display_step
+            plant_factory = lambda _: plant
+        try:
+            evaluate_cases(model, refs, policy_factory, output_dir / 'physical', seed=setup['seed'],
+                           cases=cases, checkpoint=str(args.checkpoint), trace_directory=raw,
+                           plant_factory=plant_factory)
+        finally:
+            if viewer is not None:
+                close_viewer(viewer)
     (output_dir / 'evaluation.json').write_text(json.dumps(dict(
         physics='native CPU MuJoCo 3.3.0', actor_interpreter='isolated B0 environment',
         raw=str(raw.relative_to(ROOT)),
@@ -78,6 +114,8 @@ def evaluate(args):
     del ckpt
     worker = ['bash', str(ROOT / 'scripts/project_env.sh'), 'python', '-u', __file__,
               '--native-worker', '--run', args.run, '--checkpoint', str(args.checkpoint)]
+    if args.live:
+        worker.append('--live')
     if args.full:
         worker.append('--full')
     if args.action_blocks:
@@ -111,6 +149,7 @@ if __name__ == '__main__':
     parser.add_argument('--checkpoint', required=True, type=Path)
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument('--action-blocks', action='store_true', help='Short diagnostic interventions on four action groups')
+    modes.add_argument('--live', action='store_true', help='Display the real nominal policy evaluation on the local desktop')
     modes.add_argument('--full', action='store_true', help='Use all 3 × 20 frozen initial configurations')
     parser.add_argument('--native-worker', action='store_true', help=argparse.SUPPRESS)
     args = parser.parse_args()

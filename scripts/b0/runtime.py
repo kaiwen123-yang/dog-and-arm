@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--output", type=Path, help="Save a JSON record of this runtime")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[2]
-    if Path(sys.prefix).resolve() != root / ".venv-b0":
+    if Path(sys.prefix).resolve() != root / ".conda/envs/arm-and-dog":
         raise RuntimeError("Launch with bash scripts/b0/env.sh python scripts/b0/runtime.py")
     wp.init()
     gpu = torch.cuda.get_device_properties(0)
@@ -42,6 +42,9 @@ def main():
         raise RuntimeError(f"Unexpected CUDA weight delta: {delta}")
     versions = {d.metadata["Name"].lower(): d.version for d in metadata.distributions()}
     record = {
+        "conda_environment": "arm-and-dog",
+        "python_prefix": sys.prefix,
+        "warp_cache": wp.config.kernel_cache_dir,
         "python": platform.python_version(),
         "platform": platform.platform(),
         "gpu": gpu.name,

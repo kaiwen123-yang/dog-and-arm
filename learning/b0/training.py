@@ -15,7 +15,7 @@ from supermimic.replay_buffer import ReplayBuffer, FieldSpec
 from supermimic.runners.reset_sampling import ReturnSampler, ReturnSamplerCfg
 from supermimic.tasks.task_spec import make_motion_task, make_velocity_task, build_actor_obs_td
 
-from .model import RobotRepresentation, RobotActor, B0WorldModelCfg, full_state, native_state, tensor
+from .model import RobotRepresentation, RobotActor, EffortScaledActor, B0WorldModelCfg, full_state, native_state, tensor
 from .physics import make_model, ActionMap, ROOT
 from .reference import load_episode
 
@@ -73,6 +73,8 @@ class FreeRun:
         self.updates = self.collected = 0
         self.model = make_model()
         self.map = ActionMap(self.model)
+        if cfg['history_length'] != 10 or not np.isclose(cfg['physics_dt'], self.model.opt.timestep) or not np.isclose(cfg['policy_dt'], 10*self.model.opt.timestep):
+            raise ValueError('recorded B0 reference contract requires history 10 and 2 ms x 10 steps')
         self.refs = {name: load_episode(Path(cfg['reference_root'])/name)
                      for name in ('support', 'moving_arm', 'park')}
         self.validation = load_episode(Path(cfg['reference_root'])/'moving_arm_wm_validation')
@@ -88,8 +90,13 @@ class FreeRun:
         motion_task = make_motion_task(self.rep, goal_width)
         velocity_task = make_velocity_task((-1.5, 1.5), (-.5, .5), (-3.14, 3.14),
                                            25, (.5, .5, .785), device)
-        self.actor = RobotActor(77, 23, [motion_task, velocity_task], {'motion': 1., 'velocity': 0.},
+        effort_units = cfg.get('network_output_units') == 'quarter_effort_over_servo_gain'
+        actor_class = EffortScaledActor if effort_units else RobotActor
+        self.actor = actor_class(77, 23, [motion_task, velocity_task], {'motion': 1., 'velocity': 0.},
                       32, tuple(cfg['actor_hidden']), .1, 10).to(device)
+        if effort_units:
+            self.actor.set_servo_units(self.model, self.map, device)
+        self.exploration_scale = self.actor.standard_action if effort_units else 1.
         self.critic = build_mlp(self.rep.rep_state_dim + goal_width + 1,
                                 tuple(cfg['critic_hidden']), 1).to(device)
         self.n = cfg['worlds']
@@ -103,8 +110,8 @@ class FreeRun:
                 self.actor.decoder[-1].weight.mul_(.02)
                 self.actor.decoder[-1].bias.copy_(tensor((home-self.map.offset)/self.map.scale, device))
 
-        self.wmc = B0WorldModelCfg(batch_size=cfg['wm_batch'], num_batches=cfg['wm_batches'])
-        self.pc = ActorCriticPolicyLearnerCfg(batch_size=cfg['actor_batch'], horizon=32)
+        self.wmc = B0WorldModelCfg(batch_size=cfg['wm_batch'], num_batches=cfg['wm_batches'], horizon=cfg['wm_window'])
+        self.pc = ActorCriticPolicyLearnerCfg(batch_size=cfg['actor_batch'], horizon=cfg['actor_horizon'], noise=cfg['collection_noise'])
         self.wml = WorldModelLearner(self.dyn, self.rep, self.wmc, device)
         if self.mixed:
             self.short_wml = WorldModelLearner(self.dyn, self.rep, B0WorldModelCfg(
@@ -212,7 +219,7 @@ class FreeRun:
             q0, v0 = plant.data.qpos[:].clone(), plant.data.qvel[:].clone()
             s = full_state(q0, v0)
             obs = self.actor_obs(s, self.frames, self.history)
-            raw = self.actor.raw(obs) + torch.randn_like(self.prev) * self.pc.noise
+            raw = self.actor.raw(obs) + torch.randn_like(self.prev) * self.pc.noise * self.exploration_scale
             a = raw.clamp(-1, 1)
             bad = plant.step(a, record_substeps=save)
             q1, v1 = plant.data.qpos[:].clone(), plant.data.qvel[:].clone()

@@ -87,3 +87,47 @@ bash scripts/b0/env.sh python -u scripts/b0/eval_native33.py --action-blocks --r
 ```
 
 另从三类名义初态分别将冻结教师的第一条 home 动作恒定执行完整 7 s，三个实际物理回合均站稳。支撑、移动、停车参考的 TCP RMSE 分别为 81.4、217.2、175.4 mm，后两类根位置 RMSE 为 177.4、133.3 mm。三类均未通过追踪门槛。该对照区分了维持站姿与实际跟踪目标。[全 7 s 恒定命令对照](../results/b0/native_replay_audit_r1/home_only_comparison.json)
+
+## 可微预测的局部动作方向
+
+固定留出回合 `moving_arm_wm_validation` 的第 100 帧（2.00 s）与其后 7 个实际动作。原 3.3.0 从第 0 帧物理重放至该起点，对首条归一化动作的 23 个通道逐一作对称小扰动，之后动作照原记录执行，测 p4_grasp 的 world XYZ。每个分支从同一个 MjData 副本开始（含求解器状态）。首帧前向重建误差为 qpos 2.88e−14、qvel 2.00e−14；无扰动的 1/7 步 TCP 落点误差均小于 6e−16 m。±0.0005 和 ±0.002 的两套步幅给出的 3×23 灵敏度矩阵，1/7 步相对差分别为 3.93e−5、4.50e−6。各分支的有效接触几何对与四轮加载状态均与原轨迹相同。[两套步幅的真实矩阵](../results/b0/native_replay_audit_r1/action_tcp_fd_k100.json)
+
+世界模型从同一起点作连续预测，冻结参数并对其世界系 TCP 坐标反传，仅测首个动作的影响。下表在 ±0.002 的中心差分上计算，全通道余弦为展开矩阵的余弦，相对误差为差矩阵 Frobenius 范数除以真实矩阵范数。
+
+| 检查点 | 1 步余弦 | 7 步余弦 | 1 步相对误差 | 7 步相对误差 |
+| --- | ---: | ---: | ---: | ---: |
+| 原方案 u2 | 0.176 | −0.167 | 1.015 | 7.065 |
+| 更新 replay 与 home 初始化的 u50 | 0.789 | 0.334 | 0.616 | 2.196 |
+| 同一变体 u200 | 0.942 | 0.484 | 0.371 | 1.479 |
+| 同一变体 u1000 | 0.954 | 0.717 | 0.361 | 0.704 |
+
+u50 比 u2 的一步动作方向明显改善，7 步仍有较大误差。结果描述这一个已加载的自由运动起点；接触切换处、完整参考及策略能力需分别实测。[u2 的分块误差](../results/b0/free_s0_u2_init_blocks/action_tcp_jacobian.json)和 [u50 的分块误差](../results/b0/free_s0_boundary_r1/eval_000050/action_tcp_jacobian.json)
+
+```bash
+bash scripts/project_env.sh python scripts/b0/check_physical_gradient.py native results/raw_large/b0/native_teacher_20261121_r1 results/b0/native_replay_audit_r1/action_tcp_fd_k100.json
+OMP_NUM_THREADS=3 TORCH_COMPILE_DISABLE=1 bash scripts/b0/env.sh python scripts/b0/check_physical_gradient.py wm results/b0/free_s0_integration_r1/checkpoint_000002.pt results/b0/native_replay_audit_r1/action_tcp_fd_k100.json results/b0/free_s0_u2_init_blocks/action_tcp_jacobian.json
+OMP_NUM_THREADS=3 TORCH_COMPILE_DISABLE=1 bash scripts/b0/env.sh python scripts/b0/check_physical_gradient.py wm results/b0/free_s0_boundary_r1/checkpoint_000050.pt results/b0/native_replay_audit_r1/action_tcp_fd_k100.json results/b0/free_s0_boundary_r1/eval_000050/action_tcp_jacobian.json
+```
+
+u200 在同一点的一步终点 TCP 误差 1.46 mm，七步 9.20 mm。一步臂块的方向余弦为 0.969，七步腿与轮仅为 0.032 与 −0.047。真实夹爪作用力对 p4_grasp 的短期影响很弱，该块很大的相对误差应结合真实矩阵范数读取。[u200 分块误差](../results/b0/free_s0_boundary_r1/eval_000200/action_tcp_jacobian.json)
+
+## MuJoCo-Warp 训练后端物理评测
+
+在固定 mjlab_research 的 GPU Simulation 上，每类参考并行运行 20 个规定初态。每一子步查询原物理审计与实际状态。失败 lane 取首个失效子步的 qpos/qvel 与具体原因；同批其余 lane 继续积分，已经失败的 lane 后续数据不参与评分。时间为真实子步计数 × 0.002 s。各后端和各参考独立统计。
+
+| 检查点与后端 | 支撑伸收臂 | 移动变臂姿 | 停车收臂 | 物理结果 |
+| --- | ---: | ---: | ---: | --- |
+| 原 u2，Warp 3.16.0 | 0/20 | 0/20 | 0/20 | 早期失载或倾斜，50–89 个物理步后中止 |
+| 变体 u50，Warp 3.16.0 | 0/20 | 0/20 | 0/20 | 全部 60 条完成 7.00 s，跟踪误差越线 |
+| 同一变体 u1000，Warp 3.16.0 | 0/20 | 0/20 | 0/20 | 全部 60 条都在 0.100 s 首次触发持续轮载不足 |
+
+u2 三类的失载数分别为 19、19、9，其余均为倾斜终止。u50 三类 TCP RMSE 范围分别为 81.7–98.1、240.1–255.4、194.1–210.7 mm，移动和停车的根位置 RMSE 分别为 197.2–210.6、151.5–166.1 mm。u50 第一个 world 的首条动作与独立单样本 Actor 推理的最大绝对差不超过 3.0e−5（归一化动作），使用相同权重和干净观测。[u2 逐案](../results/b0/free_s0_u2_warp/physical/cases.csv)和 [u50 逐案](../results/b0/free_s0_boundary_u50_warp/physical/cases.csv)
+
+```bash
+OMP_NUM_THREADS=3 TORCH_COMPILE_DISABLE=1 bash scripts/b0/env.sh python -u scripts/b0/eval_warp.py --run free_s0_u2_warp --checkpoint results/b0/free_s0_integration_r1/checkpoint_000002.pt
+OMP_NUM_THREADS=3 TORCH_COMPILE_DISABLE=1 bash scripts/b0/env.sh python -u scripts/b0/eval_warp.py --run free_s0_boundary_u50_warp --checkpoint results/b0/free_s0_boundary_r1/checkpoint_000050.pt
+```
+
+对 replay/home 变体在同一 0.8 s 原生 3.3.0 窗口重复分组实验。u50 首条腿动作最大偏转 4.84°，全部 11 组都能维持到 0.8 s。u200 首条腿动作最大偏转达 9.74°，完整策略和仅腿组均在 0.100 s 失载，固定腿 home 后其余通道由策略输出可维持至 0.8 s。u200 仅臂组也完成了窗口，但终端 TCP 偏差达 106 mm。优化后该点的一步 TCP 局部灵敏度改善，与实际首条腿动作是否保有轮载是不同的观测。[u50 逐组](../results/b0/free_boundary_u50_init_blocks/action_blocks/results.csv)与 [u200 逐组](../results/b0/free_boundary_u200_init_blocks/action_blocks/results.csv)
+
+以上 u1000 的物理评测和 Jacobian 均为旧隔离环境已结束的实验。u1000 的局部模型方向改善，三个实际跟踪组均未越过自由运动门槛。[逐案物理结果](../results/b0/free_s0_boundary_u1000_warp/physical/cases.csv)和 [局部梯度](../results/b0/free_s0_boundary_r1/eval_001000/action_tcp_jacobian.json)

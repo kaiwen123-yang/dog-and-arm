@@ -1,0 +1,30 @@
+# Isolated local integration experiment, at the two O1 pins.
+reference_root: results/raw_large/b0/native_teacher_20261121_r1
+worlds: 8
+wm_batch: 32
+wm_batches: 10
+actor_batch: 16
+wm_hidden: [2048, 2048, 2048]
+actor_hidden: [2048, 1024, 512, 256]
+critic_hidden: [256, 128]
+buffer_size: 1000
+replay_ratio: 16
+physics_dt: 0.002
+policy_dt: 0.020
+history_length: 10
+free_motion_clip_frames: 351
+actor_horizon: 32
+wm_window: 8
+collection_noise: 0.1
+milestones: [0, 1000, 5000, 10000]
+periodic_updates: 10000
+diagnostic_block: 50000
+
+# Keep study B's data/boundary treatment. The O1 G1 source scales positions by
+# 0.25 * force limit / position gain and uses home offsets. Generalize the
+# same rule to wheel (velocity gain) and full jaw width (2x linear change).
+window_recipe: terminal_one_step_and_seven_step
+one_step_batches: 2
+network_output_units: quarter_effort_over_servo_gain
+additional_physical_checks: [50, 200]
+hypothesis: Scaling network outputs and 0.1 exploration in O1 actuator-effort units will keep early legs loaded while preserving physical action ranges, 7 s tracking accuracy and the original O1 reward are evaluated separately.

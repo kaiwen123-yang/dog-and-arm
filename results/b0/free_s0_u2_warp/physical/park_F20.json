@@ -1,0 +1,102 @@
+{
+  "observed_motion": {
+    "root_displacement_xy_m": [
+      0.018511561676859856,
+      -0.037934981286525726
+    ],
+    "peak_arm_excursion_deg": [
+      15.006174087524414,
+      43.216007232666016,
+      21.17151641845703,
+      41.64807891845703,
+      17.455141067504883,
+      33.1838493347168
+    ],
+    "final_arm_excursion_deg": [
+      15.006174087524414,
+      43.216007232666016,
+      -21.17151641845703,
+      -41.64807891845703,
+      -4.377689838409424,
+      -31.563173294067383
+    ],
+    "jaw_range_m": [
+      0.026849089190363884,
+      0.07909831404685974
+    ],
+    "peak_speed_xy_m_s": 0.4462198317050934,
+    "final_speed_xy_m_s": 0.4029482305049896,
+    "final_window_s": 0.166,
+    "final_window_peak_speed_m_s": 0.4462198317050934,
+    "final_window_peak_abs_world_yaw_rate_deg_s": 51.06986618041992
+  },
+  "passed": false,
+  "failures": [
+    "tilt",
+    "partial_or_misaligned_final_interval",
+    "incomplete_episode",
+    "tcp_position_rmse_m",
+    "max_joint_range_normalized_rmse"
+  ],
+  "physics_steps": 83,
+  "expected_physics_steps": 3500,
+  "scored_frames": 9,
+  "physical_duration_s": 0.166,
+  "metrics": {
+    "root_position_rmse_m": 0.017040942505167005,
+    "root_orientation_rmse_deg": 3.23498694100813,
+    "root_linear_velocity_rmse_m_s": 0.33146887736983244,
+    "root_body_angular_velocity_rmse_rad_s": 1.3864440273150385,
+    "tcp_position_rmse_m": 0.14204936355362546,
+    "max_joint_range_normalized_rmse": 0.12115469334120504,
+    "per_joint_range_normalized_rmse": {
+      "m1_FAR_ABAD_JOINT": 0.08410169554688834,
+      "m1_FAR_HIP_JOINT": 0.017294201227570555,
+      "m1_FAR_KNEE_JOINT": 0.019172541036035676,
+      "m1_FBL_ABAD_JOINT": 0.022729549338828817,
+      "m1_FBL_HIP_JOINT": 0.019829987033664356,
+      "m1_FBL_KNEE_JOINT": 0.006553870727968452,
+      "m1_RAR_ABAD_JOINT": 0.03742042833140995,
+      "m1_RAR_HIP_JOINT": 0.0047620164874195335,
+      "m1_RAR_KNEE_JOINT": 0.022656542018911867,
+      "m1_RBL_ABAD_JOINT": 0.0397140095403102,
+      "m1_RBL_HIP_JOINT": 0.020386087705009354,
+      "m1_RBL_KNEE_JOINT": 0.006410372508088623,
+      "piper_joint1": 0.017099754926648652,
+      "piper_joint2": 0.12115469334120504,
+      "piper_joint3": 0.0596596446459629,
+      "piper_joint4": 0.09540650563122904,
+      "piper_joint5": 0.06550042956110962,
+      "piper_joint6": 0.05403292497007074
+    },
+    "leg_position_rmse_rad": 0.07997667656419431,
+    "arm_position_rmse_rad": 0.2974999499966239,
+    "finite_joint_velocity_rmse_rad_s": 5.284865387361906,
+    "wheel_speed_rmse_rad_s": 2.1181174977961277,
+    "gripper_width_rmse_m": 0.01915361444064062,
+    "finger_equality_residual_rmse_m": 0.01280058301865666,
+    "door_angle_rmse_deg": 0.0,
+    "door_rate_rmse_rad_s": 0.0
+  },
+  "reference_id": "park",
+  "case": "F20",
+  "seed": 0,
+  "checkpoint": "results/b0/free_s0_integration_r1/checkpoint_000002.pt",
+  "solver_first_failure": {
+    "reason": "tilt",
+    "min_arm_margin_rad": 1.0384747982025146,
+    "max_abs_tilt_deg": 5.148133754730225,
+    "wheel_loads_n": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "contiguous_unloaded_steps": 35,
+    "unexpected_normal_n": 0.0,
+    "door_force_norm_sum_n": 0.0,
+    "max_saturation_time_s": 0.026000002399086952,
+    "overflow_bits": 0,
+    "nefc": 2
+  }
+}

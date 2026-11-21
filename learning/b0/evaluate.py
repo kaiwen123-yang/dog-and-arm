@@ -50,6 +50,9 @@ class ErrorMeasures:
         """Recompute the p4_grasp TCP from the state at the named boundary."""
         result = np.empty((len(qpos), 3))
         for i, position in enumerate(qpos):
+            if not np.isfinite(position).all():
+                result[i] = np.nan
+                continue
             self.fk_data.qpos[:] = position
             mj.mj_kinematics(self.model, self.fk_data)
             result[i] = self.fk_data.site_xpos[self.tcp]
@@ -304,6 +307,11 @@ def evaluate_cases(model, references, policy_factory, output_dir, *, seed, check
                     np.save(dest / f'{key}.npy', value)
                 np.save(dest / 'action_clipped.npy', np.asarray(actions).reshape(-1, model.nu))
                 np.save(dest / 'substep_count.npy', np.asarray(substep_counts, dtype=int))
+    return write_case_summary(rows, output_dir, references, cases)
+
+
+def write_case_summary(rows, output_dir, references, cases):
+    """Report each reference independently and keep incomplete manifests out of the gate."""
     summary = {}
     for reference_id in references:
         by_ref = [row for row in rows if row['reference_id'] == reference_id]

@@ -2,7 +2,7 @@
 
 本仓库基于智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机，开展 MuJoCo 腿臂协同与后续实机研究。最终目标是融合腕部 RGB-D、语言、本体历史的多模态/VLA 模型，与世界模型、可微动力学和 SuperMimic 式策略训练联合。
 
-**当前下一步：R0＋B0，先把官方 SuperMimic 迁移到已经完成联调的整机与单门场景。** P1–P6 工程基线直接继承；先无接触跟踪、再接触片段、再完整单门，之后发展多模态融合。B0 目前为待执行规划，尚无目标平台学习策略成绩。[总路线](docs/RESEARCH_ROADMAP.md) · [B0 详细执行计划](docs/B0_SUPERMIMIC_PLAN.md) · [数据/动作/模型约定](docs/B0_DATA_MODEL_CONTRACT.md) · [Codex 启动提示词](prompts/B0_START.txt)
+**当前阶段为 B0-03 无接触策略训练。** 固定 O1 双源已接入自由基座整机；真实 MuJoCo/Warp 交互、监督世界模型及 H32 Actor/Critic 更新均已执行。两侧单门已有训练后端的教师物理验证。学习策略的无接触、接触片段和完整门任务分别以实测评估记录为准。[当前状态](PROJECT_STATE.md) · [学习实验与误差](reports/B0_FREE_MOTION.md) · [B0 计划](docs/B0_SUPERMIMIC_PLAN.md)
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
@@ -38,9 +38,9 @@
 
 ## 用户现在需要做什么
 
-在已有工作区把 [B0_START.txt](prompts/B0_START.txt) 交给 Codex，从 R0/B0-01 开始落实官方方法迁移。先读取真实状态、保留工作区修改，再普通拉取；无需重复装配、重复 P6 全清单或重做 H0。B0 使用独立训练环境，原 MuJoCo 工程基线保留。双门安排到后续扩展阶段；手眼标定、标定板及附件称重在实机适配时落实，不作为当前名义仿真的前置条件。
+在已有工作区先检查 git status，再正常拉取。当前训练入口为 `bash scripts/b0/env.sh python scripts/b0/train.py --help`。按当前提示词续接已存在的实验与本地权重。[续接提示](prompts/NEXT_RUN.txt) · [环境与教师数据](reports/B0_DATA_READINESS.md)
 
-本机已知路径是 `/home/kaiwen/research/dog-and-arm`，AutoDL 以实际工作区为准。本次提交仅更新规划与入口，没有启动训练或硬件。
+本机路径为 `/home/kaiwen/research/dog-and-arm`。B0 使用独立训练环境，当前实验仅在仿真中执行。
 
 ## H0：相机和机械臂联合运行
 

@@ -106,3 +106,21 @@ class RobotActor(MultiEncoderAE):
 
     def raw(self, obs_td):
         return super().forward(obs_td)
+
+
+class EffortScaledActor(RobotActor):
+    """Use O1 effort/gain network-output units, preserving the physical replay schema."""
+    def set_servo_units(self, model, mapping, device):
+        home = model.key('home').qpos[mapping.q].copy()
+        home[12:16] = 0.
+        home[-1] *= 2
+        forces = model.actuator_forcerange[mapping.actuator_ids, 1]
+        gains = model.actuator_gainprm[mapping.actuator_ids, 0]
+        units = .25 * forces / gains
+        # The policy commands full opening, while the motor servo uses one finger.
+        units[-1] *= 2.
+        self.register_buffer('standard_action', tensor(units / mapping.scale, device))
+        self.register_buffer('home_action', tensor((home-mapping.offset)/mapping.scale, device))
+
+    def raw(self, obs_td):
+        return self.home_action + self.standard_action * super().raw(obs_td)

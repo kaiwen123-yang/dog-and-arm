@@ -44,11 +44,11 @@ class ResearchPlant:
         self.saturation_time[ids] = 0.
         self.sim.forward()
 
-    def step(self, action, record_substeps=False):
+    def step(self, action, record_substeps=False, on_substep=None):
         target = (action * self.scale + self.offset) * self.finger_factor
         invalid = torch.zeros(self.count, device=self.device, dtype=torch.bool)
         records = []
-        for _ in range(10):
+        for substep in range(1, 11):
             self.data.ctrl[:, self.actuator_ids] = target + self.data.qfrc_bias[:, self.dof] * self.bias_gain
             self.sim.step()
             arm = self.data.qpos[:, self.arm_q]
@@ -62,6 +62,8 @@ class ResearchPlant:
             invalid |= ((arm < self.arm_limits[:, 0]) | (arm > self.arm_limits[:, 1])).any(1)
             invalid |= (torch.maximum(roll.abs(), pitch.abs()) >= np.deg2rad(5)) | (self.saturation_time.max(1).values >= .25)
             invalid |= ~torch.isfinite(self.data.qvel[:]).all(1)
+            if on_substep is not None:
+                on_substep(substep, invalid)
             if record_substeps:
                 records.append(torch.cat([self.data.ctrl[:], self.data.actuator_force[:],
                                           self.contact_audit.wheel_loads_n, invalid[:, None]], dim=1))

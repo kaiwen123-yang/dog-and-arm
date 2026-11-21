@@ -1,0 +1,167 @@
+{
+  "mujoco": "3.3.0",
+  "source": "results/raw_large/b0/native_teacher_20261121_r1",
+  "substep": "Solved mj_step geometry transforms and forces from the same interval start",
+  "dt_s": 0.002,
+  "threshold_n": 1.0,
+  "loss_consecutive_substeps": 50,
+  "quantile_probabilities": [
+    0,
+    0.05,
+    0.5,
+    0.95,
+    1
+  ],
+  "wheel_meshes": {
+    "FAR": {
+      "mesh": "m1_FAR_FOOT_LINK",
+      "geom_id": 38,
+      "mesh_vertices": 31730,
+      "hull_vertices": 2220,
+      "max_radius_m": 0.09599909570901778,
+      "geom_margin_m": 0.0,
+      "geom_gap_m": 0.0
+    },
+    "FBL": {
+      "mesh": "m1_FBL_FOOT_LINK",
+      "geom_id": 45,
+      "mesh_vertices": 31729,
+      "hull_vertices": 2220,
+      "max_radius_m": 0.09599909570901778,
+      "geom_margin_m": 0.0,
+      "geom_gap_m": 0.0
+    },
+    "RAR": {
+      "mesh": "m1_RAR_FOOT_LINK",
+      "geom_id": 52,
+      "mesh_vertices": 31728,
+      "hull_vertices": 2220,
+      "max_radius_m": 0.09599909570901778,
+      "geom_margin_m": 0.0,
+      "geom_gap_m": 0.0
+    },
+    "RBL": {
+      "mesh": "m1_RBL_FOOT_LINK",
+      "geom_id": 59,
+      "mesh_vertices": 31731,
+      "hull_vertices": 2220,
+      "max_radius_m": 0.09599909570901778,
+      "geom_margin_m": 0.0,
+      "geom_gap_m": 0.0
+    }
+  },
+  "floor_margin_m": 0.0,
+  "selected_episodes": [
+    {
+      "episode": "support",
+      "steps": 3500,
+      "qpos_replay_max_abs": 0.0,
+      "load_replay_max_abs_n": 0.0,
+      "mixed_support_substeps": 0,
+      "actual_loss_step": null,
+      "mesh_loss_tick_20ms": null,
+      "mesh_gap_loss_step": null,
+      "revolved_gap_loss_step": null
+    },
+    {
+      "episode": "moving_arm",
+      "steps": 3500,
+      "qpos_replay_max_abs": 0.0,
+      "load_replay_max_abs_n": 0.0,
+      "mixed_support_substeps": 0,
+      "actual_loss_step": null,
+      "mesh_loss_tick_20ms": null,
+      "mesh_gap_loss_step": null,
+      "revolved_gap_loss_step": null
+    },
+    {
+      "episode": "park",
+      "steps": 3500,
+      "qpos_replay_max_abs": 0.0,
+      "load_replay_max_abs_n": 0.0,
+      "mixed_support_substeps": 0,
+      "actual_loss_step": null,
+      "mesh_loss_tick_20ms": null,
+      "mesh_gap_loss_step": null,
+      "revolved_gap_loss_step": null
+    },
+    {
+      "episode": "moving_arm_wm_validation",
+      "steps": 3500,
+      "qpos_replay_max_abs": 0.0,
+      "load_replay_max_abs_n": 0.0,
+      "mixed_support_substeps": 1,
+      "actual_loss_step": null,
+      "mesh_loss_tick_20ms": null,
+      "mesh_gap_loss_step": null,
+      "revolved_gap_loss_step": null
+    }
+  ],
+  "metrics": {
+    "substeps": 14000,
+    "wheel_steps": 56000,
+    "loaded_n": 55871,
+    "unloaded_n": 129,
+    "gap_quantiles_mm_loaded": [
+      -1.6988986944377615,
+      -0.8552792074932105,
+      -0.8162714356761691,
+      -0.7791677583154701,
+      -0.08626757161929455
+    ],
+    "gap_quantiles_mm_unloaded": [
+      0.043471368853117975,
+      0.17277074318459984,
+      0.8145756248358477,
+      1.0019923291842148,
+      1.0019923291842148
+    ],
+    "mesh_minus_revolved_quantiles_mm": [
+      6.137722968757586e-07,
+      0.0005196788823685905,
+      0.04979945087687371,
+      0.08191446937667254,
+      0.08200994909600412
+    ],
+    "gap_confusion": {
+      "-0.1": {
+        "loaded_pred_loaded": 55859,
+        "loaded_pred_unloaded": 12,
+        "unloaded_pred_loaded": 0,
+        "unloaded_pred_unloaded": 129
+      },
+      "0": {
+        "loaded_pred_loaded": 55871,
+        "loaded_pred_unloaded": 0,
+        "unloaded_pred_loaded": 0,
+        "unloaded_pred_unloaded": 129
+      },
+      "0.1": {
+        "loaded_pred_loaded": 55871,
+        "loaded_pred_unloaded": 0,
+        "unloaded_pred_loaded": 2,
+        "unloaded_pred_unloaded": 127
+      }
+    },
+    "revolved_confusion_at_zero": {
+      "loaded_pred_loaded": 55871,
+      "loaded_pred_unloaded": 0,
+      "unloaded_pred_loaded": 0,
+      "unloaded_pred_unloaded": 129
+    },
+    "closest_opposite_labels": [
+      {
+        "gap_mm": -0.08626757161929455,
+        "load_N": 65.16382164384868,
+        "wheel": "RAR",
+        "pooled_step": 8
+      },
+      {
+        "gap_mm": 0.043471368853117975,
+        "load_N": 0.0,
+        "wheel": "FAR",
+        "pooled_step": 10508
+      }
+    ]
+  }
+}

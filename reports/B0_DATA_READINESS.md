@@ -80,3 +80,22 @@ bash scripts/project_env.sh python scripts/b0/collect_reference.py --output resu
 bash scripts/b0/env.sh python -u -m scripts.b0.check_door_teacher pull --output results/raw_large/b0/research_teacher_20261121_r1/pull --evidence results/b0/backend_r1/pull_teacher.json
 bash scripts/b0/env.sh python -u -m scripts.b0.check_door_teacher push --output results/raw_large/b0/research_teacher_20261121_r1/push --evidence results/b0/backend_r1/push_teacher.json
 ```
+
+## 完美末速度下的 20 ms 位置积分误差
+
+用已记录的每个真实起点执行一次固定 B0 GenCoord 积分，`dt=0.020`、`c=0.55`。离线把真实末速度转换到起点机体系，构造精确速度增量，再调用正式的 `RobotRepresentation.apply_prediction`。末端机身四元数只用于把原始末端角速度换算到世界系；计算得到的下一姿态只由起点姿态和速度积分产生。TCP 从两个姿态分别做 MuJoCo FK。每步独立重新取真实起点，未改模型、未更新权重，真实末速度未进入实际策略或 WM 的训练输入。[可复现入口](../scripts/b0/integration_oracle.py) · [完整逐块误差与条件分组](../results/b0/native_replay_audit_r1/gencoord_velocity_oracle.json)
+
+| 来源 | 转移数 | 根位置 RMS（mm） | 根姿态 RMS（°） | 六臂角 RMS（°） | 两指位置 RMS（mm） | TCP 距离 RMS（mm） |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 教师支撑伸收 | 350 | 0.024 | 0.00088 | 0.00383 | 0.060 / 0.078 | 0.044 |
+| 教师移动变姿 | 350 | 0.024 | 0.00087 | 0.00382 | 0.060 / 0.078 | 0.045 |
+| 教师停车收臂 | 350 | 0.024 | 0.00090 | 0.00440 | 0.075 / 0.097 | 0.049 |
+| 独立扰动验证 | 350 | 0.026 | 0.00410 | 0.01589 | 0.153 / 0.245 | 0.104 |
+| 初轮策略触发失败的转移 | 31 | 0.604 | 0.431 | 6.136 | 7.272 / 8.994 | 9.619 |
+| 初轮策略其余转移 | 289 | 0.795 | 0.384 | 7.555 | 9.558 / 10.380 | 10.471 |
+
+初轮策略数据取自 seed0 两个真实在线采集块；两个截断标记与失败标记分开保留。31 个失败步中有 29 个步的六臂最大初速至少为 5 rad/s，单步最大臂命令与真实初始关节角之差的 RMS 为 1.163 rad。独立扰动教师的相应两项 RMS 为 0.111 rad/s 和 0.0109 rad。可见固定积分式在这两类实际动作分布上的精度差异很大。此实验给出“末速度已知”这一特定条件下的位置误差；模型可在位置和末速度两类误差之间权衡。逐步诊断无法单独归因完整轨迹的漂移。[分组与末速度数值残差](../results/b0/native_replay_audit_r1/gencoord_velocity_oracle.json)
+
+```bash
+bash scripts/b0/env.sh python -m scripts.b0.integration_oracle --output results/b0/native_replay_audit_r1/gencoord_velocity_oracle.json
+```

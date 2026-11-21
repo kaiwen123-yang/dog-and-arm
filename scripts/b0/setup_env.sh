@@ -7,14 +7,16 @@ unset PYTHONHOME PYTHONPATH LD_LIBRARY_PATH VIRTUAL_ENV CONDA_PREFIX
 export PYTHONNOUSERSITE=1
 store=vendor/b0
 mkdir -p "$store"
-python_bin="${B0_PYTHON:-python3.13}"
-if [[ ! -x .venv-b0/bin/python ]]; then
-    "$python_bin" -m venv .venv-b0
+export XDG_CACHE_HOME="$root/.cache" UV_CACHE_DIR="$root/.cache/uv" UV_LINK_MODE=copy
+export CONDA_PKGS_DIRS="$root/.cache/conda-pkgs" CONDA_ENVS_PATH="$root/.conda/envs"
+prefix="$CONDA_ENVS_PATH/arm-and-dog"
+if [[ ! -f "$prefix/conda-meta/history" ]]; then
+    "${CONDA_EXE:-conda}" create --no-default-packages -y --prefix "$prefix" python=3.13.13 pip
 fi
-py=.venv-b0/bin/python
+py="$prefix/bin/python"
 "$py" -c 'import sys; assert sys.version_info[:2] == (3,13), sys.version'
 "$py" -m pip install --disable-pip-version-check 'uv==0.13.9'
-uv=.venv-b0/bin/uv
+uv="$prefix/bin/uv"
 # Do not edit either upstream source tree. Download only the O1 metadata used here.
 "$py" - <<'PY'
 import json
