@@ -4,6 +4,8 @@
 
 ## 当前阶段
 
+2026-11-21 恢复冻结控制 `7e3c5e0` 的本机复测。背推 C17–C20 完整任务通过 3/4。本组 J5 最小余量 20.269°。失败记录为 C20 unexpected_contact:robot_frame|warning_or_contact。 接续两侧 40 例的冻结版本汇总。[结果](results/p6/rail_bridge_front60_v2_20261120T133724Z/push_D/)
+
 2026-11-21 恢复冻结控制 `7e3c5e0` 的本机复测。背推 C12–C16 完整任务通过 5/5。本组 J5 最小余量 21.303°。 接续背推 C17–C20。[结果](results/p6/rail_bridge_front60_v2_20261120T133724Z/push_C/)
 
 2026-11-21 恢复冻结控制 `7e3c5e0` 的本机复测。背推 C07–C11 完整任务通过 5/5。本组 J5 最小余量 20.990°。 接续背推 C12–C16。[结果](results/p6/rail_bridge_front60_v2_20261120T133724Z/push_B/)
