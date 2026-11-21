@@ -4,6 +4,10 @@
 
 ## B0-03 用户检查点
 
+
+云端原 O1 tracking 奖励配合伺服尺度后，seed0 u200 在 Warp 完整 7 秒物理评测取得支撑 20/20、移动 11/20、停车 19/20。所有失败均为 TCP 超过 30 mm。三组的 TCP RMSE 范围为 16.7–26.1、22.4–41.4、20.0–34.6 mm。完整初态三组需分别至少 18/20。当前继续 B0-03。[逐案物理成绩](results/b0/free_s0_cloud_servo_u200_warp/physical/cases.csv)
+
+
 本轮止于 B0-03，阶段结果推送后等待用户检查。seed0 的真实学习闭环已运行。replay/home 变体在第 1000 次 Actor 更新累计 136,000 条物理转移。独立 GPU 物理评测中，支撑伸收臂、移动变臂姿、停车各 0/20，60 条均在 0.100 s 出现持续失载。留出回合一步、七步、32 步 TCP 预测 RMSE 分别为 0.84、4.22、12.59 mm。原始工程教师与学习结果分别保存在报告中。[评测报告](reports/B0_EVALUATION.md) · [轮载几何误差](reports/B0_WHEEL_SUPPORT_GEOMETRY.md)
 
 本机八世界伺服尺度试验在 u50 保存权重后停止，u50 的物理评测中断。B0 新训练转至独立 AutoDL 目录 `/root/autodl-tmp/dog-and-arm-b0`。本机与云端的项目 Conda 环境路径均为 `.conda/envs/arm-and-dog`。Conda 拒绝包含空格的名字。运行入口限制 Python、Warp、Torch 和 CUDA 缓存至本项目。云端 RTX PRO 6000 97,887 MiB，容器配额 25 核和 120 GiB。保留本机已有 venv、原始结果与检查点。

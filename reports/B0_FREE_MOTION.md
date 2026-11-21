@@ -55,3 +55,9 @@ conda activate "arm and dog"
 云端首次启动在更新 0 因部署缺少关节映射而停止。补齐 `description/joint_map.yaml` 后实际验证 23 路模型及 EGL 渲染器，再用新 run `free_s0_cloud_servo_r2` 从零启动。使用的命令为 `bash scripts/b0/env.sh python -u scripts/b0/train.py --seed 0 --run free_s0_cloud_servo_r2 --config config/b0/free_servo_cloud.yaml --updates 1000`。
 
 已有实测轨迹也暴露出奖励尺度问题。在 u50 的 F01 中，三条完整但未过门槛的轨迹仍分别取得原奖励上限的 94.7%、91.5%、92.3%。纯状态增益变体在原有六项及惩罚之外，引入世界坐标 TCP、根位置、轮中心高度和轮角速度的可微参考误差。在相同轨迹上分别为新上限的 75.9%、63.3%、64.7%，三条教师均在 99.8% 以上。它保留监督 WM、H32 Actor/Critic、所有物理阈值及 23 路网络输出。此处是相同实测状态的目标函数对照，训练结果需单独记录。[奖励对照](../results/b0/free_s0_boundary_r1/eval_000050/tracking_objective.json) · [变体配置](../config/b0/free_metric_cloud.yaml)
+
+### 云端 O1 tracking u50 和 u200
+
+u50 完成 54,400 个真实策略转移，三类冻结策略在 Warp 上均跑完 7 s，支撑、移动、停车各 0/20。u200 完成 217,600 个转移和 2,000 个 WM 小批更新，三类分别为 **20/20、11/20、19/20**。所有失败均由 TCP RMSE 超过 30 mm 引起。u200 的 TCP RMSE 范围分别为 16.7–26.1、22.4–41.4、20.0–34.6 mm。评测从参考起点开始，Actor 独立输出 23 路命令。[u50 逐案](../results/b0/free_s0_cloud_servo_u50_warp/physical/cases.csv) · [u200 逐案](../results/b0/free_s0_cloud_servo_u200_warp/physical/cases.csv)
+
+单独的任务尺度变体在第 4 次 Actor 更新进入 CUDA 图捕获时，轮索引列表引起 CPU→GPU 复制异常。前三次完整更新和 4,352 个实测转移均保留。修正为在初始化时按名称建立设备上的索引张量。[变体失败记录](../results/b0/free_s0_cloud_metric_r1/failure.json)

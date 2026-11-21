@@ -105,7 +105,8 @@ class FreeTrackingRepresentation(RobotRepresentation):
 
     def __init__(self, model, scales, device):
         super().__init__(model, device)
-        self.wheels = [self.fk.names.index(f'm1_{limb}_FOOT_LINK') for limb in LIMBS]
+        indices = [self.fk.names.index(f'm1_{limb}_FOOT_LINK') for limb in LIMBS]
+        self.register_buffer('wheel_bodies', torch.tensor(indices, device=device, dtype=torch.long))
         self.tcp = self.fk.names.index('site:p4_grasp')
         self.scales = scales
 
@@ -123,8 +124,8 @@ class FreeTrackingRepresentation(RobotRepresentation):
 
         root = (pos[..., 0, :] - target_pos[..., 0, :]).square().sum(-1)
         tcp = (pos[..., self.tcp, :] - target_pos[..., self.tcp, :]).square().sum(-1)
-        dz = pos[..., self.wheels, 2] - target_pos[..., self.wheels, 2]
-        spin = ang[..., self.wheels, :] - target_ang_vel[..., self.wheels, :]
+        dz = (pos[..., 2] - target_pos[..., 2]).index_select(-1, self.wheel_bodies)
+        spin = (ang - target_ang_vel).index_select(-2, self.wheel_bodies)
         extra = (score(root, self.scales['root_m']) + 2 * score(tcp, self.scales['tcp_m'])
                  + score(dz.square(), self.scales['wheel_z_m']).mean(-1)
                  + score(spin.square().sum(-1), self.scales['wheel_ang_rad_s']).mean(-1))

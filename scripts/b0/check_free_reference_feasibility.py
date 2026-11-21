@@ -94,7 +94,7 @@ def main():
         grouped = list(pool.map(replay, refs, [args.reference_root] * len(refs)))
     rows = [r for group in grouped for r in group]
     with (args.output / 'cases.csv').open('w') as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
     by_reference = {}

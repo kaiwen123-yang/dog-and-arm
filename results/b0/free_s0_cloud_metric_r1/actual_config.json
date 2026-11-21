@@ -1,0 +1,70 @@
+{
+  "cfg": {
+    "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+    "worlds": 128,
+    "wm_batch": 256,
+    "wm_batches": 10,
+    "actor_batch": 256,
+    "wm_hidden": [
+      2048,
+      2048,
+      2048
+    ],
+    "actor_hidden": [
+      2048,
+      1024,
+      512,
+      256
+    ],
+    "critic_hidden": [
+      256,
+      128
+    ],
+    "buffer_size": 1000,
+    "replay_ratio": 16,
+    "physics_dt": 0.002,
+    "policy_dt": 0.02,
+    "history_length": 10,
+    "free_motion_clip_frames": 351,
+    "actor_horizon": 32,
+    "wm_window": 8,
+    "collection_noise": 0.1,
+    "milestones": [
+      0,
+      1000,
+      5000,
+      10000
+    ],
+    "periodic_updates": 10000,
+    "diagnostic_block": 50000,
+    "window_recipe": "terminal_one_step_and_seven_step",
+    "one_step_batches": 2,
+    "network_output_units": "quarter_effort_over_servo_gain",
+    "additional_physical_checks": [
+      50,
+      200
+    ],
+    "free_tracking_reward": {
+      "root_m": 0.05,
+      "tcp_m": 0.03,
+      "wheel_z_m": 0.005,
+      "wheel_ang_rad_s": 0.25
+    },
+    "hypothesis": "A state-only addition to the O1 reward makes reference TCP, root, wheel height and wheel speed observable at platform tracking tolerances without any additional action labels."
+  },
+  "run": "free_s0_cloud_metric_r1",
+  "initial_actor_update": 0,
+  "target_actor_update": 1000,
+  "hypothesis": "A state-only addition to the O1 reward makes reference TCP, root, wheel height and wheel speed observable at platform tracking tolerances without any additional action labels.",
+  "seed": 0,
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "torch": "2.14.0+cu130",
+  "compile_disable": "1",
+  "revision": "fe6cc857b5b2960ad5363c8c1b3365aaabdf3b8d",
+  "checkpoint_restart": null,
+  "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+  "teacher_unique_steps": 1050,
+  "evaluation": "3 x 20 frozen",
+  "backend": "mjlab_research.Simulation",
+  "update": "10 WM minibatches, one H32 actor step, 20 critic minibatches"
+}
