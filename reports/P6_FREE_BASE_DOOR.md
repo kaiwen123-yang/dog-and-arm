@@ -218,3 +218,5 @@ bash scripts/project_env.sh python scripts/p6_single_door.py mobile --live --vid
 ### 90° 背侧航向的完整对照
 
 控制 7e3c5e0 的 40 个完整试验均已执行，前拉 20/20、背推 19/20。背推 C20 起点与左门柱有 21.695 mm 净空，在 1.640 s 采样时左后轮已与左门柱重叠约 0.0065 mm，1.642 s 收到终止，接触点力范数 18.495 N。其余 39 例完成 13 个阶段并通过限位及停车复核。 按 25 Hz 的实际位姿复核驶近至首次停稳的碰撞面距离，C03 最近为 18.157 mm。继续在同一站位把背侧名义底盘航向从 90° 调至 95°，使驶近时左后轮远离左门柱。初始世界坐标扰动、控制门槛、臂和门的物理参数均沿用。统计按背侧航向分列。[40 条配置与结果](../results/p6/rail_bridge_front60_v2_20261120T133724Z/conditions_90deg.csv) · [背侧驶近门框距离](../results/p6/rail_bridge_front60_v2_20261120T133724Z/back_approach_frame_90deg.csv) · [C20 失败原始摘要](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push_D/C20/summary.json)
+
+**2026-11-21 · push95_A**　背推 C01、C02、C03、C07、C18、C20 完整任务通过 6/6。本组 J5 最小余量 20.081°。 按每个 2 ms 物理步复核六轴最小余量与对应时刻，并核对完整案例的两个 3 s 停车窗口。分格录像完整解码 462 帧。实际命令为 `bash scripts/project_env.sh python scripts/p6_cases.py 1 2 3 7 18 20 --stage push --output results/p6/rail_bridge_front60_v2_20261120T133724Z/push95_A`。[本组轨迹与录像](../results/p6/rail_bridge_front60_v2_20261120T133724Z/push95_A/)
