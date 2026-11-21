@@ -2,17 +2,13 @@
 
 更新日期：2026-11-21（Asia/Shanghai）。
 
-## B0-03 用户检查点
+## B0-03 已通过，等待用户检查
 
+seed0 的第 1000 次更新是本轮冻结检查点。训练用固定 O1 双源、原 tracking 奖励和 23 路全身策略，实际产生 1,088,000 个在线物理转移，完成 10,000 次 WM 小批更新、1,000 次 H32 Actor 更新及 20,000 次 Critic 小批更新。1000 次 Actor 更新均记录了冻结 WM 和非零 Actor 权重变化。CUDA 梯度链路另有七步物理输出反传诊断。支撑伸收臂、移动变臂姿、停车在 MuJoCo-Warp 3.16 和 CPU MuJoCo 3.16 上均为 20/20，原工程 MuJoCo 3.3.0 分别为 20/20、20/20、19/20。停车 F02 完成 7 s，TCP RMSE 为 30.75 mm，超过 30 mm 门槛。三个名义任务也在 Warp 和 3.3.0 全部通过。每案从完整初态连续执行 7 s，逐个检查 3,500 个物理子步。留出回合的 1、7、32 步 TCP 预测 RMSE 为 0.36、2.04、2.82 mm。[检查清单](results/b0/free_s0_cloud_servo_r2/review.json) · [逐案与视频](reports/B0_FREE_MOTION.md)
 
-云端原 O1 tracking 奖励配合伺服尺度后，seed0 u200 在 Warp 完整 7 秒物理评测取得支撑 20/20、移动 11/20、停车 19/20。所有失败均为 TCP 超过 30 mm。三组的 TCP RMSE 范围为 16.7–26.1、22.4–41.4、20.0–34.6 mm。完整初态三组需分别至少 18/20。当前继续 B0-03。[逐案物理成绩](results/b0/free_s0_cloud_servo_u200_warp/physical/cases.csv)
+完整权重在本机与云端项目内的 `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt`。云端目录为 `/root/autodl-tmp/dog-and-arm-b0`。本轮研发停在 B0-03，等待用户检查后决定是否进入接触片段。复核入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
 
-
-本轮止于 B0-03，阶段结果推送后等待用户检查。seed0 的真实学习闭环已运行。replay/home 变体在第 1000 次 Actor 更新累计 136,000 条物理转移。独立 GPU 物理评测中，支撑伸收臂、移动变臂姿、停车各 0/20，60 条均在 0.100 s 出现持续失载。留出回合一步、七步、32 步 TCP 预测 RMSE 分别为 0.84、4.22、12.59 mm。原始工程教师与学习结果分别保存在报告中。[评测报告](reports/B0_EVALUATION.md) · [轮载几何误差](reports/B0_WHEEL_SUPPORT_GEOMETRY.md)
-
-本机八世界伺服尺度试验在 u50 保存权重后停止，u50 的物理评测中断。B0 新训练转至独立 AutoDL 目录 `/root/autodl-tmp/dog-and-arm-b0`。本机与云端的项目 Conda 环境路径均为 `.conda/envs/arm-and-dog`。Conda 拒绝包含空格的名字。运行入口限制 Python、Warp、Torch 和 CUDA 缓存至本项目。云端 RTX PRO 6000 97,887 MiB，容器配额 25 核和 120 GiB。保留本机已有 venv、原始结果与检查点。
-
-## 当前研究阶段：B0 环境迁移与无接触学习
+## B0 环境迁移与初期无接触学习记录
 
 2026-11-21 本机 `git pull --ff-only origin main` 快进至规划提交 `f6333ec`，保留未跟踪 P5 数据。现场 GPU 为 RTX 5080 Laptop 16 GiB，主机内存 30 GiB。固定双源和 O1 实际配置已核对。单门仍用 `rail_bridge_front60_v2` 与冻结 P6 控制 `86ade86`。
 

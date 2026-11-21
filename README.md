@@ -2,7 +2,7 @@
 
 本仓库基于智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机，开展 MuJoCo 腿臂协同与后续实机研究。最终目标是融合腕部 RGB-D、语言、本体历史的多模态/VLA 模型，与世界模型、可微动力学和 SuperMimic 式策略训练联合。
 
-**当前阶段为 B0-03 无接触策略训练。** 固定 O1 双源已接入自由基座整机；真实 MuJoCo/Warp 交互、监督世界模型及 H32 Actor/Critic 更新均已执行。两侧单门已有训练后端的教师物理验证。学习策略的无接触、接触片段和完整门任务分别以实测评估记录为准。[当前状态](PROJECT_STATE.md) · [学习实验与误差](reports/B0_FREE_MOTION.md) · [B0 计划](docs/B0_SUPERMIMIC_PLAN.md)
+**B0-03 已通过，当前暂停供检查。** seed0 同一冻结策略在支撑伸收臂、移动变臂姿和停车三类 Warp 物理任务上分别达到 20/20。完整原生 MuJoCo 对照、模型误差、视频和复核入口见 [B0-03 报告](reports/B0_FREE_MOTION.md) 和 [项目状态](PROJECT_STATE.md)。
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
@@ -38,7 +38,7 @@
 
 ## 用户现在需要做什么
 
-在已有工作区先检查 git status，再正常拉取。当前训练入口为 `bash scripts/b0/env.sh python scripts/b0/train.py --help`。按当前提示词续接已存在的实验与本地权重。[续接提示](prompts/NEXT_RUN.txt) · [环境与教师数据](reports/B0_DATA_READINESS.md)
+在已有工作区先检查 git status，再正常拉取。当前训练入口为 `bash scripts/b0/env.sh python scripts/b0/train.py --help`。冻结策略的复核命令见[当前检查点](prompts/NEXT_RUN.txt) · [环境与教师数据](reports/B0_DATA_READINESS.md)
 
 本机路径为 `/home/kaiwen/research/dog-and-arm`。B0 使用独立训练环境，当前实验仅在仿真中执行。
 

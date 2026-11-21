@@ -1,0 +1,182 @@
+{
+  "stage": "B0-03",
+  "status": "passed_paused_for_user_review",
+  "scope": "simulation/no door contact",
+  "seed": 0,
+  "revision": "56f639618ebe3aa1e81d5539214611c8bf757bae",
+  "run": "free_s0_cloud_servo_r2",
+  "checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+  "checkpoint_size_bytes": 160968966,
+  "local_workspace": "/home/kaiwen/research/dog-and-arm",
+  "cloud_workspace": "/root/autodl-tmp/dog-and-arm-b0",
+  "conda_environment": "arm-and-dog",
+  "conda_shell_alias": "arm and dog",
+  "source_lock": "config/b0/source_lock.json",
+  "config": "config/b0/free_servo_cloud.yaml",
+  "references": "data/b0/reference_manifest.json",
+  "development_manifest": "config/b0/eval_cases.json",
+  "network_initialization": "seed 0 from scratch",
+  "reward": "pinned O1 tracking reward",
+  "outcome": {
+    "actor_updates": 1000,
+    "wm_minibatch_updates": 10000,
+    "policy_transitions": 1088000,
+    "checkpoint": "checkpoint_001000.pt"
+  },
+  "criterion": "at least 18 of 20 per category",
+  "passed_by_backend": {
+    "warp_316": {
+      "support": 20,
+      "moving_arm": 20,
+      "park": 20
+    },
+    "cpu_316": {
+      "support": 20,
+      "moving_arm": 20,
+      "park": 20
+    },
+    "native_330": {
+      "support": 20,
+      "moving_arm": 20,
+      "park": 19
+    }
+  },
+  "nominal_passes": {
+    "warp_316": 3,
+    "native_330": 3
+  },
+  "held_out_episode": "moving_arm_wm_validation",
+  "held_out_wm_by_horizon": {
+    "1": {
+      "root_position_rmse_m": 0.00016026278610183702,
+      "root_orientation_rmse_deg": 0.017379475903709377,
+      "root_linear_velocity_rmse_m_s": 0.01454099617618967,
+      "root_body_angular_velocity_rmse_rad_s": 0.026483496768156766,
+      "tcp_position_rmse_m": 0.0003595066413742087,
+      "max_joint_range_normalized_rmse": 0.0002969476003893905,
+      "per_joint_range_normalized_rmse": {
+        "m1_FAR_ABAD_JOINT": 0.00016971512733833052,
+        "m1_FAR_HIP_JOINT": 5.059189504184993e-05,
+        "m1_FAR_KNEE_JOINT": 5.2635451793933794e-05,
+        "m1_FBL_ABAD_JOINT": 0.0002969476003893905,
+        "m1_FBL_HIP_JOINT": 5.002234907956085e-05,
+        "m1_FBL_KNEE_JOINT": 6.559614265496325e-05,
+        "m1_RAR_ABAD_JOINT": 0.00016769763341406503,
+        "m1_RAR_HIP_JOINT": 5.17830749715933e-05,
+        "m1_RAR_KNEE_JOINT": 6.923914502922277e-05,
+        "m1_RBL_ABAD_JOINT": 0.00021934177502499753,
+        "m1_RBL_HIP_JOINT": 4.793248516539138e-05,
+        "m1_RBL_KNEE_JOINT": 5.549176237471259e-05,
+        "piper_joint1": 0.00011119453855284608,
+        "piper_joint2": 0.00015008990770529757,
+        "piper_joint3": 0.0002041576382483776,
+        "piper_joint4": 0.00011186620739759235,
+        "piper_joint5": 0.00017685280867679197,
+        "piper_joint6": 9.312968239353238e-05
+      },
+      "leg_position_rmse_rad": 0.00029272590000426385,
+      "arm_position_rmse_rad": 0.0005502747790458305,
+      "finite_joint_velocity_rmse_rad_s": 0.025579380172016244,
+      "wheel_speed_rmse_rad_s": 0.0360208798095841,
+      "gripper_width_rmse_m": 0.000523671811077172,
+      "finger_equality_residual_rmse_m": 0.00028616565572972405,
+      "door_angle_rmse_deg": 0.0,
+      "door_rate_rmse_rad_s": 0.0
+    },
+    "7": {
+      "root_position_rmse_m": 0.0007561628688999079,
+      "root_orientation_rmse_deg": 0.060267673867764805,
+      "root_linear_velocity_rmse_m_s": 0.013894397169825995,
+      "root_body_angular_velocity_rmse_rad_s": 0.030145238567749845,
+      "tcp_position_rmse_m": 0.0020363941547462314,
+      "max_joint_range_normalized_rmse": 0.0017212719281035108,
+      "per_joint_range_normalized_rmse": {
+        "m1_FAR_ABAD_JOINT": 0.0008132126344109039,
+        "m1_FAR_HIP_JOINT": 0.00020744167263130918,
+        "m1_FAR_KNEE_JOINT": 0.00022405693261872973,
+        "m1_FBL_ABAD_JOINT": 0.0017212719281035108,
+        "m1_FBL_HIP_JOINT": 0.00020176711833214055,
+        "m1_FBL_KNEE_JOINT": 0.0002865302395254492,
+        "m1_RAR_ABAD_JOINT": 0.0006268714060397575,
+        "m1_RAR_HIP_JOINT": 0.00021021481579496697,
+        "m1_RAR_KNEE_JOINT": 0.0001885241852613017,
+        "m1_RBL_ABAD_JOINT": 0.000991358399666507,
+        "m1_RBL_HIP_JOINT": 0.00016771650473643718,
+        "m1_RBL_KNEE_JOINT": 0.00022531153383424654,
+        "piper_joint1": 0.00041249165744048337,
+        "piper_joint2": 0.0008203440589432088,
+        "piper_joint3": 0.0008115010757568439,
+        "piper_joint4": 0.0004216189029225481,
+        "piper_joint5": 0.0004887393154596815,
+        "piper_joint6": 0.00023818947289100438
+      },
+      "leg_position_rmse_rad": 0.0012425423959380134,
+      "arm_position_rmse_rad": 0.0020567255591483454,
+      "finite_joint_velocity_rmse_rad_s": 0.01968866825836732,
+      "wheel_speed_rmse_rad_s": 0.03697614419604331,
+      "gripper_width_rmse_m": 0.00051709617470996,
+      "finger_equality_residual_rmse_m": 0.0002514907949108317,
+      "door_angle_rmse_deg": 0.0,
+      "door_rate_rmse_rad_s": 0.0
+    },
+    "32": {
+      "root_position_rmse_m": 0.0014377436504470291,
+      "root_orientation_rmse_deg": 0.08109944365126875,
+      "root_linear_velocity_rmse_m_s": 0.01682408268725847,
+      "root_body_angular_velocity_rmse_rad_s": 0.031803972006546465,
+      "tcp_position_rmse_m": 0.0028211414785834785,
+      "max_joint_range_normalized_rmse": 0.0023853936335483,
+      "per_joint_range_normalized_rmse": {
+        "m1_FAR_ABAD_JOINT": 0.002122523668821805,
+        "m1_FAR_HIP_JOINT": 0.00034121061469367193,
+        "m1_FAR_KNEE_JOINT": 0.0002450207297212493,
+        "m1_FBL_ABAD_JOINT": 0.0023853936335483,
+        "m1_FBL_HIP_JOINT": 0.00028316462673846893,
+        "m1_FBL_KNEE_JOINT": 0.00036829927007973857,
+        "m1_RAR_ABAD_JOINT": 0.0009561704124110038,
+        "m1_RAR_HIP_JOINT": 0.00020243579391163272,
+        "m1_RAR_KNEE_JOINT": 0.00018428819177411182,
+        "m1_RBL_ABAD_JOINT": 0.001125397311979543,
+        "m1_RBL_HIP_JOINT": 0.00037434348916048124,
+        "m1_RBL_KNEE_JOINT": 0.00026658168736138743,
+        "piper_joint1": 0.00045292637459795507,
+        "piper_joint2": 0.0009130111658861742,
+        "piper_joint3": 0.0009919013461111572,
+        "piper_joint4": 0.0005498085126646333,
+        "piper_joint5": 0.0004628797653543672,
+        "piper_joint6": 0.00027319697276543316
+      },
+      "leg_position_rmse_rad": 0.0017826404402190783,
+      "arm_position_rmse_rad": 0.002378549410423871,
+      "finite_joint_velocity_rmse_rad_s": 0.021530155317875256,
+      "wheel_speed_rmse_rad_s": 0.04417692318037076,
+      "gripper_width_rmse_m": 0.0004910313082903845,
+      "finger_equality_residual_rmse_m": 0.000271653109872028,
+      "door_angle_rmse_deg": 0.0,
+      "door_rate_rmse_rad_s": 0.0
+    }
+  },
+  "full_checkpoint_contents": [
+    "actor",
+    "critic",
+    "dyn",
+    "optimizers",
+    "cfg",
+    "seed",
+    "updates",
+    "collected"
+  ],
+  "evaluation_command": "bash scripts/b0/env.sh python scripts/b0/eval_warp.py --run review_b003_seed0 --checkpoint results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+  "failed_cases": {
+    "native_330": [
+      {
+        "reference": "park",
+        "case": "F02",
+        "reason": "tcp_position_rmse_m",
+        "rmse_m": 0.03074979975238537,
+        "limit_m": 0.03,
+        "completed_physics_steps": 3500
+      }
+    ]
+  }
+}

@@ -1,9 +1,13 @@
-用户最新范围仅到 B0-03，推送后暂停等待检查。先读 PROJECT_STATE.md 顶部。B0 训练使用项目内 Conda arm-and-dog 和云端独立目录。下文是历史运行顺序。
+当前暂停，等待用户检查 B0-03。用户提出新的明确指示后再启动后续阶段。
 
-先读 PROJECT_STATE.md 顶部、reports/B0_DATA_READINESS.md 与 docs/B0_SUPERMIMIC_PLAN.md。保留已有未跟踪 P5 数据和 results/raw_large/b0 下完整原始回合。先 git status，正常拉取 main。
+实际通过的 seed0 权重为 results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt。训练源码 56f6396，配置 config/b0/free_servo_cloud.yaml。三类无门接触任务在训练后端各 20/20。查 reports/B0_FREE_MOTION.md、PROJECT_STATE.md 顶部和 results/b0/free_s0_cloud_servo_r2/review.json。完整权重与原始数据在本机项目和 AutoDL 独立目录 /root/autodl-tmp/dog-and-arm-b0；GitHub 保存源码、配置、逐案、预测表与必要视频。
 
-2026-11-21 本机已取得固定 O1 双源、front60_v2 三类无接触参考、1条独立未见 WM 验证交互及两侧完整 native 教师参考。查看 data/b0/reference_manifest.json，不重复采集已有回合。若迁移到新机器，按 reports/B0_DATA_READINESS.md 重建缺少的本地数组。已有教师成绩见该报告。
+本机或 AutoDL 从项目根目录执行下列命令可以独立复核冻结策略。使用新输出名，保留此前的结果。
 
-B0-03 真实 CLI 和训练闭环已在 seed0 的 2 次更新诊断中运行，三类完整概况各 0/20。读 reports/B0_FREE_MOTION.md 及 reports/B0_ENV_ADAPTATION.md。优先续接 PROJECT_STATE 记录中的最新训练节点；跨机器需先重建缺少的本地数据和环境。旧检查点不含 replay 与仿真内态，--from-checkpoint 为带优化器的重新采集，不作精确延续。B0-04 以 B0-03 的 3×20 通过和两侧训练后端教师验证为起点。
+bash scripts/b0/env.sh python scripts/b0/eval_warp.py --run review_b003_seed0 --checkpoint results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt
 
-固定八帧窗口的 free_s0_formal_r1 在 u160 后因没有合法训练窗退出，禁止原样重启。检查 free_s0_boundary_r1 的 updates.jsonl、实际物理评测和最后检查点，并读取 PROJECT_STATE.md 中该变体的新节点；不要覆盖原 run。两侧训练后端 nominal 教师实跑均已通过。
+如需在本机桌面观看真实 3.3.0 名义执行：
+
+bash scripts/b0/env.sh python scripts/b0/eval_native33.py --run review_b003_desktop --checkpoint results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt --live
+
+项目独立 Conda 的物理前缀为 .conda/envs/arm-and-dog。在已载入 Conda 的 shell 中执行 export CONDA_ENVS_PATH="$PWD/.conda/envs" 后可以 conda activate "arm and dog"。仍保留原生 3.3.0 基准环境。新机器缺少大资产和数组时按 reports/B0_DATA_READINESS.md 的记录恢复。B0-04、完整单门学习、多 seed 测试留待用户复核。

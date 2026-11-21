@@ -1,5 +1,30 @@
 # B0-03 seed0 无接触跟踪
 
+## 交付检查点
+
+**B0-03 seed0 已通过并暂停。** 从零训练的第 1000 次更新在 128 个并行世界中累计产生 1,088,000 条真实策略转移。每轮采集后执行 10 个 WM 小批、一次 H32 Actor 更新和 20 个 Critic 小批。冻结评测由单个 Actor 输出腿、轮、臂、夹爪全部 23 路动作。评测仅保留 2 ms 低层伺服，参考时钟为 20 ms。使用 `config/b0/free_servo_cloud.yaml` 的原 O1 跟踪奖励，记录的教师动作仅用于采集训练参考及预填 WM 数据。独立状态奖励变体的诊断在下文单列。[实际配置](../results/b0/free_s0_cloud_servo_r2/actual_config.json) · [每次更新](../results/b0/free_s0_cloud_servo_r2/updates.jsonl) · [冻结清单](../results/b0/free_s0_cloud_servo_r2/review.json)
+
+| 7 秒任务 | Warp 3.16 | CPU 3.16 | 原生 3.3.0 | Warp 的 TCP RMSE 范围 | Warp F01 实测 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| 支撑伸收臂 | 20/20 | 20/20 | 20/20 | 4.3–19.6 mm | 底盘前移 1.8 mm，臂关节相对初态最大偏转 9.8° |
+| 移动变臂姿 | 20/20 | 20/20 | 20/20 | 7.9–25.5 mm | 底盘前移 287.7 mm，臂关节相对初态最大偏转 9.7° |
+| 停车收臂 | 20/20 | 20/20 | 19/20 | 7.4–28.0 mm | 底盘前移 158.0 mm，末秒峰值平移速度 0.66 mm/s |
+
+原生 3.3.0 唯一失败为停车 F02。该案完成全部 3,500 个物理子步，TCP RMSE 为 30.75 mm，超出 30 mm 门槛 0.75 mm。[F02 原始判定](../results/b0/free_s0_cloud_servo_u1000_native33_full/physical/park_F02.json)
+
+每个后端按相同的 20 个初态分别评测每类任务。三个未经扰动的名义初态也在 Warp 和原生 3.3.0 完成。冻结的开发条件只计一次分母，两套后端复核不增加条件数。三类代表性视频来自 CPU MuJoCo 3.16 的真实连续执行。[Warp 逐案](../results/b0/free_s0_cloud_servo_u1000_warp/physical/cases.csv) · [CPU 3.16 逐案](../results/b0/free_s0_cloud_servo_r2/eval_001000/physical/cases.csv) · [原工程 3.3.0 逐案](../results/b0/free_s0_cloud_servo_u1000_native33_full/physical/cases.csv) · [伸收臂视频](../results/b0/free_s0_cloud_servo_r2/eval_001000/support_F01.mp4) · [移动视频](../results/b0/free_s0_cloud_servo_r2/eval_001000/moving_arm_F01.mp4) · [停车视频](../results/b0/free_s0_cloud_servo_r2/eval_001000/park_F01.mp4)
+
+独立留出回合的 1 / 7 / 32 步 TCP 预测 RMSE 分别为 0.36、2.04、2.82 mm。模型从每个实测起点递推，期间只使用实际执行的动作。完整表同时列出根位置、根姿态、关节、轮速、夹爪及保持状态和匀速外推对照。Warp 逐案全程夹口宽度 RMSE 为 3.82–4.68 mm，完整门的抓持与释放需在后续阶段单独评测。[留出预测与对照](../results/b0/free_s0_cloud_servo_r2/eval_001000/model_errors.csv)
+
+实际训练入口与本机复核入口如下。训练记录对应实现提交 `56f639618ebe3aa1e81d5539214611c8bf757bae`。权重已在本机和 AutoDL 的项目内保留，复核可直接读取。单个完整检查点包括三套网络、归一化与优化器。[模型路径与环境](../results/b0/free_s0_cloud_servo_r2/review.json)
+
+```bash
+# 已执行的训练
+bash scripts/b0/env.sh python -u scripts/b0/train.py --seed 0 --run free_s0_cloud_servo_r2 --config config/b0/free_servo_cloud.yaml --updates 1000
+# 复核用新输出目录
+bash scripts/b0/env.sh python scripts/b0/eval_warp.py --run review_b003_seed0 --checkpoint results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt
+```
+
 ## 首次物理学习闭环
 
 本机 16 GiB RTX 5080 Laptop 使用 8 个研究版 mjlab 世界。GenCoord dt=20 ms、解析积分系数 0.55，WM/Actor/Critic 的主层宽、latent32、history10、运动参考编码器、官方 normalizer、replay、ReturnSampler 和 Muon/Adam 参数分组来自固定 O1。使用 10×32 的 8 状态 WM 窗口、16 条 H32 的 Actor rollout、replay_ratio=16、采集噪声 0.1。将实际两指增量和误差缩放到 m、m/s，分别使用 2 mm 和 0.05 m/s 名义误差。无接触物理和想象评分共用 O1 的六项身体跟踪奖励与速度、软限位惩罚，参考速度以世界系表示。[动作、配置和源码版本](../config/b0/baseline.yaml)
