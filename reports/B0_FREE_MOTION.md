@@ -61,3 +61,5 @@ conda activate "arm and dog"
 u50 完成 54,400 个真实策略转移，三类冻结策略在 Warp 上均跑完 7 s，支撑、移动、停车各 0/20。u200 完成 217,600 个转移和 2,000 个 WM 小批更新，三类分别为 **20/20、11/20、19/20**。所有失败均由 TCP RMSE 超过 30 mm 引起。u200 的 TCP RMSE 范围分别为 16.7–26.1、22.4–41.4、20.0–34.6 mm。评测从参考起点开始，Actor 独立输出 23 路命令。[u50 逐案](../results/b0/free_s0_cloud_servo_u50_warp/physical/cases.csv) · [u200 逐案](../results/b0/free_s0_cloud_servo_u200_warp/physical/cases.csv)
 
 单独的任务尺度变体在第 4 次 Actor 更新进入 CUDA 图捕获时，轮索引列表引起 CPU→GPU 复制异常。前三次完整更新和 4,352 个实测转移均保留。修正为在初始化时按名称建立设备上的索引张量。[变体失败记录](../results/b0/free_s0_cloud_metric_r1/failure.json)
+
+u200 的 native CPU 3.16 和独立 Warp 对每类给出相同通过数，留出教师的 WM 一步、7 步、32 步 TCP RMSE 为 0.78、2.71、5.61 mm。u50 对冻结 Actor 自身生成的 F01 轨迹也独立开环预测，三类的 32 步误差为 14.46–15.55 mm。任务尺度变体修复后，从故障诊断权重另起 replay，经 5 次新 Actor 更新至 u8，实际通过 CUDA 图捕获及后续重放。[u200 模型误差](../results/b0/free_s0_cloud_servo_r2/eval_000200/model_errors.csv) · [策略轨迹误差](../results/b0/free_s0_cloud_servo_r2/eval_000050/on_policy_model_errors.json) · [变体技术验证](../results/b0/free_s0_cloud_metric_capture_r2/outcome.json)
