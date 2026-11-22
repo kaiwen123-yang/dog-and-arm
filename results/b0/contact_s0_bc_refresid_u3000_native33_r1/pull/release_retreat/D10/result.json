@@ -1,0 +1,91 @@
+{
+  "episode": "pull_5_train",
+  "side": "pull",
+  "segment": "release_retreat",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 12070,
+  "reference_phase_end_substep": 15975,
+  "reference_last_substep": 15975,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": -5.44119687524013e-05,
+    "dy_m": 1.1222784137469117e-06,
+    "dyaw_deg": -0.00832583346548368
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02153069688739294,
+    "grasp_error_m": 0.002787860325072684,
+    "supported": true,
+    "finger_n": [
+      3.304591020430735,
+      2.4117707462915448
+    ],
+    "door_force_sum_n": 6.004429236301613,
+    "prefix_start_target_penetration_m": 0.0009079380989103734,
+    "nominal_prefix_start_target_penetration_m": 0.001014315927534806,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "release",
+      "end_step": 828,
+      "ref_end_step": 12898,
+      "ticks": 75,
+      "door_deg": 4.816395996013625,
+      "width_m": 0.09007697055853725,
+      "net_force_n": 0.0
+    },
+    {
+      "phase": "retreat_arm",
+      "end_step": 2404,
+      "ref_end_step": 14474,
+      "ticks": 75,
+      "door_deg": 4.816395996013625,
+      "width_m": 0.08999112144743181,
+      "net_force_n": 0.0
+    },
+    {
+      "phase": "post_release_hold",
+      "end_step": 3904,
+      "ref_end_step": 15974,
+      "ticks": 1500,
+      "door_deg": 4.816395996013625,
+      "width_m": 0.08999112057176636,
+      "net_force_n": 0.0
+    }
+  ],
+  "policy_calls": 391,
+  "physics_steps": 3904,
+  "final_door_deg": 4.816395996013625,
+  "final_partial_substeps": 4,
+  "longest_ready_steps": {
+    "release": 75,
+    "retreat_arm": 75,
+    "post_release_hold": 1500
+  },
+  "last_physical_observation": {
+    "phase": "post_release_hold",
+    "door_deg": 4.816395996013625,
+    "width_m": 0.08999112057176636,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "net_door_force_n": 0.0,
+    "tcp_handle_error_m": 0.10989931482478954,
+    "station_error_m": 0.0007314508576383178,
+    "tilt_deg": 0.14189749157916323,
+    "speed_m_s": 0.00038447577619314037,
+    "yaw_rate_deg_s": 0.17295280456388054,
+    "continuous_ready_steps": 1500,
+    "required_ready_steps": 1500
+  },
+  "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_bc_refresid_u3000_native33_r1/pull/release_retreat/D10"
+}

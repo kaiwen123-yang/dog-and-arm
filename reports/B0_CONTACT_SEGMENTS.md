@@ -1,5 +1,9 @@
 # B0-04 接触片段
 
+## 冻结分项验收
+
+固定 seed0 包 `contact_s0_refres_joint_r1/checkpoint_000000.pt` 中的同一参考残差 Actor 在两个后端的十项名义均通过。每项的 D01–D20 均逐案完成且全部通过。原生 3.3.0 为 10 × 20/20，Warp 3.16 同为 10 × 20/20；两个后端复用注册条件。开 5°/15° 双侧和背侧稳定抓持采用预登记的一秒延长参考，另五项沿用 v1。网络有 3,000 次教师动作监督，WM 有 2,000 个教师 minibatch，包中接触 H32 更新为零。相同物理标准下，纯 tracking u1000 两端名义各 0/10。[原生逐项](../results/b0/contact_hold_margin_v2_summary/actor_native33.csv) · [Warp 逐项](../results/b0/contact_hold_margin_v2_summary/actor_warp316.csv) · [固定包身份](../results/b0/contact_s0_refres_joint_r1/initializer_identity.json)
+
 ## 实施起点
 
 2026-11-22 从 main@865835c 建立独立工作树。原生 MuJoCo 3.3.0 与研究环境 MuJoCo 3.16 均可导入；两侧旧教师原始数组可读。P6 原始目标的子步更新频率不同于策略，新采集将保存 10 个子步保持同一物理目标后的真实后继。冻结 seed0 的 review.json 在仓库，本机已从 AutoDL 取回完整 .pt，已用 torch.load 核对计数和 normalizer/模型状态；旧 boundary 检查点另属失败试验。各侧接触学习、nominal、20 条开发集目前均未验收。环境与命令记录见根目录 DAILY_WORK_LOG.md。

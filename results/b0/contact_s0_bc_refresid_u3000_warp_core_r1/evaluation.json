@@ -1,0 +1,42 @@
+{
+  "checkpoint": "results/b0/contact_s0_bc_reference_residual_r1/actor_003000.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "/root/autodl-tmp/dog-and-arm-b0-contact/config/b0/contact_dev_v1.json",
+  "requested_dev": true,
+  "source": "results/raw_large/b0/contact_held_r1",
+  "passed": 21,
+  "evaluated": 24,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 3323,
+      "policy_calls": 333,
+      "final_door_deg": 5.017906903002942,
+      "failure": "reference_exhausted"
+    },
+    {
+      "side": "push",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1525,
+      "policy_calls": 153,
+      "final_door_deg": 0.6008577710623983,
+      "failure": "reference_exhausted"
+    },
+    {
+      "side": "push",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 3239,
+      "policy_calls": 324,
+      "final_door_deg": 5.199540416053798,
+      "failure": "reference_exhausted"
+    }
+  ]
+}

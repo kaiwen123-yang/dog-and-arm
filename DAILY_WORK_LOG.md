@@ -586,3 +586,9 @@ bash scripts/b0/env.sh python -u scripts/b0/train.py --seed 0 --run free_s0_clou
 - 在实际 C02–C05 轨迹上运行 python -m scripts.b0.check_full_start_observation --run results/b0/full_pull_supervised_native_r1 --side pull --output results/b0/full_pull_supervised_native_r1/start_observability.json，证实四个 ±5 cm 平移条件初始 Actor 观测与 nominal 完全相同，前 51 个动作逐项相同，四案均败。该结论只确定这些条件的初期输入差异，不把全部失败归给同一原因。
 - 原生恒目标分别在 3.16 CPU 和 Warp 重放到预抓取超时，首故障为 8,169/8,170 步；在 3.3.0 走完全程。为检验同后端示范，在原收集入口加入 --backend warp，实际重采两侧完整、各自独立 train/validation，使用 20 ms 恒目标和每子步重算 bias。训练轨迹终角为 60.0501°、25.083°。已启动 full_s0_joint_warp_supervised_r1 和同配方 full_s0_joint_warp_prior_r1；实际结果按后续物理验收。
 - 评测参考库原来同时载入未被 Actor 调用的教师命令数组。本次只在在线训练构造 RSI 时读取这些命令，运行策略只需 metadata、有效区间、qpos、qvel。使用只含这四个文件的临时参考目录复算原生成功前拉的第 0/100/1000/2500/3600 帧，23 维输出每帧最大差全部为 0。完整参考和既有训练权重保留。
+
+### 14:26 北京时间｜B0-04 两后端开发验收收齐
+
+- GitHub 已回读 73afe8afad99739ef0559c8fff705a9325629e17。AutoDL 的 contact_s0_bc_refresid_u3000_warp_rest_r1 最后一个背推释放 D20 已有 result.json。按 registration.json 的五项 v1、五项 v2 回读原始逐案 JSON，逐组验证 checkpoint、后端、nominal 及全部 D01–D20 身份后生成 results/b0/contact_hold_margin_v2_summary/actor_warp316.csv。十组各 20/20、名义全过，与原生分表分别保存。v1 全量筛查的失败仍在原目录；不能把改协议后的结果替换回原 v1。
+- 原生/跨端重放对照收齐。同一 native 采集前拉恒目标在 CPU3.16/Warp 的预抓取超时仅差一个 2 ms 步，保留两个原始结果；换为真正来自 Warp 的 20 ms 反馈教师目标，Warp 自身的独立裁判重放 36,869 步通过。该配对对照支持后端参考差异，不能据此承诺学习策略跨端成功。
+- 对 full_s0_joint_prior_r1 与 full_s0_joint_warp_prior_r1 各自的 u0/u50，使用 scripts.b0.score_contact_checkpoint 单独加载完整 pull/push 的 validation episode，按 1、7、32 步和物理接触模式评分。原生加长参考训练前/后的 H32 TCP RMSE 为前拉 45.25/42.11 mm、背推 55.13/42.97 mm；Warp 原参考为前拉 46.62/52.52 mm、背推 56.11/49.59 mm。数千个滑窗来自每侧一个独立验证回合，不能作数千个独立任务。 u50 在较短时距的改善不足以建立稳定的 H32 预测或完整任务成功。

@@ -1,0 +1,81 @@
+{
+  "episode": "push_0_train_grip",
+  "side": "push",
+  "segment": "approach_grasp",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 6070,
+  "reference_phase_end_substep": 8753,
+  "reference_last_substep": 8753,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": -0.0004606488646923174,
+    "dy_m": 1.1202179055364698e-05,
+    "dyaw_deg": 0.01862071531562652
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": false,
+    "width_m": 0.09000116197144689,
+    "grasp_error_m": 0.10475871975376266,
+    "supported": true,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "door_force_sum_n": 0.0,
+    "prefix_start_target_penetration_m": 0.0,
+    "nominal_prefix_start_target_penetration_m": 0.0,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "approach_arm",
+      "end_step": 1582,
+      "ref_end_step": 7652,
+      "ticks": 75,
+      "door_deg": 0.0,
+      "width_m": 0.08989469481813363,
+      "net_force_n": 0.0
+    },
+    {
+      "phase": "grasp",
+      "end_step": 2682,
+      "ref_end_step": 8752,
+      "ticks": 100,
+      "door_deg": 0.3814071705522552,
+      "width_m": 0.021669154532181045,
+      "net_force_n": 1.5770738812980876
+    }
+  ],
+  "policy_calls": 269,
+  "physics_steps": 2682,
+  "final_door_deg": 0.3825926316397094,
+  "final_partial_substeps": 2,
+  "longest_ready_steps": {
+    "approach_arm": 75,
+    "grasp": 100
+  },
+  "last_physical_observation": {
+    "phase": "grasp",
+    "door_deg": 0.3814071705522552,
+    "width_m": 0.021669154532181045,
+    "finger_n": [
+      3.5868142840690904,
+      2.41734372987075
+    ],
+    "net_door_force_n": 1.5770738812980876,
+    "tcp_handle_error_m": 0.0018087465046243562,
+    "station_error_m": 0.0008808133395747153,
+    "tilt_deg": 0.09394973320474703,
+    "speed_m_s": 0.0003060450271052578,
+    "yaw_rate_deg_s": 0.10047491445517437,
+    "continuous_ready_steps": 100,
+    "required_ready_steps": 100
+  },
+  "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_bc_refresid_u3000_native33_r1/push/approach_grasp/D11"
+}

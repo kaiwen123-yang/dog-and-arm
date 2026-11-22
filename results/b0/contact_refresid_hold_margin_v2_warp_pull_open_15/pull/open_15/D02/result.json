@@ -1,0 +1,89 @@
+{
+  "episode": "pull_15_train",
+  "side": "pull",
+  "segment": "open_15",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 15350,
+  "reference_last_substep": 15350,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": -0.0001798204458831979,
+    "dy_m": -6.413514365808428e-05,
+    "dyaw_deg": -0.00014708706954647682
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.021439536474645138,
+    "grasp_error_m": 0.0018777743886460986,
+    "supported": true,
+    "finger_n": [
+      3.2385735511779785,
+      2.3925528526306152
+    ],
+    "door_force_sum_n": 5.746811944679855,
+    "prefix_start_target_penetration_m": 0.0009244925006737853,
+    "nominal_prefix_start_target_penetration_m": 0.0009854320145508287,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "open",
+      "end_step": 4600,
+      "ref_end_step": 13350,
+      "ticks": 75,
+      "door_deg": 15.06270496908833,
+      "width_m": 0.021388747729361057,
+      "net_force_n": 0.636104819728335
+    },
+    {
+      "phase": "hold",
+      "end_step": 6120,
+      "ref_end_step": 14870,
+      "ticks": 1500,
+      "door_deg": 15.086183744360248,
+      "width_m": 0.02155900001525879,
+      "net_force_n": 0.13395653626753584
+    }
+  ],
+  "policy_calls": 612,
+  "physics_steps": 6120,
+  "final_door_deg": 15.086192282096711,
+  "final_partial_substeps": 0,
+  "longest_ready_steps": {
+    "open": 75,
+    "hold": 1500
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 15.086183744360248,
+    "width_m": 0.02155900001525879,
+    "finger_n": [
+      2.799165964126587,
+      2.857717275619507
+    ],
+    "net_door_force_n": 0.13395653626753584,
+    "tcp_handle_error_m": 0.003251240830135718,
+    "station_error_m": 0.004660242468318207,
+    "tilt_deg": 0.15557708859463174,
+    "speed_m_s": 2.169325391834022e-05,
+    "yaw_rate_deg_s": -0.0035638662449623873,
+    "continuous_ready_steps": 1500,
+    "required_ready_steps": 1500
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-contact/results/raw_large/b0/contact_refresid_hold_margin_v2_warp_pull_open_15/pull/open_15/D02"
+}

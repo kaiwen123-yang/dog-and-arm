@@ -1,0 +1,81 @@
+{
+  "episode": "push_5_train",
+  "side": "push",
+  "segment": "open_5",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 12489,
+  "reference_last_substep": 12489,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": -7.474923567244639e-05,
+    "dy_m": -2.414322016294117e-07,
+    "dyaw_deg": -0.019006223377293803
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02173642366331493,
+    "grasp_error_m": 0.0018706163494006784,
+    "supported": true,
+    "finger_n": [
+      3.377720210325697,
+      2.478219135880822
+    ],
+    "door_force_sum_n": 5.9055042700533384,
+    "prefix_start_target_penetration_m": 0.0009014233713714494,
+    "nominal_prefix_start_target_penetration_m": 0.000989694673660637,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "open",
+      "end_step": 1739,
+      "ref_end_step": 10489,
+      "ticks": 75,
+      "door_deg": 5.200740694012333,
+      "width_m": 0.021801512069470314,
+      "net_force_n": 1.5134993378779567
+    },
+    {
+      "phase": "hold",
+      "end_step": 3400,
+      "ref_end_step": 12150,
+      "ticks": 1500,
+      "door_deg": 5.148067205451973,
+      "width_m": 0.021984952848382734,
+      "net_force_n": 0.32905943554279965
+    }
+  ],
+  "policy_calls": 340,
+  "physics_steps": 3400,
+  "final_door_deg": 5.148016579864465,
+  "final_partial_substeps": 0,
+  "longest_ready_steps": {
+    "open": 75,
+    "hold": 1500
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 5.148067205451973,
+    "width_m": 0.021984952848382734,
+    "finger_n": [
+      2.4670519330934977,
+      2.4623868908865365
+    ],
+    "net_door_force_n": 0.32905943554279965,
+    "tcp_handle_error_m": 0.0022144175890833886,
+    "station_error_m": 0.0007081777711314377,
+    "tilt_deg": 0.12248696680301495,
+    "speed_m_s": 0.0008936922243092171,
+    "yaw_rate_deg_s": 0.03905122809939131,
+    "continuous_ready_steps": 1500,
+    "required_ready_steps": 1500
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-contact/results/raw_large/b0/contact_refresid_hold_margin_v2_native_push_open_5/push/open_5/D02"
+}
