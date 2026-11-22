@@ -201,7 +201,7 @@ class ContactRun:
         for path in refs:
             name=path.name
             start=bank.starts[name]
-            n=len(bank.actions[bank.ids[name]])
+            n = int(bank.motion_ends[bank.ids[name]]) - start - 1
             meta=bank.metas[name]
             labels=np.load(path/'substeps/phase.npy',mmap_mode='r')[:n*10]
             idx=np.array([PHASE_ID[p] for p in meta['phases']])[labels].reshape(n,10)
@@ -214,7 +214,7 @@ class ContactRun:
             if not len(ii):
                 raise ValueError(f'{path} has no valid RSI starts')
             eligible.append(torch.as_tensor(ii+start,device=device))
-            acts=bank.actions[bank.ids[name]]
+            acts = tensor(np.load(path / "action_clipped.npy", mmap_mode="r")[:n], device)
             actions.append(torch.cat((acts,acts[-1:])))
         self.phases=torch.as_tensor(np.concatenate(phase),device=device,dtype=torch.long)
         env.force_head = None

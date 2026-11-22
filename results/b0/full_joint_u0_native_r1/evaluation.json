@@ -1,0 +1,32 @@
+{
+  "checkpoint": "results/b0/full_s0_joint_prior_r1/checkpoint_000000.pt",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "manifest": "/root/autodl-tmp/dog-and-arm-b0-contact/scripts/p6_scene.py",
+  "requested_dev": true,
+  "source": "results/raw_large/b0/full_native_joint_refs_r1",
+  "passed": 0,
+  "evaluated": 2,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "full",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 26395,
+      "policy_calls": 2640,
+      "final_door_deg": 60.04902557153759,
+      "failure": "lost_grip"
+    },
+    {
+      "side": "push",
+      "segment": "full",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 16575,
+      "policy_calls": 1658,
+      "final_door_deg": 25.063185374080938,
+      "failure": "lost_grip"
+    }
+  ]
+}

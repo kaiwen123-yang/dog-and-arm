@@ -1,0 +1,32 @@
+{
+  "checkpoint": "results/b0/full_s0_joint_prior_r1/checkpoint_000000.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "/root/autodl-tmp/dog-and-arm-b0-contact/scripts/p6_scene.py",
+  "requested_dev": true,
+  "source": "results/raw_large/b0/full_native_margin_r1",
+  "passed": 0,
+  "evaluated": 2,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "full",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 8244,
+      "policy_calls": 825,
+      "final_door_deg": 4.374606356865285e-06,
+      "failure": "door_contact_outside_manipulation"
+    },
+    {
+      "side": "push",
+      "segment": "full",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 8275,
+      "policy_calls": 828,
+      "final_door_deg": -6.570720638654206e-07,
+      "failure": "door_contact_outside_manipulation"
+    }
+  ]
+}

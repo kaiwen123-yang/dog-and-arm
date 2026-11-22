@@ -1,0 +1,123 @@
+{
+  "cfg": {
+    "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+    "worlds": 128,
+    "wm_batch": 256,
+    "wm_batches": 10,
+    "actor_batch": 256,
+    "wm_hidden": [
+      2048,
+      2048,
+      2048
+    ],
+    "actor_hidden": [
+      2048,
+      1024,
+      512,
+      256
+    ],
+    "critic_hidden": [
+      256,
+      128
+    ],
+    "buffer_size": 1000,
+    "replay_ratio": 16,
+    "physics_dt": 0.002,
+    "policy_dt": 0.02,
+    "history_length": 10,
+    "free_motion_clip_frames": 351,
+    "actor_horizon": 32,
+    "wm_window": 8,
+    "collection_noise": 0.1,
+    "milestones": [
+      0,
+      1000,
+      5000,
+      10000
+    ],
+    "periodic_updates": 10000,
+    "diagnostic_block": 50000,
+    "window_recipe": "terminal_one_step_and_seven_step",
+    "one_step_batches": 2,
+    "network_output_units": "quarter_effort_over_servo_gain",
+    "additional_physical_checks": [
+      50,
+      200
+    ],
+    "hypothesis": "Use the same dynamics, action head and frozen motion clock on both complete native references. Compare the packaged joint supervised initializer with 50 online Warp H32 updates; report both directions separately for each weight and backend.",
+    "base": "config/b0/full_pull_prior.yaml",
+    "cohort_steps": 16,
+    "replay_cohorts": 32,
+    "rsi_phases": [
+      "approach_base",
+      "settle",
+      "pregrasp",
+      "approach_arm",
+      "grasp",
+      "open",
+      "hold",
+      "release",
+      "retreat_arm",
+      "post_release_hold",
+      "stow",
+      "retreat_base",
+      "final"
+    ],
+    "reference_directory": "results/raw_large/b0/full_native_joint_refs_r1",
+    "references": [
+      "pull_60_train",
+      "push_25_train"
+    ],
+    "additional_teacher_episodes": [],
+    "actor_checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "wm_checkpoint": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "reward": "pinned_o1_tracking",
+    "reward_at": "successor_reference",
+    "diagnostic_updates": [
+      0,
+      50,
+      200,
+      1000
+    ],
+    "calibrated_actor": "results/b0/full_s0_joint_supervised_r1/actor_003000.pt",
+    "calibrated_actor_lr": 6.25e-06,
+    "freeze_actor_statistics": true,
+    "actor_parameterization": "motion_reference_arm_jaw_residual",
+    "physical_action_prior": {
+      "physical_units": [
+        0.005,
+        0.1,
+        0.001,
+        0.0001
+      ],
+      "weight": 0.02
+    }
+  },
+  "run": "full_s0_joint_prior_r1",
+  "seed": 0,
+  "git_revision": "67244fa069109cdafecbf6b5581a160c10fb5d08",
+  "physics": "MuJoCo Warp; exact 10 x 2 ms held targets",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "migration": "Actor incl. normalizers strict load; critic input layer initialized, shape-compatible hidden and output restored; door WM initialized from explicitly listed pretraining checkpoint. Joint optimizers fresh unless --resume.",
+  "initialization": {
+    "actor": "results/b0/full_s0_joint_supervised_r1/actor_003000.pt",
+    "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "resume": null
+  },
+  "max_step_reward": 0.1,
+  "max_critic_value": 9.999999999999991,
+  "validation_excluded": true,
+  "cohort_truncation": 16,
+  "requested_endpoint": 50,
+  "execution_source_sha256": {
+    "scripts/b0/train_contact.py": "59f2897182c7e6d19e3cf834d35ffbd4252733ac14f9574ed5b02a33a6ff195b",
+    "learning/b0/contact_events.py": "d472beb7bfabe10d90b728a7fc1e6ca8063613030dcc24fa6dd6d407df3b357a",
+    "learning/b0/contact_force.py": "dc5fc76590325f9e6d4e61f91611e1fb083fc3d78e80094e1385b6660bb5e1ce",
+    "learning/b0/contact_model.py": "5ca6f091aa0400d41ec01b75e29d9a4b51da188a5f9c5115b4e8c032da0a24b8",
+    "learning/b0/contact_policy.py": "b37c73be41c55609ec6338826a8f5e53d42033ca0e34e17ad38f266f0b3905b2",
+    "learning/b0/contact_replay.py": "2d54137bb9fe24ac5f5799b31812312715b7f11879c374e188c4b5f7144ad04b",
+    "learning/b0/contact_training.py": "78b0583c06d29ef9181492b4084cb9bc5f015f609ef86962159f6704c600f58b",
+    "learning/b0/contact_warp.py": "100da0517bf5956d700d1fe473e2b28a62257d27f416f9a0c695bc2f2b0cd679",
+    "config/b0/full_joint_prior.yaml": "5e4e6b0168addb0a09fc91f5d3c5cfe591de2047bec3d08b994dee289fed21da"
+  }
+}

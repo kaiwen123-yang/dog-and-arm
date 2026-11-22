@@ -187,9 +187,14 @@ def main():
     parser.add_argument("--release-during-hold", action="store_true", help="excite a real loss-of-grasp transition during hold")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--evidence-dir", type=Path, required=True)
+    parser.add_argument("--extra-full-hold", action="store_true",
+                        help="collect one additional physical second of post-opening grasp for the registered full-task reference")
     parser.add_argument("--backend", choices=["native", "warp"], default="native",
                         help="integrator for every physical substep, including the final partial interval")
     args = parser.parse_args()
+    if args.extra_full_hold and not args.full_task:
+        parser.error("--extra-full-hold requires --full-task")
+    duration = (1.5 if args.extra_full_hold else .5) if args.full_task else args.hold_seconds
     episode_id = f"{args.side}_{args.goal}_{args.split}" + ("_drop" if args.release_during_hold else "")
     if args.hold_grasp_pose:
         if args.goal or args.release_during_hold:
@@ -206,7 +211,7 @@ def main():
         parser.error('Use --full-task for the continuous task angles')
     output = args.evidence_dir / (episode_id + ".json")
     return 0 if collect(args.side, args.goal, args.split, args.output, output, args.release_during_hold,
-                        args.hold_grasp_pose, args.complete_terminal, .5 if args.full_task else args.hold_seconds, args.full_task, args.backend) else 1
+                        args.hold_grasp_pose, args.complete_terminal, duration, args.full_task, args.backend) else 1
 
 
 if __name__ == "__main__":

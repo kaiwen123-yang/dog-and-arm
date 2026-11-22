@@ -15,7 +15,7 @@ class DoorMotions:
     """One clock per episode. Partial terminal states stay in the raw record."""
     def __init__(self, paths, rep, device):
         self.ids, self.starts, self.metas = {}, {}, {}
-        q, v, acts, starts, ends = [], [], [], [], []
+        q, v, starts, ends = [], [], [], []
         for path in map(Path, paths):
             meta = json.loads((path / 'metadata.json').read_text())
             if not (meta['finished'] and meta['held_action_replay'] and meta['success'] and meta['wm_split']=='train'):
@@ -33,12 +33,10 @@ class DoorMotions:
             ends.append(start+n+1)
             q.append(np.load(path/'qpos.npy',mmap_mode='r')[:n+1])
             v.append(np.load(path/'qvel.npy',mmap_mode='r')[:n+1])
-            acts.append(np.load(path/'action_clipped.npy',mmap_mode='r')[:n])
         self.motion_ends = torch.tensor(ends,device=device)
         self.motion_starts = torch.tensor(starts,device=device)
         self.qpos = tensor(np.concatenate(q),device)
         self.qvel = tensor(np.concatenate(v),device)
-        self.actions = [tensor(a,device) for a in acts]
         self.root_pos_w = self.qpos[:, :3]
         self.root_quat_w = self.qpos[:, 3:7]
         self.joint_pos = self.qpos[:, 7:31]
