@@ -14,7 +14,7 @@ import torch
 from supermimic.learners.wm_learner import WorldModelLearner
 from supermimic.models import Dynamics
 
-from learning.b0.contact_model import (CONTEXT_NAMES, SCHEMA, ContactRepresentation,
+from learning.b0.contact_model import (CONTEXT_NAMES, SCHEMA, ContactRepresentation, ContactTcpLoss,
                                       ContactWorldModelCfg, transfer_wm)
 from learning.b0.contact_replay import ContactEpisode, ContactWindows, MODES
 from learning.b0.model import tensor
@@ -88,6 +88,9 @@ def main():
     p.add_argument('--minibatches', type=int, default=200)
     p.add_argument('--batch-size', type=int, default=256)
     p.add_argument('--seed', type=int, default=0)
+    p.add_argument('--tcp-loss', action='store_true', help='Add a 5 mm world TCP loss from differentiable robot kinematics')
+    p.add_argument('--train-h32', action='store_true',
+                   help='Replace the last two seven-step batches in each block of ten with H32 supervision')
     p.add_argument('--from-b003', type=Path)
     p.add_argument('--resume-wm', type=Path, help='Continue a completed teacher-only WM minibatch in a fresh run')
     a = p.parse_args()
@@ -103,7 +106,7 @@ def main():
     if not train or not val:
         raise ValueError('Supply separate training and validation episodes')
     model = make_model()
-    rep = ContactRepresentation(model, a.device)
+    rep = (ContactTcpLoss if a.tcp_loss else ContactRepresentation)(model, a.device)
     mapping = ActionMap(model)
     hidden = (2048, 2048, 2048)
     dynamics = Dynamics(rep, 23, len(CONTEXT_NAMES), tensor(mapping.scale, a.device),
@@ -127,10 +130,16 @@ def main():
         source = torch.load(a.from_b003, weights_only=False, map_location='cpu')
         migrated = transfer_wm(dynamics, source['dyn'])
         del source
-    windows = {s: ContactWindows(train, s) for s in (1, 7)}
-    learners = {s: WorldModelLearner(dynamics, rep, ContactWorldModelCfg(
-        batch_size=a.batch_size, horizon=s+1, num_batches=1), a.device) for s in windows}
-    learners[1].optimizers = learners[7].optimizers
+    horizons = (1, 7, 32) if a.train_h32 else (1, 7)
+    windows = {s: ContactWindows(train, s) for s in horizons}
+    learners = {}
+    for s in horizons:
+        cfg = ContactWorldModelCfg(batch_size=a.batch_size, horizon=s+1, num_batches=1)
+        if a.tcp_loss:
+            cfg.nominal_error_tcp_m = .005
+        learners[s] = WorldModelLearner(dynamics, rep, cfg, a.device)
+    for learner in learners.values():
+        learner.optimizers = learners[7].optimizers
     if previous is None:
         for ep in train:
             valid = torch.as_tensor(ep.valid, device=a.device)
@@ -154,16 +163,19 @@ def main():
                   migrated=migrated, optimization='fixed O1 Muon/Adam, lr=0.0002, no Actor or Critic update',
                   full=rep.full_state_dim, representation=rep.rep_state_dim, prediction=rep.prediction_dim,
                   context=list(CONTEXT_NAMES), batch_size=a.batch_size, hidden=hidden, minibatches=a.minibatches,
+                  training_horizons=horizons, h32_per_ten=2 if a.train_h32 else 0, tcp_loss=a.tcp_loss,
                   loss_scales=vars(learners[7].cfg), actual_physics='native held teacher',
                   sources=[dict(path=str(ep.path), group=ep.group, split=ep.split, side=ep.side,
                                 valid_steps=int(ep.valid.sum()), partial_steps=int((~ep.valid).sum()),
                                 mode_counts={m:int((ep.modes[ep.valid]==m).sum()) for m in MODES}) for ep in episodes])
     (out/'config.json').write_text(json.dumps(config, indent=2)+'\n')
     snapshot(start)
-    counts = {1:0, 7:0}
+    counts = dict.fromkeys(horizons, 0)
     with (out/'losses.jsonl').open('x', buffering=1) as log:
         for k in range(start, a.minibatches):
             horizon = 1 if k % 10 < 2 else 7
+            if a.train_h32 and k % 10 >= 8:
+                horizon = 32
             metrics = learners[horizon].update([windows[horizon].sample(a.batch_size)])
             counts[horizon] += 1
             obj = dict(minibatch=k+1, scored_steps=horizon, **{n:v.item() for n,v in metrics.items()})

@@ -1,0 +1,96 @@
+{
+  "episode": "pull_0_train_grip",
+  "side": "pull",
+  "segment": "approach_grasp",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 6070,
+  "reference_phase_end_substep": 8753,
+  "reference_last_substep": 8753,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.00043681278411354207,
+    "dy_m": -0.00031624273314739983,
+    "dyaw_deg": -0.023252428230814776
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": false,
+    "width_m": 0.08999994024634361,
+    "grasp_error_m": 0.0795540686887693,
+    "supported": true,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "door_force_sum_n": 0.0,
+    "prefix_start_target_penetration_m": 0.0,
+    "nominal_prefix_start_target_penetration_m": 0.0,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "reference_exhausted",
+    "phase": "approach_arm",
+    "physics_steps": 2683,
+    "readiness": {
+      "current": 0,
+      "required": 75,
+      "best": 10,
+      "last_not_ready": {
+        "reference_substep": 8752,
+        "ramp": true,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": true,
+        "gripped": true,
+        "detached": false,
+        "door_speed_rad_s": 1.1974027074757032e-05,
+        "planar_speed_m_s": 0.0004228286769503054,
+        "yaw_rate_deg_s": 0.04936842125962227,
+        "tcp_handle_error_m": 0.004364509031761604,
+        "width_m": 0.021186023019254208,
+        "tcp_goal_distance_m": 0.004369001636889618,
+        "tcp_goal_rotation_error_rad": 0.018419533937807958
+      }
+    }
+  },
+  "events": [],
+  "policy_calls": 269,
+  "physics_steps": 2683,
+  "final_door_deg": -0.0005294419009038902,
+  "final_partial_substeps": 3,
+  "longest_ready_steps": {
+    "approach_arm": 10
+  },
+  "last_physical_observation": {
+    "phase": "approach_arm",
+    "door_deg": -0.0005316407953466928,
+    "width_m": 0.021186023019254208,
+    "finger_n": [
+      3.743126392364502,
+      2.536583185195923
+    ],
+    "net_door_force_n": 2.887933661406828,
+    "tcp_handle_error_m": 0.004364509031761604,
+    "station_error_m": 0.0026336280821887222,
+    "tilt_deg": 0.2577089445881304,
+    "speed_m_s": 0.0004228286769503054,
+    "yaw_rate_deg_s": 0.04936842125962227,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 75
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 57,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_bc_historyswap_u3000_warp_r1/pull/approach_grasp/D05"
+}

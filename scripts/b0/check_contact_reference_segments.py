@@ -19,13 +19,18 @@ def main():
     p.add_argument('--backend', choices=('native','warp'), required=True)
     p.add_argument('--references', type=Path, default=Path('results/raw_large/b0/contact_held_r1'))
     p.add_argument('--manifest', type=Path, default=Path('config/b0/contact_dev_v1.json'))
+    p.add_argument('--segment', nargs='+', help='Evaluate only these registered segment names')
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--reuse-native', type=Path, help='Earlier documented RSI positives from exactly this protocol')
     args = p.parse_args()
     if mj.__version__ != ('3.3.0' if args.backend=='native' else '3.16.0'):
         p.error('Run with matching native33 or Warp316 interpreter')
-    args.output.mkdir(parents=True, exist_ok=False)
     cases = json.loads(args.manifest.read_text())['cases']
+    if args.segment:
+        cases = {name: case for name, case in cases.items() if name.split('/')[1] in args.segment}
+        if not cases:
+            p.error('No matching registered segments')
+    args.output.mkdir(parents=True, exist_ok=False)
     rows = []
     last_side = None
     for name, registered in cases.items():

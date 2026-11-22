@@ -1,0 +1,90 @@
+{
+  "episode": "push_0_train_grip",
+  "side": "push",
+  "segment": "stable_grip",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 10275,
+  "reference_last_substep": 10275,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.021736527793109417,
+    "grasp_error_m": 0.0018649509913191975,
+    "supported": true,
+    "finger_n": [
+      3.4011096954345703,
+      2.4635376930236816
+    ],
+    "door_force_sum_n": 5.9338393994758585,
+    "prefix_start_target_penetration_m": 0.000989740430697985,
+    "nominal_prefix_start_target_penetration_m": 0.000989740430697985,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "grip_base_or_handle_error",
+    "phase": "hold",
+    "first_failure_substep": 30,
+    "interval_start_s": 0.058,
+    "interval_end_s": 0.06,
+    "door_deg": 0.4093222179427422,
+    "finger_load_n": [
+      0.0,
+      0.0
+    ],
+    "wheel_load_n": [
+      108.89672470092773,
+      114.2977180480957,
+      97.6464614868164,
+      106.39873504638672
+    ],
+    "door_net_force_n": 0.0,
+    "door_contact_sum_n": 0.0,
+    "tcp_handle_error_m": 0.005014987812674451,
+    "min_arm_margin_rad": 0.7740956544876099
+  },
+  "events": [],
+  "policy_calls": 3,
+  "physics_steps": 30,
+  "final_door_deg": 0.41066811205477854,
+  "final_partial_substeps": 0,
+  "longest_ready_steps": {
+    "hold": 0
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 0.4093222179427422,
+    "width_m": 0.0324871763586998,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "net_door_force_n": 0.0,
+    "tcp_handle_error_m": 0.005014987812674451,
+    "station_error_m": 0.0007279222064234426,
+    "tilt_deg": 0.07268122932319185,
+    "speed_m_s": 0.0017372818163321456,
+    "yaw_rate_deg_s": 0.025477482451402984,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 1500
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_peakforce_u200_warp_r2/push/stable_grip/nominal"
+}

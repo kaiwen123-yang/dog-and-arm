@@ -1,0 +1,211 @@
+{
+  "method": "frozen BC first 16 raw channels; current given reference six arm positions and two-finger opening for last seven; no learned residual",
+  "checkpoint": "results/b0/contact_s0_bc_effort32_r1/actor_003000.pt",
+  "manifest": "config/b0/contact_dev_v1.json",
+  "case_type": "paired nominal physical control diagnostic",
+  "cases": [
+    {
+      "side": "pull",
+      "segment": "stable_grip",
+      "paired_original": "results/b0/contact_s0_bc_u3000_warp_r1/pull/stable_grip/nominal/result.json",
+      "original_passed": true,
+      "original_physics_steps": 1500,
+      "original_failure": null,
+      "diagnostic_passed": false,
+      "diagnostic_physics_steps": 185,
+      "diagnostic_failure": {
+        "reason": "lost_grip",
+        "phase": "hold",
+        "first_failure_substep": 185,
+        "interval_start_s": 0.368,
+        "interval_end_s": 0.37,
+        "door_deg": 0.0765933344760197,
+        "finger_load_n": [
+          0.0,
+          0.4854486882686615
+        ],
+        "wheel_load_n": [
+          125.42451286315918,
+          106.03647804260254,
+          108.39555168151855,
+          87.4049015045166
+        ],
+        "door_net_force_n": 0.5392381376162276,
+        "door_contact_sum_n": 0.5392381376162276,
+        "tcp_handle_error_m": 0.0006180963842594456,
+        "min_arm_margin_rad": 0.5530222436309815
+      },
+      "diagnostic_final_door_deg": 0.07663683024123225
+    },
+    {
+      "side": "pull",
+      "segment": "open_5",
+      "paired_original": "results/b0/contact_s0_bc_u3000_warp_r1/pull/open_5/nominal/result.json",
+      "original_passed": false,
+      "original_physics_steps": 2155,
+      "original_failure": {
+        "reason": "persistent_saturation:piper_gripper_joint1",
+        "phase": "hold",
+        "first_failure_substep": 2155,
+        "interval_start_s": 4.308,
+        "interval_end_s": 4.3100000000000005,
+        "door_deg": 6.028454308160661,
+        "finger_load_n": [
+          6.768340110778809,
+          3.2525746822357178
+        ],
+        "wheel_load_n": [
+          126.34788131713867,
+          99.02582550048828,
+          109.59628677368164,
+          91.21017265319824
+        ],
+        "door_net_force_n": 3.7170904595490333,
+        "door_contact_sum_n": 10.09610713722105,
+        "tcp_handle_error_m": 0.0032793586415019596,
+        "min_arm_margin_rad": 0.9007919808746339
+      },
+      "diagnostic_passed": false,
+      "diagnostic_physics_steps": 445,
+      "diagnostic_failure": {
+        "reason": "lost_grip",
+        "phase": "open",
+        "first_failure_substep": 445,
+        "interval_start_s": 0.888,
+        "interval_end_s": 0.89,
+        "door_deg": 0.3265787983771219,
+        "finger_load_n": [
+          0.0,
+          0.5596426725387573
+        ],
+        "wheel_load_n": [
+          124.6065502166748,
+          106.51705169677734,
+          108.2451114654541,
+          87.45125961303711
+        ],
+        "door_net_force_n": 0.7914542993214786,
+        "door_contact_sum_n": 0.7914542993214786,
+        "tcp_handle_error_m": 0.001845510709077819,
+        "min_arm_margin_rad": 0.5811198731781007
+      },
+      "diagnostic_final_door_deg": 0.3279582297852
+    },
+    {
+      "side": "push",
+      "segment": "stable_grip",
+      "paired_original": "results/b0/contact_s0_bc_u3000_warp_r1/push/stable_grip/nominal/result.json",
+      "original_passed": false,
+      "original_physics_steps": 1525,
+      "original_failure": {
+        "reason": "reference_exhausted",
+        "phase": "hold",
+        "physics_steps": 1525,
+        "readiness": {
+          "current": 0,
+          "required": 1500,
+          "best": 0,
+          "last_not_ready": {
+            "reference_substep": 10274,
+            "ramp": true,
+            "within_position_zone": true,
+            "stable": true,
+            "wheels_loaded": true,
+            "reached": false,
+            "both_fingers": true,
+            "gripped": true,
+            "detached": false,
+            "door_speed_rad_s": 0.03579522669315338,
+            "planar_speed_m_s": 0.0008671042955738999,
+            "yaw_rate_deg_s": -0.025926593391986125,
+            "tcp_handle_error_m": 0.002642321286513706,
+            "width_m": 0.021688436158001423
+          }
+        }
+      },
+      "diagnostic_passed": false,
+      "diagnostic_physics_steps": 75,
+      "diagnostic_failure": {
+        "reason": "lost_grip",
+        "phase": "hold",
+        "first_failure_substep": 75,
+        "interval_start_s": 0.148,
+        "interval_end_s": 0.15,
+        "door_deg": 0.39508522222637954,
+        "finger_load_n": [
+          0.0,
+          0.4759313464164734
+        ],
+        "wheel_load_n": [
+          104.74499702453613,
+          116.9184455871582,
+          97.86316299438477,
+          107.54603576660156
+        ],
+        "door_net_force_n": 0.6730685404312523,
+        "door_contact_sum_n": 0.6730685404312523,
+        "tcp_handle_error_m": 0.0007965538011798398,
+        "min_arm_margin_rad": 0.7678210735321045
+      },
+      "diagnostic_final_door_deg": 0.39488346484159975
+    },
+    {
+      "side": "push",
+      "segment": "open_5",
+      "paired_original": "results/b0/contact_s0_bc_u3000_warp_r1/push/open_5/nominal/result.json",
+      "original_passed": false,
+      "original_physics_steps": 3239,
+      "original_failure": {
+        "reason": "reference_exhausted",
+        "phase": "open",
+        "physics_steps": 3239,
+        "readiness": {
+          "current": 0,
+          "required": 75,
+          "best": 0,
+          "last_not_ready": {
+            "reference_substep": 11988,
+            "ramp": true,
+            "within_position_zone": true,
+            "stable": true,
+            "wheels_loaded": true,
+            "reached": false,
+            "both_fingers": true,
+            "gripped": true,
+            "detached": false,
+            "door_speed_rad_s": 0.02127324603497982,
+            "planar_speed_m_s": 4.865873432961253e-05,
+            "yaw_rate_deg_s": 0.0021633549919681913,
+            "tcp_handle_error_m": 0.004248994809406408,
+            "width_m": 0.02115209959447384
+          }
+        }
+      },
+      "diagnostic_passed": false,
+      "diagnostic_physics_steps": 75,
+      "diagnostic_failure": {
+        "reason": "lost_grip",
+        "phase": "open",
+        "first_failure_substep": 75,
+        "interval_start_s": 0.148,
+        "interval_end_s": 0.15,
+        "door_deg": 0.39505728781989125,
+        "finger_load_n": [
+          0.0,
+          0.4740370512008667
+        ],
+        "wheel_load_n": [
+          104.79019546508789,
+          116.86713981628418,
+          97.84724235534668,
+          107.5594253540039
+        ],
+        "door_net_force_n": 0.670389632137114,
+        "door_contact_sum_n": 0.670389632137114,
+        "tcp_handle_error_m": 0.0007925933684635241,
+        "min_arm_margin_rad": 0.7678451538085938
+      },
+      "diagnostic_final_door_deg": 0.39485619744577255
+    }
+  ]
+}

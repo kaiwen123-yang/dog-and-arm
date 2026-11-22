@@ -1,0 +1,323 @@
+{
+  "schema": "b0_contact_gencoord_v1",
+  "seed": 0,
+  "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "torch": "2.14.0+cu130",
+  "from_b003": "/root/autodl-tmp/dog-and-arm-b0/results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+  "resume_wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+  "start_minibatch": 2000,
+  "migrated": [
+    "mlp.1.weight",
+    "mlp.1.bias",
+    "mlp.3.weight",
+    "mlp.3.bias",
+    "mlp.4.weight",
+    "mlp.4.bias",
+    "mlp.6.weight",
+    "mlp.6.bias",
+    "mlp.7.weight",
+    "mlp.7.bias",
+    "mlp.9.weight[:30]",
+    "mlp.9.bias[:30]"
+  ],
+  "optimization": "fixed O1 Muon/Adam, lr=0.0002, no Actor or Critic update",
+  "full": 63,
+  "representation": 75,
+  "prediction": 31,
+  "context": [
+    "back_side",
+    "ground_friction",
+    "finger_friction",
+    "hinge_frictionloss",
+    "hinge_damping"
+  ],
+  "batch_size": 256,
+  "hidden": [
+    2048,
+    2048,
+    2048
+  ],
+  "minibatches": 2400,
+  "training_horizons": [
+    1,
+    7
+  ],
+  "h32_per_ten": 0,
+  "loss_scales": {
+    "lr": 0.0002,
+    "num_batches": 1,
+    "batch_size": 256,
+    "horizon": 8,
+    "nominal_error_root_pose_pos": 0.01,
+    "nominal_error_root_pose_ori": 0.02,
+    "nominal_error_joint_pos": 0.1,
+    "nominal_error_joint_vel": 3.14,
+    "nominal_error_body_pos": 0.05,
+    "nominal_error_body_rot": 0.1,
+    "nominal_error_body_vel": 1.0,
+    "nominal_error_body_avel": 3.14,
+    "nominal_error_finger_pos": 0.002,
+    "nominal_error_finger_vel": 0.05,
+    "nominal_error_door_angle": 0.03490658503988659,
+    "nominal_error_door_speed": 0.1
+  },
+  "actual_physics": "native held teacher",
+  "sources": [
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/pull_0_train",
+      "group": "pull_0_train",
+      "split": "train",
+      "side": "pull",
+      "valid_steps": 876,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 836,
+        "first_contact": 1,
+        "two_finger": 39,
+        "loss_or_slip": 0,
+        "release": 0,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/pull_0_validation",
+      "group": "pull_0_validation",
+      "split": "validation",
+      "side": "pull",
+      "valid_steps": 868,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 828,
+        "first_contact": 1,
+        "two_finger": 39,
+        "loss_or_slip": 0,
+        "release": 0,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/pull_15_train",
+      "group": "pull_15_train",
+      "split": "train",
+      "side": "pull",
+      "valid_steps": 1875,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 985,
+        "first_contact": 1,
+        "two_finger": 648,
+        "loss_or_slip": 0,
+        "release": 241,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/pull_15_validation",
+      "group": "pull_15_validation",
+      "split": "validation",
+      "side": "pull",
+      "valid_steps": 1867,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 977,
+        "first_contact": 1,
+        "two_finger": 648,
+        "loss_or_slip": 0,
+        "release": 241,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/pull_5_train",
+      "group": "pull_5_train",
+      "split": "train",
+      "side": "pull",
+      "valid_steps": 1597,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 985,
+        "first_contact": 1,
+        "two_finger": 370,
+        "loss_or_slip": 0,
+        "release": 241,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/pull_5_train_drop",
+      "group": "pull_5_train_drop",
+      "split": "train",
+      "side": "pull",
+      "valid_steps": 1092,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 863,
+        "first_contact": 1,
+        "two_finger": 221,
+        "loss_or_slip": 7,
+        "release": 0,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/pull_5_validation",
+      "group": "pull_5_validation",
+      "split": "validation",
+      "side": "pull",
+      "valid_steps": 1589,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 977,
+        "first_contact": 1,
+        "two_finger": 370,
+        "loss_or_slip": 0,
+        "release": 241,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/pull_5_validation_drop",
+      "group": "pull_5_validation_drop",
+      "split": "validation",
+      "side": "pull",
+      "valid_steps": 1055,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 826,
+        "first_contact": 1,
+        "two_finger": 221,
+        "loss_or_slip": 7,
+        "release": 0,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/push_0_train",
+      "group": "push_0_train",
+      "split": "train",
+      "side": "push",
+      "valid_steps": 876,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 836,
+        "first_contact": 1,
+        "two_finger": 39,
+        "loss_or_slip": 0,
+        "release": 0,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/push_0_validation",
+      "group": "push_0_validation",
+      "split": "validation",
+      "side": "push",
+      "valid_steps": 866,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 826,
+        "first_contact": 1,
+        "two_finger": 39,
+        "loss_or_slip": 0,
+        "release": 0,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/push_15_train",
+      "group": "push_15_train",
+      "split": "train",
+      "side": "push",
+      "valid_steps": 1866,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 985,
+        "first_contact": 1,
+        "two_finger": 639,
+        "loss_or_slip": 0,
+        "release": 241,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/push_15_validation",
+      "group": "push_15_validation",
+      "split": "validation",
+      "side": "push",
+      "valid_steps": 1857,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 975,
+        "first_contact": 1,
+        "two_finger": 640,
+        "loss_or_slip": 0,
+        "release": 241,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/push_5_train",
+      "group": "push_5_train",
+      "split": "train",
+      "side": "push",
+      "valid_steps": 1589,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 985,
+        "first_contact": 1,
+        "two_finger": 361,
+        "loss_or_slip": 0,
+        "release": 242,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/push_5_train_drop",
+      "group": "push_5_train_drop",
+      "split": "train",
+      "side": "push",
+      "valid_steps": 1037,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 817,
+        "first_contact": 1,
+        "two_finger": 212,
+        "loss_or_slip": 7,
+        "release": 0,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/push_5_validation",
+      "group": "push_5_validation",
+      "split": "validation",
+      "side": "push",
+      "valid_steps": 1579,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 975,
+        "first_contact": 1,
+        "two_finger": 362,
+        "loss_or_slip": 0,
+        "release": 241,
+        "other_contact": 0
+      }
+    },
+    {
+      "path": "results/raw_large/b0/contact_wm_input_r1/push_5_validation_drop",
+      "group": "push_5_validation_drop",
+      "split": "validation",
+      "side": "push",
+      "valid_steps": 1045,
+      "partial_steps": 1,
+      "mode_counts": {
+        "free": 824,
+        "first_contact": 1,
+        "two_finger": 213,
+        "loss_or_slip": 7,
+        "release": 0,
+        "other_contact": 0
+      }
+    }
+  ]
+}

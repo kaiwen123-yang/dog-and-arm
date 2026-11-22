@@ -10,7 +10,7 @@ from supermimic.envs.multi_task_world_model_env import MultiTaskWorldModelEnv
 from supermimic.learners.policy_learner import ActorCriticPolicyLearner, ActorCriticPolicyLearnerCfg
 from supermimic.learners.wm_learner import WorldModelLearner
 
-from .contact_model import ContactRepresentation, ContactWorldModelCfg, contact_context, contact_state
+from .contact_model import ContactRepresentation, ContactTcpLoss, ContactWorldModelCfg, contact_context, contact_state
 from .contact_policy import DoorMotions, build_actor, sensor
 from .contact_replay import ContactEpisode, ContactWindows
 from .model import RobotRepresentation, full_state, tensor
@@ -120,7 +120,10 @@ class ContactRun:
         self.device,self.cfg = device,cfg
         self.model = model = make_model()
         mapping = ActionMap(model)
-        self.rep = rep = ContactRepresentation(model,device)
+        self.h32_teacher_batches = 2 if cfg.get('long_horizon_tcp_wm') else 0
+        self.seven_batches = 8 - self.h32_teacher_batches
+        rep_type = ContactTcpLoss if self.h32_teacher_batches else ContactRepresentation
+        self.rep = rep = rep_type(model,device)
         self.robot = RobotRepresentation(model,device)
         self.bank = bank = DoorMotions(refs,rep,device)
         self.actor, task = build_actor(rep,cfg,model,device)
@@ -132,14 +135,18 @@ class ContactRun:
                             tuple(cfg['wm_hidden'])).to(device)
         self.dyn.load_state_dict(wm_checkpoint['dyn'])
         self.b = cfg['wm_batch']
+        horizons = [(1, 2), (7, self.seven_batches)]
+        if self.h32_teacher_batches:
+            horizons.append((32, self.h32_teacher_batches))
         self.learners = {n: WorldModelLearner(self.dyn,rep,ContactWorldModelCfg(
             batch_size=self.b,horizon=n+1,num_batches=b),device)
-            for n,b in ((1,2),(7,8))}
-        self.learners[1].optimizers=self.learners[7].optimizers
+            for n,b in horizons}
+        for learner in self.learners.values():
+            learner.optimizers = self.learners[7].optimizers
         eps=[ContactEpisode.read(p,device) for p in teachers]
         if len(set(e.group for e in eps)) != len(eps):
             raise ValueError('Duplicate teacher episode group')
-        self.offline={n:ContactWindows(eps,n) for n in (1,7)}
+        self.offline={n:ContactWindows(eps,n) for n in self.learners}
         self.replay=OnlineContactReplay(cfg['replay_cohorts'],device)
         self.n=cfg['worlds']
         self.steps=cfg['cohort_steps']
@@ -291,9 +298,14 @@ class ContactRun:
 
     def update(self):
         online_long=0
+        if self.h32_teacher_batches:
+            long_windows = [self.offline[32].sample(self.b) for _ in range(self.h32_teacher_batches)]
+            metrics = self.learners[32].update(long_windows)
+            if not all(torch.isfinite(value).all() for value in metrics.values()):
+                raise FloatingPointError('nonfinite long-horizon world model update')
         for n in (7,1):
             batches=[]
-            for _ in range(8 if n==7 else 2):
+            for _ in range(self.seven_batches if n==7 else 2):
                 take=(3*self.b//4 if n==7 else self.b)
                 batch=self.replay.windows(n,take)
                 count=take if batch is not None else 0
@@ -311,7 +323,9 @@ class ContactRun:
         out={k:float(v) for k,v in stats.items()}
         out.update(actor_max_weight_change=float((self.actor.decoder[-1].weight.detach()-prev).abs().max()),
                    wm_frozen=all(not p.requires_grad for p in self.dyn.parameters()),
-                   online_seven_step_windows=online_long,total_seven_step_windows=8*self.b)
+                   online_seven_step_windows=online_long,total_seven_step_windows=self.seven_batches*self.b)
+        if self.h32_teacher_batches:
+            out['teacher_thirtytwo_step_windows'] = self.h32_teacher_batches*self.b
         if not all(np.isfinite(x) for x in out.values()):
             raise FloatingPointError(out)
         return out

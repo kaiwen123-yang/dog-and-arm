@@ -1,0 +1,107 @@
+{
+  "episode": "pull_5_train",
+  "side": "pull",
+  "segment": "release_retreat",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 12070,
+  "reference_phase_end_substep": 15975,
+  "reference_last_substep": 15975,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.021387983113527298,
+    "grasp_error_m": 0.0027080275126541253,
+    "supported": true,
+    "finger_n": [
+      3.199852705001831,
+      2.4427011013031006
+    ],
+    "door_force_sum_n": 7.7020216497627585,
+    "prefix_start_target_penetration_m": 0.0010143162722893347,
+    "nominal_prefix_start_target_penetration_m": 0.0010143162722893347,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "reference_exhausted",
+    "phase": "retreat_arm",
+    "physics_steps": 3905,
+    "readiness": {
+      "current": 0,
+      "required": 75,
+      "best": 0,
+      "last_not_ready": {
+        "reference_substep": 15974,
+        "ramp": true,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": false,
+        "gripped": false,
+        "detached": true,
+        "door_speed_rad_s": 1.3668265221024266e-41,
+        "planar_speed_m_s": 0.00027150612601080544,
+        "yaw_rate_deg_s": -0.017267071789490152,
+        "tcp_handle_error_m": 0.24095604611489296,
+        "width_m": 0.08940325304865837,
+        "tcp_goal_distance_m": 0.1389692975848216,
+        "tcp_goal_rotation_error_rad": 0.18241694229347213
+      }
+    }
+  },
+  "events": [
+    {
+      "phase": "release",
+      "end_step": 828,
+      "ref_end_step": 12898,
+      "ticks": 75,
+      "door_deg": 4.963778080717414,
+      "width_m": 0.08814174681901932,
+      "net_force_n": 0.0
+    }
+  ],
+  "policy_calls": 391,
+  "physics_steps": 3905,
+  "final_door_deg": 4.963778080717414,
+  "final_partial_substeps": 5,
+  "longest_ready_steps": {
+    "release": 75,
+    "retreat_arm": 0
+  },
+  "last_physical_observation": {
+    "phase": "retreat_arm",
+    "door_deg": 4.963778080717414,
+    "width_m": 0.08940325304865837,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "net_door_force_n": 0.0,
+    "tcp_handle_error_m": 0.24095604611489296,
+    "station_error_m": 0.0045978826200406405,
+    "tilt_deg": 0.09512955096476787,
+    "speed_m_s": 0.00027150612601080544,
+    "yaw_rate_deg_s": -0.017267071789490152,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 75
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_peakforce_u50_warp_r2/pull/release_retreat/nominal"
+}

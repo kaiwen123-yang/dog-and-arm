@@ -1,0 +1,26 @@
+{
+  "protocol": "contact_hold_margin_v2",
+  "registered_at": "2026-11-22T13:41:43+08:00",
+  "cases": [
+    "pull/open_5",
+    "pull/open_15",
+    "push/stable_grip",
+    "push/open_5",
+    "push/open_15"
+  ],
+  "already_measured_4s_reference": [
+    "push/stable_grip"
+  ],
+  "source": "results/raw_large/b0/contact_held_margin_v2",
+  "previous_source": "results/raw_large/b0/contact_held_r1",
+  "previous_manifest": "config/b0/contact_dev_v1.json",
+  "previous_manifest_sha256": "c1ddf0486613dfc6786fd695c1f785f63bdc9fb2b8d00c1a10548574c998b525",
+  "training_checkpoint": "results/b0/contact_s0_bc_reference_residual_r1/actor_003000.pt",
+  "teacher_continuous_hold_s": 4.0,
+  "judge_continuous_hold_s": 3.0,
+  "extra_physical_steps": 500,
+  "policy_dt_s": 0.02,
+  "physics_dt_s": 0.002,
+  "development": "Reuse exactly the twenty prescreened v1 initial perturbations and original IDs per group, verify their 100-substep prefixes in the newly recorded references, and evaluate them only after nominal success on this backend.",
+  "physical_criteria": "Use the identical read-only event evaluator, frozen force, grip, angle, support, saturation and timeout rules from v1."
+}

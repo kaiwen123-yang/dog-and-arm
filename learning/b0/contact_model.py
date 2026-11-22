@@ -34,6 +34,7 @@ def contact_context(model, side, device):
 class ContactWorldModelCfg(B0WorldModelCfg):
     nominal_error_door_angle: float = np.deg2rad(2.)
     nominal_error_door_speed: float = .10
+    nominal_error_tcp_m: float = .005
 
 
 class ContactRepresentation(RobotRepresentation):
@@ -140,6 +141,16 @@ class ContactRepresentation(RobotRepresentation):
     def loss_blocks(self, rep_state, aux_state):
         blocks = super().loss_blocks(rep_state[..., :58], aux_state)
         blocks.update(door_angle=rep_state[..., 58:59], door_speed=rep_state[..., 59:60])
+        return blocks
+
+
+class ContactTcpLoss(ContactRepresentation):
+    """Use the measured world TCP position as one additional supervised loss block."""
+    LOSS_WEIGHT_CONFIG = {**ContactRepresentation.LOSS_WEIGHT_CONFIG, 'tcp_position_m': 'nominal_error_tcp_m'}
+
+    def loss_blocks(self, rep_state, aux_state):
+        blocks = super().loss_blocks(rep_state, aux_state)
+        blocks['tcp_position_m'] = self.tcp_pose(aux_state, rep_state[..., 10:34])[0]
         return blocks
 
 

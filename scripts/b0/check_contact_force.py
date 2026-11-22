@@ -49,6 +49,21 @@ def main():
         f = rep.represent(contact_state(actual('qpos'),actual('qvel')))
         c = contexts[torch.as_tensor(sides[frames[valid]],device=device).long()]
         report[str(d)] = score(head,(f,actual('clipped'),c,measured),device)
+        # A zero resultant is also physically possible when both fingers are off the rod.
+        finger_load = actual('sub_finger_load_N')
+        dual = (finger_load > .01).all(-1)
+        peak = measured.amax(-1)
+        modifier = (1 + (peak / 6.).pow(4)).reciprocal()
+        for index, side in enumerate(('pull', 'push')):
+            mask = c[:,0] == index
+            no_dual = mask & ~dual.any(-1)
+            loose = mask & (finger_load <= .01).all(dim=(-1,-2))
+            report[str(d)][side].update(
+                all_ten_dual=int((mask & dual.all(-1)).sum()),
+                no_dual_substeps=int(no_dual.sum()),
+                both_unloaded_all_ten=int(loose.sum()),
+                both_unloaded_force_weight_above_099=int((loose & (modifier > .99)).sum()))
+
     with args.output.open('x') as stream:
         json.dump(dict(weights=str(args.weights), source='all valid complete open/hold intervals, including physical terminal successors',results=report),stream,indent=2)
         stream.write('\n')

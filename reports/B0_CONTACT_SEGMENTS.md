@@ -40,3 +40,16 @@
 门角/相对几何/夹口奖励在真实后继和预测后继上使用同一公式。200 次更新取得 273,746 条有效在线转移，Warp 与 native 各 0/10。两侧接近闭爪在第 2,683 个物理步耗尽参考。Warp 的前侧释放第 805 步夹爪持续饱和，背侧释放第 3,911 步耗尽参考。各侧开门/抓持共六个入口在首个 2 ms 越过 6 N。几何奖励在独立稳定双指 H32 窗口上的 TCP RMSE 为 23.736 mm，普通监督初始化的联合 tracking 为 82.790 mm，相同窗口上的常速外推为 2.94 mm。[Warp](../results/b0/contact_s0_taskreward_u200_warp_r2/cases.csv) · [原生](../results/b0/contact_s0_taskreward_u200_native33_r2/cases.csv) · [WM](../results/b0/contact_s0_taskreward_r1/independent_wm_u200.csv)
 
 另在六条真实训练轨迹的抓持区间采集 12,288 个恒目标扰动，六条独立验证轨迹提供 4,608 个区间。两侧峰值力 MAE 为 0.945、0.665 N，在各 681、629 个真实超限区间漏报 66、29 个。监督初始化的原联合训练和几何奖励的第 50/200 个真实采集队列共有 214 个完整开门/持姿区间，其中 208 条超限，冻结力模型漏报 0、误报 5。在 B0-03 迁移大动作区的绝对力误差可超过 100 N。峰值力奖励只用于监督初始化附近的命名变体，最终判定仍逐物理子步测量。[受控扰动](../results/b0/contact_force_local_r1/report.json) · [在线分布对照](../results/b0/contact_force_local_r1/online_check.json)
+
+### 参考伺服偏移与长时预测
+
+直接让伺服跟随给定参考的六轴位置和夹口宽度会丢失夹持预压。独立验证的实际开门和持姿目标比参考关节间距平均小约 11.5–11.8 mm。保留普通监督 Actor 的腿轮 16 路，替换最后 7 路后，Warp 的前/背稳定抓持和开 5° 四个名义试验全部失抓。以同一参考姿态作基值、神经网络学习伺服偏移后，冻结监督 Actor 的原生 v1 成绩提升至 5/10；Warp 前侧 5° 在保持 2.978 s 时截止、背侧 5° 为 2.682 s。未达到 3 s 的案例仍计失败。[匹配控制干预](../results/b0/contact_q_reference_action_warp_r1/comparison.json) · [分项动作误差](../results/b0/contact_q_reference_action_errors_r1/errors.csv) · [残差权重训练来源](../results/b0/contact_s0_bc_reference_residual_r1/actual_config.json)
+
+从同一 2,000 minibatch 的动态门 WM 继续 400 个 minibatch，独立 2,422 个双指 H32 窗口 TCP RMSE 如下。新增 H32 窗加显式 TCP 误差监督可缓解末端位置漂移，同时增大了门角预测误差。
+
+| 训练变化 | 双指 H32 TCP RMSE | 双指 H32 门角 RMSE |
+| --- | ---: | ---: |
+| [起点](../results/b0/contact_s0_wm_held_r2/validation.csv) | 23.220 mm | 0.353° |
+| [同样继续原 1/7 步监督](../results/b0/contact_wm_h7_control_r1/validation.csv) | 33.819 mm | 0.383° |
+| [每十批含两批 H32](../results/b0/contact_wm_h32_r1/validation.csv) | 24.746 mm | 0.418° |
+| [相同长窗加 TCP 5 mm 损失](../results/b0/contact_wm_h32_tcp_r1/validation.csv) | 11.301 mm | 1.095° |

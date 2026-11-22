@@ -1,0 +1,93 @@
+{
+  "episode": "push_5_train",
+  "side": "push",
+  "segment": "release_retreat",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 11980,
+  "reference_phase_end_substep": 15891,
+  "reference_last_substep": 15891,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.021840512054932266,
+    "grasp_error_m": 0.002310992832743925,
+    "supported": true,
+    "finger_n": [
+      3.048086324006643,
+      2.642775001958242
+    ],
+    "door_force_sum_n": 5.691995288394734,
+    "prefix_start_target_penetration_m": 0.0008995379125543556,
+    "nominal_prefix_start_target_penetration_m": 0.0008995379125543556,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "unexpected_contact:robot_panel",
+    "phase": "retreat_arm",
+    "first_failure_substep": 3873,
+    "interval_start_s": 7.744,
+    "interval_end_s": 7.746,
+    "door_deg": 4.9204692737357645,
+    "finger_load_n": [
+      0.0,
+      0.0
+    ],
+    "wheel_load_n": [
+      105.8986978839252,
+      116.11700270932475,
+      92.43894397626629,
+      111.2764296601065
+    ],
+    "door_net_force_n": 1.865238482355946,
+    "door_contact_sum_n": 1.865238482355946,
+    "tcp_handle_error_m": 0.028701486708874895,
+    "min_arm_margin_rad": 0.8499156840413593
+  },
+  "events": [
+    {
+      "phase": "release",
+      "end_step": 834,
+      "ref_end_step": 12814,
+      "ticks": 75,
+      "door_deg": 4.6143024769005,
+      "width_m": 0.0972664598331341,
+      "net_force_n": 0.0
+    }
+  ],
+  "policy_calls": 388,
+  "physics_steps": 3873,
+  "final_door_deg": 4.928456910159081,
+  "final_partial_substeps": 3,
+  "longest_ready_steps": {
+    "release": 75,
+    "retreat_arm": 0
+  },
+  "last_physical_observation": {
+    "phase": "retreat_arm",
+    "door_deg": 4.9204692737357645,
+    "width_m": 0.08335159532635361,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "net_door_force_n": 1.865238482355946,
+    "tcp_handle_error_m": 0.028701486708874895,
+    "station_error_m": 0.0012641009650742779,
+    "tilt_deg": 0.12068145849131884,
+    "speed_m_s": 0.01126477776402607,
+    "yaw_rate_deg_s": -0.7402876934621201,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 75
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_peakforce_u200_native33_r2/push/release_retreat/nominal"
+}

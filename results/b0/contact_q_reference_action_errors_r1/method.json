@@ -1,0 +1,17 @@
+{
+  "method": "current frame of the given training motion's six arm positions and two-finger width as held servo setpoints",
+  "source": "results/raw_large/b0/contact_held_r1",
+  "given_references": [
+    "pull_0_train_grip",
+    "pull_5_train",
+    "pull_15_train",
+    "push_0_train_grip",
+    "push_5_train",
+    "push_15_train"
+  ],
+  "signed_error": "clipped current training reference joint position or width minus issued 20 ms physical setpoint",
+  "phases": "actual measured phase at interval start",
+  "frames": "9..min(N_nominal,N_measured)-1, matching BC u3000",
+  "validation": "held-target perturbed validation labels at same absolute frame; given reference always the training nominal",
+  "pooled_arm": "six component errors per included frame; p95 absolute error; jaw reported in mm"
+}

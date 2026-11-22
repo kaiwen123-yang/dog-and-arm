@@ -1,0 +1,90 @@
+{
+  "episode": "push_0_train_grip",
+  "side": "push",
+  "segment": "stable_grip",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen BC first 16 raw channels; current given reference six arm positions and two-finger opening for last seven; no learned residual",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 10275,
+  "reference_last_substep": 10275,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02173652872443199,
+    "grasp_error_m": 0.001864699757363729,
+    "supported": true,
+    "finger_n": [
+      3.401215076446533,
+      2.4634063243865967
+    ],
+    "door_force_sum_n": 5.933785910126229,
+    "prefix_start_target_penetration_m": 0.000989740430697985,
+    "nominal_prefix_start_target_penetration_m": 0.000989740430697985,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "lost_grip",
+    "phase": "hold",
+    "first_failure_substep": 75,
+    "interval_start_s": 0.148,
+    "interval_end_s": 0.15,
+    "door_deg": 0.39508522222637954,
+    "finger_load_n": [
+      0.0,
+      0.4759313464164734
+    ],
+    "wheel_load_n": [
+      104.74499702453613,
+      116.9184455871582,
+      97.86316299438477,
+      107.54603576660156
+    ],
+    "door_net_force_n": 0.6730685404312523,
+    "door_contact_sum_n": 0.6730685404312523,
+    "tcp_handle_error_m": 0.0007965538011798398,
+    "min_arm_margin_rad": 0.7678210735321045
+  },
+  "events": [],
+  "policy_calls": 8,
+  "physics_steps": 75,
+  "final_door_deg": 0.39488346484159975,
+  "final_partial_substeps": 5,
+  "longest_ready_steps": {
+    "hold": 0
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 0.39508522222637954,
+    "width_m": 0.023365717381238937,
+    "finger_n": [
+      0.0,
+      0.4759313464164734
+    ],
+    "net_door_force_n": 0.6730685404312523,
+    "tcp_handle_error_m": 0.0007965538011798398,
+    "station_error_m": 0.0007254571916418095,
+    "tilt_deg": 0.10163535287317972,
+    "speed_m_s": 0.0014432917210970941,
+    "yaw_rate_deg_s": 0.04429010242625116,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 1500
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "results/raw_large/b0/contact_q_reference_action_warp_r1/push/stable_grip/nominal"
+}

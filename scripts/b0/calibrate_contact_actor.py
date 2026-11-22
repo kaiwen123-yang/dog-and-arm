@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from supermimic.tasks.task_spec import build_actor_obs_td
 
-from learning.b0.contact_policy import DoorMotions, build_actor, sensor
+from learning.b0.contact_policy import DoorMotions, REFERENCE_RESIDUAL, build_actor, sensor
 from learning.b0.model import RobotRepresentation, full_state, tensor
 from learning.b0.physics import ActionMap, make_model
 
@@ -83,8 +83,14 @@ def calibrate(args):
     rep=RobotRepresentation(model,dev)
     references=[args.reference_directory/n for n in REFS]
     bank=DoorMotions(references,rep,dev)
-    actor,_=build_actor(rep,source["cfg"],model,dev)
-    actor.load_state_dict(source["actor"],strict=True)
+    cfg = dict(source["cfg"])
+    initial = dict(source["actor"])
+    if args.reference_residual:
+        cfg["actor_parameterization"] = REFERENCE_RESIDUAL
+    actor,_=build_actor(rep,cfg,model,dev)
+    if args.reference_residual:
+        initial.update(reference_offset=actor.reference_offset,reference_scale=actor.reference_scale)
+    actor.load_state_dict(initial,strict=True)
     actor.eval()  # normalizers stay frozen on original B0-03 statistics
     teacher=observations(args.reference_directory,references,bank,rep,dev,False)
     val=observations(args.reference_directory,references,bank,rep,dev,True)
@@ -100,6 +106,14 @@ def calibrate(args):
         diff=float((actor.raw(anchor)-before).abs().max())
         if diff>1e-5:
             raise ValueError(f"Initial 23-channel actor changed by {diff}")
+        if args.reference_residual:
+            actor.decoder[-1].weight[16:].zero_()
+            actor.decoder[-1].bias[16:].zero_()
+            baseline = actor.raw(anchor)
+            arm_jaw = torch.cat([g[::128,16:22],g[::128,22:23]-g[::128,23:24]],dim=-1)
+            torch.testing.assert_close(baseline[:,:16],before[:,:16],atol=1e-6,rtol=0)
+            torch.testing.assert_close(baseline[:,16:] * actor.reference_scale + actor.reference_offset,
+                                       arm_jaw,atol=1e-6,rtol=0)
     resolved=dict(run=args.run, variant=("effort32_arm_jaw_history_swap" if args.swap_arm_history else "effort32_arm_jaw_supervised"), seed=0, source=str(args.source),
         references=REFS, reference_directory=str(args.reference_directory), validation_reference="same-side, same-goal nominal training reference; unchanged absolute frame number",
         validation_feedback="measured validation proprio and previously executed teacher actions at the matching absolute frame, fixed training reference as sole goal; action-regression metric, not a closed loop",
@@ -111,6 +125,12 @@ def calibrate(args):
         teacher_history_noise="uniform independent perturbation of last-action entries, half-width 1% of declared logical-action range; measured qpos/qvel history unchanged",
         optimizer_steps=args.updates,batch_size=256,selection="final numbered update; validation not used to choose a snapshot",
         checkpoint="actor-only warm start; no WM/Critic/optimizer/online experience in this supervised diagnostic")
+    if args.reference_residual:
+        resolved.update(variant=REFERENCE_RESIDUAL,actor_parameterization=REFERENCE_RESIDUAL,
+                        output_units="same 32x arm/jaw output units as the ordinary BC comparison",
+                        initialization="frozen B0-03 network; keep first 16 rows, set 7 residual rows to zero after unit conversion",
+                        residual_base="first frame in given goal_motion: six arm joint positions and measured two-finger separation; mapped to the logical servo units before adding trainable residual, then clipped",
+                        lineage="cfg in this supervised checkpoint is the frozen source configuration; actor_parameterization selects its new named head")
     if args.swap_arm_history:
         resolved["training_history_intervention"] = (
             "For half each shuffled batch, replace arm/finger q and v and previous arm/jaw "
@@ -150,17 +170,22 @@ def calibrate(args):
                 print(json.dumps(row),flush=True)
     save(out/"final_train.json",scores(actor,teacher,mapping))
     save(out/"final_validation.json",scores(actor,val,mapping))
-    torch.save(dict(actor=actor.state_dict(),cfg=source['cfg'],seed=0,
-                    supervised_updates=args.updates,source=str(args.source),variant=resolved['variant']),
-               out/f"actor_{args.updates:06}.pt")
+    checkpoint=dict(actor=actor.state_dict(),cfg=source['cfg'],seed=0,
+                    supervised_updates=args.updates,source=str(args.source),variant=resolved['variant'])
+    if args.reference_residual:
+        checkpoint["actor_parameterization"] = REFERENCE_RESIDUAL
+    torch.save(checkpoint,out/f"actor_{args.updates:06}.pt")
 
 
 def main():
     p=ArgumentParser(description=__doc__)
     p.add_argument("--run",required=True)
     p.add_argument("--updates",type=int,default=3000)
-    p.add_argument("--swap-arm-history",action="store_true",
+    variants=p.add_mutually_exclusive_group()
+    variants.add_argument("--swap-arm-history",action="store_true",
                    help="diagnostic: corrupt arm/finger history in half of each training batch")
+    variants.add_argument("--reference-residual",action="store_true",
+                          help="use the given motion's current arm positions and jaw width as the baseline for seven residuals")
     p.add_argument("--reference-directory",type=Path,default=Path("results/raw_large/b0/contact_held_r1"))
     p.add_argument("--source",type=Path,default=Path("results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt"))
     args=p.parse_args()

@@ -7,7 +7,7 @@ import torch
 from supermimic.tasks.task_spec import build_actor_obs_td, make_motion_task, make_velocity_task
 from supermimic.representations import GOAL_FRAME_STRIDE, NUM_GOAL_FRAMES
 
-from .model import EffortScaledActor, RobotRepresentation, full_state, tensor
+from .model import EffortScaledActor, RobotActor, RobotRepresentation, full_state, tensor
 from .physics import ActionMap, make_model
 
 
@@ -64,10 +64,31 @@ class DoorMotions:
         return mask(wm,(48,3,6)), mask(actor,(48,6))
 
 
+REFERENCE_RESIDUAL = "motion_reference_arm_jaw_residual"
+
+
+class ReferenceResidualActor(EffortScaledActor):
+    """Leg and wheel commands retain their home base. Arm and jaw track the given motion."""
+    def set_servo_units(self, model, mapping, device):
+        super().set_servo_units(model,mapping,device)
+        self.register_buffer("reference_offset",tensor(mapping.offset[16:],device))
+        self.register_buffer("reference_scale",tensor(mapping.scale[16:],device))
+
+    def raw(self, obs_td):
+        # Official motion slot: current joint positions are the first 24 entries.
+        # Cache-free so physical feedback and H32 imagination use the same clock.
+        goal = obs_td["goal_motion"]
+        pose = torch.cat((goal[...,16:22],goal[...,22:23]-goal[...,23:24]),-1)
+        base = torch.cat((self.home_action[:16].expand_as(goal[...,:16]),
+                          (pose-self.reference_offset)/self.reference_scale),-1)
+        return base + self.standard_action * RobotActor.raw(self,obs_td)
+
+
 def build_actor(rep, cfg, model, device):
     task = make_motion_task(rep,570)
     velocity = make_velocity_task((-1.5,1.5),(-.5,.5),(-3.14,3.14),25,(.5,.5,.785),device)
-    actor = EffortScaledActor(77,23,[task,velocity],{'motion':1.,'velocity':0.},
+    actor_type = {None:EffortScaledActor,REFERENCE_RESIDUAL:ReferenceResidualActor}[cfg.get("actor_parameterization")]
+    actor = actor_type(77,23,[task,velocity],{'motion':1.,'velocity':0.},
                               32,tuple(cfg['actor_hidden']),.1,10).to(device)
     actor.set_servo_units(model,ActionMap(model),device)
     return actor, task
@@ -85,7 +106,10 @@ def load_policy(checkpoint, episode_paths, device):
     model = make_model()
     rep = RobotRepresentation(model,device)
     bank = DoorMotions(episode_paths,rep,device)
-    actor, _ = build_actor(rep,weights['cfg'],model,device)
+    cfg = dict(weights['cfg'])
+    if 'actor_parameterization' in weights:
+        cfg['actor_parameterization'] = weights['actor_parameterization']
+    actor, _ = build_actor(rep,cfg,model,device)
     actor.load_state_dict(weights['actor'],strict=True)
     actor.eval()
 
