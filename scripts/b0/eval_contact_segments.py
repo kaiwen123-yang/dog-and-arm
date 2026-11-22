@@ -69,15 +69,46 @@ def save_video(model,qpos,steps,destination):
                 writer.append_data(renderer.render())
 
 
+FULL_DOOR_PHASES = ('approach_base', 'settle', 'pregrasp', 'approach_arm', 'grasp', 'open',
+                    'hold', 'release', 'retreat_arm', 'post_release_hold', 'stow', 'retreat_base', 'final')
+
+
+def continuous_initial(model, cfg, integrator):
+    data = mj.MjData(model)
+    mj.mj_resetDataKeyframe(model, data, model.key('home').id)
+    case, yaw = cfg['perturbation'], cfg['base_yaw_rad']
+    parking = np.asarray(cfg['base_xyz_m'][:2]) - cfg['travel_m'] * np.array([np.cos(yaw),np.sin(yaw)])
+    initial_yaw = yaw + np.deg2rad(case.get('yaw',0))
+    data.qpos[:2] = parking + [case.get('dx',0),case.get('dy',0)]
+    data.qpos[3:7] = [np.cos(initial_yaw/2),0,0,np.sin(initial_yaw/2)]
+    data.qpos[model.joint('door_single_hinge').qposadr.item()] = np.deg2rad(case.get('door',0))
+    mj.mj_forward(model, data)
+    if integrator is not None:
+        integrator.reset(data)
+    # No actions preceded reset. Repeat only the true first observation while the
+    # rolling history fills, as in the frozen B0-03 full-start evaluation.
+    previous = np.zeros(23)
+    history = [np.repeat(x[None],10,axis=0) for x in (data.qpos,data.qvel,previous)]
+    metrics = dict(case=cfg['case'],parking_xy_m=parking.tolist(),applied_perturbation=case,
+                   history_initialization='repeat initial measured state and zero previous command',
+                   initial_qpos=data.qpos.tolist(),initial_qvel=data.qvel.tolist())
+    return data, (*history, previous), metrics
+
+
 def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, output=None, *,
                      model=None, integrator=None, device='cuda:0', raw_dir=None, video=False, action_source='frozen Actor raw output then clamp'):
     path=Path(episode_path)
     meta=json.loads((path/'metadata.json').read_text())
     side = meta['task']
-    goal, phases=SEGMENTS[segment]
+    full = segment == 'full'
+    stage = 'mobile' if side=='pull' else 'push'
+    case = int(perturbation['p6_case']) if full else 1
+    cfg = settings(stage,case)
+    goal, phases = (cfg['target_angle_deg'],FULL_DOOR_PHASES) if full else SEGMENTS[segment]
+    if full and (not meta.get('full_task') or tuple(meta['phases']) != FULL_DOOR_PHASES):
+        raise ValueError(f'Incomplete continuous door reference {path}')
     if meta['target_angle_deg']!=goal or not meta['success'] or meta['wm_split']!='train':
         raise ValueError(f'expected successful training reference for {segment}: {path}')
-    cfg=settings('mobile' if side=='pull' else 'push',1)
     cfg['target_angle_deg']=goal
     model = build(cfg) if model is None else model
     if backend not in ('warp','native'):
@@ -90,19 +121,27 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
     # The recorded segment has an exact terminal substep. No extension into
     # later phases or repeated final frame can supply extra holding time.
     max_step=end
-    judge=ContactEvents(model,cfg,side,ref,phases=phases,hold_seconds=3.,start_step=start)
+    judge=ContactEvents(model,cfg,side,ref,phases=phases,hold_seconds=.5 if full else 3.,start_step=start)
     mapping=ActionMap(model)
-    d, (hq,hv,ha,previous), metrics=prefix_history(model,cfg,path,side,start,perturbation,integrator=integrator)
+    if full:
+        if start != 0:
+            raise ValueError('Continuous evaluation must start at the original frame zero')
+        d, (hq,hv,ha,previous), metrics = continuous_initial(model,cfg,integrator)
+    else:
+        d, (hq,hv,ha,previous), metrics = prefix_history(model,cfg,path,side,start,perturbation,integrator=integrator)
     result=dict(episode=meta['episode_id'],side=side,segment=segment,backend=backend,mujoco=mj.__version__,action_source=action_source,
                 start_substep=start,reference_phase_end_substep=end,reference_last_substep=max_step,
-                prefix_physics_steps=100,perturbation=perturbation,initial_geometry=metrics,
+                prefix_physics_steps=0 if full else 100,perturbation=perturbation,initial_geometry=metrics,
                 passed=False,first_failure=None,events=[],policy_calls=0,physics_steps=0)
-    if not valid_initial(metrics,segment,cfg):
+    if full:
+        result['actual_config'] = cfg
+    if not full and not valid_initial(metrics,segment,cfg):
         result['first_failure']=dict(reason='initial_contact_reconstruction',phase=phases[0])
     qlog=[d.qpos.copy()]
     vlog=[d.qvel.copy()]
     ticks=[0]
     raw_log, clipped_log=[],[]
+    audit=[]
     while result['first_failure'] is None and not judge.passed and start+judge.step < max_step:
         current_q, current_v=d.qpos.copy(),d.qvel.copy()
         hq=np.concatenate((hq[1:],current_q[None]))
@@ -125,6 +164,12 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
             else:
                 integrator.step(d,servo)
             failure=judge.observe(d,None,q0,v0)
+            if full and raw_dir is not None:
+                obs = judge.latest
+                audit.append([judge.step,FULL_DOOR_PHASES.index(obs['phase']),obs['door_deg'],
+                              *obs['finger_n'],obs['net_door_force_n'],obs['tcp_handle_error_m'],
+                              obs['width_m'],obs['station_error_m'],obs['tilt_deg'],obs['speed_m_s'],
+                              obs['yaw_rate_deg_s'],obs['continuous_ready_steps']])
             if failure or judge.passed:
                 result['first_failure']=failure
                 break
@@ -148,6 +193,12 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
         raw_dir.mkdir(parents=True,exist_ok=False)
         for name,values in dict(qpos=qlog,qvel=vlog,physics_step=ticks,raw_action=raw_log,clipped_action=clipped_log).items():
             np.save(raw_dir/(name+'.npy'),np.asarray(values),allow_pickle=False)
+        if full:
+            np.save(raw_dir/'physical_events_2ms.npy',np.asarray(audit),allow_pickle=False)
+            result['physical_event_columns'] = ['step','phase_id','door_deg','finger1_n','finger2_n',
+                'resultant_n','tcp_handle_error_m','jaw_width_m','station_error_m','tilt_deg',
+                'speed_m_s','yaw_rate_deg_s','continuous_ready_steps']
+            result['phases'] = FULL_DOOR_PHASES
         result['raw_directory']=str(raw_dir)
     if output is not None:
         output=Path(output)
@@ -196,7 +247,20 @@ def check_legacy_actor(output, directory, raw_root, policy):
 
 
 def main(args):
-    manifest=json.loads(args.manifest.read_text())
+    if args.full_task:
+        from p6_scene import CASES
+        if not args.side or not args.references or args.segment:
+            raise ValueError('Choose a full-task side and its fixed training reference directory')
+        args.manifest = ROOT/'scripts/p6_scene.py'
+        cases = {}
+        for side in args.side:
+            goal = 60 if side == 'pull' else 25
+            cases[side+'/full'] = dict(episode=f'{side}_{goal}_train',
+                nominal=dict(id='nominal',perturbation={'p6_case':1}),
+                accepted=[dict(id=f'C{i:02d}',perturbation={'p6_case':i}) for i in sorted(CASES)])
+        manifest = dict(cases=cases,source=str(args.references))
+    else:
+        manifest=json.loads(args.manifest.read_text())
     trial_groups=[(key,group) for key,group in manifest['cases'].items()
                   if (not args.side or key.split('/')[0] in args.side)
                   and (not args.segment or key.split('/')[1] in args.segment)]
@@ -253,7 +317,7 @@ def main(args):
                 if development and key not in accepted_nominals:
                     continue
                 side,segment=key.split('/')
-                if current_side!=side:
+                if current_side!=side and not args.full_task:
                     cfg=settings('mobile' if side=='pull' else 'push',1)
                     model=build(cfg)
                     integrator=WarpSingleWorld(model,args.device) if args.backend=='warp' else None
@@ -314,6 +378,7 @@ if __name__=='__main__':
     parser.add_argument('--resume',action='store_true',help='Continue unfinished cases in the same run')
     parser.add_argument('--dev',action='store_true',help='after passing nominal, evaluate the registered twenty')
     parser.add_argument('--video',action='store_true',help='record every nominal trial from its first input to terminal state')
+    parser.add_argument('--full-task', action='store_true', help='closed loop from original P6 start; nominal, then C01–C20 when requested')
     parser.add_argument('--side',nargs='+',choices=('pull','push'))
     parser.add_argument('--segment',nargs='+',choices=SEGMENTS)
     parser.add_argument('--actor-worker',action='store_true',help=argparse.SUPPRESS)

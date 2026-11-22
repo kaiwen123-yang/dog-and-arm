@@ -1,0 +1,86 @@
+{
+  "checkpoint": "results/b0/contact_s0_tracking_r3/checkpoint_001000.pt",
+  "checkpoint_sha256": "2e586d26e89b2b76fcf206b73749418d3b36992a1e5d02602e659351235ec854",
+  "method": "One prediction from the real pre-interval state and the actual 20 ms held action; observed successor from native acquisition. The first lost-grip substep occurs inside that interval.",
+  "scope": "Two separately collected pull-side terminal cases; each is a one-interval diagnostic outside the frozen eight-episode validation comparison.",
+  "teacher_training_groups": [
+    "pull_0_train",
+    "pull_0_train_grip",
+    "pull_15_train",
+    "pull_5_train",
+    "pull_5_train_drop",
+    "push_0_train",
+    "push_0_train_grip",
+    "push_15_train",
+    "push_5_train",
+    "push_5_train_drop"
+  ],
+  "cases": [
+    {
+      "episode": "pull_5_train_drop_terminal",
+      "source": "results/raw_large/b0/contact_terminal_r1/pull_5_train_drop_terminal",
+      "dataset_split": "train",
+      "listed_in_wm_training_sources": false,
+      "outcome": "lost_grip",
+      "terminal_policy_index": 1041,
+      "interval_start_substep": 10410,
+      "interval_end_substep": 10420,
+      "first_failure_zero_based_interval": 10414,
+      "physical_substeps_after_first_failure": 5,
+      "observed_final_finger_load_n": [
+        0.0,
+        0.0
+      ],
+      "observed_door_deg": 4.877630793711436,
+      "predicted_door_deg": 4.881038022885526,
+      "abs_door_error_deg": 0.003407229174089643,
+      "observed_tcp_world_m": [
+        1.3423327006435115,
+        0.28806657010407166,
+        0.8501084753672254
+      ],
+      "predicted_tcp_world_m": [
+        1.3415716886520386,
+        0.2886209189891815,
+        0.8503037691116333
+      ],
+      "tcp_error_mm": 0.9615516544590766,
+      "observed_jaw_mm": 89.99109957056811,
+      "predicted_jaw_mm": 91.26512706279755,
+      "abs_jaw_error_mm": 1.2740274922294361
+    },
+    {
+      "episode": "pull_5_validation_drop_terminal",
+      "source": "results/raw_large/b0/contact_terminal_r1/pull_5_validation_drop_terminal",
+      "dataset_split": "validation",
+      "listed_in_wm_training_sources": false,
+      "outcome": "lost_grip",
+      "terminal_policy_index": 1062,
+      "interval_start_substep": 10620,
+      "interval_end_substep": 10630,
+      "first_failure_zero_based_interval": 10624,
+      "physical_substeps_after_first_failure": 5,
+      "observed_final_finger_load_n": [
+        0.0,
+        0.0
+      ],
+      "observed_door_deg": 4.817915841066586,
+      "predicted_door_deg": 4.827497023755441,
+      "abs_door_error_deg": 0.009581182688854994,
+      "observed_tcp_world_m": [
+        1.3423774099102546,
+        0.28802133916041156,
+        0.8501702036610187
+      ],
+      "predicted_tcp_world_m": [
+        1.3408887386322021,
+        0.2865080237388611,
+        0.8525514602661133
+      ],
+      "tcp_error_mm": 3.190086011145668,
+      "observed_jaw_mm": 89.9893432435012,
+      "predicted_jaw_mm": 89.49042856693268,
+      "abs_jaw_error_mm": 0.49891467656851773
+    }
+  ]
+}

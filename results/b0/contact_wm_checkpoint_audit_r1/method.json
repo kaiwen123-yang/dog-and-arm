@@ -1,0 +1,82 @@
+{
+  "method": "Pooled per-metric RMSE is sqrt(sum_i((windows_i - nonfinite_i) * rmse_i^2) / sum_i(windows_i - nonfinite_i)). Rows with no finite windows have blank RMSE. Modes refer to the first physical interval of the forecast. All groups are independent trajectories from the original pretraining validation list; overlapping windows within one group are not independent trials.",
+  "reference_predictors": "hold and constant_velocity independently scored by the stock script for every checkpoint; compared per group, horizon, mode and metric, with matching counts and values.",
+  "raw_input_manifest": "raw_inputs.json",
+  "windows_by_horizon": {
+    "1": {
+      "free": 7208,
+      "first_contact": 8,
+      "two_finger": 2532,
+      "loss_or_slip": 14,
+      "release": 964,
+      "other_contact": 0,
+      "all": 10726
+    },
+    "7": {
+      "free": 7184,
+      "first_contact": 8,
+      "two_finger": 2520,
+      "loss_or_slip": 2,
+      "release": 964,
+      "other_contact": 0,
+      "all": 10678
+    },
+    "32": {
+      "free": 7084,
+      "first_contact": 8,
+      "two_finger": 2422,
+      "loss_or_slip": 0,
+      "release": 964,
+      "other_contact": 0,
+      "all": 10478
+    }
+  },
+  "source": {
+    "pretrain_2000": {
+      "source_csv": "results/b0/contact_s0_wm_held_r2/validation.csv",
+      "csv_sha256": "1e2659b208a49c3569806f3f932a8a8e0c1e99e2cc45265f08e977e7132e7b65",
+      "physical_baseline_match": true,
+      "groups": 8,
+      "rows": 4032
+    },
+    "tracking_u200": {
+      "source_csv": "results/b0/contact_s0_tracking_r2/independent_wm_u200.csv",
+      "csv_sha256": "cd4d3c62786336912e71f4f5ae3c6bb2dac13bf31f3598dad41036d9ac0ff99c",
+      "physical_baseline_match": true,
+      "groups": 8,
+      "rows": 4032
+    },
+    "bc_joint_u200": {
+      "source_csv": "results/b0/contact_s0_bc_joint_r1/independent_wm_u200.csv",
+      "csv_sha256": "18f8ee8c751c628da886943ee8804dd68d2443a51fc3b3feb00d31a8f12613c9",
+      "physical_baseline_match": true,
+      "groups": 8,
+      "rows": 4032
+    },
+    "taskreward_u200": {
+      "source_csv": "results/b0/contact_s0_taskreward_r1/independent_wm_u200.csv",
+      "csv_sha256": "28938aaf4d694f283a1bec600a5cccff34af008f769fc7cde50b9acffee762ce",
+      "physical_baseline_match": true,
+      "groups": 8,
+      "rows": 4032
+    },
+    "tracking_u1000": {
+      "source_csv": "results/b0/contact_s0_tracking_r3/independent_wm_u1000.csv",
+      "csv_sha256": "bf06301610b80af58bb8d5e0948fd4c75173ce1ae5b67d67ce9d52de984177a2",
+      "physical_baseline_match": true,
+      "groups": 8,
+      "rows": 4032
+    }
+  },
+  "runtime": {
+    "python": "3.13.13",
+    "torch": "2.14.0+cu130",
+    "mujoco_python": "3.16.0",
+    "cuda": "13.0",
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "stock_score_cli": "scripts/b0/score_contact_checkpoint.py",
+    "stock_score_cli_sha256": "430c91fbb2d30fbdb40c97415686737dd9d573ddf0780db2bbf47b18850b9af6",
+    "physical_error_function_sha256": "2096806db2979d919ce5adf9b23c49ff64b51a9b4e091d05ace4ed10662853b4",
+    "score_function_sha256": "c119c9beb97f6ab2b85a92743f1464ba9f1ebcfd1ad328e1f9b176fd142c8125"
+  }
+}

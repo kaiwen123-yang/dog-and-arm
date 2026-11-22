@@ -1,0 +1,7 @@
+base: config/b0/contact_reference_residual_prior.yaml
+reference_directory: results/raw_large/b0/full_held_r2
+references: [pull_60_train]
+additional_teacher_episodes: []
+rsi_phases: [approach_base, settle, pregrasp, approach_arm, grasp, open, hold, release, retreat_arm, post_release_hold, stow, retreat_base, final]
+calibrated_actor: results/b0/full_s0_pull_supervised_r1/actor_003000.pt
+hypothesis: Train the contact WM and H32 actor on all phases of the continuous pull reference, including mobile approach and parking. Measure whether Warp interaction corrects the pregrasp station error while retaining native nominal completion.

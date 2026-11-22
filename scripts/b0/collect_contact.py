@@ -42,7 +42,7 @@ class HeldTeacher:
         return self.target
 
 
-def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False, hold_seconds=3):
+def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False, hold_seconds=3, full_task=False, backend="native"):
     episode_id = f"{side}_{goal}_{split}" + ("_drop" if release_during_hold else "")
     if hold_grasp_pose:
         episode_id += "_grip"
@@ -53,7 +53,7 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
         raise FileExistsError(evidence)
     path.mkdir(parents=True, exist_ok=False)
     cfg = settings("mobile" if side == "pull" else "push", 1)
-    cfg.update(target_angle_deg=goal, grip_hold_s=float(hold_seconds), segment_end_after_retreat_hold=True,
+    cfg.update(target_angle_deg=goal, grip_hold_s=float(hold_seconds), segment_end_after_retreat_hold=not full_task,
                policy_decimation=DECIMATION, teacher_selection="P6 candidate at substep 10*k")
     if split == "validation":
         # Distinct complete integration. Same scene parameters and reference family,
@@ -90,9 +90,16 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
         if contact.unexpected:
             unexpected_steps.append(dict(step=i, categories=contact.unexpected))
 
-    passed = run(cfg, path, False, False, False, step_observer=observe, held_teacher=held)
+    integrator = None
+    if backend == "warp":
+        from scripts.b0.check_door_teacher import TeacherPhysics
+        integrator = TeacherPhysics()
+    passed = run(cfg, path, False, False, False, step_observer=observe, held_teacher=held,
+                 integrator=integrator)
     summary = json.loads((path / "summary.json").read_text())
     steps = summary["physics_steps"]
+    if integrator is not None and steps != integrator.steps:
+        raise RuntimeError("Teacher and Warp step counts disagree")
     failure = summary["failure"]
     extension = 0
     if complete_terminal and failure == "lost_grip":
@@ -106,7 +113,10 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
             t = float(live_data.time)
             q, v = live_data.qpos.copy(), live_data.qvel.copy()
             live_data.ctrl[a.actuator_ids] = logical_target + live_data.qfrc_bias[a.dof] * a.bias_gain
-            mj.mj_step(model, live_data)
+            if integrator is None:
+                mj.mj_step(model, live_data)
+            else:
+                integrator.step(model, live_data)
             observe(model, live_data, t, q, v, held.target, summary["last_phase"], meter.measure(live_data))
             extension += 1
             if not np.isfinite(live_data.qvel).all() or any(w.number for w in live_data.warning):
@@ -123,10 +133,10 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
     dump_json(path/"unexpected_contacts.json", unexpected_steps)
     meta = recorder.finish(passed, failure, dict(
         task=side, wm_split=split, group_id=episode_id, noise_seed=None, actor_raw_action_available=False,
-        reference_identity=episode_id, target_angle_deg=goal, target_convention="absolute hinge degrees",
+        reference_identity=episode_id, full_task=full_task, target_angle_deg=goal, target_convention="absolute hinge degrees",
         initial_perturbation=cfg["perturbation"], first_failure_physics_interval=first_failure,
         post_failure_completed_physics_steps=extension,
-        physics_source="native mj_step", event_log="summary.json", teacher="P6 candidate sampled at each policy boundary before bias; componentwise clamp in declared ActionMap units",
+        physics_source="native mj_step" if integrator is None else integrator.source, event_log="summary.json", teacher="P6 candidate sampled at each policy boundary before bias; componentwise clamp in declared ActionMap units",
         requested_action="teacher_requested_action.npy is a normalized pre-clamp teacher request; no neural actor",
         code_parent=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT,text=True).strip()))
     bounds = np.array(recorder.states["physics_step"])
@@ -144,7 +154,7 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
     hold = counts == meta["phases"].index("hold") if "hold" in meta["phases"] else np.zeros(steps, bool)
     events = {row["phase"]: round(row["time_s"]/meta["physics_dt"]) for row in summary["events"]}
     result = dict(episode_id=episode_id, raw_directory=str(path), wm_split=split,
-                  initial_perturbation=cfg["perturbation"], backend=f"native MuJoCo {meta['mujoco_version']}",
+                  initial_perturbation=cfg["perturbation"], backend=f"{backend} MuJoCo {meta['mujoco_version']}",
                   physical_teacher_pass=passed, teacher_hold_seconds=hold_seconds,
                   failure=failure, first_failure_interval=first_failure,
                   post_failure_completed_physics_steps=extension,
@@ -167,8 +177,9 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
 def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("side", choices=["pull","push"])
-    parser.add_argument("goal", type=int, choices=[0,5,15])
+    parser.add_argument("goal", type=int, choices=[0,5,15,25,60])
     parser.add_argument("split", choices=["train","validation"])
+    parser.add_argument("--full-task", action="store_true", help="collect one continuous 60 degree pull or 25 degree push from the original P6 start to final parking")
     parser.add_argument("--complete-terminal", action="store_true", help="continue finite lost-grasp intervals to the real 20 ms successor")
     parser.add_argument("--hold-grasp-pose", action="store_true", help="0 degree task: hold the grasp command after closure, with no reverse opening command")
     parser.add_argument("--hold-seconds", type=int, choices=[3,4], default=3,
@@ -176,6 +187,8 @@ def main():
     parser.add_argument("--release-during-hold", action="store_true", help="excite a real loss-of-grasp transition during hold")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--evidence-dir", type=Path, required=True)
+    parser.add_argument("--backend", choices=["native", "warp"], default="native",
+                        help="integrator for every physical substep, including the final partial interval")
     args = parser.parse_args()
     episode_id = f"{args.side}_{args.goal}_{args.split}" + ("_drop" if args.release_during_hold else "")
     if args.hold_grasp_pose:
@@ -186,9 +199,14 @@ def main():
         if not args.release_during_hold:
             parser.error("--complete-terminal requires a lost-grasp experiment")
         episode_id += "_terminal"
+    if args.full_task:
+        if args.goal != (60 if args.side == 'pull' else 25) or args.release_during_hold or args.hold_grasp_pose or args.complete_terminal:
+            parser.error('Full tasks require the original goal and no segment interventions')
+    elif args.goal not in (0,5,15):
+        parser.error('Use --full-task for the continuous task angles')
     output = args.evidence_dir / (episode_id + ".json")
     return 0 if collect(args.side, args.goal, args.split, args.output, output, args.release_during_hold,
-                        args.hold_grasp_pose, args.complete_terminal, args.hold_seconds) else 1
+                        args.hold_grasp_pose, args.complete_terminal, .5 if args.full_task else args.hold_seconds, args.full_task, args.backend) else 1
 
 
 if __name__ == "__main__":

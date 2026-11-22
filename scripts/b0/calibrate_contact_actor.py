@@ -36,12 +36,15 @@ def observations(root, references, bank, rep, device, validation):
         n = min(int(valid.sum()), int(bank.motion_ends[bank.ids[ref.name]])-bank.starts[ref.name]-1)
         q, v, prev = [tensor(np.load(path/(f+".npy"))[:n],device) for f in ("qpos","qvel","last_action")]
         s = sensor(rep,full_state(q,v),prev)
-        k = torch.arange(9,n,device=device)  # full measured history, none padded
-        histories.append(s[k[:,None]+torch.arange(-9,1,device=device)])
+        start = 0 if meta.get('full_task') else 9
+        k = torch.arange(start,n,device=device)
+        # Full tasks repeat the actual initial observation only until ten real frames exist.
+        indices = (k[:,None]+torch.arange(-9,1,device=device)).clamp_min(0)
+        histories.append(s[indices])
         _, g = bank.goals(rep, k+bank.starts[ref.name],q[k,:7])
         goals.append(g)
-        targets.append(tensor(np.load(path/"action_clipped.npy")[9:n],device))
-        phase = np.array(meta["phases"])[np.load(path/"phase.npy")[9:n]]
+        targets.append(tensor(np.load(path/"action_clipped.npy")[start:n],device))
+        phase = np.array(meta["phases"])[np.load(path/"phase.npy")[start:n]]
         labels.extend(phase.tolist())
         keys.extend([name]*len(phase))
     return torch.cat(goals),torch.cat(histories),torch.cat(targets),np.array(keys),np.array(labels)
@@ -81,7 +84,10 @@ def calibrate(args):
     model=make_model()
     mapping=ActionMap(model)
     rep=RobotRepresentation(model,dev)
-    references=[args.reference_directory/n for n in REFS]
+    names = tuple(args.references or REFS)
+    if len(names) != len(set(names)):
+        raise ValueError('Duplicate training reference')
+    references=[args.reference_directory/n for n in names]
     bank=DoorMotions(references,rep,dev)
     cfg = dict(source["cfg"])
     initial = dict(source["actor"])
@@ -90,6 +96,12 @@ def calibrate(args):
     actor,_=build_actor(rep,cfg,model,dev)
     if args.reference_residual:
         initial.update(reference_offset=actor.reference_offset,reference_scale=actor.reference_scale)
+    if args.warm_actor:
+        warm = torch.load(args.warm_actor, map_location='cpu', weights_only=False)
+        if (not args.reference_residual or warm.get('actor_parameterization') != REFERENCE_RESIDUAL or
+                warm['seed'] != source['seed'] or warm['cfg'] != source['cfg'] or warm['source'] != str(args.source)):
+            raise ValueError('Expected a compatible supervised seed0 reference-residual initializer')
+        initial = warm['actor']
     actor.load_state_dict(initial,strict=True)
     actor.eval()  # normalizers stay frozen on original B0-03 statistics
     teacher=observations(args.reference_directory,references,bank,rep,dev,False)
@@ -100,22 +112,25 @@ def calibrate(args):
         before=actor.raw(anchor)
         # Reparameterize only the final linear rows. All 23 initial physical outputs
         # are preserved. The buffers and the compensating weights travel together.
-        actor.standard_action[16:] *= 32
-        actor.decoder[-1].weight[16:] /= 32
-        actor.decoder[-1].bias[16:] /= 32
-        diff=float((actor.raw(anchor)-before).abs().max())
-        if diff>1e-5:
-            raise ValueError(f"Initial 23-channel actor changed by {diff}")
-        if args.reference_residual:
-            actor.decoder[-1].weight[16:].zero_()
-            actor.decoder[-1].bias[16:].zero_()
-            baseline = actor.raw(anchor)
-            arm_jaw = torch.cat([g[::128,16:22],g[::128,22:23]-g[::128,23:24]],dim=-1)
-            torch.testing.assert_close(baseline[:,:16],before[:,:16],atol=1e-6,rtol=0)
-            torch.testing.assert_close(baseline[:,16:] * actor.reference_scale + actor.reference_offset,
-                                       arm_jaw,atol=1e-6,rtol=0)
+        if args.warm_actor:
+            diff = 0.0
+        else:
+            actor.standard_action[16:] *= 32
+            actor.decoder[-1].weight[16:] /= 32
+            actor.decoder[-1].bias[16:] /= 32
+            diff=float((actor.raw(anchor)-before).abs().max())
+            if diff>1e-5:
+                raise ValueError(f"Initial 23-channel actor changed by {diff}")
+            if args.reference_residual:
+                actor.decoder[-1].weight[16:].zero_()
+                actor.decoder[-1].bias[16:].zero_()
+                baseline = actor.raw(anchor)
+                arm_jaw = torch.cat([g[::128,16:22],g[::128,22:23]-g[::128,23:24]],dim=-1)
+                torch.testing.assert_close(baseline[:,:16],before[:,:16],atol=1e-6,rtol=0)
+                torch.testing.assert_close(baseline[:,16:] * actor.reference_scale + actor.reference_offset,
+                                           arm_jaw,atol=1e-6,rtol=0)
     resolved=dict(run=args.run, variant=("effort32_arm_jaw_history_swap" if args.swap_arm_history else "effort32_arm_jaw_supervised"), seed=0, source=str(args.source),
-        references=REFS, reference_directory=str(args.reference_directory), validation_reference="same-side, same-goal nominal training reference; unchanged absolute frame number",
+        references=names, reference_directory=str(args.reference_directory), validation_reference="same-side, same-goal nominal training reference; unchanged absolute frame number",
         validation_feedback="measured validation proprio and previously executed teacher actions at the matching absolute frame, fixed training reference as sole goal; action-regression metric, not a closed loop",
         training_frames=len(h), validation_frames=len(val[1]), input="77 x history10, official motion reference, no object state or teacher target at inference",
         normalizers="B0-03 observation and goal buffers loaded and kept frozen", standard_action=actor.standard_action.tolist(),
@@ -131,6 +146,9 @@ def calibrate(args):
                         initialization="frozen B0-03 network; keep first 16 rows, set 7 residual rows to zero after unit conversion",
                         residual_base="first frame in given goal_motion: six arm joint positions and measured two-finger separation; mapped to the logical servo units before adding trainable residual, then clipped",
                         lineage="cfg in this supervised checkpoint is the frozen source configuration; actor_parameterization selects its new named head")
+    if args.warm_actor:
+        resolved.update(initial_actor=str(args.warm_actor), warm_start='strict load of the frozen previous policy including its full output units; fresh optimizer',
+                        initialization='retain reference residual weights and normalizers; no additional unit rescaling')
     if args.swap_arm_history:
         resolved["training_history_intervention"] = (
             "For half each shuffled batch, replace arm/finger q and v and previous arm/jaw "
@@ -172,6 +190,8 @@ def calibrate(args):
     save(out/"final_validation.json",scores(actor,val,mapping))
     checkpoint=dict(actor=actor.state_dict(),cfg=source['cfg'],seed=0,
                     supervised_updates=args.updates,source=str(args.source),variant=resolved['variant'])
+    if args.warm_actor:
+        checkpoint['warm_actor'] = str(args.warm_actor)
     if args.reference_residual:
         checkpoint["actor_parameterization"] = REFERENCE_RESIDUAL
     torch.save(checkpoint,out/f"actor_{args.updates:06}.pt")
@@ -186,6 +206,8 @@ def main():
                    help="diagnostic: corrupt arm/finger history in half of each training batch")
     variants.add_argument("--reference-residual",action="store_true",
                           help="use the given motion's current arm positions and jaw width as the baseline for seven residuals")
+    p.add_argument("--references", nargs="+", help="successful measured training episode names in the given root")
+    p.add_argument("--warm-actor", type=Path, help="a previous supervised reference-residual policy")
     p.add_argument("--reference-directory",type=Path,default=Path("results/raw_large/b0/contact_held_r1"))
     p.add_argument("--source",type=Path,default=Path("results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt"))
     args=p.parse_args()

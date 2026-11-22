@@ -57,3 +57,9 @@
 ### 冻结参考残差初值的十项名义
 
 采用 3,000 次监督训练的同一参考残差 Actor，两后端原 v1 均为 5/10，通过的是两侧接近闭爪和释放退臂、前侧稳定抓持。另五项的物理保持或目标角就绪稍晚。统一追加 1 秒实采参考的 v2 五项在 Warp 和 native 均为 5/5，门槛与固定扰动不变。由这五项及五个未改变的 v1 任务组成的十项协议，在同一权重下两端名义各 10/10。新的未来参考序列和截止时刻都可能影响闭环。正在完成每项独立开发条件。该 Actor 等同于已保存联合包的 u0；已核实所有 Actor 与 WM 张量身份。[登记及参考](../results/b0/contact_hold_margin_v2_summary/registration.json) · [逐项固定目标对照](../results/b0/contact_hold_margin_v2_summary/teacher_controls.csv) · [单一权重包](../results/b0/contact_s0_refres_joint_r1/initializer_identity.json)
+
+### 原生验收与正式联训终点
+
+参考残差初始化在两侧接近闭爪、0° 稳定抓持、5°/15° 开门、释放退臂的原生 3.3 十项均完成名义及 **20/20** 开发。每个名义单列，另有 200 次分项开发试验；同一批开发偏移复用于相应参考，不将窗口、后端数或这 200 次合成完整开门成功率。[十项、版本与原始目录](../results/b0/contact_hold_margin_v2_summary/actor_native33.csv)
+
+纯 tracking 完成 1,000 次 H32 Actor 更新、10,000 个 WM 和 20,000 个 Critic minibatch。实际仿真 1,981,312 个 lane 区间，可用真实转移 572,118。所有更新均记录 WM 固定及 Actor 参数非零变化。Warp/native 终点各 0/10，双侧抓持初始 2 ms 约 50/35 N。在相同八个独立 episode 上，TCP 的 1/7/32 步 RMSE 为 2.692/17.613/51.388 mm，稳定双指 H32 为 48.195 mm。单列完整 20 ms 的真实失抓终止样本见另表。[训练终点](../results/b0/contact_s0_tracking_r3/outcome.json) · [Warp](../results/b0/contact_s0_tracking_u1000_warp_r2/cases.csv) · [原生](../results/b0/contact_s0_tracking_u1000_native33_r2/cases.csv) · [分模式同组比较](../results/b0/contact_wm_checkpoint_audit_r1/pooled_rmse.csv) · [真实终止](../results/b0/contact_wm_checkpoint_audit_r1/terminal_tracking_u1000.json)

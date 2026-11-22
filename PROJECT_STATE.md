@@ -2,9 +2,13 @@
 
 更新日期：2026-11-22（Asia/Shanghai）。
 
-## 当前入口（11 月 22 日实施）
+## 当前入口（11 月 22 日全程前拉）
 
-B0-03 seed0 仍冻结。B0-04 已有真实 20 ms 恒动作数据、独立动态门 WM、变长参考和只读 2 ms 物理判定。冻结的参考残差监督 Actor 在 Warp 3.16 和原生 3.3 各通过原始 v1 名义 5/10；按预登记延长1秒实采参考的五项也分别通过，两端名义达到 10/10，正在核对每项20个独立开发条件。该 Actor 在接触 H32 更新前取得上述成绩。原 tracking、门几何、峰值力与参考残差联训分开验收。执行工作树为 `dog-and-arm-b0-contact`，专用 SSH 别名为 `autodl-dog-arm`。[片段结果](reports/B0_CONTACT_SEGMENTS.md) · [统一初始化权重身份](results/b0/contact_s0_refres_joint_r1/initializer_identity.json) · [当日工作](DAILY_WORK_LOG.md)
+seed0 的整程前拉监督 Actor 已在原生 MuJoCo 3.3.0 从规定初态连续完成全部 13 阶段，终角 60.0076°，两个停车窗口各 1,500 步。同一权重在 Warp 3.16 的预抓取站位越界。完整开发回归、背推、共同模型及冻结状态见[全程报告](reports/B0_FULL_TASK.md) 与[每日记录](DAILY_WORK_LOG.md)。
+
+## B0-04 片段入口及历史
+
+B0-03 seed0 保持冻结。B0-04 已实现动态门 WM、真实 20 ms 恒动作采集、变长参考与 2 ms 只读评测。固定的参考残差监督 Actor 在原生 MuJoCo 3.3.0 通过全部十项名义，每项均为 20/20，共 200/200 个开发条件。五项采用原 v1，五项采用提前登记、另采一秒真实持姿的 v2；Warp 十项名义已过，开发清单按实际物理继续运行。成绩对应接触联训 u0 的单一 seed0 WM/Actor 包。纯 tracking u1000 完成 572,118 条在线有效转移，两端各 0/10。以通过的原生候选接续 B0-05 连续前拉 60°；全程学习结果单独记录。专用工作树为 `dog-and-arm-b0-contact`，SSH 别名为 `autodl-dog-arm`。[接触逐项](results/b0/contact_hold_margin_v2_summary/actor_native33.csv) · [全程报告](reports/B0_FULL_TASK.md) · [当日记录](DAILY_WORK_LOG.md)
 
 ## 865835c 发布时的入口与冻结交接
 
@@ -18,7 +22,7 @@ B0-03 seed0 仍冻结。B0-04 已有真实 20 ms 恒动作数据、独立动态�
 
 seed0 的第 1000 次更新是本轮冻结检查点。训练用固定 O1 双源、原 tracking 奖励和 23 路全身策略，实际产生 1,088,000 个在线物理转移，完成 10,000 次 WM 小批更新、1,000 次 H32 Actor 更新及 20,000 次 Critic 小批更新。1000 次 Actor 更新均记录了冻结 WM 和非零 Actor 权重变化。CUDA 梯度链路另有七步物理输出反传诊断。支撑伸收臂、移动变臂姿、停车在 MuJoCo-Warp 3.16 和 CPU MuJoCo 3.16 上均为 20/20，原工程 MuJoCo 3.3.0 分别为 20/20、20/20、19/20。停车 F02 完成 7 s，TCP RMSE 为 30.75 mm，超过 30 mm 门槛。三个名义任务也在 Warp 和 3.3.0 全部通过。每案从完整初态连续执行 7 s，逐个检查 3,500 个物理子步。留出回合的 1、7、32 步 TCP 预测 RMSE 为 0.36、2.04、2.82 mm。[检查清单](results/b0/free_s0_cloud_servo_r2/review.json) · [逐案与视频](reports/B0_FREE_MOTION.md)
 
-完整权重在本机与云端项目内的 `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt`。云端目录为 `/root/autodl-tmp/dog-and-arm-b0`。已执行研发仍停在 B0-03；本次仅发布 B0-04～06 后续计划，不把待执行任务写成完成。当前执行与冻结复核入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
+完整权重在本机与云端项目内的 `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt`。云端目录为 `/root/autodl-tmp/dog-and-arm-b0`。865835c 发布时，已执行研发停在 B0-03，B0-04～06 只发布了计划。当前执行与冻结复核入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
 
 ## B0 环境迁移与初期无接触学习历史记录
 
