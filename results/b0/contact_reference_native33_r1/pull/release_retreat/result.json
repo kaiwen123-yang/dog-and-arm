@@ -1,0 +1,90 @@
+{
+  "episode": "pull_5_train",
+  "side": "pull",
+  "segment": "release_retreat",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "recorded 20 ms teacher targets, replayed from reconstructed RSI",
+  "start_substep": 12070,
+  "reference_phase_end_substep": 15975,
+  "reference_last_substep": 15975,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02151982681890842,
+    "grasp_error_m": 0.0027336999307893016,
+    "supported": true,
+    "finger_n": [
+      3.3039030683115254,
+      2.411418752894611
+    ],
+    "door_force_sum_n": 6.019443229512996,
+    "prefix_start_target_penetration_m": 0.001014315927534806,
+    "nominal_prefix_start_target_penetration_m": 0.001014315927534806,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "release",
+      "end_step": 828,
+      "ref_end_step": 12898,
+      "ticks": 75,
+      "door_deg": 4.848490943305761,
+      "width_m": 0.09000109705260391,
+      "net_force_n": 0.0
+    },
+    {
+      "phase": "retreat_arm",
+      "end_step": 2404,
+      "ref_end_step": 14474,
+      "ticks": 75,
+      "door_deg": 4.848490943305761,
+      "width_m": 0.09000285724165635,
+      "net_force_n": 0.0
+    },
+    {
+      "phase": "post_release_hold",
+      "end_step": 3904,
+      "ref_end_step": 15974,
+      "ticks": 1500,
+      "door_deg": 4.848490943305761,
+      "width_m": 0.09000026136423468,
+      "net_force_n": 0.0
+    }
+  ],
+  "policy_calls": 391,
+  "physics_steps": 3904,
+  "final_door_deg": 4.848490943305761,
+  "final_partial_substeps": 4,
+  "longest_ready_steps": {
+    "release": 75,
+    "retreat_arm": 75,
+    "post_release_hold": 1500
+  },
+  "last_physical_observation": {
+    "phase": "post_release_hold",
+    "door_deg": 4.848490943305761,
+    "width_m": 0.09000026136423468,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "net_door_force_n": 0.0,
+    "tcp_handle_error_m": 0.10945540042217401,
+    "station_error_m": 0.0007126136664355413,
+    "tilt_deg": 0.14247064515693583,
+    "speed_m_s": 0.00033299018288990387,
+    "yaw_rate_deg_s": -0.05830362923708011,
+    "continuous_ready_steps": 1500,
+    "required_ready_steps": 1500
+  }
+}

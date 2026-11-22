@@ -42,7 +42,7 @@ class HeldTeacher:
         return self.target
 
 
-def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False):
+def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False, hold_seconds=3):
     episode_id = f"{side}_{goal}_{split}" + ("_drop" if release_during_hold else "")
     if hold_grasp_pose:
         episode_id += "_grip"
@@ -53,7 +53,7 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
         raise FileExistsError(evidence)
     path.mkdir(parents=True, exist_ok=False)
     cfg = settings("mobile" if side == "pull" else "push", 1)
-    cfg.update(target_angle_deg=goal, grip_hold_s=3., segment_end_after_retreat_hold=True,
+    cfg.update(target_angle_deg=goal, grip_hold_s=float(hold_seconds), segment_end_after_retreat_hold=True,
                policy_decimation=DECIMATION, teacher_selection="P6 candidate at substep 10*k")
     if split == "validation":
         # Distinct complete integration. Same scene parameters and reference family,
@@ -145,7 +145,8 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
     events = {row["phase"]: round(row["time_s"]/meta["physics_dt"]) for row in summary["events"]}
     result = dict(episode_id=episode_id, raw_directory=str(path), wm_split=split,
                   initial_perturbation=cfg["perturbation"], backend=f"native MuJoCo {meta['mujoco_version']}",
-                  physical_teacher_pass=passed, failure=failure, first_failure_interval=first_failure,
+                  physical_teacher_pass=passed, teacher_hold_seconds=hold_seconds,
+                  failure=failure, first_failure_interval=first_failure,
                   post_failure_completed_physics_steps=extension,
                   reference_eligible=bool(passed and split == "train"), policy_success_measured=False,
                   target_deg=goal, final_deg=meta["final_door_deg"], physics_steps=steps,
@@ -170,6 +171,8 @@ def main():
     parser.add_argument("split", choices=["train","validation"])
     parser.add_argument("--complete-terminal", action="store_true", help="continue finite lost-grasp intervals to the real 20 ms successor")
     parser.add_argument("--hold-grasp-pose", action="store_true", help="0 degree task: hold the grasp command after closure, with no reverse opening command")
+    parser.add_argument("--hold-seconds", type=int, choices=[3,4], default=3,
+                        help="duration of the measured teacher hold; the policy event threshold is separate")
     parser.add_argument("--release-during-hold", action="store_true", help="excite a real loss-of-grasp transition during hold")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--evidence-dir", type=Path, required=True)
@@ -184,7 +187,8 @@ def main():
             parser.error("--complete-terminal requires a lost-grasp experiment")
         episode_id += "_terminal"
     output = args.evidence_dir / (episode_id + ".json")
-    return 0 if collect(args.side, args.goal, args.split, args.output, output, args.release_during_hold, args.hold_grasp_pose, args.complete_terminal) else 1
+    return 0 if collect(args.side, args.goal, args.split, args.output, output, args.release_during_hold,
+                        args.hold_grasp_pose, args.complete_terminal, args.hold_seconds) else 1
 
 
 if __name__ == "__main__":

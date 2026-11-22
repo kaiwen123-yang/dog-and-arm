@@ -1,0 +1,80 @@
+{
+  "episode": "pull_15_train",
+  "side": "pull",
+  "segment": "open_15",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "recorded 20 ms teacher targets, replayed from reconstructed RSI",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 14850,
+  "reference_last_substep": 14850,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.021390895658026342,
+    "grasp_error_m": 0.0017868945160512716,
+    "supported": true,
+    "finger_n": [
+      3.333564192789676,
+      2.3289914868789894
+    ],
+    "door_force_sum_n": 5.672805781396174,
+    "prefix_start_target_penetration_m": 0.0009854320239292991,
+    "nominal_prefix_start_target_penetration_m": 0.0009854320239292991,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "open",
+      "end_step": 4600,
+      "ref_end_step": 13350,
+      "ticks": 75,
+      "door_deg": 14.798234443589513,
+      "width_m": 0.021497582329063104,
+      "net_force_n": 0.7373366717590771
+    },
+    {
+      "phase": "hold",
+      "end_step": 6100,
+      "ref_end_step": 14850,
+      "ticks": 1500,
+      "door_deg": 14.806976283281646,
+      "width_m": 0.0215483450909529,
+      "net_force_n": 0.7385877908920148
+    }
+  ],
+  "policy_calls": 610,
+  "physics_steps": 6100,
+  "final_door_deg": 14.806973230724253,
+  "final_partial_substeps": 0,
+  "longest_ready_steps": {
+    "open": 75,
+    "hold": 1500
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 14.806976283281646,
+    "width_m": 0.0215483450909529,
+    "finger_n": [
+      3.177344494942239,
+      2.4965766275087664
+    ],
+    "net_door_force_n": 0.7385877908920148,
+    "tcp_handle_error_m": 0.0029806937665292172,
+    "station_error_m": 0.0007966553622566756,
+    "tilt_deg": 0.1571030160790208,
+    "speed_m_s": 5.386880337266131e-05,
+    "yaw_rate_deg_s": -0.1776060589473628,
+    "continuous_ready_steps": 1500,
+    "required_ready_steps": 1500
+  }
+}

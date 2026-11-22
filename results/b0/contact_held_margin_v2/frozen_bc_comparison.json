@@ -1,0 +1,53 @@
+{
+  "backend": "MuJoCo Warp 3.16.0",
+  "checkpoint": "results/b0/contact_s0_bc_effort32_r1/actor_003000.pt",
+  "checkpoint_sha256": "b667294b9529998f2dce8b6191b01c6004791464e9e06629fc4aa16a8f802003",
+  "policy_event_threshold_s": 3,
+  "teacher_timing_diagnosis": "results/b0/contact_reference_tail_r1/push_stable_grip.json",
+  "recorded_teacher_v1": "results/b0/contact_reference_warp316_r1/push/stable_grip/result.json",
+  "recorded_teacher_v2": "results/b0/contact_reference_margin_v2_warp316/push/stable_grip/result.json",
+  "paired_nominal": {
+    "v1": {
+      "source": "results/b0/contact_s0_bc_u3000_warp_r1/push/stable_grip/nominal/result.json",
+      "step_budget": 1525,
+      "simulated_steps": 1525,
+      "elapsed_s": 3.0500000000000003,
+      "policy_calls": 153,
+      "passed": false,
+      "first_failure": "reference_exhausted",
+      "best_continuous_hold": 0,
+      "required_continuous_hold": 1500,
+      "final_deg": 4.57663740903239,
+      "first_policy_boundary_outside_2deg_s": 1.78,
+      "door_speed_at_cut_rad_s": 0.03579522669315338,
+      "finger_load_at_cut_n": [
+        2.9147531986236572,
+        3.1675729751586914
+      ],
+      "tcp_handle_error_at_cut_m": 0.002642321286513706,
+      "net_force_at_cut_n": 0.6327890055725761
+    },
+    "v2": {
+      "source": "results/b0/contact_bc_u3000_hold_margin_v2_warp316/push/stable_grip/nominal/result.json",
+      "step_budget": 2025,
+      "simulated_steps": 2025,
+      "elapsed_s": 4.05,
+      "policy_calls": 203,
+      "passed": false,
+      "first_failure": "reference_exhausted",
+      "best_continuous_hold": 0,
+      "required_continuous_hold": 1500,
+      "final_deg": 6.825449018728762,
+      "first_policy_boundary_outside_2deg_s": 1.78,
+      "door_speed_at_cut_rad_s": 0.03804677724838257,
+      "finger_load_at_cut_n": [
+        3.463313102722168,
+        3.731800079345703
+      ],
+      "tcp_handle_error_at_cut_m": 0.0032162675617456063,
+      "net_force_at_cut_n": 0.7875498663846575
+    }
+  },
+  "first_raw_action_difference_gt_1e_6_policy_index": 2,
+  "angle_delta_v1_minus_v2_at_3s_deg": 0.010419880465677578
+}

@@ -1,0 +1,93 @@
+{
+  "episode": "push_0_train_grip",
+  "side": "push",
+  "segment": "stable_grip",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "recorded 20 ms teacher targets, replayed from reconstructed RSI",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 10275,
+  "reference_last_substep": 10275,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.021736519411206245,
+    "grasp_error_m": 0.0018648033351471875,
+    "supported": true,
+    "finger_n": [
+      3.4012207984924316,
+      2.4634344577789307
+    ],
+    "door_force_sum_n": 5.9338380780149205,
+    "prefix_start_target_penetration_m": 0.000989740430697985,
+    "nominal_prefix_start_target_penetration_m": 0.000989740430697985,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "reference_exhausted",
+    "phase": "hold",
+    "physics_steps": 1525,
+    "readiness": {
+      "required": 1500,
+      "best": 1489,
+      "current": 1489,
+      "last_not_ready": {
+        "reference_substep": 8785,
+        "ramp": false,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": true,
+        "gripped": true,
+        "detached": false,
+        "door_speed_rad_s": 0.010105816647410393,
+        "planar_speed_m_s": 0.0011350225080687707,
+        "yaw_rate_deg_s": 0.015705666261030947,
+        "tcp_handle_error_m": 0.0019052581898569435,
+        "width_m": 0.02174488827586174
+      }
+    }
+  },
+  "events": [],
+  "policy_calls": 153,
+  "physics_steps": 1525,
+  "final_door_deg": 0.6078897176171909,
+  "final_partial_substeps": 5,
+  "longest_ready_steps": {
+    "hold": 1489
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 0.6078876365439282,
+    "width_m": 0.021848117001354694,
+    "finger_n": [
+      2.42507266998291,
+      2.8982348442077637
+    ],
+    "net_door_force_n": 0.8151229405713867,
+    "tcp_handle_error_m": 0.002430404415950479,
+    "station_error_m": 0.0018572207978083497,
+    "tilt_deg": 0.10685462875360212,
+    "speed_m_s": 0.000722745043800338,
+    "yaw_rate_deg_s": 0.003263361735242054,
+    "continuous_ready_steps": 1489,
+    "required_ready_steps": 1500
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  }
+}

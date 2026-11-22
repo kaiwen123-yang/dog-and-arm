@@ -1,0 +1,35 @@
+{
+  "v1_directory": "results/raw_large/b0/contact_held_r1/push_0_train_grip",
+  "v2_directory": "results/raw_large/b0/contact_held_margin_v2/push_0_train_grip",
+  "nominal_prefix_substeps": 100,
+  "policy_event_threshold_seconds": 3,
+  "v1_hold_end_step": 10275,
+  "v2_hold_end_step": 10775,
+  "native_teacher_equal_through_v1_cut": {
+    "substeps/qpos": {
+      "rows": 10276,
+      "max_abs_difference": 0.0
+    },
+    "substeps/qvel": {
+      "rows": 10276,
+      "max_abs_difference": 0.0
+    },
+    "substeps/physical_target": {
+      "rows": 10275,
+      "max_abs_difference": 0.0
+    },
+    "substeps/ctrl": {
+      "rows": 10275,
+      "max_abs_difference": 0.0
+    },
+    "substeps/finger_load_N": {
+      "rows": 10275,
+      "max_abs_difference": 0.0
+    },
+    "action_clipped": {
+      "rows": 1028,
+      "max_abs_difference": 0.0
+    }
+  },
+  "interpretation": "The 500 additional native teacher substeps were integrated before release, with the 20 ms policy hold unchanged. The additional 50 targets are recorded physical teacher commands."
+}

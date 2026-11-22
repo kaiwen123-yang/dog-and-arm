@@ -1,0 +1,88 @@
+{
+  "episode": "push_15_train",
+  "side": "push",
+  "segment": "open_15",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "recorded 20 ms teacher targets, replayed from reconstructed RSI",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 14767,
+  "reference_last_substep": 14767,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02173654641956091,
+    "grasp_error_m": 0.0018648113395807943,
+    "supported": true,
+    "finger_n": [
+      3.4011642932891846,
+      2.4634602069854736
+    ],
+    "door_force_sum_n": 5.933780957915495,
+    "prefix_start_target_penetration_m": 0.000989740430697985,
+    "nominal_prefix_start_target_penetration_m": 0.000989740430697985,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "open",
+      "end_step": 4517,
+      "ref_end_step": 13267,
+      "ticks": 75,
+      "door_deg": 15.101531179425267,
+      "width_m": 0.0217270664870739,
+      "net_force_n": 0.709696024305565
+    },
+    {
+      "phase": "hold",
+      "end_step": 6017,
+      "ref_end_step": 14767,
+      "ticks": 1500,
+      "door_deg": 15.08122502702282,
+      "width_m": 0.021691768430173397,
+      "net_force_n": 0.2870654357106637
+    }
+  ],
+  "policy_calls": 602,
+  "physics_steps": 6017,
+  "final_door_deg": 15.081207951549894,
+  "final_partial_substeps": 7,
+  "longest_ready_steps": {
+    "open": 75,
+    "hold": 1500
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 15.08122502702282,
+    "width_m": 0.021691768430173397,
+    "finger_n": [
+      2.577145576477051,
+      2.792099714279175
+    ],
+    "net_door_force_n": 0.2870654357106637,
+    "tcp_handle_error_m": 0.00323199909760092,
+    "station_error_m": 0.0031065468600842993,
+    "tilt_deg": 0.19992278132351574,
+    "speed_m_s": 0.00021286025361726517,
+    "yaw_rate_deg_s": -0.02645172329764745,
+    "continuous_ready_steps": 1500,
+    "required_ready_steps": 1500
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "episode": "pull_5_train",
+  "side": "pull",
+  "segment": "release_retreat",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 12070,
+  "reference_phase_end_substep": 15975,
+  "reference_last_substep": 15975,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02151982681890842,
+    "grasp_error_m": 0.0027336999307893016,
+    "supported": true,
+    "finger_n": [
+      3.3039030683115254,
+      2.411418752894611
+    ],
+    "door_force_sum_n": 6.019443229512996,
+    "prefix_start_target_penetration_m": 0.001014315927534806,
+    "nominal_prefix_start_target_penetration_m": 0.001014315927534806,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "reference_exhausted",
+    "phase": "retreat_arm",
+    "physics_steps": 3905
+  },
+  "events": [
+    {
+      "phase": "release",
+      "end_step": 828,
+      "ref_end_step": 12898,
+      "ticks": 75,
+      "door_deg": 4.999825272894475,
+      "width_m": 0.08887284710155753,
+      "net_force_n": 0.0
+    }
+  ],
+  "policy_calls": 391,
+  "physics_steps": 3905,
+  "final_door_deg": 4.999825272894475,
+  "final_partial_substeps": 5,
+  "longest_ready_steps": {
+    "release": 75,
+    "retreat_arm": 0
+  },
+  "last_physical_observation": {
+    "phase": "retreat_arm",
+    "door_deg": 4.999825272894475,
+    "width_m": 0.08989590239920829,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "net_door_force_n": 0.0,
+    "tcp_handle_error_m": 0.22736540904497182,
+    "station_error_m": 0.000652144679555219,
+    "tilt_deg": 0.1019264875225997,
+    "speed_m_s": 0.0002325010983285034,
+    "yaw_rate_deg_s": 0.11536187177398748,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 75
+  },
+  "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_bc_u3000_native33_r1/pull/release_retreat/nominal"
+}

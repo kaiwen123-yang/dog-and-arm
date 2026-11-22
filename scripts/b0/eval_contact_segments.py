@@ -2,7 +2,6 @@
 import argparse
 import csv
 import json
-import os
 from pathlib import Path
 import subprocess
 import sys
@@ -133,10 +132,15 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
         vlog.append(d.qvel.copy())
         ticks.append(judge.step)
     if not judge.passed and result['first_failure'] is None:
-        result['first_failure']=dict(reason='reference_exhausted',phase=judge.phase,physics_steps=judge.step)
+        readiness = {}
+        if judge.latest and judge.latest['phase'] == judge.phase:
+            readiness = dict(current=judge.latest['continuous_ready_steps'], required=judge.latest['required_ready_steps'],
+                             best=judge.peak_ready_steps[judge.phase], last_not_ready=judge.last_not_ready.get(judge.phase))
+        result['first_failure']=dict(reason='reference_exhausted',phase=judge.phase,physics_steps=judge.step,readiness=readiness)
     result.update(passed=judge.passed,events=judge.events,physics_steps=judge.step,policy_calls=len(raw_log),
                   final_door_deg=float(np.rad2deg(d.qpos[judge.hinge_q])),
-                  final_partial_substeps=judge.step%10)
+                  final_partial_substeps=judge.step%10, longest_ready_steps=judge.peak_ready_steps,
+                  last_physical_observation=judge.latest)
     if integrator is not None:
         result['warp_capacity']=integrator.capacity()
     if raw_dir is not None:
@@ -173,6 +177,24 @@ def actor_worker(args):
             print(json.dumps(np.asarray(action).tolist(),allow_nan=False),file=stream,flush=True)
 
 
+def check_legacy_actor(output, directory, raw_root, policy):
+    """Old interrupted runs predate run_spec.json; replay a saved Actor input before reusing them."""
+    for record in sorted(output.glob('*/*/*/result.json')):
+        result = json.loads(record.read_text())
+        if result['policy_calls'] < 12:
+            continue
+        case_dir = raw_root / record.parent.relative_to(output)
+        q, v, a, raw = (np.load(case_dir/(n+'.npy'), mmap_mode='r')
+                        for n in ('qpos','qvel','clipped_action','raw_action'))
+        for frame in (10, len(raw)-1):
+            predicted = policy(directory/result['episode'],result['start_substep']//10+frame,
+                               q[frame-9:frame+1],v[frame-9:frame+1],a[frame-10:frame])
+            if not np.allclose(predicted,raw[frame],rtol=2e-5,atol=2e-5):
+                raise ValueError(f'Legacy Actor output mismatch at {record}, frame {frame}')
+        return str(record.relative_to(output))
+    raise ValueError('No complete legacy trajectory with two reproducible Actor inputs')
+
+
 def main(args):
     manifest=json.loads(args.manifest.read_text())
     trial_groups=[(key,group) for key,group in manifest['cases'].items()
@@ -185,7 +207,23 @@ def main(args):
     output=ROOT/'results/b0'/args.run
     if Path(args.run).name!=args.run:
         raise ValueError('use a new run name')
-    output.mkdir(parents=True,exist_ok=False)
+    plan=dict(checkpoint=str(args.checkpoint), backend=args.backend, mujoco=mj.__version__,
+              source=str(directory), manifest=str(args.manifest), groups=[k for k,_ in trial_groups],
+              requested_dev=args.dev, video=args.video)
+    spec_path=output/'run_spec.json'
+    raw_root=ROOT/'results/raw_large/b0'/args.run
+    legacy=False
+    if args.resume:
+        if not output.is_dir() or (output/'evaluation.json').exists():
+            raise ValueError('--resume expects an interrupted evaluation directory')
+        if spec_path.is_file():
+            if json.loads(spec_path.read_text())['plan']!=plan:
+                raise ValueError('Resume requires the same checkpoint, evaluation and output settings')
+        else:
+            legacy=True
+    else:
+        output.mkdir(parents=True,exist_ok=False)
+        dump(spec_path,dict(plan=plan))
     process=None
     if mj.__version__=='3.3.0':
         if args.backend=='warp':
@@ -204,28 +242,52 @@ def main(args):
         policy=load_policy(args.checkpoint,paths,args.device)
     rows=[]
     try:
+        if legacy:
+            checked=check_legacy_actor(output,directory,raw_root,policy)
+            dump(spec_path,dict(plan=plan,legacy_identity_check=checked))
         model=integrator=None
         current_side=None
-        for key,group in trial_groups:
-            side,segment=key.split('/')
-            if current_side!=side:
-                cfg=settings('mobile' if side=='pull' else 'push',1)
-                model=build(cfg)
-                integrator=WarpSingleWorld(model,args.device) if args.backend=='warp' else None
-                current_side=side
-            cases=[group['nominal']]+(group['accepted'] if args.dev else [])
-            for case in cases:
-                folder=Path(side)/segment/case['id']
-                r=evaluate_segment(policy,directory/group['episode'],segment,case['perturbation'],args.backend,
-                                   output/folder,model=model,integrator=integrator,device=args.device,
-                                   raw_dir=ROOT/'results/raw_large/b0'/args.run/folder,video=args.video and case['id']=='nominal')
-                row=dict(side=side,segment=segment,case=case['id'],passed=r['passed'],physics_steps=r['physics_steps'],
-                         policy_calls=r['policy_calls'],final_door_deg=r['final_door_deg'],
-                         failure=r['first_failure']['reason'] if r['first_failure'] else None)
-                rows.append(row)
-                print(json.dumps(row,allow_nan=False),flush=True)
-                if case['id']=='nominal' and not r['passed']:
-                    break
+        accepted_nominals=set()
+        for development in ([False,True] if args.dev else [False]):
+            for key,group in trial_groups:
+                if development and key not in accepted_nominals:
+                    continue
+                side,segment=key.split('/')
+                if current_side!=side:
+                    cfg=settings('mobile' if side=='pull' else 'push',1)
+                    model=build(cfg)
+                    integrator=WarpSingleWorld(model,args.device) if args.backend=='warp' else None
+                    current_side=side
+                cases=group['accepted'] if development else [group['nominal']]
+                for case in cases:
+                    folder=Path(side)/segment/case['id']
+                    record=output/folder/'result.json'
+                    if args.resume and record.is_file():
+                        r=json.loads(record.read_text())
+                        if (r['backend']!=args.backend or r['mujoco']!=mj.__version__
+                                or r['episode']!=group['episode'] or r['segment']!=segment
+                                or r['perturbation']!=case['perturbation']):
+                            raise ValueError(f'{record} disagrees with the frozen case')
+                    else:
+                        if args.resume:
+                            for root in (raw_root,output):
+                                partial = root/folder
+                                if partial.exists():
+                                    from time import time_ns
+                                    saved = root/'interrupted'/str(time_ns())/folder
+                                    saved.parent.mkdir(parents=True,exist_ok=True)
+                                    partial.rename(saved)
+                                    print(f'Retained incomplete case at {saved}',file=sys.stderr,flush=True)
+                        r=evaluate_segment(policy,directory/group['episode'],segment,case['perturbation'],args.backend,
+                                           output/folder,model=model,integrator=integrator,device=args.device,
+                                           raw_dir=raw_root/folder,video=args.video and not development)
+                    row=dict(side=side,segment=segment,case=case['id'],passed=r['passed'],physics_steps=r['physics_steps'],
+                             policy_calls=r['policy_calls'],final_door_deg=r['final_door_deg'],
+                             failure=r['first_failure']['reason'] if r['first_failure'] else None)
+                    rows.append(row)
+                    print(json.dumps(row,allow_nan=False),flush=True)
+                    if not development and r['passed']:
+                        accepted_nominals.add(key)
     finally:
         if process:
             process.stdin.close()
@@ -249,6 +311,7 @@ if __name__=='__main__':
     parser.add_argument('--device',default='cuda:0')
     parser.add_argument('--references',type=Path)
     parser.add_argument('--manifest',type=Path,default=ROOT/'config/b0/contact_dev_v1.json')
+    parser.add_argument('--resume',action='store_true',help='Continue unfinished cases in the same run')
     parser.add_argument('--dev',action='store_true',help='after passing nominal, evaluate the registered twenty')
     parser.add_argument('--video',action='store_true',help='record every nominal trial from its first input to terminal state')
     parser.add_argument('--side',nargs='+',choices=('pull','push'))

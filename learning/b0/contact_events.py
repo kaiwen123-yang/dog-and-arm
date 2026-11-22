@@ -90,6 +90,8 @@ class ContactEvents:
         self.parking = self.nominal_xy - cfg['travel_m'] * np.array([np.cos(yaw), np.sin(yaw)])
         self.phase_start = self.i = self.step = self.good = self.lost = self.sliding = self.unloaded = 0
         self.events, self.failure = [], None
+        self.last_not_ready = {}
+        self.peak_ready_steps, self.latest = {}, None
 
     def ticks(self, seconds):
         return int(np.ceil(seconds / self.dt - 1e-9))
@@ -205,6 +207,21 @@ class ContactEvents:
         else:
             raise ValueError(f'unsupported frozen event {phase}')
         self.good = self.good+1 if ready else 0
+        if not ready:
+            flags = dict(ramp=bool(ramp), within_position_zone=bool(in_zone), stable=bool(stable),
+                         wheels_loaded=bool(supported), reached=bool(reached), both_fingers=bool(c.both),
+                         gripped=bool(gripped), detached=bool(detached), door_speed_rad_s=float(v0[self.hinge_v]),
+                         planar_speed_m_s=float(speed), yaw_rate_deg_s=float(yaw_rate),
+                         tcp_handle_error_m=float(error), width_m=float(jaw))
+            if phase in ('pregrasp','approach_arm','retreat_arm'):
+                flags.update(tcp_goal_distance_m=float(distance),tcp_goal_rotation_error_rad=float(rot_error))
+            self.last_not_ready[phase] = dict(reference_substep=k, **flags)
+        self.peak_ready_steps[phase] = max(self.good, self.peak_ready_steps.get(phase, 0))
+        self.latest = dict(phase=phase, door_deg=float(angle), width_m=float(jaw),
+                           finger_n=c.finger_normal.tolist(), net_door_force_n=float(net),
+                           tcp_handle_error_m=float(error), station_error_m=float(drift),
+                           tilt_deg=float(tilt), speed_m_s=float(speed), yaw_rate_deg_s=float(yaw_rate),
+                           continuous_ready_steps=self.good, required_ready_steps=self.ticks(seconds))
         if not reason and self.good >= self.ticks(seconds):
             self.events.append(dict(phase=phase, end_step=self.step, ref_end_step=k+1, ticks=self.good,
                                     door_deg=float(angle), width_m=float(jaw), net_force_n=float(net)))
