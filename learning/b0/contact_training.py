@@ -1,5 +1,6 @@
 """Online Warp interaction and pinned O1 learners for two-sided contact segments."""
 from collections import deque
+from copy import deepcopy
 from types import SimpleNamespace
 
 import numpy as np
@@ -17,6 +18,23 @@ from .model import RobotRepresentation, full_state, tensor
 from .physics import ActionMap, make_model
 from .training import MotionCommand
 from supermimic.tasks.task_spec import build_actor_obs_td
+
+
+class PhysicalActionPrior:
+    """Training-only auxiliary loss; deployment runs just the updated Actor."""
+    def __init__(self, actor, mapping, cfg, device):
+        self.anchor = deepcopy(actor).eval().requires_grad_(False)
+        units = np.repeat(cfg['physical_units'], [12, 4, 6, 1])
+        self.scale = tensor(mapping.scale / units, device)
+        self.weight = cfg['weight']
+
+    def __call__(self, obs, action):
+        with torch.no_grad():
+            target = self.anchor(obs)
+        error = (action - target) * self.scale
+        cost = torch.nn.functional.smooth_l1_loss(error, torch.zeros_like(error), reduction='none')
+        groups = [part.mean(-1) for part in cost.split((12, 4, 6, 1), -1)]
+        return self.weight * torch.stack(groups, -1).mean(-1)
 
 
 class OnlineContactReplay:
@@ -131,6 +149,11 @@ class ContactRun:
         # arm/jaw decoder uses a larger unit to represent nominal poses.
         self.exploration_scale=self.actor.standard_action.clone()
         self.actor.load_state_dict(actor_checkpoint['actor'])
+        if 'physical_action_prior' in cfg:
+            if cfg.get('actor_parameterization') != 'motion_reference_arm_jaw_residual':
+                raise ValueError('The contact action prior requires the calibrated reference-residual actor')
+            self.actor.training_action_prior = PhysicalActionPrior(
+                self.actor, mapping, cfg['physical_action_prior'], device)
         self.dyn = Dynamics(rep,23,5,tensor(mapping.scale,device),tensor(mapping.offset,device),
                             tuple(cfg['wm_hidden'])).to(device)
         self.dyn.load_state_dict(wm_checkpoint['dyn'])

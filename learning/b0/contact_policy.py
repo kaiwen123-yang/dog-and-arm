@@ -84,6 +84,26 @@ class ReferenceResidualActor(EffortScaledActor):
         return base + self.standard_action * RobotActor.raw(self,obs_td)
 
 
+    def forward(self, obs_td):
+        action = super().forward(obs_td)
+        prior = getattr(self, 'training_action_prior', None)
+        if self.training and prior is not None:
+            self._physical_prior_cost = prior(obs_td, action)
+        return action
+
+    def auxiliary_loss(self):
+        original = super().auxiliary_loss()
+        if getattr(self, 'training_action_prior', None) is None:
+            return original
+        return original + self._physical_prior_cost
+
+    def auxiliary_stats(self):
+        stats = super().auxiliary_stats()
+        if getattr(self, 'training_action_prior', None) is not None:
+            stats['physical_action_prior'] = self._physical_prior_cost.detach().mean()
+        return stats
+
+
 def build_actor(rep, cfg, model, device):
     task = make_motion_task(rep,570)
     velocity = make_velocity_task((-1.5,1.5),(-.5,.5),(-3.14,3.14),25,(.5,.5,.785),device)

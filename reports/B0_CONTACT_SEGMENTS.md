@@ -53,3 +53,7 @@
 | [同样继续原 1/7 步监督](../results/b0/contact_wm_h7_control_r1/validation.csv) | 33.819 mm | 0.383° |
 | [每十批含两批 H32](../results/b0/contact_wm_h32_r1/validation.csv) | 24.746 mm | 0.418° |
 | [相同长窗加 TCP 5 mm 损失](../results/b0/contact_wm_h32_tcp_r1/validation.csv) | 11.301 mm | 1.095° |
+
+### 冻结参考残差初值的十项名义
+
+采用 3,000 次监督训练的同一参考残差 Actor，两后端原 v1 均为 5/10，通过的是两侧接近闭爪和释放退臂、前侧稳定抓持。另五项的物理保持或目标角就绪稍晚。统一追加 1 秒实采参考的 v2 五项在 Warp 和 native 均为 5/5，门槛与固定扰动不变。由这五项及五个未改变的 v1 任务组成的十项协议，在同一权重下两端名义各 10/10。新的未来参考序列和截止时刻都可能影响闭环。正在完成每项独立开发条件。该 Actor 等同于已保存联合包的 u0；已核实所有 Actor 与 WM 张量身份。[登记及参考](../results/b0/contact_hold_margin_v2_summary/registration.json) · [逐项固定目标对照](../results/b0/contact_hold_margin_v2_summary/teacher_controls.csv) · [单一权重包](../results/b0/contact_s0_refres_joint_r1/initializer_identity.json)

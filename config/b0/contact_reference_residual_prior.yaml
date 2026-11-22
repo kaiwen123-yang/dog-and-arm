@@ -1,0 +1,7 @@
+base: config/b0/contact_reference_residual.yaml
+physical_action_prior:
+  # Physical scales of a deviation from the frozen supervised initializer on the same input.
+  # The arm/jaw scales approximate its measured nominal supervised fit. Wheel units are rad/s.
+  physical_units: [0.005, 0.1, 0.001, 0.0001]
+  weight: 0.02
+hypothesis: The first fifty H32 tracking updates lost the residual actor's nominal grasp. Regularize imagined policy deviations in physical units around its supervised initializer at the same simulated observations. Keep the original real and imagined tracking reward, WM, and critic. The frozen prior runs only during training.

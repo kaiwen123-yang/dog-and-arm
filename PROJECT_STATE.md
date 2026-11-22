@@ -4,7 +4,7 @@
 
 ## 当前入口（11 月 22 日实施）
 
-远端计划 865835c 已进入 B0-04。独立工作树 `dog-and-arm-b0-contact` 复用核对过的源、环境和原始门轨迹。本机为 6 GiB RTX 3060 Laptop。已从 AutoDL 原树恢复并实读正确的冻结权重，seed0、1,000 次更新、1,088,000 条在线转移；已建立专用 SSH 别名 autodl-dog-arm。20 ms 教师、变长参考、只读评估和动态门 WM 已实跑；初始 Actor 在两后端名义片段均 0/10，原配方 200 次接触更新后 Warp 仍 0/10。单列监督初始化在 native 通过前侧闭爪、前侧稳定抓持，各 20/20 开发；原 tracking 接触联合训练 200 次后该初始化在两个后端均为 0/10。固定目标教师 v1 原生 10/10、Warp 9/10，独立延长实采的背侧抓持 v2 两端均通过。同一冻结 Actor 延长后仍越角。详见分项失败与训练记录。每项结果见 [片段报告](reports/B0_CONTACT_SEGMENTS.md)，当日过程见 [日志](DAILY_WORK_LOG.md)。
+B0-03 seed0 仍冻结。B0-04 已有真实 20 ms 恒动作数据、独立动态门 WM、变长参考和只读 2 ms 物理判定。冻结的参考残差监督 Actor 在 Warp 3.16 和原生 3.3 各通过原始 v1 名义 5/10；按预登记延长1秒实采参考的五项也分别通过，两端名义达到 10/10，正在核对每项20个独立开发条件。该 Actor 在接触 H32 更新前取得上述成绩。原 tracking、门几何、峰值力与参考残差联训分开验收。执行工作树为 `dog-and-arm-b0-contact`，专用 SSH 别名为 `autodl-dog-arm`。[片段结果](reports/B0_CONTACT_SEGMENTS.md) · [统一初始化权重身份](results/b0/contact_s0_refres_joint_r1/initializer_identity.json) · [当日工作](DAILY_WORK_LOG.md)
 
 ## 865835c 发布时的入口与冻结交接
 
