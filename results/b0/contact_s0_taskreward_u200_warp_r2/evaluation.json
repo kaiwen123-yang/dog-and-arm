@@ -1,0 +1,112 @@
+{
+  "checkpoint": "results/b0/contact_s0_taskreward_r1/checkpoint_000200.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "/root/autodl-tmp/dog-and-arm-b0-contact/config/b0/contact_dev_v1.json",
+  "requested_dev": true,
+  "source": "results/raw_large/b0/contact_held_r1",
+  "passed": 0,
+  "evaluated": 10,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 2683,
+      "policy_calls": 269,
+      "final_door_deg": 0.0,
+      "failure": "reference_exhausted"
+    },
+    {
+      "side": "pull",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06979394785833812,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06979312743522492,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06979213358933983,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 805,
+      "policy_calls": 81,
+      "final_door_deg": 0.800669779228391,
+      "failure": "persistent_saturation:piper_gripper_joint1"
+    },
+    {
+      "side": "push",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 2683,
+      "policy_calls": 269,
+      "final_door_deg": 0.0,
+      "failure": "reference_exhausted"
+    },
+    {
+      "side": "push",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.36821840632187,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.36821904665210464,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.3682170989809741,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 3911,
+      "policy_calls": 392,
+      "final_door_deg": 0.0002179790189208502,
+      "failure": "reference_exhausted"
+    }
+  ]
+}

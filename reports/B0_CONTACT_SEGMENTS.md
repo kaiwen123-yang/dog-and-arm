@@ -34,3 +34,9 @@
 - 监督 Actor（3,000 次）在 native 3.3 前侧接近闭爪与稳定抓持均达到 nominal + 20/20，其他八个 nominal 失败。训练时随机换部分历史的单独变体在 native 仅前侧接近闭爪通过，开发 20/20。各项名义独立于 D01–D20。[普通监督逐案](../results/b0/contact_s0_bc_u3000_native33_r1/cases.csv) · [换历史逐案](../results/b0/contact_s0_bc_historyswap_u3000_native33_r1/cases.csv)
 - 从普通监督 Actor 继续原 tracking 200 次 H32 更新，收集 270,118 条有效在线转移。相同冻结清单上，native 和 Warp 均 0/10。native 前侧释放第 472 步撞面板，背侧释放在 3,911 步耗尽参考。Warp 对应失败为第 473 步撞板和第 2,064 步背侧站位偏差。两侧各三个在抓持中起步的名义案例均在第一个 2 ms 越过 6 N。前侧稳定抓持 Warp 为 15.449 N，背侧 14.094 N。[native](../results/b0/contact_s0_bc_joint_u200_native33_r2/cases.csv) · [Warp](../results/b0/contact_s0_bc_joint_u200_warp_r2/cases.csv)
 - 对相同 100 个物理子步重建的两侧抓持初态，按比例混合监督 Actor 与联合更新 50 的首动作。纯监督→纯联合命令的真实 20 ms 窗内合力峰值分别为前侧 2.007→7.018 N，背侧 1.410→13.199 N；两侧均在第一个 2 ms 超限，原 tracking 的真实步奖励仅由约 0.099999 降到 0.099965、0.099874（上界 0.1）。这个局部动作干预量化了软回报对已知硬失败的敏感性，解释范围限于这两个起点。[十个实测区间及 WM 对照](../results/b0/contact_s0_bc_joint_r1/entry_reward_u50.json)
+
+### 接触奖励的两项实测
+
+门角/相对几何/夹口奖励在真实后继和预测后继上使用同一公式。200 次更新取得 273,746 条有效在线转移，Warp 与 native 各 0/10。两侧接近闭爪在第 2,683 个物理步耗尽参考。Warp 的前侧释放第 805 步夹爪持续饱和，背侧释放第 3,911 步耗尽参考。各侧开门/抓持共六个入口在首个 2 ms 越过 6 N。几何奖励在独立稳定双指 H32 窗口上的 TCP RMSE 为 23.736 mm，普通监督初始化的联合 tracking 为 82.790 mm，相同窗口上的常速外推为 2.94 mm。[Warp](../results/b0/contact_s0_taskreward_u200_warp_r2/cases.csv) · [原生](../results/b0/contact_s0_taskreward_u200_native33_r2/cases.csv) · [WM](../results/b0/contact_s0_taskreward_r1/independent_wm_u200.csv)
+
+另在六条真实训练轨迹的抓持区间采集 12,288 个恒目标扰动，六条独立验证轨迹提供 4,608 个区间。两侧峰值力 MAE 为 0.945、0.665 N，在各 681、629 个真实超限区间漏报 66、29 个。监督初始化的原联合训练和几何奖励的第 50/200 个真实采集队列共有 214 个完整开门/持姿区间，其中 208 条超限，冻结力模型漏报 0、误报 5。在 B0-03 迁移大动作区的绝对力误差可超过 100 N。峰值力奖励只用于监督初始化附近的命名变体，最终判定仍逐物理子步测量。[受控扰动](../results/b0/contact_force_local_r1/report.json) · [在线分布对照](../results/b0/contact_force_local_r1/online_check.json)

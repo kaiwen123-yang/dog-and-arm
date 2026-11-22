@@ -85,10 +85,19 @@ class DoorImagination(MultiTaskWorldModelEnv):
                  + 1 / (1 + jaw.square()))
         return robot_reward + self.representation.dt * score
 
+    def force_adjusted_reward(self, reward, peak_force, frames):
+        # Use identical bounds and phase clock in real and imagined transitions.
+        weight = (1 + (peak_force / self.force_limit_n).pow(4)).reciprocal()
+        return torch.where(self.grip_frames[frames], reward * weight, reward)
+
     def _wm_step(self, rep_state, aux_state, action, last_action, sim_ctx):
         aux, rep, joints, term, tracking = super()._wm_step(
             rep_state, aux_state, action, last_action, sim_ctx)
-        return aux, rep, joints, term, self.contact_reward(tracking, rep, self.motion_times+1, sim_ctx)
+        reward = self.contact_reward(tracking, rep, self.motion_times+1, sim_ctx)
+        if self.force_head is not None:
+            force = self.force_head(rep_state, action, sim_ctx)
+            reward = self.force_adjusted_reward(reward, force, self.motion_times)
+        return aux, rep, joints, term, reward
 
     def sample_initial_states(self):
         data,i,t = self.replay_buffer.pick(1,self.num_envs)
@@ -178,6 +187,14 @@ class ContactRun:
             acts=bank.actions[bank.ids[name]]
             actions.append(torch.cat((acts,acts[-1:])))
         self.phases=torch.as_tensor(np.concatenate(phase),device=device,dtype=torch.long)
+        env.force_head = None
+        if 'peak_force_checkpoint' in cfg:
+            from .contact_force import PeakDoorForce
+            env.force_head = PeakDoorForce(mapping, device)
+            env.force_head.load_state_dict(torch.load(cfg['peak_force_checkpoint'], map_location=device, weights_only=True))
+            env.force_head.eval().requires_grad_(False)
+            env.force_limit_n = self.plant.cfg['grip_net_force_limit_n']
+            env.grip_frames = ((self.phases == PHASE_ID['open']) | (self.phases == PHASE_ID['hold'])).all(1)
         self.sides=torch.tensor(side,device=device,dtype=torch.long)
         self.eligible=eligible
         self.actions=torch.cat(actions)
@@ -219,7 +236,9 @@ class ContactRun:
             obs=build_actor_obs_td({'motion':goal},noisy)
             raw=self.actor.raw(obs)+torch.randn_like(prev)*self.cfg['collection_noise']*self.exploration_scale
             action=raw.clamp(-1,1)
-            evidence=plant.step_contact(action,side,self.phases[frames],record=raw_path is not None)
+            force_reward = self.policy.wm_env.force_head is not None
+            evidence=plant.step_contact(action,side,self.phases[frames],record=raw_path is not None,
+                                        measure_peak_force=force_reward)
             q1,v1=plant.data.qpos[:].clone(),plant.data.qvel[:].clone()
             ns=contact_state(q1,v1)
             valid=alive & evidence['valid_full_interval']
@@ -232,6 +251,8 @@ class ContactRun:
             reward=self.rep.compute_wm_reward_from_reference(rr,ns[:,:7],self.rep.joint_state(rr),
                                        action,prev,*bank.body_state(frames+1))
             reward=self.policy.wm_env.contact_reward(reward, rr, frames+1, ctx)
+            if force_reward:
+                reward = self.policy.wm_env.force_adjusted_reward(reward, evidence['peak_force_n'], frames)
             rows.append(TensorDict(dict(state=s,next_state=ns,prev_action=prev,action=action,sim_ctx=ctx,
                          history=hist.flatten(1),motion_time=frames,valid=valid,terminated=terminal,
                          truncated=torch.full_like(valid,k==self.steps-1),reward=reward),batch_size=(self.n,)))

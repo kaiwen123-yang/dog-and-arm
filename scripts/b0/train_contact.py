@@ -1,5 +1,6 @@
 """Train O1 contact-segment WM/Actor/Critic from a verified B0-03 lineage."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -62,6 +63,12 @@ def main():
                   initialization=dict(actor=str(cfg.get('calibrated_actor',cfg['actor_checkpoint'])),wm=str(cfg['wm_checkpoint']),resume=str(args.resume) if args.resume else None),
                   max_step_reward=run.policy.wm_env.max_step_reward,max_critic_value=run.policy._v_max,
                   validation_excluded=True,cohort_truncation=cfg['cohort_steps'],requested_endpoint=args.updates)
+    metadata['execution_source_sha256'] = {
+        str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in
+        [Path(__file__).resolve().relative_to(Path.cwd()), *sorted(Path('learning/b0').glob('contact*.py')), args.config]
+    }
+    if 'peak_force_checkpoint' in cfg:
+        metadata['peak_force_checkpoint_sha256'] = hashlib.sha256(Path(cfg['peak_force_checkpoint']).read_bytes()).hexdigest()
     (out/'actual_config.json').write_text(json.dumps(metadata,indent=2)+'\n')
     def save(count):
         state=dict(actor=run.actor.state_dict(),critic=run.critic.state_dict(),dyn=run.dyn.state_dict(),

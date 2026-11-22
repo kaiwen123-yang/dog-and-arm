@@ -1,0 +1,50 @@
+{
+  "seed": 20261122,
+  "updates": 2000,
+  "label": "maximum norm of signed door/robot resultant at 10 physical substeps",
+  "inputs": "current model representation, clipped action and side; open/hold phases only",
+  "train_groups": 6,
+  "validation_groups": 6,
+  "results": {
+    "train": {
+      "pull": {
+        "n": 6144,
+        "actual_over_6": 1885,
+        "pred_over_6": 1899,
+        "missed_over_6": 160,
+        "false_alarm": 174,
+        "mae_n": 0.9773661494255066,
+        "near_limit_n": 1699
+      },
+      "push": {
+        "n": 6144,
+        "actual_over_6": 1659,
+        "pred_over_6": 1713,
+        "missed_over_6": 76,
+        "false_alarm": 130,
+        "mae_n": 0.6245371103286743,
+        "near_limit_n": 1085
+      }
+    },
+    "validation": {
+      "pull": {
+        "n": 2304,
+        "actual_over_6": 681,
+        "pred_over_6": 692,
+        "missed_over_6": 66,
+        "false_alarm": 77,
+        "mae_n": 0.9449539184570312,
+        "near_limit_n": 647
+      },
+      "push": {
+        "n": 2304,
+        "actual_over_6": 629,
+        "pred_over_6": 643,
+        "missed_over_6": 29,
+        "false_alarm": 43,
+        "mae_n": 0.665496826171875,
+        "near_limit_n": 412
+      }
+    }
+  }
+}

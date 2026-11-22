@@ -1,0 +1,82 @@
+{
+  "episode": "pull_5_train",
+  "side": "pull",
+  "segment": "release_retreat",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 12070,
+  "reference_phase_end_substep": 15975,
+  "reference_last_substep": 15975,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02151982681890842,
+    "grasp_error_m": 0.0027336999307893016,
+    "supported": true,
+    "finger_n": [
+      3.3039030683115254,
+      2.411418752894611
+    ],
+    "door_force_sum_n": 6.019443229512996,
+    "prefix_start_target_penetration_m": 0.001014315927534806,
+    "nominal_prefix_start_target_penetration_m": 0.001014315927534806,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "persistent_saturation:piper_gripper_joint1",
+    "phase": "release",
+    "first_failure_substep": 815,
+    "interval_start_s": 1.6280000000000001,
+    "interval_end_s": 1.6300000000000001,
+    "door_deg": 0.8568068867612008,
+    "finger_load_n": [
+      5.922729092697341,
+      3.94624263723032
+    ],
+    "wheel_load_n": [
+      123.67529733753369,
+      101.96251577506037,
+      109.6034028887655,
+      91.7528691413787
+    ],
+    "door_net_force_n": 2.3419668920311447,
+    "door_contact_sum_n": 9.984185625006191,
+    "tcp_handle_error_m": 0.0030511180746598467,
+    "min_arm_margin_rad": 0.6253037128034395
+  },
+  "events": [],
+  "policy_calls": 82,
+  "physics_steps": 815,
+  "final_door_deg": 0.8538483677448963,
+  "final_partial_substeps": 5,
+  "longest_ready_steps": {
+    "release": 0
+  },
+  "last_physical_observation": {
+    "phase": "release",
+    "door_deg": 0.8568068867612008,
+    "width_m": 0.021342990451159678,
+    "finger_n": [
+      5.922729092697341,
+      3.94624263723032
+    ],
+    "net_door_force_n": 2.3419668920311447,
+    "tcp_handle_error_m": 0.0030511180746598467,
+    "station_error_m": 0.0011066295910836614,
+    "tilt_deg": 0.20253080186066252,
+    "speed_m_s": 0.0006454188512959585,
+    "yaw_rate_deg_s": -0.07397367739129712,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 75
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_taskreward_u200_native33_r2/pull/release_retreat/nominal"
+}

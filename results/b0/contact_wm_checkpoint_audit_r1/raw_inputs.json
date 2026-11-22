@@ -1,0 +1,252 @@
+{
+  "method": "Independently computed SHA256 of every input used by ContactEpisode.read in both the original WM pretraining validation copies and the new held-episode scoring roots. Verified different qpos, applied actions, perturbations and IDs from each matching training episode.",
+  "physics_dt_s": 0.002,
+  "policy_dt_s": 0.02,
+  "source_code": "learning/b0/contact_replay.py",
+  "window_rule": "Within one episode, every horizon interval has exactly 10 measured physics substeps; mode is assigned at the first interval only.",
+  "train_group_count": 8,
+  "validation_group_count": 8,
+  "validation_groups": [
+    {
+      "group": "pull_0_validation",
+      "side": "pull",
+      "wm_source": "results/raw_large/b0/contact_wm_input_r1/pull_0_validation",
+      "scoring_source": "results/raw_large/b0/contact_held_r1/pull_0_validation",
+      "matched_train": "results/raw_large/b0/contact_held_r1/pull_0_train",
+      "initial_perturbation": {
+        "dx": 0.002,
+        "dy": -0.001,
+        "yaw": 0.2
+      },
+      "success": false,
+      "failure": "door_force_limit",
+      "n_full_steps": 868,
+      "last_interval_substeps": 1,
+      "terminal_in_metric": false,
+      "files_sha256": {
+        "metadata.json": "1cea5d68630608f494ae932cd1438f40ab383c35086683b59d18d057b9c6d56e",
+        "config.json": "7bbdb21f72227de6feeb87a1927c25f9ef9c93225258c120fb605320b4e8dfe6",
+        "qpos.npy": "ad273f6b97214ff31c4d208ad41d00309727fdb2dcb00c1db1d934b1ea7a4ea4",
+        "qvel.npy": "0e6e9fbb4c388a28bc50919500cb76eedf1185cdcf95a4735fc706152de94066",
+        "action_clipped.npy": "6d6ba4ea7212ebce465813b7125f655784386abb9bcc7135a16135e318d33d16",
+        "valid_full_interval.npy": "e83195f99e126590e95700bb4ddae0a6b4eb945dc3b55e811db107f4db47c797",
+        "physics_step.npy": "74da4cb706e7e94442a3180ecda963c298f9b79b793ae8c57a4c2f389007d655",
+        "terminated.npy": "89a76acae96e91935bac7259b8f68ad9884d78482da4c7b5c016eecf1697e85a",
+        "truncated.npy": "a8f90b600b2f7dace51130470d730f807e8806f8acf71573df8cb92caf2246e8",
+        "substeps/finger_load_N.npy": "c5e8676c6e8e37f5039693a137c8797f83161818d84dc6165c42987f22536bd7",
+        "substeps/phase.npy": "4b1e91a44e53a49ea710e5926c31f15ad643858c07e8904a6afc31925cd80178"
+      }
+    },
+    {
+      "group": "pull_15_validation",
+      "side": "pull",
+      "wm_source": "results/raw_large/b0/contact_wm_input_r1/pull_15_validation",
+      "scoring_source": "results/raw_large/b0/contact_held_r1/pull_15_validation",
+      "matched_train": "results/raw_large/b0/contact_held_r1/pull_15_train",
+      "initial_perturbation": {
+        "dx": 0.002,
+        "dy": -0.001,
+        "yaw": 0.2
+      },
+      "success": true,
+      "failure": null,
+      "n_full_steps": 1867,
+      "last_interval_substeps": 2,
+      "terminal_in_metric": false,
+      "files_sha256": {
+        "metadata.json": "fc6278e50f0da28b5c6c653e7c9f515bd09a953bf7c41a5abaad3dfad8d112d6",
+        "config.json": "8b34257db2ec1cef2c1778453ca37dfc1a38a9246b76ddae088808319b64fd0c",
+        "qpos.npy": "35d168780ba28ccf228ab7f5fd1ebbcd67b10aa8d8d23724092f9e5b3fb22059",
+        "qvel.npy": "ed7e233a1bdbbc2050267d0e79d99957b0d900f2c136089d4bd1d2f936921458",
+        "action_clipped.npy": "07c75bccc9038c62f7ec81f580f42b4e38fa7ea434c525e08aa5868c2996cbce",
+        "valid_full_interval.npy": "270549154217aef6ff43ff682e00e3e4ce1aa389554eb9200783734a14b2b876",
+        "physics_step.npy": "5fdfef00421e9f541ee6b5f8fe75b582c9b662ca3ec570a08486dc043958e15c",
+        "terminated.npy": "b8a9c834eb61ae820470cddeac96310f04241e9bdf4472f81e5a93ba25110d75",
+        "truncated.npy": "3fc689eefbb8174f8927815d489431317992e31a9845741c36ab062c9a6dc7ec",
+        "substeps/finger_load_N.npy": "b253fd8a226ab4ebecb05c3e87011dbb52f099d79248e5296dc44537d90a3e9e",
+        "substeps/phase.npy": "98f56dc01d868142f70adcf90aa5762eb20f9b11edf5067ea8290343d161ac0f"
+      }
+    },
+    {
+      "group": "pull_5_validation",
+      "side": "pull",
+      "wm_source": "results/raw_large/b0/contact_wm_input_r1/pull_5_validation",
+      "scoring_source": "results/raw_large/b0/contact_held_r1/pull_5_validation",
+      "matched_train": "results/raw_large/b0/contact_held_r1/pull_5_train",
+      "initial_perturbation": {
+        "dx": 0.002,
+        "dy": -0.001,
+        "yaw": 0.2
+      },
+      "success": true,
+      "failure": null,
+      "n_full_steps": 1589,
+      "last_interval_substeps": 5,
+      "terminal_in_metric": false,
+      "files_sha256": {
+        "metadata.json": "5fc7dc806b8d0837bc49ac65f567ee69c6b115e5ca2846d255910bf292bba2f5",
+        "config.json": "c58b4ddf115b7646c3f23a4fee6764866ad741aba375b661814495322f00ba5a",
+        "qpos.npy": "b37a667e96b04d435bc4316eb759751f10f6e17bfd4d3b0396b31a355071c019",
+        "qvel.npy": "04bec970bb902c038db659b66d4a980263a9d816088d6c147694e84104b3bcbf",
+        "action_clipped.npy": "4732fd0c7032964b7f4db0fb054ba4cbe7ece47eae58bf8611d4c699f3c48201",
+        "valid_full_interval.npy": "7f9e548acae235058f994977167b429e4fd4461db8d81f85f6fcdea8a877af72",
+        "physics_step.npy": "fbb5f1f65492483dba06342014871a040d13f0bafda0abf7b46dd5abbd1f9ef4",
+        "terminated.npy": "33993225f205e3fa5c88d8dfc8850cfb226b71e1631de368b0473af9f1262e19",
+        "truncated.npy": "4bd256fc85a862ae35f3a08226e09eb6e5f30e429d3f6e3351d7ef1ac6b7f963",
+        "substeps/finger_load_N.npy": "f24f2ab490654eb60c1e2e28071df008ba4f39adb099eb5e820a0b88844687b3",
+        "substeps/phase.npy": "4bdd23be6621e94267d0ddb9bf8c71aa6575dfaf9a2dc3e56a5231eee497efb1"
+      }
+    },
+    {
+      "group": "pull_5_validation_drop",
+      "side": "pull",
+      "wm_source": "results/raw_large/b0/contact_wm_input_r1/pull_5_validation_drop",
+      "scoring_source": "results/raw_large/b0/contact_held_r1/pull_5_validation_drop",
+      "matched_train": "results/raw_large/b0/contact_held_r1/pull_5_train_drop",
+      "initial_perturbation": {
+        "dx": 0.001,
+        "dy": 0.001,
+        "yaw": -0.15
+      },
+      "success": false,
+      "failure": "lost_grip",
+      "n_full_steps": 1055,
+      "last_interval_substeps": 5,
+      "terminal_in_metric": false,
+      "files_sha256": {
+        "metadata.json": "843b8ae87e487e5cb740bcfe916ecbc3e300968b1ed8a4580423476142f19c27",
+        "config.json": "0d869f0523d9b07ba307c70427d792c286a066f1c4b396c84afd11c38929819b",
+        "qpos.npy": "f0a03715d1cc40157094b7c5af54fc44e1ea00d488986d384e9fa0a35569487b",
+        "qvel.npy": "5c6426838d0ab85eadcd0d80f13b960fef2a7b5b2d42e6b006d35af784c3c671",
+        "action_clipped.npy": "b35c6a868ae23176e10e9e15a84defd1de430cc2eb7e70c109e26deca144c51e",
+        "valid_full_interval.npy": "5160a8c278ab8399bae932600d40ea38923afc1b7f1ca2200124d4a89646c23d",
+        "physics_step.npy": "dec8d3ecd3d040ed759a9d4a6f13213537a06f874a675d88a46cbc984714cb30",
+        "terminated.npy": "d9cf2334db7bdfc9f8ec1e8132c2b0bdeb3388a4d52d115a60d3f27120a528ea",
+        "truncated.npy": "131eeeeaeee60401fcdba77ebdc0986ab1a81d74206a0de8c08708dab497eb9c",
+        "substeps/finger_load_N.npy": "1c319d1e7e35772d3cfb94a5d629331dfe74cd3d910672e311fadf3002df2b31",
+        "substeps/phase.npy": "e07a8600a268315793bcd5e8c914913cc89b06c8c65dd91dcf3c2be472062364"
+      }
+    },
+    {
+      "group": "push_0_validation",
+      "side": "push",
+      "wm_source": "results/raw_large/b0/contact_wm_input_r1/push_0_validation",
+      "scoring_source": "results/raw_large/b0/contact_held_r1/push_0_validation",
+      "matched_train": "results/raw_large/b0/contact_held_r1/push_0_train",
+      "initial_perturbation": {
+        "dx": 0.002,
+        "dy": -0.001,
+        "yaw": 0.2
+      },
+      "success": false,
+      "failure": "door_force_limit",
+      "n_full_steps": 866,
+      "last_interval_substeps": 1,
+      "terminal_in_metric": false,
+      "files_sha256": {
+        "metadata.json": "2907fb5641511fb625ac35033e167397bdf4edf5590687e467b29e0ed4718437",
+        "config.json": "bb12b7ac652381c76e8e524ffa39f38049390c57cdfed6458ad56f4a2b0a6bc9",
+        "qpos.npy": "923721f4d2cccb49e54fccc555a85e70c1a2c5c39c94198bafa9e8c0fed0f0e3",
+        "qvel.npy": "4a8d47624f196d1460876a0898b473c5fec38f7f2e689b25c90b38ad5d03c8eb",
+        "action_clipped.npy": "5da2bb4947175e647e3b821be7ef67e4619b25edde48583b221bddf78769ab63",
+        "valid_full_interval.npy": "69958d806aca673d7c06f381f8c23db5cb13b5ef8084ab4375da87e4cab828c5",
+        "physics_step.npy": "777c1d194058d24ebe97283ee062362d41e8eda10872950ad435ca3125d87ef6",
+        "terminated.npy": "898d13cfa69192b816eaeb3d764eac64e5732ba1448da3b1e5408de811d630b2",
+        "truncated.npy": "3c0d08552e3ca44c7284e429b6aec74fc9b1f47cf9ae8f90d27d67cc0a37448a",
+        "substeps/finger_load_N.npy": "d84e173a0482bed439000373799c1576a797ed5d0b74a2f440e4085c50a1da52",
+        "substeps/phase.npy": "d366dea2c0d5a63ddf2c143f7479beef4f61a591a1112557144b01d2c1eb719e"
+      }
+    },
+    {
+      "group": "push_15_validation",
+      "side": "push",
+      "wm_source": "results/raw_large/b0/contact_wm_input_r1/push_15_validation",
+      "scoring_source": "results/raw_large/b0/contact_held_r1/push_15_validation",
+      "matched_train": "results/raw_large/b0/contact_held_r1/push_15_train",
+      "initial_perturbation": {
+        "dx": 0.002,
+        "dy": -0.001,
+        "yaw": 0.2
+      },
+      "success": true,
+      "failure": null,
+      "n_full_steps": 1857,
+      "last_interval_substeps": 2,
+      "terminal_in_metric": false,
+      "files_sha256": {
+        "metadata.json": "31a65d1e12a8e94deaca35f8acdcd1205e35ed94a7757d563be55992e6e281ec",
+        "config.json": "3b2f7acd43e58142e35558b8abb483eeed5f236489d3e6dea860451f949eea43",
+        "qpos.npy": "1cae8cf2424206ca9de758ccd9e2a616bfc9239dbace690872af1e611182e5e2",
+        "qvel.npy": "fa051c08e36563c371f9b401805829a3a17f835a22e75a72425982b6ad08e02e",
+        "action_clipped.npy": "a5559507a3e60de2aaad08181dbfc1587f7a0a8b6579a17965c232d214c0142a",
+        "valid_full_interval.npy": "97e695dc334d07801d213edb9f785b2003dce7430d85b80156993f9f71ee4a34",
+        "physics_step.npy": "32c2776e0fe5df8ac161e90e7d4fb225b24816083ea7b97c0dc816a5f7e2829f",
+        "terminated.npy": "b183adc1e550a200d4205261deae02c70a172457af9ae8f6ebc353c70d5cdc10",
+        "truncated.npy": "fef637c4b1f41471134753e3010da15ff78716e9f6a3aedc3363d705756fc16a",
+        "substeps/finger_load_N.npy": "b0b24ec7ccae4958e9b00c8f98c2990e55db7787ef685d3ad4663bf31d8d8391",
+        "substeps/phase.npy": "9e6aa7ff68fe1e36e4e45e5f920fab2657f71568f59f653f55cb69f6608b0412"
+      }
+    },
+    {
+      "group": "push_5_validation",
+      "side": "push",
+      "wm_source": "results/raw_large/b0/contact_wm_input_r1/push_5_validation",
+      "scoring_source": "results/raw_large/b0/contact_held_r1/push_5_validation",
+      "matched_train": "results/raw_large/b0/contact_held_r1/push_5_train",
+      "initial_perturbation": {
+        "dx": 0.002,
+        "dy": -0.001,
+        "yaw": 0.2
+      },
+      "success": true,
+      "failure": null,
+      "n_full_steps": 1579,
+      "last_interval_substeps": 6,
+      "terminal_in_metric": false,
+      "files_sha256": {
+        "metadata.json": "923c51032ec7b682962ca08e73bc806cb57c84114b50f4dc1fe0407f6e9a2632",
+        "config.json": "1a5dea9eb7de42312d8ccf6108194ee35a57b97217da4c4e8155a9644ae46ea4",
+        "qpos.npy": "df636fda917abf59b80b39d3d29ddeaa5c088480226c1f41a2d1bcb0d727bc36",
+        "qvel.npy": "9508d255bb39d8744344445f48a9b166b973b3bdc444265b2214cc45767644f4",
+        "action_clipped.npy": "09ba42c28e2e641299543a6372bc59dbf15e75d1f7db11563a3a5bb10a1ddec2",
+        "valid_full_interval.npy": "3bf6e21818275b08a25373e99416022d1c4598ba600506a7a3933d0b4c643690",
+        "physics_step.npy": "59edb5bfd652018a040bdc4a7ed32090b052e2a38ae6a3ea1070af83f2a363a1",
+        "terminated.npy": "eb16a9aff10d87219234ec92243aa57bf921118abcc8b2f63b42ee655fcbfaee",
+        "truncated.npy": "3708fd7249f4fef811f0ba542cbebd4a5a4f5be9ae176bb62fd064539e9a78be",
+        "substeps/finger_load_N.npy": "8a316c2aed108abe349d2190e4b1a027b2f6670f465c1ad996ac47ef7eb5aa81",
+        "substeps/phase.npy": "10f6ff0f6be497cd4dea3d2653c7ee448182c34621a555038d69d2ce2876904f"
+      }
+    },
+    {
+      "group": "push_5_validation_drop",
+      "side": "push",
+      "wm_source": "results/raw_large/b0/contact_wm_input_r1/push_5_validation_drop",
+      "scoring_source": "results/raw_large/b0/contact_held_r1/push_5_validation_drop",
+      "matched_train": "results/raw_large/b0/contact_held_r1/push_5_train_drop",
+      "initial_perturbation": {
+        "dx": 0.001,
+        "dy": 0.001,
+        "yaw": -0.15
+      },
+      "success": false,
+      "failure": "lost_grip",
+      "n_full_steps": 1045,
+      "last_interval_substeps": 5,
+      "terminal_in_metric": false,
+      "files_sha256": {
+        "metadata.json": "a108fdad9b33229f75ff1d9dbce0a3aecc6c9f2e727cb4e087dbeb8521c56cce",
+        "config.json": "753ac2a4ba7a8c0461fb3ecb479d4a093384d33e1740833ae5fbb6cf20b381ef",
+        "qpos.npy": "c8f94d25c2626173e961e123d4bfb7e9e46c875bf8e8008bac667614c343c918",
+        "qvel.npy": "b039267a3966ac57202edcf5663f14ba37bc3296b38eb260876e3e5751b454c0",
+        "action_clipped.npy": "93df27453c2bdd5ee7880e8a784d3dd993be0a33b09956373216edc1eb009a17",
+        "valid_full_interval.npy": "4cf5dedd17e6dd5458d7c9a3daf207d243b44f9bec499c5a998b35b95a7add1b",
+        "physics_step.npy": "6e60612d14c621810189e09e1cba942e8af8a4f2453a5c4b0850fbfe0a86b286",
+        "terminated.npy": "6141bbbd01b89cc67189ced257cf891ff8e8502030af0cfc7ad31c3c1fe844b1",
+        "truncated.npy": "a79d9d207e89f4ba30d6c78da4662fc837afd72c7b498cd5cb4a545e4e67515a",
+        "substeps/finger_load_N.npy": "b2a39828abf998c1b43f7579ecc51a8c53baa5b6a91314c861844085e04ff92a",
+        "substeps/phase.npy": "44f60a3436ab61375e93560538cee0c611757755be41621a1a9a9af638f23b2f"
+      }
+    }
+  ],
+  "excluded_data": "Later successful zero-degree grip variants, completed drop terminal intervals, online policy rollouts, H evaluation cases and measured reference margin v2 are outside this frozen eight-episode comparison."
+}

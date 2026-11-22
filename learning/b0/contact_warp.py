@@ -125,7 +125,7 @@ class ContactPlant(ResearchPlant):
                 data.cvel, base._force, self.cfg['contact_threshold_n'], self.metrics_wp])
         current.wait_stream(base._torch_stream)
 
-    def step_contact(self, actions, side_bits, phase_ids, record=False):
+    def step_contact(self, actions, side_bits, phase_ids, record=False, measure_peak_force=False):
         if actions.shape != (self.count, 23):
             raise ValueError('Expected one clipped action per world with 23 channels')
         if side_bits.shape != (self.count,) or phase_ids.shape not in ((self.count,), (self.count, 10)):
@@ -139,6 +139,7 @@ class ContactPlant(ResearchPlant):
             raise ValueError('step_contact expects finite post-clamp policy commands')
         target = (actions * self.scale + self.offset) * self.finger_factor
         first = torch.zeros(self.count, device=self.device, dtype=torch.int32)
+        peak_force = torch.zeros(self.count, device=self.device) if measure_peak_force else None
         reason = torch.zeros_like(first)
         overflow = torch.zeros_like(first)
         rod_id = self.rod_ids[side_bits.long()]
@@ -185,6 +186,8 @@ class ContactPlant(ResearchPlant):
                 hit = (first == 0) & failed
                 reason = torch.where(hit, code, reason)
                 first = torch.where(hit, substep+1, first)
+            if measure_peak_force:
+                peak_force = torch.maximum(peak_force, force_norm)
             if record:
                 fields = dict(finger_load_N=m[:,4:6], wheel_load_N=m[:,:4], door_robot_force_N=m[:,6:9],
                               door_force_norm_sum_N=m[:,9], unexpected_contact_N=m[:,10], wheel_slip_m_s=m[:,11],
@@ -195,6 +198,8 @@ class ContactPlant(ResearchPlant):
                     records.setdefault(key, []).append(value.clone())
         result = dict(first_fail_substep=first, reason=reason, overflow=overflow,
                       valid_full_interval=finite, physics_steps=torch.full_like(first,10))
+        if measure_peak_force:
+            result['peak_force_n'] = peak_force
         if record:
             result['substeps'] = {key:torch.stack(values, 1) for key,values in records.items()}
         return result

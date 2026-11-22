@@ -32,7 +32,7 @@
 | 2026-11-20 | P4、P5、P6 连续单门；连接板及前移；前移版测试后暂停 | 历史回填 |
 | 2026-11-21 | 完成前移版推拉清单；B0 来源/数据/后端与 seed0 无接触学习 | 历史回填 |
 | 2026-11-21 | 建立本日志、编写 B0 后续计划与启动提示词 | 本轮文档记录，未启动新训练 |
-| 2026-11-22 | 接续核对计划与日志，完成发布准备 | 本轮跨日文档记录，未启动新训练 |
+| 2026-11-22 | 发布准备；从冻结 B0-03 转入真实接触采集、动态门模型、联合训练与双后端验收 | 发布记录及当日实际执行，见下方分时段条目 |
 
 ## 2026-11-15｜初始化与开工包（历史回填）
 
@@ -534,3 +534,11 @@ bash scripts/b0/env.sh python -u scripts/b0/train.py --seed 0 --run free_s0_clou
 - `--dev --video --resume` 只复用有逐案结果、原始输入与动作可对齐的既有案例。评测脚本新加 resume 后一处函数内 directory 错误使联合模型两端的第一个 trial 中断，原日志和 spec 保留。修正后重新启动两端，重新检查逐案数组与视频。普通监督 native 2/10 nominal，通过的前侧闭爪/抓持各 20/20 开发，50 例总计 110,760 个评测子步。historyswap native 1/10，前侧闭爪 20/20；对应 30 例共 72,041 步。原普通监督中断前已完成的 native 名义与 12 个前侧闭爪开发案、Warp 两名义与 15 个前侧抓持开发案保留。清单 SHA256 c1ddf0486613dfc6786fd695c1f785f63bdc9fb2b8d00c1a10548574c998b525，两监督权重的首八位分别 b667294b、24e11ac2。原生与 Warp 成绩单独统计。
 - contact_s0_bc_joint_r1 完成 200 次 O1 联训，270,118 条有效转移。通过 `scripts/b0/eval_contact_segments.py --checkpoint results/b0/contact_s0_bc_joint_r1/checkpoint_000200.pt --dev --video` 运行 native 与 Warp。两者名义均 0/10；两侧各三个在双指抓持中起步的任务均首个物理步超 6 N，失败未进入开发项。两端完整表在 `contact_s0_bc_joint_u200_{native33,warp}_r2`。继续用原奖励与门几何奖励分开判断是否保留监督初始化的闭环能力。
 - 为量化首步超力与回报的关系，云端运行 `python -m scripts.b0.compare_contact_entry_reward --initial results/b0/contact_s0_bc_effort32_r1/actor_003000.pt --updated results/b0/contact_s0_bc_joint_r1/checkpoint_000050.pt --output results/b0/contact_s0_bc_joint_r1/entry_reward_u50.json`。每一端各 5 个比例，10 个真实 2 ms 子步都积分以保留奖励后继及最早越界步。前/背从 2.007/1.410 N 升至 7.018/13.199 N，真实 tracking 回报下降仅 0.000034/0.000125。局部回报对真实超力不敏感已证；是否能在想象中预测超力还需检验。启动 `python -m scripts.b0.fit_contact_force --run contact_force_local_r1`，训练和验证独立来源，复用相同初态附近真实恒动作扰动，另以原在线 Actor cohort 检验可迁移性。此诊断尚无政策通过结论。
+
+### 13:31–13:34 北京时间｜实测夹持合力的可预测性及针对性联训
+
+- 49a199dc7acde606d3457a796a4fec5ee3774884 已在 GitHub main 回读，内含教师时间窗对照和两后端已收齐的联合训练评分。普通监督 u3000 的 Warp 清单也已收齐，前侧 3 s 抓持唯一名义通过，独立 D01–D20 为 20/20；其他 9 项名义失败。本后端共跑 30 例、56,743 个计分子步、5,678 次实时网络动作，见 contact_s0_bc_u3000_warp_r1。
+- 为得到可微但独立于硬裁判的力估计，云端 128 worlds 对两侧各 0/5/15° 的独立 train/validation episode 采样 open/hold 全长区间。每条从 100 子步真实历史恢复，在实际教师动作附近施加随机臂/夹口偏移，保存施加的动作、入口几何、10 个 2 ms 真合力和参考来源（六组训练、六组验证）。命令为 `bash scripts/b0/env.sh python -m scripts.b0.fit_contact_force --run contact_force_local_r1`，12,288 条训练、4,608 条独立来源验证，2000 次固定监督更新。验证前/背 2,304 条各自 MAE 0.945/0.665 N，实超 6 N 的 681/629 条中漏判 66/29，误报 77/43。估计器只能支持软优化，裁判仍使用真实合力。
+- 不用新扰动拟合结果替代策略实际分布。单列 `python -m scripts.b0.check_contact_force --weights results/b0/contact_force_local_r1/force_002000.pt --train-config results/b0/contact_s0_bc_joint_r1/actual_config.json --cohorts results/raw_large/b0/{contact_s0_bc_joint_r1,contact_s0_taskreward_r1,contact_s0_tracking_r2}/cohort_{000050,000200} --output results/b0/contact_force_local_r1/online_check.json`。两个监督初始化联训配方 50/200 的原始在线区间共 214 条，其中真实超力 208 条，漏报 0、误报 5；远离标定动作的初始 tracking 队列虽然也都识别超限，其幅值 MAE 高达约 110–420 N，严重超出局部回归适用域。
+- 基于上述结果，新命名 `bash scripts/b0/env.sh python -m scripts.b0.train_contact --config config/b0/contact_peak_force.yaml --run contact_s0_peakforce_r1 --updates 200`。沿用同一监督初始化、WM、H32 梯度与几何任务奖励，仅在参考十个子步全属 open/hold 时乘以 1/(1+(F/6N)^4)。物理 F 取十子步合力范数最大值，想象 F 用冻结的当前预测状态＋当前动作回归，不查询真实未来。原价值上界保持 0.16/(1−0.99)=16。代码摘要和模型校验和随本次运行写入 actual_config.json。第 24 次后已实际写入 37,756 条有效转移，等待固定节点与独立裁判。
+- 门角/几何奖励变体 contact_s0_taskreward_r1 已完成 200 次 Actor 更新、273,746 条有效转移，原生 3.3 名义 0/10。八个原始 WM 验证 episode 的 1/7/32 步分母为 10,726/10,678/10,478；失抓/滑动为 14/2/0（H32 无样本）。2,422 个稳定双指 H32 窗口的 TCP RMSE：常速度外推 2.94 mm，预训练 23.22、tracking u200 30.03、监督初始化联合 tracking u200 82.79、几何奖励 u200 23.74 mm。与独立物理成绩并列，等待原 tracking u1000 同一评分。
