@@ -1,0 +1,7 @@
+base: config/b0/contact_servo_cloud.yaml
+calibrated_actor: results/b0/contact_s0_bc_effort32_r1/actor_003000.pt
+# A 32-fold decoder output unit requires smaller updates to retain the
+# physically measured action fit. Dynamics and critic keep the O1 learning rates.
+calibrated_actor_lr: 0.00000625
+freeze_actor_statistics: true
+hypothesis: A supervised contact actor warm start followed by H32 tracking can retain a physically accurate entry command using fixed sensor statistics and the original collection noise in physical units.

@@ -4,7 +4,7 @@
 
 ## 当前入口（11 月 22 日实施）
 
-远端计划 865835c 已进入 B0-04。独立工作树 `dog-and-arm-b0-contact` 复用核对过的源、环境和原始门轨迹。本机为 6 GiB RTX 3060 Laptop。已从 AutoDL 原树恢复并实读正确的冻结权重，seed0、1,000 次更新、1,088,000 条在线转移；已建立专用 SSH 别名 autodl-dog-arm。20 ms 教师、变长参考、只读评估和动态门 WM 已实跑；初始 Actor 在两后端名义片段均 0/10。详见分项失败与训练记录。每项结果见 [片段报告](reports/B0_CONTACT_SEGMENTS.md)，当日过程见 [日志](DAILY_WORK_LOG.md)。
+远端计划 865835c 已进入 B0-04。独立工作树 `dog-and-arm-b0-contact` 复用核对过的源、环境和原始门轨迹。本机为 6 GiB RTX 3060 Laptop。已从 AutoDL 原树恢复并实读正确的冻结权重，seed0、1,000 次更新、1,088,000 条在线转移；已建立专用 SSH 别名 autodl-dog-arm。20 ms 教师、变长参考、只读评估和动态门 WM 已实跑；初始 Actor 在两后端名义片段均 0/10，原配方 200 次接触更新后 Warp 仍 0/10。单列监督初始化已在 Warp 完成前侧 3 s 抓持，正在做逐案验收。详见分项失败与训练记录。每项结果见 [片段报告](reports/B0_CONTACT_SEGMENTS.md)，当日过程见 [日志](DAILY_WORK_LOG.md)。
 
 ## 865835c 发布时的入口与冻结交接
 

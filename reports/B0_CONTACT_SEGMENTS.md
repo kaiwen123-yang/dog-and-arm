@@ -21,3 +21,9 @@
 ## 04-C 迁移初值的真实失败
 
 冻结 B0-03 Actor 在十项接触 nominal 上 native 3.3 为 **0/10**，Warp 3.16 为 **0/10**。两侧各三个抓持/开门起点第一步即越过 6 N 门槛，native 前拉 51.091 N、背推 33.140 N。同一物理初态仅将教师六臂目标替换为 Actor 输出也触发首步超力（67.024/49.748 N），纯教师为 1.173/1.120 N。已证实入口臂命令可单独造成超力。15° 教师的部分臂通道离 home 达 62–72 个原网络标准幅度。正在按原 tracking 配方训练，以及单列有物理依据的 Actor 初始化诊断。各后端成绩与完整失败影像分开保存。[native 逐项](../results/b0/contact_u0_native33_r1/cases.csv) · [Warp 逐项](../results/b0/contact_u0_warp316_r1/cases.csv) · [动作分块](../results/b0/contact_u0_native33_r1/entry_action_blocks.json)
+
+### 200 次 H32 更新与接触动作的初始化
+
+原配方在 128 worlds 中完成 200 次 Actor 更新，127,122 条有效在线转移。200 次均在 WM 冻结时改变 Actor 权重，实际使用的七步窗有 75% 来自在线物理。更新 50、200 的 Warp 真实名义成绩均为 0/10。200 时，新 WM 在相同八个验证 episode 上的 1/7/32 步 TCP RMSE 为 1.554/21.242/62.205 mm，稳定双指 H32 为 30.026 mm。[训练记录](../results/b0/contact_s0_tracking_r2/outcome.json) · [名义结果](../results/b0/contact_s0_tracking_u200_warp_r2/cases.csv) · [同集模型误差](../results/b0/contact_s0_tracking_r2/independent_wm_u200.csv)
+
+为检验初始臂姿偏差的作用，单列 arm/jaw 网络输出单位 32 倍的 Actor 教师监督初始化。六个独立 episode 的动作误差在固定训练参考下由六轴 0.89948 降至 0.00756 rad、夹口 32.65 降至 0.934 mm。这个 Actor 初次在 Warp 完成 3 s 前拉稳定抓持，在原生完成前拉接近闭爪与 3 s 抓持。逐案评测与该初始化后的 O1 更新分开登记。[监督初始化](../results/b0/contact_s0_bc_effort32_r1/actual_config.json) · [独立验证](../results/b0/contact_s0_bc_effort32_r1/final_validation.json)

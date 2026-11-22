@@ -1,0 +1,89 @@
+{
+  "source_trajectory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_bc_u3000_warp_r1/pull/approach_grasp/nominal",
+  "reference": "results/raw_large/b0/contact_held_r1/pull_0_train_grip",
+  "checkpoint": "results/b0/contact_s0_bc_effort32_r1/actor_003000.pt",
+  "failed": {
+    "reason": "reference_exhausted",
+    "phase": "approach_arm",
+    "physics_steps": 2683
+  },
+  "frames": 259,
+  "first_local_policy_index": 10,
+  "constant_inputs": "same weights, fixed-reference absolute frame and measured current root for goal construction in all four interventions",
+  "interpretation": "one-step re-evaluation on measured failure; swapped permitted sensors create counterfactual inputs and are never used for scored task execution",
+  "measurements": {
+    "measured_both": {
+      "leg_rad": {
+        "rmse": 0.00038892601151019335,
+        "max_abs": 0.001005727332085371
+      },
+      "wheel_rad_s": {
+        "rmse": 0.013276546262204647,
+        "max_abs": 0.038414593786001205
+      },
+      "arm_rad": {
+        "rmse": 0.4368460774421692,
+        "max_abs": 1.3127189874649048
+      },
+      "jaw_m": {
+        "rmse": 0.03689687326550484,
+        "max_abs": 0.0764898881316185
+      },
+      "recomputed_vs_logged_clipped_max_abs": 4.172325134277344e-07
+    },
+    "teacher_proprio_only": {
+      "leg_rad": {
+        "rmse": 0.0005973943043500185,
+        "max_abs": 0.001923403120599687
+      },
+      "wheel_rad_s": {
+        "rmse": 0.015509311109781265,
+        "max_abs": 0.03099476546049118
+      },
+      "arm_rad": {
+        "rmse": 0.1510656774044037,
+        "max_abs": 0.47944948077201843
+      },
+      "jaw_m": {
+        "rmse": 0.03386441245675087,
+        "max_abs": 0.0741322860121727
+      }
+    },
+    "teacher_previous_only": {
+      "leg_rad": {
+        "rmse": 0.0005407959688454866,
+        "max_abs": 0.0016966438852250576
+      },
+      "wheel_rad_s": {
+        "rmse": 0.02207784354686737,
+        "max_abs": 0.053509242832660675
+      },
+      "arm_rad": {
+        "rmse": 0.2426362931728363,
+        "max_abs": 0.7404472827911377
+      },
+      "jaw_m": {
+        "rmse": 0.006932494230568409,
+        "max_abs": 0.014821168966591358
+      }
+    },
+    "teacher_both": {
+      "leg_rad": {
+        "rmse": 0.00019612534379120916,
+        "max_abs": 0.000802141148597002
+      },
+      "wheel_rad_s": {
+        "rmse": 0.004825962241739035,
+        "max_abs": 0.017221923917531967
+      },
+      "arm_rad": {
+        "rmse": 0.0012175997253507376,
+        "max_abs": 0.0031655204948037863
+      },
+      "jaw_m": {
+        "rmse": 9.941503230948001e-05,
+        "max_abs": 0.0004016280290670693
+      }
+    }
+  }
+}

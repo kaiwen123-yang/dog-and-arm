@@ -189,7 +189,7 @@ def main():
                         door_first_action_l2=grads[0][0].norm().item(), tcp_first_action_l2=grads[1][0].norm().item())
     scored = score(rep, dynamics, val, model)
     with (out/'validation.csv').open('x') as f:
-        writer = csv.DictWriter(f, fieldnames=scored[0])
+        writer = csv.DictWriter(f, fieldnames=scored[0], lineterminator='\n')
         writer.writeheader()
         writer.writerows(scored)
     (out/'outcome.json').write_text(json.dumps(dict(completed=a.minibatches, window_updates=counts,

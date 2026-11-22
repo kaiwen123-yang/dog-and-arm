@@ -32,7 +32,12 @@ class OnlineContactReplay:
     def append(self, rows):
         data = torch.stack(rows,1)
         valid = data.pop('valid')
-        starts = {n:valid.unfold(1,n,1).all(-1).nonzero() for n in (1,7)}
+        starts = {}
+        for steps in (1,7):
+            if valid.shape[1] < steps:
+                starts[steps] = torch.empty((0,2),device=valid.device,dtype=torch.long)
+            else:
+                starts[steps] = valid.unfold(1,steps,1).all(-1).nonzero()
         if len(starts[1]):
             self.chunks.append((data,starts))
 
@@ -61,6 +66,30 @@ class OnlineContactReplay:
 
 
 class DoorImagination(MultiTaskWorldModelEnv):
+    def contact_reward(self, robot_reward, rep, next_frames, ctx):
+        if self.task_scales is None:
+            return robot_reward
+        target = self.reference_rep[next_frames]
+        # Target geometry comes only from the given reference. Actual/predicted
+        # geometry uses the corresponding current state at this same successor.
+        def relative_rod(x):
+            return torch.where(ctx[:, :1].bool(), x[:, 66:69], x[:, 63:66])
+
+        angle = (rep[:, 58] - target[:, 58]) / self.task_scales['angle_rad']
+        delta = (relative_rod(rep) - relative_rod(target)) / self.task_scales['tcp_handle_m']
+        joint, _ = self.representation.joint_state(rep).chunk(2, -1)
+        q_ref = self.motion.joint_pos[next_frames]
+        jaw_error = (joint[:, -2] - joint[:, -1]) - (q_ref[:, -2] - q_ref[:, -1])
+        jaw = jaw_error / self.task_scales['jaw_m']
+        score = (1 / (1 + angle.square()) + 1 / (1 + delta.square().sum(-1))
+                 + 1 / (1 + jaw.square()))
+        return robot_reward + self.representation.dt * score
+
+    def _wm_step(self, rep_state, aux_state, action, last_action, sim_ctx):
+        aux, rep, joints, term, tracking = super()._wm_step(
+            rep_state, aux_state, action, last_action, sim_ctx)
+        return aux, rep, joints, term, self.contact_reward(tracking, rep, self.motion_times+1, sim_ctx)
+
     def sample_initial_states(self):
         data,i,t = self.replay_buffer.pick(1,self.num_envs)
         batch = data[i,t].clone()
@@ -86,6 +115,9 @@ class ContactRun:
         self.robot = RobotRepresentation(model,device)
         self.bank = bank = DoorMotions(refs,rep,device)
         self.actor, task = build_actor(rep,cfg,model,device)
+        # Keep the original physical exploration magnitude when a calibrated
+        # arm/jaw decoder uses a larger unit to represent nominal poses.
+        self.exploration_scale=self.actor.standard_action.clone()
         self.actor.load_state_dict(actor_checkpoint['actor'])
         self.dyn = Dynamics(rep,23,5,tensor(mapping.scale,device),tensor(mapping.offset,device),
                             tuple(cfg['wm_hidden'])).to(device)
@@ -103,10 +135,13 @@ class ContactRun:
         self.n=cfg['worlds']
         self.steps=cfg['cohort_steps']
         pc=ActorCriticPolicyLearnerCfg(batch_size=cfg['actor_batch'],horizon=32,noise=cfg['collection_noise'])
+        scales=cfg.get('task_reward_scales')
         spec=SimpleNamespace(num_actions=23,unwrapped=SimpleNamespace(step_dt=.02,command_manager=MotionCommand(bank)),
-                cfg=SimpleNamespace(rewards={'tracking':SimpleNamespace(weight=5.)},
+                cfg=SimpleNamespace(rewards={'tracking':SimpleNamespace(weight=5. if scales is None else 8.)},
                 terminations={k:SimpleNamespace(params={'threshold':v}) for k,v in [('anchor_pos',.1),('anchor_ori',.12)]}))
         env=DoorImagination(self.dyn,rep,spec,pc.batch_size,self.replay,[task],10,.05,device)
+        env.task_scales=scales
+        env.reference_rep=(rep.represent(contact_state(bank.qpos,bank.qvel)) if scales is not None else None)
         self.critic=build_mlp(rep.rep_state_dim+570+5,tuple(cfg['critic_hidden']),1).to(device)
         # Input width changed. Hidden and final layer carry unchanged semantics.
         old=actor_checkpoint['critic']
@@ -114,6 +149,13 @@ class ContactRun:
             if name not in ('0.weight','0.bias') and name in old and old[name].shape==w.shape:
                 w.data.copy_(old[name])
         self.policy=ActorCriticPolicyLearner(self.actor,self.critic,env,pc,device)
+        if 'calibrated_actor_lr' in cfg:
+            for opt in self.policy.actor_optimizers:
+                for group in opt.param_groups:
+                    if torch.is_tensor(group['lr']):
+                        group['lr'].fill_(cfg['calibrated_actor_lr'])
+                    else:
+                        group['lr']=cfg['calibrated_actor_lr']
         self.plant=ContactPlant(model,self.n,device)
         self.ctx=torch.stack([contact_context(model,side,device) for side in ('pull','push')])
         phase,side,eligible,actions=[],[],[],[]
@@ -175,13 +217,13 @@ class ContactRun:
             s=contact_state(q,v)
             _,goal=bank.goals(self.rep,frames,s[:,:7])
             obs=build_actor_obs_td({'motion':goal},noisy)
-            raw=self.actor.raw(obs)+torch.randn_like(prev)*self.cfg['collection_noise']*self.actor.standard_action
+            raw=self.actor.raw(obs)+torch.randn_like(prev)*self.cfg['collection_noise']*self.exploration_scale
             action=raw.clamp(-1,1)
             evidence=plant.step_contact(action,side,self.phases[frames],record=raw_path is not None)
             q1,v1=plant.data.qpos[:].clone(),plant.data.qvel[:].clone()
             ns=contact_state(q1,v1)
             valid=alive & evidence['valid_full_interval']
-            if valid.any():
+            if valid.any() and not self.cfg.get('freeze_actor_statistics',False):
                 self.actor.train()
                 self.actor.update_normalization(obs[valid])
                 self.actor.eval()
@@ -189,6 +231,7 @@ class ContactRun:
             rr=self.rep.represent(ns)
             reward=self.rep.compute_wm_reward_from_reference(rr,ns[:,:7],self.rep.joint_state(rr),
                                        action,prev,*bank.body_state(frames+1))
+            reward=self.policy.wm_env.contact_reward(reward, rr, frames+1, ctx)
             rows.append(TensorDict(dict(state=s,next_state=ns,prev_action=prev,action=action,sim_ctx=ctx,
                          history=hist.flatten(1),motion_time=frames,valid=valid,terminated=terminal,
                          truncated=torch.full_like(valid,k==self.steps-1),reward=reward),batch_size=(self.n,)))
@@ -217,19 +260,13 @@ class ContactRun:
                 ix=r['valid']
                 if ix.any():
                     self.learners[7].update_normalization(r['state'][ix],r['action'][ix])
-        self.replay.append(rows if len(rows)>=7 else self._pad_for_windows(rows))
+        self.replay.append(rows)
         self.total+=valid_count
         self.simulated+=self.n*len(rows)
         return dict(valid_transitions=valid_count,cumulative_valid_transitions=self.total,
                     simulated_lane_intervals=self.n*len(rows),prefix_steps_per_lane=100,
                     prefix_invalid=prefixes_invalid,failed_lanes=int(failures.sum()),
                     start_ref_min=int(start.min()),start_ref_max=int(start.max()))
-
-    def _pad_for_windows(self,rows):
-        # Invalid placeholders carry no dynamics supervision or Actor start.
-        pad=rows[-1].clone()
-        pad['valid'].zero_()
-        return rows+[pad]*(7-len(rows))
 
     def update(self):
         online_long=0

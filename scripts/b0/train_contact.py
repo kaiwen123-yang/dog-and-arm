@@ -23,17 +23,25 @@ def main():
     args=parser.parse_args()
     if args.run in ('','.','..') or Path(args.run).name!=args.run or args.updates<=0:
         parser.error('Specify a new run name and positive absolute update endpoint')
-    spec=yaml.safe_load(args.config.read_text())
-    cfg=yaml.safe_load(Path(spec['base']).read_text()) | spec
+    def resolved(path):
+        config=yaml.safe_load(path.read_text())
+        return resolved(Path(config['base'])) | config if 'base' in config else config
+    cfg=resolved(args.config)
     if cfg['actor_horizon']!=32 or cfg['physics_dt']!=.002 or cfg['policy_dt']!=.02:
         raise ValueError('Contact schema requires H32 and 10 x 2 ms')
     torch.manual_seed(0)
     np.random.seed(0)
     torch.set_float32_matmul_precision('high')
     source=torch.load(cfg['actor_checkpoint'],weights_only=False,map_location='cpu')
-    base=yaml.safe_load(Path(cfg['base']).read_text())
+    base=yaml.safe_load(Path('config/b0/free_servo_cloud.yaml').read_text())
     if (source['seed'],source['updates'],source['collected'],source['cfg'])!=(0,1000,1088000,base):
         raise ValueError('Unexpected B0-03 lineage/configuration')
+    if cfg.get('calibrated_actor'):
+        calibrated=torch.load(cfg['calibrated_actor'],weights_only=False,map_location='cpu')
+        if (calibrated['source']!=cfg['actor_checkpoint'] or calibrated['seed']!=0
+                or calibrated['cfg']!=base or calibrated['supervised_updates']<=0):
+            raise ValueError('Unexpected lineage of calibrated contact actor')
+        source['actor']=calibrated['actor']
     wm=torch.load(cfg['wm_checkpoint'],weights_only=False,map_location='cpu')
     if wm['schema']!=SCHEMA or wm['seed']!=0:
         raise ValueError('Unexpected contact WM initializer')
@@ -51,7 +59,7 @@ def main():
     metadata=dict(cfg=cfg,run=args.run,seed=0,git_revision=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
                   physics='MuJoCo Warp; exact 10 x 2 ms held targets',device=torch.cuda.get_device_name(),
                   migration='Actor incl. normalizers strict load; critic input layer initialized, shape-compatible hidden and output restored; door WM initialized from explicitly listed pretraining checkpoint. Joint optimizers fresh unless --resume.',
-                  initialization=dict(actor=str(cfg['actor_checkpoint']),wm=str(cfg['wm_checkpoint']),resume=str(args.resume) if args.resume else None),
+                  initialization=dict(actor=str(cfg.get('calibrated_actor',cfg['actor_checkpoint'])),wm=str(cfg['wm_checkpoint']),resume=str(args.resume) if args.resume else None),
                   max_step_reward=run.policy.wm_env.max_step_reward,max_critic_value=run.policy._v_max,
                   validation_excluded=True,cohort_truncation=cfg['cohort_steps'],requested_endpoint=args.updates)
     (out/'actual_config.json').write_text(json.dumps(metadata,indent=2)+'\n')

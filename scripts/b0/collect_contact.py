@@ -113,9 +113,10 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
                 break
     margin = np.asarray(recorder.steps["arm_limit_margin_rad_post"])
     negative = np.flatnonzero((margin < 0).any(axis=1))
-    first_failure = int(negative[0]) if len(negative) else steps - 1 if failure else None
+    first_failure = steps - 1 if failure else None
     steps += extension
     if len(negative) and (first_failure is None or int(negative[0]) <= first_failure):
+        first_failure = int(negative[0])
         failure = "arm_joint_limit"
         passed = False
     np.save(path/"teacher_requested_action.npy", np.asarray(raw), allow_pickle=False)

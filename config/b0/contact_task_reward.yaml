@@ -1,0 +1,10 @@
+base: config/b0/contact_calibrated.yaml
+reward: o1_tracking_plus_door_geometry
+# Three successor-state terms with maximum 1 each, multiplied by dt.
+# Door angle and TCP/rod scales are the original hard-event tolerances;
+# the jaw scale matches the measured WM finger-position error scale.
+task_reward_scales:
+  angle_rad: 0.03490658504
+  tcp_handle_m: 0.005
+  jaw_m: 0.002
+hypothesis: The pinned robot tracking reward has no explicit hinge or grip term. Scoring predicted door angle, TCP-to-active-rod geometry and jaw width against the same successor reference may preserve physical grasp under H32 optimization.
