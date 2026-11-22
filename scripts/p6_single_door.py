@@ -36,7 +36,7 @@ def quat(mat):
     return result
 
 
-def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None, integrator=None):
+def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None, integrator=None, held_teacher=None):
     model = build(cfg)
     advance = mj.mj_step if integrator is None else integrator.step
     physics_source = 'native MuJoCo mj_step' if integrator is None else integrator.source
@@ -75,8 +75,11 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
     if stage == 'support':
         seq += ['dry_sweep', 'final']
     else:
-        seq += ['approach_arm','grasp','open','hold','release','retreat_arm','post_release_hold']
-        if mobile:
+        seq += ['approach_arm','grasp']
+        if not cfg.get('hold_grasp_pose', False):
+            seq.append('open')
+        seq += ['hold','release','retreat_arm','post_release_hold']
+        if mobile and not cfg.get('segment_end_after_retreat_hold', False):
             seq += ['stow','retreat_base','final']
     if cfg.get('arrival_only'):
         seq = ['approach_base', 'settle']
@@ -164,12 +167,19 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
             command[arm_ids] = np.r_[q_arm, q_finger] + d.qfrc_bias[arm_dof] / model.actuator_gainprm[arm_ids, 0]
             q0 = d.qpos.copy()
             v0 = d.qvel.copy()
-            if step_observer is not None:
+            if step_observer is not None or held_teacher is not None:
                 # Undo the exact bias used above before mj_step replaces qfrc_bias.
                 target = command.copy()
                 position_ids = np.r_[drive.legs, arm_ids]
                 target[position_ids] -= d.qfrc_bias[all_v[position_ids]] / model.actuator_gainprm[position_ids, 0]
                 target[drive.grip] *= 2.0  # full jaw opening in metres
+            if held_teacher is not None:
+                # The teacher can calculate feedback at its original rate. Only the
+                # command selected at a policy boundary enters the physical plant.
+                target = held_teacher.select(model, step, target, arm, fraction)
+                command[:] = target
+                command[drive.grip] *= .5
+                command[position_ids] += d.qfrc_bias[all_v[position_ids]] / model.actuator_gainprm[position_ids, 0]
             d.ctrl[:] = command
             advance(model, d)
             # Actual integrated joint positions at every physics step, including
@@ -270,6 +280,8 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
                 time.sleep(max(0., started + paused_s + t - time.monotonic()))
             if not np.isfinite(d.qpos).all() or any(w.number for w in d.warning):
                 reason = 'nonfinite_or_solver_warning'
+            elif held_teacher is not None and np.any(actual_margin < 0.):
+                reason = 'arm_joint_limit:' + arm_names[int(np.argmin(actual_margin))]
             elif unexpected:
                 reason = 'unexpected_contact:' + ','.join(unexpected)
             elif (stage == 'support' or phase in ('approach_base','settle','pregrasp','post_release_hold','stow','retreat_base','final')) and not no_contact:
@@ -308,7 +320,7 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
             elif phase == 'open':
                 ready, seconds = raw >= goal and effective >= goal-.05 and reached and c.both, .15
             elif phase == 'hold':
-                ready, seconds = reached and c.both and stable and abs(v0[model.joint('door_single_hinge').dofadr[0]]) < .01, .5
+                ready, seconds = reached and c.both and stable and abs(v0[model.joint('door_single_hinge').dofadr[0]]) < .01, cfg.get('grip_hold_s', .5)
             elif phase == 'release':
                 ready, seconds = ramp_done and no_contact and width >= .9*cfg['open_width_m'], .15
             elif phase == 'retreat_arm':
@@ -342,7 +354,7 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
         if view:
             view.finish_video()
         completed = phase_index == len(seq) and reason is None
-        summary = dict(stage=stage, case=cfg['case'], script_completed=completed, task_success=completed and mobile and not cfg.get('arrival_only', False),
+        summary = dict(stage=stage, case=cfg['case'], script_completed=completed, task_success=completed and mobile and not cfg.get('arrival_only', False) and not cfg.get('segment_end_after_retreat_hold', False),
                        stage_pass=completed, failure=reason, last_phase=last_phase, events=events, planned_phases=seq,
                        samples=samples, frames=view.frames if view else 0, physics_steps=step, dt_s=dt,
                        assembly_revision=cfg['assembly_revision'], arm_root_in_m1_m=cfg['arm_root_in_m1_m'],

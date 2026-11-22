@@ -116,10 +116,10 @@ class Recorder:
         self.states["truncated"] = np.zeros(len(valid), bool)
         self.states["phase"] = np.asarray(self.steps["phase"])[bounds[:-1]]
         if self.hold:
-            targets = np.asarray(self.steps["physical_target"]).reshape(-1,DECIMATION,m.nu)
-            if not np.all(targets == targets[:, :1, :]):
-                raise ValueError("Non-held action in free reference")
-            physical = targets[:,0,:]
+            targets = np.asarray(self.steps["physical_target"])
+            physical = targets[bounds[:-1]]
+            if not np.array_equal(targets, np.repeat(physical, np.diff(bounds), axis=0)):
+                raise ValueError("Physical target changed inside a policy interval")
             self.states["physical_target"] = physical
             policy = (physical-self.offset)/self.scale
             if np.abs(policy).max() > 1.000001:

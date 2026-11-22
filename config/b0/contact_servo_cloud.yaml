@@ -1,0 +1,16 @@
+base: config/b0/free_servo_cloud.yaml
+# One cohort starts from measured 200 ms prefixes; shorter failed lanes leave replay.
+worlds: 128
+cohort_steps: 16
+replay_cohorts: 32
+rsi_phases: [approach_arm, grasp, open, hold, release, retreat_arm, post_release_hold]
+reference_directory: results/raw_large/b0/contact_held_r1
+references: [pull_0_train_grip, push_0_train_grip, pull_5_train, push_5_train, pull_15_train, push_15_train]
+additional_teacher_episodes: [pull_0_train, push_0_train, pull_5_train_drop, push_5_train_drop]
+actor_checkpoint: results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt
+wm_checkpoint: results/b0/contact_s0_wm_held_r2/wm_002000.pt
+actor_horizon: 32
+reward: pinned_o1_tracking
+reward_at: successor_reference
+diagnostic_updates: [0, 50, 200, 1000]
+hypothesis: The B0-03 proprio actor can acquire contact targets using the measured door WM and the original O1 tracking return.
