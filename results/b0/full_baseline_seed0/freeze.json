@@ -1,0 +1,145 @@
+{
+  "frozen_at": "2026-11-22T15:03:26+08:00",
+  "decision": "limited_seed0_baseline",
+  "task": "single passive hinged door, complete start and continuous pull 60 or push 25 degrees",
+  "selection": "Development-selected, distinct native-reference and Warp-reference weights. Each checkpoint controls both directions on either backend. Each original and adapted reference and the fixed u0/u50 comparisons are kept under its own run.",
+  "observed_baselines": {
+    "native_reference": {
+      "checkpoint": "results/b0/full_s0_joint_prior_r1/checkpoint_000000.pt",
+      "sha256": "0a6a00d2cf92f072ee9a18ad0c5c33e9fd478d71bf1fdb953642587d8fce9129",
+      "reference": "results/raw_large/b0/full_native_margin_r1",
+      "seed": 0,
+      "full_task_h32_updates": 0,
+      "observed": [
+        {
+          "side": "pull",
+          "backend": "native",
+          "nominal": true,
+          "final_deg": 59.97938969695593,
+          "completed_substeps": 37583,
+          "development_pass": 9,
+          "development_evaluated": 20,
+          "development_status": "below_threshold",
+          "run": "full_joint_margin_u0_native_r1"
+        },
+        {
+          "side": "push",
+          "backend": "native",
+          "nominal": true,
+          "final_deg": 25.03956696208507,
+          "completed_substeps": 27576,
+          "development_pass": 9,
+          "development_evaluated": 20,
+          "development_status": "below_threshold",
+          "run": "full_joint_margin_u0_native_r1"
+        },
+        {
+          "side": "pull",
+          "backend": "warp",
+          "nominal": false,
+          "final_deg": 4.374606356865285e-06,
+          "completed_substeps": 8244,
+          "development_pass": 0,
+          "development_evaluated": 0,
+          "development_status": "nominal_failed",
+          "run": "full_joint_margin_u0_warp_r1"
+        },
+        {
+          "side": "push",
+          "backend": "warp",
+          "nominal": false,
+          "final_deg": -6.570720638654206e-07,
+          "completed_substeps": 8275,
+          "development_pass": 0,
+          "development_evaluated": 0,
+          "development_status": "nominal_failed",
+          "run": "full_joint_margin_u0_warp_r1"
+        }
+      ],
+      "control_and_scoring": "20 ms fixed reference clock, 10 x 2 ms physics, frozen 23-channel actor and independent substep judge"
+    },
+    "warp_reference": {
+      "checkpoint": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+      "sha256": "54746c51b6f11b2d4211dee05ef26609c7689e281f535a3564aeeadcdba557a9",
+      "reference": "results/raw_large/b0/full_warp_hold_park_r1",
+      "seed": 0,
+      "full_task_h32_updates": 0,
+      "observed": [
+        {
+          "side": "pull",
+          "backend": "native",
+          "nominal": false,
+          "final_deg": 60.16630362196338,
+          "completed_substeps": 31310,
+          "development_pass": 0,
+          "development_evaluated": 0,
+          "development_status": "nominal_failed",
+          "run": "full_warp_hold_park_u0_native_r1"
+        },
+        {
+          "side": "push",
+          "backend": "native",
+          "nominal": false,
+          "final_deg": 6.271372319623796,
+          "completed_substeps": 10618,
+          "development_pass": 0,
+          "development_evaluated": 0,
+          "development_status": "nominal_failed",
+          "run": "full_warp_hold_park_u0_native_r1"
+        },
+        {
+          "side": "pull",
+          "backend": "warp",
+          "nominal": true,
+          "final_deg": 59.95055793025039,
+          "completed_substeps": 37374,
+          "development_pass": 9,
+          "development_evaluated": 20,
+          "development_status": "below_threshold",
+          "run": "full_warp_hold_park_u0_warp_r1"
+        },
+        {
+          "side": "push",
+          "backend": "warp",
+          "nominal": true,
+          "final_deg": 25.025811411379426,
+          "completed_substeps": 27513,
+          "development_pass": 9,
+          "development_evaluated": 20,
+          "development_status": "below_threshold",
+          "run": "full_warp_hold_park_u0_warp_r1"
+        }
+      ],
+      "control_and_scoring": "20 ms fixed reference clock, 10 x 2 ms physics, frozen 23-channel actor and independent substep judge"
+    }
+  },
+  "acceptance": {
+    "nominal": true,
+    "development_required_per_side": "18/20",
+    "held_out_required_per_side": "40/50",
+    "independent_seeds": [
+      0,
+      1,
+      2
+    ]
+  },
+  "b004_ref": "results/b0/contact_hold_margin_v2_summary",
+  "full_evaluation_runs": 24,
+  "nominal_results": 40,
+  "registered_development_executions": 120,
+  "seeds": {
+    "0": "complete development and nominal cross-backend observations; below gate",
+    "1": "not trained",
+    "2": "not trained"
+  },
+  "held_out": {
+    "manifest": "config/b0/door_held_out.json",
+    "frozen_version": "v1",
+    "pull_scored": 0,
+    "push_scored": 0,
+    "reason": "No unified development recipe met 18/20 per side. Independent candidates and selection rules for testing were not frozen."
+  },
+  "evaluation_index": "results/b0/full_baseline_seed0/full_case_index.csv",
+  "score_table": "results/b0/full_baseline_seed0/full_scores.csv",
+  "next_testable_change": "On development conditions only, test a separately named actor input carrying measured robot-to-station/handle translation. Keep the same velocity, force and contact thresholds and compare against these frozen proprioceptive baselines."
+}

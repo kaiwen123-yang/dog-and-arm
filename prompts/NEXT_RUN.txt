@@ -1,5 +1,13 @@
-2026-11-22 14:41 北京时间，实际节点
-使用 SSH 到第二平台 dog-and-arm-b0-contact 和 AutoDL /root/autodl-tmp/dog-and-arm-b0-contact，先核对 git、进程以及 reports/B0_FULL_TASK.md。
-B0-04 两端十项各 20/20 已收齐。先验联训 u50 的五组 v2 开发和 u200 原 v1 两端开发也都已收齐。B0-05 原生 full_joint_margin_u0_native_r1 与 Warp full_warp_hold_park_u0_warp_r1 使用各自独立的同一双侧包，分别在两侧名义完成全程。等待两组全部 C01–C20 原始记录后汇总，Warp 的 --dev-workers 4 在每侧名义通过后按固定注册编号分配独立积分。两套包跨端已测，两侧均失败。单侧前拉监督 8/20、有 50 次 H32 的单侧包 9/20。勿启 H 或把不同后端的包混成一个。按计划冻结限制或成功，证据写入根目录唯一每日记录和阶段报告。
+当前交付：2026-11-22，北京时间，B0-04–06 的 seed0 限制基线已冻结。
+先通过 ssh dev2-ubuntu（或 dev2-ubuntu-lan）读取 /home/kaiwen/research/dog-and-arm-b0-contact 的 AGENTS.md、PROJECT_STATE.md、DAILY_WORK_LOG.md 最近节点和 reports/B0_BASELINE_REPORT.md。主工作树 /home/kaiwen/research/dog-and-arm 中的现场 H0 修改、P5 数据单独保留。AutoDL 训练和全量原始数据在 /root/autodl-tmp/dog-and-arm-b0-contact。
 
-复核时使用新 run 名或同 run 的合法 --resume，具体 CLI 和结果见 DAILY_WORK_LOG.md、reports/B0_FULL_TASK.md、reports/B0_CONTACT_SEGMENTS.md。B0_START.txt 是总任务授权和详细门槛，当前状态以上述实测为起点。
+截至冻结，接触监督包两端十项各 20/20。原生来源共同包与 Warp 来源共同包都在本后端完成前拉 60° 与背推 25° 名义。每侧 C01–C20 在两个后端均为 9/20；同一个包跨端未通过。全程 u50 与 u0、独立单侧训练和多个参考协议分别见 results/b0/full_baseline_seed0/full_scores.csv。seed1/2 未开始，H01–H50 未做策略评测。完整成功/失败与本轮出口见 freeze.json。已完成的 P6、B0-03、接触清单和上述全程 C 均无需例行重跑。
+
+在第二平台的专用工作树只读查看已完成结果：
+cd /home/kaiwen/research/dog-and-arm-b0-contact
+cat results/b0/full_baseline_seed0/full_scores.csv
+
+仅当需要独立复核原生两侧名义时，新建评测名（运行前确认名字未使用）：
+MUJOCO_GL=egl OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 .venv/bin/python -u -m scripts.b0.eval_contact_segments --full-task --side pull push --backend native --device cpu --checkpoint results/b0/full_s0_joint_prior_r1/checkpoint_000000.pt --references results/raw_large/b0/full_native_margin_r1 --run review_frozen_seed0_native_both_r1 --video
+
+后续若继续改善 B0，先在开发条件 C02–C05 单列一种观测适配：在固定参考与本体历史之外提供可用的相对站位/把手平移。用相同起点、计分和完整 C 回归对照现有冻结结果；模拟器真值须单独标明，部署需有实际可测来源。若再满足双侧开发门槛，固定配方后才训练独立 seed1/2，再一起开启注册 H01–H50。双门、实机、视觉语言训练由后续任务另行安排。
