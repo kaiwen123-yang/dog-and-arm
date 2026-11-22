@@ -592,3 +592,18 @@ bash scripts/b0/env.sh python -u scripts/b0/train.py --seed 0 --run free_s0_clou
 - GitHub 已回读 73afe8afad99739ef0559c8fff705a9325629e17。AutoDL 的 contact_s0_bc_refresid_u3000_warp_rest_r1 最后一个背推释放 D20 已有 result.json。按 registration.json 的五项 v1、五项 v2 回读原始逐案 JSON，逐组验证 checkpoint、后端、nominal 及全部 D01–D20 身份后生成 results/b0/contact_hold_margin_v2_summary/actor_warp316.csv。十组各 20/20、名义全过，与原生分表分别保存。v1 全量筛查的失败仍在原目录；不能把改协议后的结果替换回原 v1。
 - 原生/跨端重放对照收齐。同一 native 采集前拉恒目标在 CPU3.16/Warp 的预抓取超时仅差一个 2 ms 步，保留两个原始结果；换为真正来自 Warp 的 20 ms 反馈教师目标，Warp 自身的独立裁判重放 36,869 步通过。该配对对照支持后端参考差异，不能据此承诺学习策略跨端成功。
 - 对 full_s0_joint_prior_r1 与 full_s0_joint_warp_prior_r1 各自的 u0/u50，使用 scripts.b0.score_contact_checkpoint 单独加载完整 pull/push 的 validation episode，按 1、7、32 步和物理接触模式评分。原生加长参考训练前/后的 H32 TCP RMSE 为前拉 45.25/42.11 mm、背推 55.13/42.97 mm；Warp 原参考为前拉 46.62/52.52 mm、背推 56.11/49.59 mm。数千个滑窗来自每侧一个独立验证回合，不能作数千个独立任务。 u50 在较短时距的改善不足以建立稳定的 H32 预测或完整任务成功。
+
+### 14:27–14:36 北京时间｜Warp 全程末段差 34 ms，登记实采对照
+
+- 已通过 GitHub API 回读 b2de0f282a333158fa256b3a0e448f113178f4c1。第二平台直连 git fetch 两次发生 GnuTLS 握手中断，使用平台已有的 127.0.0.1:7897 代理执行 git -c http.proxy=http://127.0.0.1:7897 fetch origin 后取得同一提交；未改全局代理。SSH 只读加载了第二平台旧 native 与 Warp 两侧 qpos，形状分别为 (3715,32)/(2714,32) 与 (3688,32)/(2706,32)，四个 metadata 均为 held_action_replay=false。
+- full_s0_joint_warp_prior_r1 的 u0 改用两侧 Warp 恒目标监督训练，原 0.5 s 持姿/3 s 停车协议下，Warp 前拉达到 60.0729°、退臂后 3 秒已通过，最后停车 1483/1500 子步，缺 17 个子步即 34 ms。背推达到 25.0504°，保持时双指失载。u50 的真实 H32 训练共 81,684 条有效区间，两侧 Warp 均提前在预抓取碰门。两组权重分开保留。
+- 针对两个不同失败先后在 config/b0/full_warp_final_margin.json 与 full_warp_hold_and_park_margin.json 登记实采试验。同后端、同一包、两侧同协议：先只让教师最后实际停车 4 s，再保留末端 4 s 并让抓持实采 1.5 s。物理裁判一律要求 0.5 s 抓持、退臂后 3 s、终点 3 s。收集命令为 collect_contact pull 60/push 25 train --backend warp --full-task --extra-final-park，第二组额外使用 --extra-full-hold，独立结果名 full_warp_final_margin_r1/full_warp_hold_park_r1。训练只使用之前独立的训练 episode，两个新参考用于固定权重测试。其中双延长参考在原生两侧均失败。Warp 逐案进展以原始结果为准。
+- 用 compare_full_references 核对新增持姿之前的实采前缀。原生推门两版在前 16,045 步完全相同，原生拉门最大根平移差 0.052 mm。Warp 仅延长末端的新旧前拉在修改阶段之前最大根平移差 1.995 mm，背推为 0.092 mm，不能把不同独立采集的全部差异归给延长出来的秒数。16 份完整参考逐条核对 2 ms 步号、20 ms 有效掩码、物理目标在区间内逐元素恒定及真实后继共 51,757 个完整转移；部分尾区间另外保留。[索引](data/b0/full_held_reference_index.csv)
+- 已将两套双侧包的 u0/u50 和单侧全程联训 u50 从 AutoDL 直接复制到第二平台，用 torch.load 实载并核对训练计数、WM/Actor 和 normalizer。5 项实际 SHA、两台主机绝对路径与各自最新可恢复队列状态见 results/b0/full_baseline_seed0/checkpoint_inventory.json。另保存原生两侧已成功参考的 train 原始数组。Windows 仅作 SSH 与轻量 Git 传输，本地无研究数据压缩归档。
+- 原生前拉单侧监督 C01–C20 已完整收齐，为 8/20。统一包两侧的 C 清单继续。同一实际工况统计一次，C01 与单报的 nominal 为相同配置。后端对照不增加独立 seed 数。新增脚本 index_full_baseline 将以完整原始阶段事件和两个实际 1,500 步窗口核对逐案表。
+
+### 14:41 北京时间｜Warp 两侧完整名义通过，交叉换后端均失败
+
+- Warp 实采双延长参考使固定 full_s0_joint_warp_prior_r1/checkpoint_000000.pt 完成前拉 59.9505579°/37,374 步，背推 25.0258114°/27,513 步。两端各自 13 个物理阶段、两段独立 1,500 步停车，Warp 的两案 max nefc 56/57、max ncon 均 18、缓冲溢出位均 0；库对 capsule–mesh 的 MULTICCD 提示保留。ffprobe 读得前拉 1,870 帧/74.80 s，背推 1,377 帧/55.08 s。先做的只延长停车对照前拉通过，背推保持失抓。双延长参考在原生的交叉结果为前拉退臂超时、背推 6.271° 抓持几何失败。
+- u50 在相同加长协议上的复测：原生参考包两侧退臂后保持及收臂已过，倒车到站未达，分别 59.9837°、25.0449° 耗尽参考；Warp 参考包两侧均在预抓取提前碰门。原生单侧前拉 u50 全部 C 实跑后 9/20，监督 8/20。冻结比较均保留，不用最优单侧拼两侧。
+- 两侧共同包的原生和 Warp 完整开发清单继续。新 Warp 入口 --dev-workers 4 先实际跑完各侧名义；每侧使用四个独立进程及独立 case 目录，所有 worker 加载同一检查点、同一两侧参考，逐个取得实际 next state。程序在所有子进程正常结束并读取每个 result.json 后才汇总。单侧对照和已有进行中任务按原进程运行。没有设置后台墙钟终止。

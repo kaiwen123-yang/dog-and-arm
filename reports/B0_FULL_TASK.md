@@ -8,6 +8,19 @@
 
 在原 0.5 s 教师持姿参考下，原生 u0 的两侧都在已开到目标角后失抓。持姿判据分别只连续达到 211/250 和 126/250 个子步。加长参考时仅把新采教师的持姿延长到 1.5 s，策略仍须实测连续 250 步。Warp 上同一 u0 包使用原参考及加长参考都在预抓取提前碰门。[原生 v1](../results/b0/full_joint_u0_native_r1/cases.csv) · [Warp v2](../results/b0/full_joint_margin_u0_warp_r1/cases.csv)
 
+## Warp 上的同一双侧权重与跨端对照
+
+用 3.16 Warp 的 20 ms 真实恒目标训练双侧参考残差 Actor，同包包含预训练门 WM。在原参考上前拉走到终点，门角 60.0729°、最后停车 1,483/1,500 步，背推在 25.0504° 保持阶段失抓。先以同一包只延长教师末端停车一秒，前拉 60.0767° 全程通过、背推仍失抓。再采用真实采集的抓持 1.5 s、终点停车 4 s，两侧名义均通过。独立物理裁判始终要求抓持 0.5 s、退臂后和最终停车各 3 s。[参考登记](../config/b0/full_warp_hold_and_park_margin.json) · [只延长停车](../results/b0/full_warp_tail_u0_warp_r1/cases.csv) · [实采数组索引](../data/b0/full_held_reference_index.csv)
+
+| 同一方向对使用的包和参考 | 原生 3.3.0 名义前拉 / 背推 | Warp 3.16 名义前拉 / 背推 |
+| --- | --- | --- |
+| 原生参考监督包 u0，持姿延长 | 59.9794° / 25.0396°，均完成 13 阶段 | 两侧预抓取提前碰门，均失败 |
+| Warp 参考监督包 u0，抓持与终点停车延长 | 前拉 60.1663° 后退臂超时，背推 6.2714° 时抓持几何失败 | 59.9506° / 25.0258°，均完成 13 阶段 |
+
+Warp 本后端成功分别用 37,374 和 27,513 个物理子步，两个任务的两段停车都各自连续满足 1,500 步；两例接触与约束缓冲溢出标志为零。后端提示 capsule–mesh 类型至多产生一个接触点；这条提示没有单独确定后端差异的原因。两个成功包具有不同的 SHA，不跨包合计成功。5 个完整学习检查点已在第二平台重新载入，主机路径、预训练源、实际更新、normalizer 和最新队列恢复文件位置见[权重清单](../results/b0/full_baseline_seed0/checkpoint_inventory.json)。[Warp 前拉及视频](../results/b0/full_warp_hold_park_u0_warp_r1/pull/full/nominal/) · [Warp 背推及视频](../results/b0/full_warp_hold_park_u0_warp_r1/push/full/nominal/) · [同包原生逐案](../results/b0/full_warp_hold_park_u0_native_r1/cases.csv)
+
+全程 H32 u50 单独计分。原生参考包在本后端到达 59.9837° / 25.0449°，两侧都在倒车阶段耗尽参考。Warp 参考包 u50 的两侧则在本后端预抓取触碰门体。独立单侧前拉 u50 在原生完成 59.9992° 名义，C01–C20 为 9/20（单侧监督为 8/20）。[原生共同包 u50](../results/b0/full_joint_margin_u50_native_r1/cases.csv) · [Warp 共同包 u50](../results/b0/full_warp_hold_park_u50_warp_r1/cases.csv) · [单侧 H32 逐案](../results/b0/full_pull_prior50_native_r1/cases.csv)
+
 ## 平移开发条件的观测
 
 在原生单侧监督前拉的 C02–C05 中，X/Y 分别平移 ±50 mm。实测相对于 nominal，初始 77 维传感输入和 Actor 参考差均为零，WM 参考最大差为 0.03536。前 51 次实际动作逐元素相同，四种偏移在头 1 s 的变化均小于 8e−16 m，四案全程均失败。这定位了接触前全局平移在现有 Actor 输入中的不可观测性；其他偏航、门初角、摩擦工况有各自的物理失败记录。未用 H 条件作此诊断。[五案输入与原始动作对照](../results/b0/full_pull_supervised_native_r1/start_observability.json)

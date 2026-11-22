@@ -42,7 +42,7 @@ class HeldTeacher:
         return self.target
 
 
-def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False, hold_seconds=3, full_task=False, backend="native"):
+def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False, hold_seconds=3, full_task=False, backend="native", extra_final_park=False):
     episode_id = f"{side}_{goal}_{split}" + ("_drop" if release_during_hold else "")
     if hold_grasp_pose:
         episode_id += "_grip"
@@ -55,6 +55,8 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
     cfg = settings("mobile" if side == "pull" else "push", 1)
     cfg.update(target_angle_deg=goal, grip_hold_s=float(hold_seconds), segment_end_after_retreat_hold=not full_task,
                policy_decimation=DECIMATION, teacher_selection="P6 candidate at substep 10*k")
+    if extra_final_park:
+        cfg["final_reference_hold_s"] = cfg["post_hold_s"] + 1.
     if split == "validation":
         # Distinct complete integration. Same scene parameters and reference family,
         # with millimetre-scale offsets to avoid duplicating the training episode.
@@ -156,6 +158,7 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
     result = dict(episode_id=episode_id, raw_directory=str(path), wm_split=split,
                   initial_perturbation=cfg["perturbation"], backend=f"{backend} MuJoCo {meta['mujoco_version']}",
                   physical_teacher_pass=passed, teacher_hold_seconds=hold_seconds,
+                  teacher_final_park_seconds=cfg.get("final_reference_hold_s", cfg["post_hold_s"]),
                   failure=failure, first_failure_interval=first_failure,
                   post_failure_completed_physics_steps=extension,
                   reference_eligible=bool(passed and split == "train"), policy_success_measured=False,
@@ -187,13 +190,15 @@ def main():
     parser.add_argument("--release-during-hold", action="store_true", help="excite a real loss-of-grasp transition during hold")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--evidence-dir", type=Path, required=True)
+    parser.add_argument("--extra-final-park", action="store_true",
+                        help="collect one actual additional second of final parking in a full reference")
     parser.add_argument("--extra-full-hold", action="store_true",
                         help="collect one additional physical second of post-opening grasp for the registered full-task reference")
     parser.add_argument("--backend", choices=["native", "warp"], default="native",
                         help="integrator for every physical substep, including the final partial interval")
     args = parser.parse_args()
-    if args.extra_full_hold and not args.full_task:
-        parser.error("--extra-full-hold requires --full-task")
+    if (args.extra_full_hold or args.extra_final_park) and not args.full_task:
+        parser.error("Reference hold extensions require --full-task")
     duration = (1.5 if args.extra_full_hold else .5) if args.full_task else args.hold_seconds
     episode_id = f"{args.side}_{args.goal}_{args.split}" + ("_drop" if args.release_during_hold else "")
     if args.hold_grasp_pose:
@@ -211,7 +216,7 @@ def main():
         parser.error('Use --full-task for the continuous task angles')
     output = args.evidence_dir / (episode_id + ".json")
     return 0 if collect(args.side, args.goal, args.split, args.output, output, args.release_during_hold,
-                        args.hold_grasp_pose, args.complete_terminal, duration, args.full_task, args.backend) else 1
+                        args.hold_grasp_pose, args.complete_terminal, duration, args.full_task, args.backend, args.extra_final_park) else 1
 
 
 if __name__ == "__main__":

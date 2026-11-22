@@ -329,6 +329,8 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
                 ready, seconds = ramp_done and no_contact and np.max(np.abs(q0[arm.ik.q] - arm.home)) < .025, .15
             else:  # post-release or final physical parking window
                 ready, seconds = stable and no_contact and (reached if stage != 'support' else abs(angle)<.1), cfg['post_hold_s']
+                if phase == 'final' and held_teacher is not None:
+                    seconds = cfg.get('final_reference_hold_s', seconds)
             good_time = good_time+dt if ready else 0.
             if good_time+1e-10 >= seconds:
                 events.append(dict(phase=phase, time_s=d.time, door_deg=angle, xy=state['xy'].tolist(),

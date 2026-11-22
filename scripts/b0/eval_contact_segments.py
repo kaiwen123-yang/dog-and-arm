@@ -246,7 +246,51 @@ def check_legacy_actor(output, directory, raw_root, policy):
     raise ValueError('No complete legacy trajectory with two reproducible Actor inputs')
 
 
+def run_warp_cases(job):
+    """A single independent Warp worker keeps the frozen joint reference bank across its cases."""
+    from learning.b0.contact_policy import load_policy
+    checkpoint, paths, device, episode, cases, output, raw_root, side = job
+    policy = load_policy(checkpoint, paths, device)
+    for case in cases:
+        folder = Path(side) / 'full' / case['id']
+        result = evaluate_segment(policy, episode, 'full', case['perturbation'], 'warp',
+                                  output / folder, device=device, raw_dir=raw_root / folder)
+        print(f"{side} {case['id']} passed={result['passed']} steps={result['physics_steps']}", flush=True)
+
+
+def parallel_full_dev(args, paths, group, directory, cases, output, raw_root, side):
+    import multiprocessing
+    from concurrent.futures import ProcessPoolExecutor
+    pending = []
+    for case in cases:
+        folder = Path(side) / 'full' / case['id']
+        if args.resume and (output / folder / 'result.json').is_file():
+            continue
+        if args.resume:
+            preserve_partial(folder, output, raw_root)
+        pending.append(case)
+    workers = min(args.dev_workers, len(pending))
+    if workers:
+        jobs = [(args.checkpoint, paths, args.device, directory / group['episode'], pending[i::workers],
+                 output, raw_root, side) for i in range(workers)]
+        with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context('spawn')) as pool:
+            list(pool.map(run_warp_cases, jobs))
+
+
+def preserve_partial(folder, output, raw_root):
+    from time import time_ns
+    for root in (raw_root, output):
+        partial = root / folder
+        if partial.exists():
+            saved = root / 'interrupted' / str(time_ns()) / folder
+            saved.parent.mkdir(parents=True, exist_ok=True)
+            partial.rename(saved)
+            print(f'Retained incomplete case at {saved}', file=sys.stderr, flush=True)
+
+
 def main(args):
+    if args.dev_workers < 1 or (args.dev_workers > 1 and not (args.full_task and args.dev and args.backend == 'warp')):
+        raise ValueError('Parallel development workers require a complete Warp task and --dev')
     if args.full_task:
         from p6_scene import CASES
         if not args.side or not args.references or args.segment:
@@ -323,10 +367,13 @@ def main(args):
                     integrator=WarpSingleWorld(model,args.device) if args.backend=='warp' else None
                     current_side=side
                 cases=group['accepted'] if development else [group['nominal']]
+                parallel = development and args.dev_workers > 1
+                if parallel:
+                    parallel_full_dev(args, paths, group, directory, cases, output, raw_root, side)
                 for case in cases:
                     folder=Path(side)/segment/case['id']
                     record=output/folder/'result.json'
-                    if args.resume and record.is_file():
+                    if (args.resume or parallel) and record.is_file():
                         r=json.loads(record.read_text())
                         if (r['backend']!=args.backend or r['mujoco']!=mj.__version__
                                 or r['episode']!=group['episode'] or r['segment']!=segment
@@ -334,14 +381,7 @@ def main(args):
                             raise ValueError(f'{record} disagrees with the frozen case')
                     else:
                         if args.resume:
-                            for root in (raw_root,output):
-                                partial = root/folder
-                                if partial.exists():
-                                    from time import time_ns
-                                    saved = root/'interrupted'/str(time_ns())/folder
-                                    saved.parent.mkdir(parents=True,exist_ok=True)
-                                    partial.rename(saved)
-                                    print(f'Retained incomplete case at {saved}',file=sys.stderr,flush=True)
+                            preserve_partial(folder, output, raw_root)
                         r=evaluate_segment(policy,directory/group['episode'],segment,case['perturbation'],args.backend,
                                            output/folder,model=model,integrator=integrator,device=args.device,
                                            raw_dir=raw_root/folder,video=args.video and not development)
@@ -376,6 +416,7 @@ if __name__=='__main__':
     parser.add_argument('--references',type=Path)
     parser.add_argument('--manifest',type=Path,default=ROOT/'config/b0/contact_dev_v1.json')
     parser.add_argument('--resume',action='store_true',help='Continue unfinished cases in the same run')
+    parser.add_argument('--dev-workers', type=int, default=1, help='parallel independent full-task Warp development cases after a passed nominal')
     parser.add_argument('--dev',action='store_true',help='after passing nominal, evaluate the registered twenty')
     parser.add_argument('--video',action='store_true',help='record every nominal trial from its first input to terminal state')
     parser.add_argument('--full-task', action='store_true', help='closed loop from original P6 start; nominal, then C01–C20 when requested')
