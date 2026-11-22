@@ -1,0 +1,91 @@
+{
+  "episode": "pull_5_train",
+  "side": "pull",
+  "segment": "release_retreat",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 12070,
+  "reference_phase_end_substep": 15975,
+  "reference_last_substep": 15975,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": -0.0003431673450242514,
+    "dy_m": 3.217236202263866e-05,
+    "dyaw_deg": -0.006265244825009987
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.0215446264195669,
+    "grasp_error_m": 0.003001495127617159,
+    "supported": true,
+    "finger_n": [
+      3.2819329920330076,
+      2.425891707357116
+    ],
+    "door_force_sum_n": 7.394685245390148,
+    "prefix_start_target_penetration_m": 0.0009703609441049504,
+    "nominal_prefix_start_target_penetration_m": 0.001014315927534806,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "release",
+      "end_step": 828,
+      "ref_end_step": 12898,
+      "ticks": 75,
+      "door_deg": 4.814372502170034,
+      "width_m": 0.09008551773758192,
+      "net_force_n": 0.0
+    },
+    {
+      "phase": "retreat_arm",
+      "end_step": 2404,
+      "ref_end_step": 14474,
+      "ticks": 75,
+      "door_deg": 4.814372502170034,
+      "width_m": 0.08999263385456355,
+      "net_force_n": 0.0
+    },
+    {
+      "phase": "post_release_hold",
+      "end_step": 3904,
+      "ref_end_step": 15974,
+      "ticks": 1500,
+      "door_deg": 4.814372502170034,
+      "width_m": 0.09000058265816302,
+      "net_force_n": 0.0
+    }
+  ],
+  "policy_calls": 391,
+  "physics_steps": 3904,
+  "final_door_deg": 4.814372502170034,
+  "final_partial_substeps": 4,
+  "longest_ready_steps": {
+    "release": 75,
+    "retreat_arm": 75,
+    "post_release_hold": 1500
+  },
+  "last_physical_observation": {
+    "phase": "post_release_hold",
+    "door_deg": 4.814372502170034,
+    "width_m": 0.09000058265816302,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "net_door_force_n": 0.0,
+    "tcp_handle_error_m": 0.11015147172233415,
+    "station_error_m": 0.0008482564004402676,
+    "tilt_deg": 0.1466724727747644,
+    "speed_m_s": 0.00013869379715793876,
+    "yaw_rate_deg_s": 0.1154088837870866,
+    "continuous_ready_steps": 1500,
+    "required_ready_steps": 1500
+  },
+  "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_refres_prior_u200_native33/pull/release_retreat/D15"
+}

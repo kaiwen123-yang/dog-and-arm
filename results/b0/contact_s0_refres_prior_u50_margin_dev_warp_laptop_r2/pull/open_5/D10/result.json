@@ -1,0 +1,89 @@
+{
+  "episode": "pull_5_train",
+  "side": "pull",
+  "segment": "open_5",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 12573,
+  "reference_last_substep": 12573,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": -0.00034774345834144593,
+    "dy_m": 9.405223099414521e-05,
+    "dyaw_deg": -0.013427368606034619
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.021463767625391483,
+    "grasp_error_m": 0.0019131802199552352,
+    "supported": true,
+    "finger_n": [
+      3.2607483863830566,
+      2.386324644088745
+    ],
+    "door_force_sum_n": 5.6921685792132575,
+    "prefix_start_target_penetration_m": 0.0009006191183393557,
+    "nominal_prefix_start_target_penetration_m": 0.0009854320145508287,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": true,
+  "first_failure": null,
+  "events": [
+    {
+      "phase": "open",
+      "end_step": 1823,
+      "ref_end_step": 10573,
+      "ticks": 75,
+      "door_deg": 4.847073626577168,
+      "width_m": 0.02147362008690834,
+      "net_force_n": 1.1707477147917569
+    },
+    {
+      "phase": "hold",
+      "end_step": 3446,
+      "ref_end_step": 12196,
+      "ticks": 1500,
+      "door_deg": 4.719658582044695,
+      "width_m": 0.021143963560461998,
+      "net_force_n": 1.6589831150574512
+    }
+  ],
+  "policy_calls": 345,
+  "physics_steps": 3446,
+  "final_door_deg": 4.719726030162749,
+  "final_partial_substeps": 6,
+  "longest_ready_steps": {
+    "open": 75,
+    "hold": 1500
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 4.719658582044695,
+    "width_m": 0.021143963560461998,
+    "finger_n": [
+      3.7239437103271484,
+      2.164926052093506
+    ],
+    "net_door_force_n": 1.6589831150574512,
+    "tcp_handle_error_m": 0.0022366268817509602,
+    "station_error_m": 0.002297329973193829,
+    "tilt_deg": 0.19010996653917742,
+    "speed_m_s": 0.000310103110046053,
+    "yaw_rate_deg_s": 0.005110820289578006,
+    "continuous_ready_steps": 1500,
+    "required_ready_steps": 1500
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/contact_s0_refres_prior_u50_margin_dev_warp_laptop_r2/pull/open_5/D10"
+}

@@ -67,3 +67,7 @@
 参考残差初始化在两侧接近闭爪、0° 稳定抓持、5°/15° 开门、释放退臂的原生 3.3 十项均完成名义及 **20/20** 开发。每个名义单列，另有 200 次分项开发试验；同一批开发偏移复用于相应参考，不将窗口、后端数或这 200 次合成完整开门成功率。[十项、版本与原始目录](../results/b0/contact_hold_margin_v2_summary/actor_native33.csv)
 
 纯 tracking 完成 1,000 次 H32 Actor 更新、10,000 个 WM 和 20,000 个 Critic minibatch。实际仿真 1,981,312 个 lane 区间，可用真实转移 572,118。所有更新均记录 WM 固定及 Actor 参数非零变化。Warp/native 终点各 0/10，双侧抓持初始 2 ms 约 50/35 N。在相同八个独立 episode 上，TCP 的 1/7/32 步 RMSE 为 2.692/17.613/51.388 mm，稳定双指 H32 为 48.195 mm。单列完整 20 ms 的真实失抓终止样本见另表。[训练终点](../results/b0/contact_s0_tracking_r3/outcome.json) · [Warp](../results/b0/contact_s0_tracking_u1000_warp_r2/cases.csv) · [原生](../results/b0/contact_s0_tracking_u1000_native33_r2/cases.csv) · [分模式同组比较](../results/b0/contact_wm_checkpoint_audit_r1/pooled_rmse.csv) · [真实终止](../results/b0/contact_wm_checkpoint_audit_r1/terminal_tracking_u1000.json)
+
+### 带动作先验的真实 H32 对照
+
+带物理动作先验的同一 seed0 联训 u50 在 Warp 的五个 v2 持姿任务都通过名义和各自 D01–D20，即两侧 5°/15° 及背侧 0° 抓持五项各 20/20。其 v1 十项筛查只通过前侧 0° 稳定抓持。u200 使用原 v1 筛查，原生 5/10 名义且通过的五项各 20/20，Warp 为 2/10 且通过的两项各 20/20。全十项通过的冻结权重仍为接触监督初始化 u0。[u50 新参考的完整开发清单](../results/b0/contact_s0_refres_prior_u50_margin_dev_warp_laptop_r2/cases.csv) · [u200 原生](../results/b0/contact_s0_refres_prior_u200_native33/cases.csv) · [u200 Warp](../results/b0/contact_s0_refres_prior_u200_warp_laptop/cases.csv)

@@ -1,0 +1,112 @@
+{
+  "checkpoint": "results/b0/contact_s0_refres_tcp_joint_r1/checkpoint_000200.pt",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "manifest": "/root/autodl-tmp/dog-and-arm-b0-contact/config/b0/contact_dev_v1.json",
+  "requested_dev": true,
+  "source": "results/raw_large/b0/contact_held_r1",
+  "passed": 0,
+  "evaluated": 10,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 2683,
+      "policy_calls": 269,
+      "final_door_deg": 0.45027930829608015,
+      "failure": "reference_exhausted"
+    },
+    {
+      "side": "pull",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.0690856679232482,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.0690858672816921,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.0690858672816921,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 3395,
+      "policy_calls": 340,
+      "final_door_deg": 10.060852593441961,
+      "failure": "operation_station_drift"
+    },
+    {
+      "side": "push",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 2017,
+      "policy_calls": 202,
+      "final_door_deg": 5.6289859642237346e-06,
+      "failure": "unexpected_contact:other_robot_handle"
+    },
+    {
+      "side": "push",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.36941976139382315,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.3694197753233367,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.3694197753233367,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 357,
+      "policy_calls": 36,
+      "final_door_deg": 6.175859178116305,
+      "failure": "unexpected_contact:other_robot_handle"
+    }
+  ]
+}
