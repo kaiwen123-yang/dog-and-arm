@@ -30,10 +30,9 @@ def calibration_driver_issues(device, status, *, require_can=True):
         issues.append(f"Controller is not in CAN control (ctrl_mode={status['ctrl_mode']})")
     if any(status["err_status"].values()):
         issues.append(f"Controller reports joint errors: {status['err_status']}")
-    now = time.time()
     for joint in range(1, 7):
         message = device.robot.get_driver_states(joint)
-        if message is None or not 0 <= now - message.timestamp < .2:
+        if message is None or not 0 <= time.time() - message.timestamp < .2:
             issues.append(f"J{joint} has no fresh driver feedback")
             continue
         flags = message.msg.foc_status.to_dict()
@@ -122,6 +121,14 @@ def checked_calibration_state(device):
     return row, status
 
 
+class CalibrationArrivalTimeout(RuntimeError):
+    """The final joint reference was sent but its arrival was not confirmed."""
+
+
+class RejectedPoseHeld(RuntimeError):
+    """The requested calibration pose failed and an enabled hold was verified."""
+
+
 def calibration_arrival(device, target):
     deadline = time.monotonic() + 3.
     stable_since = None
@@ -146,7 +153,66 @@ def calibration_arrival(device, target):
         else:
             stable_since = None
         time.sleep(.02)
-    raise RuntimeError("Target arrival and 0.5 s of quiet feedback were not confirmed")
+    raise CalibrationArrivalTimeout("Target arrival and 0.5 s of quiet feedback were not confirmed")
+
+
+def observe_timeout_hold(device, target, *, sent_at=None, motor_anchor=None):
+    """Check fresh joint AND motor feedback before retaining or replacing a MOVE_J target."""
+    deadline = time.monotonic() + 1.5
+    limits = device.robot.get_config()["joint_limits"]
+    motor_low = list(motor_anchor) if motor_anchor is not None else None
+    motor_high = list(motor_anchor) if motor_anchor is not None else None
+    q_low = q_high = first = previous_flag = sequence = last_sample = None
+    while time.monotonic() < deadline:
+        row, status = device.state(after=sequence)
+        sequence = row["sequence"]
+        sample = row["monotonic_s"]
+        if last_sample is not None and not 0 < sample - last_sample < .1:
+            raise RuntimeError("Gap in joint feedback during hold assessment")
+        last_sample = sample
+        issues = calibration_driver_issues(device, status)
+        flag = int(status["motion_status"])
+        if issues or int(status["mode_feedback"]) != 1 or flag not in (0, 1):
+            raise RuntimeError(f"Cannot verify powered MOVE_J hold: {issues}, {status}")
+        q = device.angles(row)
+        motor = [row[f"motor{i}_position_rad"] for i in range(1, 7)]
+        stamps = [row[f"motor{i}_timestamp_s"] for i in range(1, 7)]
+        now = time.time()
+        if not all(0 <= now - stamp < .2 for stamp in stamps) or not all(map(math.isfinite, motor)):
+            raise RuntimeError("Powered hold requires fresh six-motor position feedback")
+        for i, (angle, goal) in enumerate(zip(q, target), 1):
+            lo, hi = limits[f"joint{i}"]
+            if not lo <= angle <= hi or abs(angle - goal) > math.radians(CAL_ARRIVAL_DEG):
+                raise RuntimeError("Measured joint is outside the allowed hold range")
+        if motor_low is None:
+            motor_low, motor_high = motor[:], motor[:]
+        if q_low is None:
+            q_low, q_high = q[:], q[:]
+        motor_low, motor_high = list(map(min, motor_low, motor)), list(map(max, motor_high, motor))
+        q_low, q_high = list(map(min, q_low, q)), list(map(max, q_high, q))
+        # A confirmed original target may have near-zero joint reports that toggle
+        # while the separate motor position stays within the quiet-window bound.
+        q_span_deg = .1 if flag == 1 or sent_at is not None else CAL_ARRIVAL_DEG
+        if (any(hi - lo > math.radians(.1) for lo, hi in zip(motor_low, motor_high))
+                or any(hi - lo > math.radians(q_span_deg) for lo, hi in zip(q_low, q_high))):
+            raise RuntimeError("Motion detected while checking the powered hold")
+        if sent_at is not None:
+            status_message = device.robot.get_arm_status()
+            if (flag != 0 or status_message is None or status_message.timestamp <= sent_at
+                    or int(status_message.msg.motion_status) != 0
+                    or min(stamps + [row["can_timestamp_s"]]) <= sent_at):
+                first = None
+                time.sleep(.005)
+                continue
+        elif previous_flag is not None and previous_flag != flag:
+            raise RuntimeError("Controller arrival flag changed during timeout assessment")
+        previous_flag = flag
+        if first is None:
+            first = row["monotonic_s"]
+        elif row["monotonic_s"] - first >= .5:
+            return q, motor, status
+        time.sleep(.005)
+    raise RuntimeError("Timed out verifying the powered hold")
 
 
 def log_calibration_submissions(comm, writer, device):
@@ -459,7 +525,24 @@ def main():
             started_motion = True
             device.robot.set_speed_percent(10)
             segment("calibration_pose", reference_start, target, max(.1, delta_deg / CAL_RATE_DEG_S))
-            row, status, error = calibration_arrival(device, target)
+            try:
+                row, status, error = calibration_arrival(device, target)
+            except CalibrationArrivalTimeout:
+                # The original pose always fails. Never resume the route on a hold.
+                q_hold, motor, hold_status = observe_timeout_hold(device, target)
+                hold_kind = "original_target_acknowledged"
+                if int(hold_status["motion_status"]) == 1:
+                    hold_kind = "measured_target_acknowledged"
+                    device.phase = "calibration_measured_hold"
+                    move(q_hold, device.phase)
+                    written = time.time()
+                    q_hold, _, hold_status = observe_timeout_hold(
+                        device, q_hold, sent_at=written, motor_anchor=motor)
+                report.update(stop_action=hold_kind, final_deg=list(map(math.degrees, q_hold)),
+                              final_status=hold_status)
+                mark("calibration_pose_rejected_hold_confirmed", action=hold_kind,
+                     measured_deg=report["final_deg"], status=hold_status)
+                raise RejectedPoseHeld("Requested pose rejected; verified powered position hold")
             report.update(command_sequence_completed=True, final_deg=list(map(math.degrees, device.angles(row))),
                           final_status=status, max_final_joint_error_deg=error)
             mark("calibration_arrived", final_deg=report["final_deg"], max_error_deg=error)
@@ -499,6 +582,9 @@ def main():
         report["joint_motion_observed"] = report["observed_j6_range_deg"] > 0
         mark("command_sequence_complete", final_deg=report["final_deg"],
              observed_j6_range_deg=report["observed_j6_range_deg"])
+    except RejectedPoseHeld as exc:
+        report["error"] = str(exc)
+        print(report["error"], flush=True)
     except (Exception, KeyboardInterrupt) as exc:
         report["error"] = repr(exc)
         mark("exception", error=report["error"])
