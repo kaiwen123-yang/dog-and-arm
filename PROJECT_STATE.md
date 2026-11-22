@@ -2,7 +2,11 @@
 
 更新日期：2026-11-22（Asia/Shanghai）。
 
-## 当前入口：B0-03 已冻结，下一步计划与每日日志已建立
+## 当前入口（11 月 22 日实施）
+
+远端计划 865835c 已进入 B0-04。独立工作树 `dog-and-arm-b0-contact` 复用核对过的源、环境和原始门轨迹。本机为 6 GiB RTX 3060 Laptop。已从 AutoDL 原树恢复并实读正确的冻结权重，seed0、1,000 次更新、1,088,000 条在线转移；已建立专用 SSH 别名 autodl-dog-arm。真实接触采集、动态门模型、只读物理评估及后端对照正在实施。每项结果见 [片段报告](reports/B0_CONTACT_SEGMENTS.md)，当日过程见 [日志](DAILY_WORK_LOG.md)。
+
+## 865835c 发布时的入口与冻结交接
 
 用户在完成仓库梳理后要求：增加一个单独文件详细记录每天的工作与解决的问题，并将下一步计划和 Codex 启动提示词推送 GitHub。本次新增 [DAILY_WORK_LOG.md](DAILY_WORK_LOG.md) 和 [B0 接触执行计划](docs/B0_CONTACT_EXECUTION_PLAN.md)，同步更新项目规则、总路线与启动入口；只做文档编辑和一致性检查，没有启动新训练、仿真任务或实机动作。
 

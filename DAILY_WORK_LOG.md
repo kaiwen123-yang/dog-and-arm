@@ -492,3 +492,17 @@ bash scripts/b0/env.sh python -u scripts/b0/train.py --seed 0 --run free_s0_clou
 - 新计划和提示词明确按验收逐级继续；每日单文件记录已写入AGENTS和交付要求，任务跨日继续记录，不设后台墙钟强制终止。
 - 本次文档提交标题：`docs: add daily work log and plan B0 contact-to-door execution`。本条随同一提交保存；其完整SHA、提交时间和远端是否可见以Git历史为准，下一次工作可补记已确认的提交号，不为预填自身SHA反复制造提交。
 - 下一项：用户把当前 `prompts/B0_START.txt` 交给执行Codex后，从04-A实际接口/数据与评估器开始；先查真实环境/权重/数组，再按计划推进。所有接触学习和完整门策略成绩仍为待执行。
+
+### 13:03 北京时间核查｜B0-04 实施启动
+
+- 在 /home/kaiwen/research 下定位主仓 dog-and-arm。执行 `git status --short --branch`、`git branch -vv`、`git worktree list`、`ps -eo pid,ppid,etime,pcpu,pmem,comm`、`git fetch origin --tags`、`git ls-remote --heads origin`。远端 main 确认为 865835cab27891b6627aa94b52287c27d5f3971c，现场分支为 7ab40e3；原 main 在 fe6cc85，PROJECT_STATE、H0_RUNBOOK、两份 H0 脚本有修改，P5 有未跟踪目录。未发现正在运行的 B0 训练/仿真。通过 `git worktree add -b b0/contact-baseline-20261122 ../dog-and-arm-b0-contact origin/main` 建立独立工作树。原树和两分支上的既有工作全部保留。
+- 实机主机 kaiwen-Legion-Y9000P-IAH7H，`nvidia-smi` 实测 RTX 3060 Laptop 6144 MiB、20 个逻辑 CPU、约 15 GiB 系统内存。原树的 .venv、.conda、vendor、assets/converted 以及两处原始教师目录通过本地符号链接复用；新数据写在独立树的 results/raw_large/b0。双 pin 由 git rev-parse HEAD 核对一致。原生 Python 3.10.12、MuJoCo 3.3.0；研究环境实际导入 Torch 2.14.0+cu130、MuJoCo 3.16.0、Warp 1.18.0，CUDA 可用。原生历史教师目录 119 MiB，含 pull、push、三项 free-motion 和独立验证。
+- 冻结权重路径和本机历史记录出现差异。`rg --files -uuu /home/kaiwen -g checkpoint_001000.pt -g '!**/site-packages/**'` 只找到 free_s0_boundary_r1 的不同配置检查点。目标 run 的 Git 结果可读，指定 .pt 在本机项目缺失。目前无现成 AutoDL SSH 别名，已向用户请求可读路径或连接方式。启动接触采集、评估器、门模型开发和跨后端真步进准备，保留 seed0 继承关系。未执行接触策略验收、H 条件或实机。
+- 本轮先检验两侧 20 ms 恒目标是否能在名义几何下产生双指抓持及保持。计划比较同一初态和动作的 CPU 3.3.0、CPU 3.16、Warp 3.16 真实反应，再按真实结果确定训练与修复。正式训练、原始采集与诊断分别命名。
+
+### 13:06–13:07 北京时间｜恢复冻结 seed0 与云端运行入口
+
+- 用户提供当前 AutoDL 入口并授权在本机固定配置。在本机创建专用 ED25519 密钥及 SSH 别名 `autodl-dog-arm`，安装公钥后以 `ssh -o BatchMode=yes autodl-dog-arm` 成功登录。凭据未写入项目。云端 RTX PRO 6000 Blackwell Server Edition 实报 97,887 MiB；cgroup cpu.max 为 2500000/100000，memory.max 为 128849018880 字节。已有其他研究的运行进程，保留。
+- 云端旧树在 56f6396，有未跟踪实验与研究文件。只从中读取冻结权重、环境与资产；接触阶段另建工作树 /root/autodl-tmp/dog-and-arm-b0-contact。云端原生教师目录仅有四组无接触数组，两侧门数组来源以本机为准。
+- 运行 `rsync -a --partial autodl-dog-arm:/root/autodl-tmp/dog-and-arm-b0/results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt results/b0/free_s0_cloud_servo_r2/`；本机 `torch.load(...,map_location='cpu',weights_only=False)` 实读 160968966 字节，seed=0、updates=1000、collected=1088000，actor/dyn/critic 状态字典分别有 68/24/10 项，附优化器。前项权重缺失已解决；接触模型更改维度，后续按迁移初始化处理。
+- 本机 git 无可用 HTTPS 写入凭据，`GIT_TERMINAL_PROMPT=0 git push --dry-run origin HEAD:main` 报缺 Username，`gh auth status` 未登录。云端已有用户的 GitHub 配置，`gh api repos/kaiwen123-yang/dog-and-arm --jq .permissions.push` 返回 true；通过云端代推本地同一普通提交，回读 main 核实。实验结果另列后续节点。
