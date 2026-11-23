@@ -2,7 +2,7 @@
 
 日期：2026-11-23（Asia/Shanghai）。用户要求：依据已开源的 SuperMimic 详细研究和迁移，以达到或接近论文指标为目标，单独形成可供后续比较的结果。本文把这一要求落实为当前 B0 的结果定义、计分和冻结规则；不改变“标准迁移 → 后续新开发”的顺序。
 
-**独立方法名称：`SuperMimic-M1Piper-standard-v1`。** 当前应持续保存它的真实中间结果和失败，最终交付同一方法在 M1＋Piper H 上的独立基线。记录一个负结果不等于宣布标准迁移完成；达到功能门槛与论文参考数值带仍是当前目标。实际最新成绩以 [标准迁移实测](../reports/B0_STANDARD_TRANSFER_RESULTS.md) 和 [本轮审查](../reports/B0_STANDARD_ROUND_REVIEW_20261123.md) 为准。
+**独立方法名称：`SuperMimic-M1Piper-standard-v1`。** 当前应持续保存它的真实中间结果和失败，最终交付同一方法在 M1＋Piper H 上的独立基线。记录一个负结果不等于宣布标准迁移完成；达到功能门槛与论文参考数值带仍是当前目标。实际最新成绩以 [独立标准结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md) 和 [11月24日审查](../reports/B0_STANDARD_ROUND_REVIEW_20261124.md) 为准，当前执行 [11月24日计划](B0_STANDARD_TRANSFER_PLAN_20261124.md)。2026-11-24 更新入口和已实施项说明；以下计分、数据资格与物理出口保持原登记定义。
 
 ## 1. 论文指标与本项目目标必须同时明确
 
@@ -39,7 +39,7 @@
 
 固定mjlab源码的分箱是全拼接时间轴约0.2 s（`bin_count=int(total_frames//(0.2/step_dt))+1`），ReturnSampler用整数帧映射；论文附录D.1写1 s，两者分开登记。适配ragged MotionID和合法起点时保持不跨clip/terminal的边界，不把论文文字静默替换固定源码。
 
-本轮还已证实一个应进入适配表的差别：固定官方动作变化惩罚作用于 effort-scale 之前的 policy output；当前 [EffortScaledActor](../learning/b0/model.py) 输出 home＋scale 后的公共规范命令，[接触训练](../learning/b0/contact_training.py) 将此规范命令送入 tracking。因此“调用原函数”不代表动作正则的物理权重已相同。原尺度和 gain32 的当前计分坐标彼此相同，gain32 不能因此被误写为奖励已扩大 32 倍。下一轮应先登记并配对修复这一语义；最终评分坐标必须提前冻结，旧坐标结果保留原身份，不能跨坐标直接宣称回报提高。
+11月23日审查曾证实以下适配差别（11月24日已完成固定effort修复、配对实训和共同评分，见[单位证据](../results/b0/pair_units_v1/measured.json)；下述原实现用于解释历史）：固定官方动作变化惩罚作用于 effort-scale 之前的 policy output；当前 [EffortScaledActor](../learning/b0/model.py) 输出 home＋scale 后的公共规范命令，[接触训练](../learning/b0/contact_training.py) 将此规范命令送入 tracking。因此“调用原函数”不代表动作正则的物理权重已相同。原尺度和 gain32 的当前计分坐标彼此相同，gain32 不能因此被误写为奖励已扩大 32 倍。这一语义现已登记并完成配对，不作为下一轮重复待办；后续共同物理评分继续使用固定基础effort坐标，旧坐标结果保留原身份，不能跨坐标直接宣称回报提高。
 
 `EffortScaledActor`＋原 tracking/softdone 的标准链为主。BC 初始化、ReferenceResidualActor、StanceArmActor、解析补偿、phase-TD、风险头和不同任务协议分别命名；即便某分支使用同一 WM/H32，也不能并入标准成绩。标准链的修复限于有证据的平台接口、数值实现、参考/数据资格与可比训练组织；不默认新增奖励或控制头。
 
@@ -77,7 +77,7 @@
 
 ### 4.1 原物理门槛不变
 
-遵循 [标准迁移计划](B0_STANDARD_TRANSFER_PLAN_20261123.md)：同一标准候选十项接触 nominal 通过，每项 D01–D20≥18/20；同一包 Warp 双侧完整 nominal 与 C01–C20 每侧≥18/20；同包原 native3.3 双侧完整 nominal 通过；有持续真实 H32 更新和多个节点的物理能力证据。接触 v1 与已登记 hold-margin 分别保留身份。CPU3.16 仍是必要时的诊断，不额外增加正式出口。
+遵循 [当前标准迁移计划](B0_STANDARD_TRANSFER_PLAN_20261124.md)：同一标准候选十项接触 nominal 通过，每项 D01–D20≥18/20；同一包 Warp 双侧完整 nominal 与 C01–C20 每侧≥18/20；同包原 native3.3 双侧完整 nominal 通过；有持续真实 H32 更新和多个节点的物理能力证据。接触 v1 与已登记 hold-margin 分别保留身份。CPU3.16 仍是必要时的诊断，不额外增加正式出口。
 
 然后冻结 seed0 的方法配方，开展 seed1/2 独立初始化与采集，各自先通过 B0-03；三 seed 的配方、选模规则和候选全冻结后，再打开各侧 H01–H50，每 seed/侧要求≥40/50。原名义门槛是 10/10，不是拿累计多包的总通过数凑十项。当前尚无标准候选完成该链，不进入多模态/VLA 来替代本阶段。
 

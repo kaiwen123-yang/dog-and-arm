@@ -1,25 +1,41 @@
 # 项目状态：SuperMimic 标准迁移
 
-## 2026-11-24 北京时间
+## 2026-11-24 北京时间｜已审查7180672，下一轮专注迁移
 
-固定源码 SuperMimic abc124c / mjlab dd51a9f。八条 seed0 配置链实际采集、训练和 Warp 接触评测。原坐标与固定 effort 的匹配端点 u500 分别有 1,291,256、1,392,696 条累计有效转移。两支十项正式接触均为 0/10，十片段共同口径均值 0.22961 / 0.25963。本轮 23 套十项名义，230 条逐案评分。完整双侧回报 NA，尚无最终候选。D、完整任务与 C、同包 native 双侧完整名义、独立 seed1/2 和冻结后的 H 均待前置门槛。
+**先完成标准迁移并冻结独立结果，之后再做算法开发。** 当前仍为 B0-04，无最终候选，完整双侧物理归一化回报 NA。当前执行 [11月24日计划](docs/B0_STANDARD_TRANSFER_PLAN_20261124.md)，完整启动词 [B0_START](prompts/B0_START.txt)，简要接续 [NEXT_RUN](prompts/NEXT_RUN.txt)。
 
-同记录的奖励单位和 reset 哨兵已核对。ReturnSampler、有效转移驱动的 Ratio、clip 尾观测、握持训练数据、WM 固定输入统计与逐样本 lane/age 抽取都有具名配置和真实训练回执。八条链合计 1,350 H32、3,081,019 有效转移。R/J 的额外 BC、解析补偿和参考前馈单独保留。
+### 已确认的最新实验
 
-AutoDL 实验现场为 `/root/autodl-tmp/dog-and-arm-b0-pair-v1`。完整训练状态保存在各 run 的 `cohort_state.pt`。原先两棵有修改的训练工作树保留。下一次接续先读[独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md)、[本轮机器清单](results/b0/standard_baseline_20261124/baseline_manifest.json)、[逐日记录](DAILY_WORK_LOG.md)和[NEXT_RUN](prompts/NEXT_RUN.txt)。
+实验端点 [7180672](https://github.com/kaiwen123-yang/dog-and-arm/commit/71806725b66e1aec0ac03536737edf31e669ac40)。八条 seed0 配置链、23组正式十项 Warp 名义，230案均失败，其中129案首2ms超力。两条单位配对u500各0/10，十片段共同effort均值0.22961/0.25963，不能代替完整任务回报。去重1,350 H32、13,500 WM、27,000 Critic、3,081,019完整有效转移。D、完整任务/C、同包native完整名义、独立seed1/2和H未开启。[审查](reports/B0_STANDARD_ROUND_REVIEW_20261124.md) · [独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [实验manifest](results/b0/standard_baseline_20261124/baseline_manifest.json)
 
-## 11 月 23 日启动前审查
+effort/reset、ReturnSampler、实际Ratio、逐clip末帧、握持WM数据/统计、lane-age已有真实实施和训练。u500是保持旧采样/调度的单位对照；最完整对齐组lane_age_s0_v1只有u50，不混用预算。固定统计u50的H7 15,707窗没有open/hold起点；Actor/H1 24,812起点中572为open/hold。已保留指力样本没有整个首20ms持续双指，其他样本力未知。首次物理失败的完整数值有效20ms仍入H1/Actor，不预设其被过滤。
 
+### 下一轮实际工作
+
+1. 以固定双源abc124c/dd51a9f和已对齐机制建立一条主配方，至多一个明确的小预算对照。
+2. 对齐终止lane复位后持续采集；保留真实200ms前缀、独立时钟/history/上一动作和显式episode边界，H7不跨reset，预算/恢复准确。
+3. 补训练身份的真实多接触模式20ms数据，以原H1/H7目标预热WM，再实际进行H32联合学习。教师仅用于WM；Actor仍为标准B0-03来源，想象初态来自当前在线replay。
+4. 按双侧真实接触存续、门力、首次失效、阶段事件和独立WM误差决定后续训练。正式十项通过后再D、连续双侧Warp/C与同包native、独立seed、冻结后H；完整回报同时达协议0.90/0.88要求。
+
+新采集生命周期与预热尚为计划。本次只读审查、文档修订和GitHub发布，没有新增训练或仿真。原始实验代码/配置/结果保留。标准迁移前不添加动作BC、参考直通、解析补偿、新奖励/风险头/phase-TD、课程、新网络或新任务；VLA等开发后置。[目标差距](docs/GOAL_GAP_20261124.md)
+
+### 现场与交接
+
+历史现场 AutoDL /root/autodl-tmp/dog-and-arm-b0-pair-v1，权重及cohort_state.pt恢复位置见 [训练清单](results/b0/standard_baseline_20261124/contact_training.json)。下次先核实工作树、进程/退出回执和大资产，已回收队列不重开，不清理其他工作树。P1–P6与B0-03 seed0继续继承，R/J混合成绩单列。详细问题处理按北京时间持续写 [DAILY_WORK_LOG](DAILY_WORK_LOG.md)。
+
+## 历史：11月23日启动前审查
+
+以下11月23日内容至早期快照全部保留当时语境，其中“当前/下一轮/未接入”不覆盖本页顶部及11月24日计划。
 
 更新：2026-11-23，北京时间。最新已结束实验端点为 [638fddc](https://github.com/kaiwen123-yang/dog-and-arm/commit/638fddcb2f025006595f79f27a977a8fba41cbc2)，22:50:39 回收；本次仅核读论文/官方源码、审查结果并发布下一计划，没有新训练、物理评测或硬件动作。
 
-## 当前目标与结果入口
+### 历史目标与结果入口（11月23日）
 
 用户明确要求：**根据开源SuperMimic详细研究与标准迁移，以达到或接近论文指标为目标，单独形成结果供后续比较；之后才做新开发、多模态/VLA。** 当前仍是B0-04接触阶段，WM、可微动力学和H32本来就在本阶段。
 
 独立结果：[B0_STANDARD_TRANSFER_BASELINE.md](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [机器可读清单](results/b0/standard_baseline_20261123/baseline_manifest.json)。目标方法ID `SuperMimic-M1Piper-standard-v1`，本轮快照 `b0-standard-s0-638fddc`；状态为未完成的中间基线，无合格最终候选。
 
-## 最新实测
+### 历史实测（638fddc）
 
 | 标准配置最终节点 | 接触H32累计 | 有效转移累计 | 正式接触 |
 | --- | ---: | ---: | --- |
@@ -37,7 +53,7 @@ WM双指H32 TCP P95：gain200为551.98/278.53 mm、wmcoords-u50为100.66/82.60 m
 
 gain200首个真实20 ms后继tracking可达0.09080（上界0.1），但其首2 ms仍30.64 N>6 N，而且该诊断失败后继续积分。不能把它当作论文完整回合0.908。当前完整归一化回报、可比论文WM误差和可靠总GPU小时均NA。
 
-## 论文与固定源码研究带来的下一动作
+### 历史待办（11月24日已完成相关对齐）
 
 已核读论文v3和固定官方核心。论文BONES-SEED的0.90是SONIC参照线；SuperMimic超过该线及25/129,514、0/129,514是G1训练动作覆盖，不能等同本门任务成功率。迁移结果另记完整物理回报，目标≥0.90、接近数值带≥0.88（本项目预登记0.02容差），同时保持原物理门槛。[指标协议](docs/B0_PAPER_BASELINE_PROTOCOL.md)
 
@@ -45,7 +61,7 @@ gain200首个真实20 ms后继tracking可达0.09080（上界0.1），但其首2 
 
 **下一优先项：同初始化/数据资格/预算，先真实配对训练原动作率坐标与固定O1 effort坐标；再恢复官方采样和实际调度、验证WM接触精度，持续推进接触→完整任务。** 不仅复做诊断，也不无条件将gain200续到u1000。具体执行、归一化完整回报与预算见 [下一计划](docs/B0_STANDARD_TRANSFER_PLAN_20261123.md)。
 
-## 恢复、阶段门槛与已有资产
+### 历史恢复说明（当前现场见页首）
 
 标准锚点仍为`results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt`与`results/b0/contact_s0_wm_held_r2/wm_002000.pt`；本轮各完整cohort状态保留作控制/有据续训。固定来源abc124c / dd51a9f，原native3.3保留；上游5fb9229仅candidate_not_applied。
 

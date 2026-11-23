@@ -1,9 +1,19 @@
-当前处于 SuperMimic 标准 B0-04。2026-11-24 匹配训练已到 u500，两个端点 Warp 名义各 0/10。完整开发回报 NA，最终候选为空。最新现场为 /root/autodl-tmp/dog-and-arm-b0-pair-v1。
+当前唯一主线：先完成 SuperMimic-M1Piper-standard-v1 迁移，成功并冻结独立结果后再开发算法。实验端点7180672，B0-04尚未通过；之后的本轮计划提交没有新增训练。
 
-先核对 main、工作树、.local-pair/*.exit、results/b0/<run>/outcome.json 与物理评分。读 PROJECT_STATE.md、DAILY_WORK_LOG.md 近日、reports/B0_STANDARD_TRANSFER_BASELINE.md、results/b0/standard_baseline_20261124/baseline_manifest.json 和 contact_training.json。后者给出各 run 原始命令、初始化与完整状态路径；已结束的旧队列不重开。
+完整启动词见prompts/B0_START.txt；当前执行docs/B0_STANDARD_TRANSFER_PLAN_20261124.md。先读AGENTS、PROJECT_STATE顶部、DAILY_WORK_LOG最近日期、reports/B0_STANDARD_ROUND_REVIEW_20261124.md、reports/B0_STANDARD_TRANSFER_BASELINE.md和results/b0/standard_baseline_20261124/{baseline_manifest,contact_training}.json。正常核对main、工作树和现场回执。历史现场/root/autodl-tmp/dog-and-arm-b0-pair-v1；已结束队列不重启。
 
-下一道正式验收仍是同一个无额外动作BC/参考直通/解析反馈的标准策略在 Warp 过十项接触。先看 pair_units_v1/grip_commands.csv、nominal_score_details.jsonl、pair_sampling_audit_v1/replay_draw_grip_fixed_stats_u50.json 和 pair_wm_comparison_v1 的同窗误差，识别握持指载荷、开口、TCP/把手误差、前拉/背推存续和真实就绪事件。保留所有失败、阈值、参考版本和全分母。进一步的同类预算应依据两个方向持续双指接触或裁判阶段的真实进展；如补训练数据，须另登记训练身份，保留独立验证，明确比较对接触 WM 与真实控制各有什么影响。
+已对齐effort/reset、ReturnSampler、Ratio、clip-last、握持WM数据/统计、lane-age，不重复实施。230案0通过/129首2ms超力；u500仅为旧采样下单位配对，最完整整合组仅u50。完整回报NA、最终候选为空。
 
-正式评测命令为 bash scripts/b0/evaluate_standard_contact.sh <新训练run> <冻结节点> warp。十项均过后，各 D01–D20 至少 18/20；随后同包连续双侧完整 Warp 名义及 C 各至少 18/20、原 native3.3 双侧完整名义。seed1/2 各自独立完成初始化和 B0-03，三 seed 的规则和候选全部冻结后再开 H，每 seed/侧至少 40/50。完整物理归一化回报目标为0.90，项目接近带0.88；缺完整回合写 NA。仅在原物理门槛也满足时评定。
+下一执行顺序：
+1. 冻结一条官方核心主配方，至多一个明确的小对照。
+2. 对齐终止lane复位后继续采集，维护真实200ms前缀、独立clock/history/prev_action、episode边界、Ratio/Sampler及恢复；H7不跨reset，前缀不算策略经验。用同冻结Actor比较旧cohort与新生命周期。
+3. 盘点并补训练身份的真实20ms多模式接触数据，以原H1/H7损失预热WM，独立验证不入训练。教师只供WM，Actor仍标准B0-03来源。
+4. 立即真实联合学习，u0/1/10/50及有据后续节点；依据双侧持续双指、门力、失败时刻和阶段进展续训，不仅做审计，不盲续旧u500。正式评分：bash scripts/b0/evaluate_standard_contact.sh <新run> <冻结更新数> warp。
 
-继续使用独立环境与固定官方 WM、原 tracking/softdone、H32 和网络。按北京时间追加唯一 DAILY_WORK_LOG.md，同步独立报告与manifest，普通commit/push并回读。仅仿真；外部物理设备、旧G1、R/J混合策略成绩和多模态/VLA维持各自独立身份。
+训练的首次物理失败完整20ms仍可入H1/Actor，不能误当全部初态被过滤。已有双指0只指可观测起点区间十个子步持续受力，未知样本不推断无接触。不中断episode的resume须连同物理状态/计数器恢复，否则明确截断重建前缀。
+
+保留固定双源abc124c/dd51a9f、网络/GenCoord/tracking/softdone/H32、物理/参考/阈值和任务身份。gain32、固定统计、H1/H7与离线数据是登记平台配方。算法开发后置：不加动作BC、参考直通、解析补偿、新奖励/风险头/phase-TD/课程/新任务，不前移VLA、双门、硬件或旧G1。
+
+同候选十项接触nominal→各D≥18/20→连续双侧Warp各1条nominal通过、C每侧≥18/20和同包native3.3每侧1条完整nominal通过→独立seed1/2各自B0-03→三seed全部冻结后H每侧≥40/50。每seed/侧/split完整物理回报目标0.90、项目接近带0.88，须同时过物理门槛。缺完整回合写NA。
+
+北京时间详细追加DAILY_WORK_LOG，更新独立结果/新manifest/状态/提示词，保存真实命令、失败、完整预算与恢复位置。普通commit/push并从GitHub回读，已授权无需再问。原实验数据和用户其他修改保留。

@@ -1,8 +1,10 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先按开源SuperMimic完成标准迁移，以达到或接近论文指标为目标，单独保留结果供后续比较；之后才开发多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
+本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先按开源SuperMimic完成标准迁移，以达到或接近论文指标为目标，单独保留结果供后续比较；迁移成功并冻结基线后才开发新算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
 **11 月 24 日标准 B0 接触迁移仍未通过。** 已实际完成原坐标与固定 effort 的匹配训练至 u500，以及 ReturnSampler、Ratio、尾帧、WM 握持数据/统计、按 lane/age 重放的对照。八条配置链均为 seed0，u500 配对各 0/10，完整任务回报 NA。[独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [机器清单](results/b0/standard_baseline_20261124/baseline_manifest.json) · [逐案评分](results/b0/pair_units_v1/nominal_segments.csv) · [接续入口](prompts/NEXT_RUN.txt)
+
+**下一轮集中对齐逐lane采集、接触覆盖、原WM预热和单一标准配方联训。** [下一计划](docs/B0_STANDARD_TRANSFER_PLAN_20261124.md) · [本轮审查](reports/B0_STANDARD_ROUND_REVIEW_20261124.md) · [目标差距](docs/GOAL_GAP_20261124.md)
 
 P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000动作BC和解析补偿的有效成绩单列保留，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
 
@@ -30,7 +32,7 @@ P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000�
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前学习策略进度见 **reports/B0_RECOVERY_REVIEW_20261123.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_STANDARD_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -40,9 +42,9 @@ P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000�
 
 ## 用户现在需要做什么
 
-在已有工作区先检查 git status，再正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给 Codex，从 `23c9068` 已审查代码和结果接续[标准迁移计划](docs/B0_STANDARD_TRANSFER_PLAN_20261123.md)。恢复 `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt` 与 `results/b0/contact_s0_wm_held_r2/wm_002000.pt`，保留纯 tracking 接触 u1000 的负结果及 540/546 混合包作为对照。复用已完成接口、数据和后端诊断，有具体风险才回归；不重跑整套 B0-03/P6，不提前打开 H，不用新任务协议或自研控制方法替代标准迁移结论。现场恢复和可执行入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
+在已有工作区检查 git status 并正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给 Codex。以已审查实验7180672和随后发布的文档为起点，执行 [11月24日标准迁移计划](docs/B0_STANDARD_TRANSFER_PLAN_20261124.md)：对齐终止lane重新采集、补接触数据、原损失WM预热、单一标准配方真实联合训练。已有动作率/采样/调度修复直接继承，保留负结果与R/J混合包的独立身份；迁移成功并冻结结果后再开发算法。
 
-最新恢复轮的 AutoDL 独立树为 `/root/autodl-tmp/dog-and-arm-b0-recovery`；历史 B0 树为 `/home/kaiwen/research/dog-and-arm-b0-contact` 与 `/root/autodl-tmp/dog-and-arm-b0-contact`，运行前核实可用位置、进程和材料。主工作树 `/home/kaiwen/research/dog-and-arm` 的其他修改保留。B0 使用独立训练环境，当前执行范围仅在仿真中。
+历史实验现场为 AutoDL /root/autodl-tmp/dog-and-arm-b0-pair-v1。实际启动前核对工作树、进程、退出回执与完整恢复文件，不重开已回收任务，不覆盖其他树的未提交修改。继续独立仿真环境，不重复B0-03 seed0/P6，不提前打开H；本轮范围仅仿真。具体入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
 
 ## H0：相机和机械臂联合运行
 
@@ -120,10 +122,10 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 | AGENTS.md | Codex 项目规则与用户偏好 |
 | PROJECT_STATE.md | 当前完成情况、验证范围及下一步 |
 | DAILY_WORK_LOG.md | 北京时间逐日详细工作、问题处理、实验结果与交接记录 |
-| docs/B0_STANDARD_TRANSFER_PLAN_20261123.md | 当前官方核心机制的标准迁移、必要平台适配与验收计划 |
-| reports/B0_RECOVERY_REVIEW_20261123.md | 最新恢复轮完整成绩、方法归因、证据边界与审查结论 |
-| docs/GOAL_GAP_20261123.md | 距离 B0 与最终多模态/世界模型/实机目标的逐项差距 |
-| results/b0/recovery_review_20261123/audit_summary.json | 最新轮 387 条结果覆盖、继承/遗漏、精确分母与视频审阅范围 |
+| docs/B0_STANDARD_TRANSFER_PLAN_20261124.md | 当前单一标准主线：采集生命周期、接触数据、WM预热与真实联合训练 |
+| reports/B0_STANDARD_ROUND_REVIEW_20261124.md | 7180672轮逐案/成本复算、代码语义、剩余问题与结论 |
+| docs/GOAL_GAP_20261124.md | 最新B0、论文参考指标与长期目标的逐项差距 |
+| results/b0/standard_review_20261124/audit_summary.json | 最新230案、15训练过程去重预算与覆盖复核；不含新仿真 |
 | docs/B0_RECOVERY_PLAN_20261123.md、reports/B0_REVIEW_20261123.md | 前一恢复计划与审查，作为历史保留 |
 | docs/B0_CONTACT_EXECUTION_PLAN.md | 已执行轮的历史计划与继续继承的任务/冻结门槛 |
 | prompts/ | 首轮、续接、后续动力学阶段提示词 |

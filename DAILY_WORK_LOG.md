@@ -925,3 +925,43 @@ GitHub main 与新检出均为 `95159f77745d754b41ca135c726e2f2ba55c907e`。相�
 - WM 新验证共80个采集cohort和40个配对种子；5,120 lanes，136,000 attempted、28,769有效、4,716提前终止。验证的政策、种子和真实轨迹独立，使用同一组参考。四组采集进程时间累计222.63s。初次批量合并四元数计算不支持 TorchScript vmap，转为普通批次，将加权总损失和逐组 MSE 与固定 `_compute_losses` 两返回值逐批比对后重测。5个数据集共27次实评分，进程墙钟累计563.54s。u500双指TCP P95 前拉/背推为canonical 251.55/85.34 mm、effort 262.48/24.32 mm。两包H32加权状态损失为0.479136/0.058596和0.645614/0.014859。全部独立验证排除于学习、统计和 replay，实际评分入口为 `scripts/b0/standard_contact_validation.py score --state-loss`。
 - `scripts/b0/index_transfer_training.py` 逐 run 核对15个正常训练退出、继承后的连续步号、恢复状态和端点权重摘要。八条seed0配置链合计新增1,350 H32 / 13,500 WM / 27,000 Critic；3,081,019有效/7,296,000模拟控制区间，11,059,200想象步。训练进程累计2.069小时，合并重叠为0.665墙钟小时；继承训练与独占GPU成本NA。完整命令在 results/b0/standard_baseline_20261124/contact_training.json。
 - 收回23组正式Warp十项共230条真实评分，0条通过，129条首2ms失败；仅有上述一个登记阶段事件。46个双侧稳定握持首动作由原物理数组与上一 clipped 命令核对，两评分口径逐案例分项闭合，最大误差2.22e−16。完整任务回报、D/C、同包native完整名义、独立seed1/2和H均NA。0.90/0.88仅在完整物理回报与原门槛共同满足后可用。新独立manifest、总报告、PROJECT_STATE、B0_START/NEXT_RUN随本次提交保存。训练/评分大数组与完整恢复权重留在AutoDL。
+
+## 2026-11-24｜7180672轮结束后的审查：集中迁移，算法开发后置
+
+### 用户决定、读取范围与实际操作
+
+用户本次明确：“先专注于做迁移，迁移成功后再做算法的开发”，并要求下一轮计划、启动提示词和GitHub推送。本次将这一顺序写入当前规则、状态和全部执行入口，保持独立方法SuperMimic-M1Piper-standard-v1。实际操作为只读代码/结果审查、文档修改和发布；新增训练、仿真评测和硬件动作均为0。
+
+以本地95159f77745d754b41ca135c726e2f2ba55c907e开始，git status clean；git fetch origin main后核对四个实验提交，fast-forward至71806725b66e1aec0ac03536737edf31e669ac40。GitHub branch main回读同一SHA，tree为424d2eb7e7bb36cd6bcc50cd75ff916cba7fb485。相对95159f7变更清单119文件。读取当前报告、配置/执行路径、原始小结果与近日工作记录，独立复算全部230正式案、460分项和15训练过程账本。没有在本次登录AutoDL加载所有大权重/原始数组，没有声称重新观看本轮视频或逐字读到不可访问的历史对话。
+
+并行完成结果复算、代码语义审查和下一计划评审，由主任务集成。通过GitHub回读固定abc124c的ReplayBuffer、WorldModelEnv、runner，以及dd51a9f的manager_based_rl_env，直接核对采集/复位/因果历史语义。既有论文指标协议保持。
+
+### 实测复算与仍未完成项
+
+23个checkpoint×backend组合各十项，230条全失败，129条首2ms且均door_force_limit。仅canonical u350前拉release产生登记阶段事件，retreat_arm未完成，u500未保留事件。460条坐标分项和按原分母复算最大差2.22e-16。八条配置都是seed0，15个过程退出码均0，按恢复父节点去重新增1350 H32、13500 WM、27000 Critic、3081019完整数值有效转移、7296000模拟lane控制区间、11059200 imagined steps。进程时长合计2.069350小时，重叠合并墙钟0.664912小时，独占GPU小时NA；完整回报/最终候选/D/完整任务C/native/独立seed/H仍未形成。
+
+区分两种预算：u500是保留旧采样/调度的canonical-effort单位配对；包含ReturnSampler、Ratio、clip-last、grip、fixed-stats、lane-age的最完整组只到u50/54028转移。不能把前者的长训失败归给后者。已实现effort/reset、采样/调度/末帧等不重复列为待办，AGENTS原有陈旧条目已更正。
+
+### 查明的问题、排除的解释与下一实现
+
+固定统计u50 replay：H7 15707合法窗open/hold=0；H1/Actor 24812起点中572为open/hold，原抽样约2.305%、lane-age约2.601%。可回查力的594/933样本中整个首20ms持续双指均0，其余力未知。该定义不代表起点瞬间没有握持。
+
+核读contact_warp后明确：训练首物理失效不会截断十子步，valid_full_interval检查数值与容量；首次失败的完整区间仍进入H1/Actor，随后lane退出。审查中曾考虑的“首2ms失效起点被Actor全部过滤”假设已排除，正式计划没有据此重构Actor池或引入教师Actor初态。正式评分器首失效停止的语义与训练collector分开。
+
+更具体的固定来源差异是：官方env逐lane终止后auto_reset，当前40步cohort死亡lane等待至下一批。下一轮对齐这一生命周期，沿已有reset(ids)接口保留真实200ms前缀及独立clock/history/prev_action，增加episode边界避免H7跨reset；前缀、诊断与策略经验分账，Ratio和Sampler不改为新奖励。该差异已证，控制收益仍待实测，不宣称解决了首步超力。完整resume需要物理状态/solver所需状态、接触计数、RNG及所有学习状态；否则明确边界截断后重建前缀。
+
+WM的固定统计u50双指H32 TCP P95为104.18/107.70mm，最完整lane-age为242.02/196.77mm，held_r2为50.53/40.36mm。接触预热与覆盖仍不足；小型native梯度检查不能代表Warp全域H32梯度，encoder证据也不支持全面饱和。下一轮只用原H1/H7损失做训练数据预热，教师仅用于WM，不加新loss/BC/解析控制。新数据初始化不能冒充同清单resume，fit_contact_model旧native held teacher/teacher_samples标签须按真实来源修正。
+
+### 已形成的可执行计划和阶段门槛
+
+新增docs/B0_STANDARD_TRANSFER_PLAN_20261124.md、reports/B0_STANDARD_ROUND_REVIEW_20261124.md、docs/GOAL_GAP_20261124.md与results/b0/standard_review_20261124/audit_summary.json。顺序为：一条标准配方→采集生命周期/接触覆盖→原WM预热→真实H32联训→原物理验收；最多一个明确小对照。建议WM 0/200/1000 minibatch、联训u0/1/10/50及有据u100/200后续检查，均非强制终点。以双侧持续双指、受控门力、失败时刻/阶段和独立误差决定续训，不重复单位试验，也不盲延长旧u500。
+
+迁移成功仍须同候选十项接触、各D≥18/20、Warp两侧各1条完整nominal通过/C每侧≥18/20、同包native两侧各1条完整nominal、持续H32、seed1/2独立B0-03与后续门槛、全冻结后H每seed/侧≥40/50，并同时达到完整物理回报0.90或项目0.88接近带。没有合格结果不进入算法开发。动作BC/参考直通/解析补偿/新reward或风险头/phase-TD/课程/新网络/新任务统一后置。
+
+同步AGENTS、PROJECT_STATE、README、总路线、B0总计划、指标协议的当前实施说明、独立结果入口和B0_START/NEXT_RUN。旧11月23日计划/审查/差距页标注历史，不删除原失败。原实验代码、配置、小结果和manifest不改；本次仅新增独立审查JSON。
+
+### 验证、GitHub交付与下一项
+
+执行文档链接/引用路径、JSON解析、git diff --check、当前/历史入口与指标分母检查。两名独立审查分别核对数值及计划可执行性，修正nominal每侧1案/C每侧20案的歧义，补全恢复物理状态与新WM数据来源标签要求。没有为文档修改新增仿真或无关测试。
+
+普通提交只包含本次明确文档和审查结果，推送前再次核对远端SHA，发布后从GitHub回读main、计划、启动词和审查，再同步本地并核对字节。7180672及其前实验推送状态已确认；本次文档自身提交随本次提交保存，最终实际SHA在聊天交付，不为了预填自身SHA制造循环提交。下一执行者按B0_START实际完成实现、采集、训练与评分，并逐日继续本文件。
