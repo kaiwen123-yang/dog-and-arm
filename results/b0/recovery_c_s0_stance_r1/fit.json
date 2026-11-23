@@ -1,0 +1,25 @@
+{
+  "source": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "references": "results/raw_large/b0/full_warp_hold_park_r1",
+  "native_teacher": "results/raw_large/b0/full_native_margin_r1",
+  "variant": "privileged_reference_translation_arm_map",
+  "coefficient": 1.0,
+  "unconstrained_coefficient": 1.3385378871357483,
+  "objective": "equal weight per side over the same-clock, same-phase, <=2mm and <=1deg physical teacher label rows; coefficient in [0,1]; no score/case used for training",
+  "inputs": "current measured world root XYZ minus fixed reference; precomputed reference spatial Jacobian. No engine identifier, observed contact, future simulation, IK teacher or online action labels.",
+  "parameterization": "Use reference minus actual displacement; damped 6D arm Jacobian, orientation weight 0.12m, damping 0.01, per-joint clip +/-0.05 rad, smooth gain for stowed reference arm. All source Actor parameters remain frozen.",
+  "H32_updates": 0,
+  "deploy": "scripts.b0.recovery_backend_stance eval",
+  "rows": {
+    "pull_60_train": {
+      "count": 450,
+      "before_rmse_rad": 0.021018200801592352,
+      "after_rmse_rad": 0.011928664042897922
+    },
+    "push_25_train": {
+      "count": 436,
+      "before_rmse_rad": 0.012573130125177497,
+      "after_rmse_rad": 0.0027638712820435805
+    }
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "source": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "cfg": {
+    "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+    "worlds": 128,
+    "wm_batch": 256,
+    "wm_batches": 10,
+    "actor_batch": 256,
+    "wm_hidden": [
+      2048,
+      2048,
+      2048
+    ],
+    "actor_hidden": [
+      2048,
+      1024,
+      512,
+      256
+    ],
+    "critic_hidden": [
+      256,
+      128
+    ],
+    "buffer_size": 1000,
+    "replay_ratio": 16,
+    "physics_dt": 0.002,
+    "policy_dt": 0.02,
+    "history_length": 10,
+    "free_motion_clip_frames": 351,
+    "actor_horizon": 32,
+    "wm_window": 8,
+    "collection_noise": 0.1,
+    "milestones": [
+      0,
+      1000,
+      5000,
+      10000
+    ],
+    "periodic_updates": 10000,
+    "diagnostic_block": 50000,
+    "window_recipe": "terminal_one_step_and_seven_step",
+    "one_step_batches": 2,
+    "network_output_units": "quarter_effort_over_servo_gain",
+    "additional_physical_checks": [
+      50,
+      200
+    ],
+    "hypothesis": "Native held targets miss pregrasp on both 3.16 CPU and Warp. Fit the same joint proprioceptive policy on the two complete held-target Warp teachers. Evaluate the joint package at initialization and after the same fifty H32 updates, using these same references on both backends.",
+    "base": "config/b0/full_joint_prior.yaml",
+    "cohort_steps": 16,
+    "replay_cohorts": 32,
+    "rsi_phases": [
+      "approach_base",
+      "settle",
+      "pregrasp",
+      "approach_arm",
+      "grasp",
+      "open",
+      "hold",
+      "release",
+      "retreat_arm",
+      "post_release_hold",
+      "stow",
+      "retreat_base",
+      "final"
+    ],
+    "reference_directory": "results/raw_large/b0/full_warp_hold_park_r1",
+    "references": [
+      "pull_60_train",
+      "push_25_train"
+    ],
+    "additional_teacher_episodes": [],
+    "actor_checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "wm_checkpoint": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "reward": "pinned_o1_tracking",
+    "reward_at": "successor_reference",
+    "diagnostic_updates": [
+      0,
+      50,
+      200,
+      1000
+    ],
+    "calibrated_actor": "results/b0/full_s0_joint_warp_supervised_r1/actor_003000.pt",
+    "calibrated_actor_lr": 6.25e-06,
+    "freeze_actor_statistics": true,
+    "actor_parameterization": "motion_reference_arm_jaw_residual",
+    "physical_action_prior": {
+      "physical_units": [
+        0.005,
+        0.1,
+        0.001,
+        0.0001
+      ],
+      "weight": 0.02
+    },
+    "actor_goal_schema": "privileged_translation_approach_wheel_residual",
+    "additional_bc_run": "recovery_approach_wheel_r1"
+  },
+  "updates": 1200,
+  "h32_updates": 0,
+  "fitting": "final iterate Adam .002, sample 128 in same-phase reference approach; axes x,y,yaw, reference lookahead, yaw rate, previous wheel actions and reference wheel velocities",
+  "architecture": "frozen original Actor, zero-initialized final layer of 9-32-32-4 wheel residual in rad/s, fixed 1mm and .002rad nominal deadband; no intervention outside reference approach",
+  "episode_frames": {
+    "aug_pull_01_train_xy": 261,
+    "aug_push_01_train_xy": 261,
+    "aug_pull_02_train_combined": 261,
+    "aug_push_02_train_combined": 261,
+    "aug_pull_03_validation_combined": 261,
+    "aug_push_03_validation_combined": 261,
+    "aug_pull_04_train_xy": 261,
+    "aug_push_04_train_xy": 261,
+    "aug_pull_05_train_yaw": 261,
+    "aug_push_05_train_yaw": 260,
+    "aug_pull_06_train_door": 261,
+    "aug_push_06_train_door": 261,
+    "aug_pull_07_train_combined_recover": 261,
+    "aug_push_07_train_combined_recover": 261,
+    "aug_pull_08_validation_combined_drop": 261,
+    "aug_push_08_validation_combined_drop": 261
+  },
+  "train_rmse_rad_s": 0.08785925060510635,
+  "validation_before_rad_s": 0.3857865631580353,
+  "validation_after_rad_s": 0.14783118665218353
+}

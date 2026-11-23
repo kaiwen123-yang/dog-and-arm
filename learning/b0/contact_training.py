@@ -128,7 +128,7 @@ class DoorImagination(MultiTaskWorldModelEnv):
         # Measured successor and predicted successor both score against t+1.
         self._ref_body_state = self.motion.body_state(self.motion_times+1)
         self._wm_goal_obs,self._actor_goal_obs = self.motion.goals(
-            self.representation,self.motion_times,self.aux_state)
+            self.representation,self.motion_times,self.aux_state,self.rep_state[:,58])
         self._build_task_goals()
 
 
@@ -262,7 +262,7 @@ class ContactRun:
         for k in range(self.steps):
             q,v=plant.data.qpos[:].clone(),plant.data.qvel[:].clone()
             s=contact_state(q,v)
-            _,goal=bank.goals(self.rep,frames,s[:,:7])
+            _,goal=bank.goals(self.rep,frames,s[:,:7],q[:,31])
             obs=build_actor_obs_td({'motion':goal},noisy)
             raw=self.actor.raw(obs)+torch.randn_like(prev)*self.cfg['collection_noise']*self.exploration_scale
             action=raw.clamp(-1,1)

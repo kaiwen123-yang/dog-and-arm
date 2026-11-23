@@ -1,0 +1,73 @@
+{
+  "variant": "six_arm_rows_clock_matched_teacher",
+  "source": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "fixed_reference": "results/raw_large/b0/full_warp_hold_park_r1",
+  "native_teacher": "results/raw_large/b0/full_native_margin_r1",
+  "status": "supervision only; zero additional H32. No evaluation episode is a label.",
+  "frozen": "All network parameters and normalizers except last six arm output rows and their biases; unchanged WM/Critic.",
+  "objective": "Per-side equally weighted mean native label squared error at same-clock agreed target poses plus equal mean squared change from frozen Warp Actor at all Warp teacher states; ridge 1e-4 on decoder correction. Analytic solve, no checkpoint selection.",
+  "filter": "same absolute frame/phase, manipulated phases, teacher world TCP goal distance <= 2 mm and angular distance <= 1 degree. All source actions real applied 20ms commands.",
+  "sources": {
+    "pull_60_train": {
+      "warp_frames": 3786,
+      "native_overlap": 3761,
+      "native_accepted": 450,
+      "native_by_phase": {
+        "pregrasp": 12,
+        "approach_arm": 28,
+        "grasp": 97,
+        "open": 18,
+        "hold": 64,
+        "release": 70,
+        "retreat_arm": 23,
+        "post_release_hold": 138
+      },
+      "native_open_goal_distance_median_m": 0.005941121765239445
+    },
+    "push_25_train": {
+      "warp_frames": 2802,
+      "native_overlap": 2759,
+      "native_accepted": 436,
+      "native_by_phase": {
+        "pregrasp": 14,
+        "approach_arm": 22,
+        "grasp": 86,
+        "open": 16,
+        "hold": 62,
+        "release": 69,
+        "retreat_arm": 30,
+        "post_release_hold": 137
+      },
+      "native_open_goal_distance_median_m": 0.006169904766946792
+    }
+  },
+  "metrics": {
+    "pull_60_train_native": {
+      "count": 450,
+      "rmse_before_rad": 0.021018200801592352,
+      "rmse_after_rad": 0.002615948028888196,
+      "max_action_change_rad": 0.06694595180072573
+    },
+    "pull_60_train_warp_anchor": {
+      "count": 3786,
+      "rmse_before_rad": 0.0,
+      "rmse_after_rad": 0.005053009837711998,
+      "max_action_change_rad": 0.042427309210230746
+    },
+    "push_25_train_native": {
+      "count": 436,
+      "rmse_before_rad": 0.012573130125177497,
+      "rmse_after_rad": 0.0023062618613959593,
+      "max_action_change_rad": 0.029380773265804353
+    },
+    "push_25_train_warp_anchor": {
+      "count": 2802,
+      "rmse_before_rad": 0.0,
+      "rmse_after_rad": 0.0030958206928599743,
+      "max_action_change_rad": 0.01639427275848462
+    }
+  },
+  "ridge": 0.0001,
+  "learned_scalars": 1542,
+  "physical_units": "RMS over the six physical servo angle labels, train diagnostics only"
+}

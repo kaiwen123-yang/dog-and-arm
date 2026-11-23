@@ -240,3 +240,7 @@ P5 自由根实测 33 s / 16,500 步。直行 0.360 m，速率控制左转 10.40
 
 下一轮先查看 `git status` 并正常拉取；仿真环境缺失时运行 `bash scripts/setup_env.sh`。本地完整流程见实时调试文档，默认查看命令为 `bash scripts/project_env.sh python scripts/live_assembly.py --watch`。本轮续接不执行任何 `h0_*` 硬件入口。
 
+
+### 2026-11-23 20:08 接续实测索引
+
+固定时钟下的扰动教师已实采 50,776 个 20 ms 转移。A0–A4 五组配对 BC 已训练，A0/A1 各侧 C02–C05 均 0/4。全程原机制 H32-u1 两侧 Warp 名义通过，u5、u10 前拉重新失败。另一个只拟合单个补偿系数的共同 seed0 监督包已在原始 native3.3、CPU3.16 与 Warp3.16 各自双侧名义闭环通过；标准 Actor、收集和想象接口均已接入。完整 C 与新包 H32 单列。详细证据见 reports/B0_RECOVERY_RESULTS_20261123.md、reports/B0_H32_RECOVERY_20261123.md、reports/B0_RECOVERY_BACKENDS_20261123.md。

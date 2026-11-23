@@ -1,0 +1,32 @@
+{
+  "checkpoint": "results/b0/recovery_c_s0_arm_readout_r1/checkpoint_000000.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "/home/kaiwen/research/dog-and-arm-b0-contact/scripts/p6_scene.py",
+  "requested_dev": false,
+  "source": "results/raw_large/b0/full_warp_hold_park_r1",
+  "passed": 0,
+  "evaluated": 2,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "full",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 9091,
+      "policy_calls": 910,
+      "final_door_deg": 0.5437005602927631,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "full",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 10022,
+      "policy_calls": 1003,
+      "final_door_deg": 3.7439895378836456,
+      "failure": "timeout:grasp"
+    }
+  ]
+}

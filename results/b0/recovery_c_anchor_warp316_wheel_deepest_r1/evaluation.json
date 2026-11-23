@@ -1,0 +1,65 @@
+{
+  "engine": "warp316",
+  "variant": "wheel_deepest_only",
+  "checkpoint": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "references": "results/raw_large/b0/full_warp_hold_park_r1",
+  "command": "Actor on own measured state",
+  "results": [
+    {
+      "side": "pull",
+      "passed": false,
+      "physics_steps": 31310,
+      "first_failure": {
+        "reason": "timeout:retreat_arm",
+        "phase": "retreat_arm",
+        "first_failure_substep": 31310,
+        "interval_start_s": 62.618,
+        "interval_end_s": 62.620000000000005,
+        "door_deg": 60.168850776123996,
+        "finger_load_n": [
+          0.0,
+          0.0
+        ],
+        "wheel_load_n": [
+          109.10328674316406,
+          114.66744995117188,
+          100.34718322753906,
+          104.76187133789062
+        ],
+        "door_net_force_n": 0.0,
+        "door_contact_sum_n": 0.0,
+        "tcp_handle_error_m": 0.4656887015166392,
+        "min_arm_margin_rad": 0.08310600932006817
+      },
+      "final_door_deg": 60.168850776123996
+    },
+    {
+      "side": "push",
+      "passed": false,
+      "physics_steps": 10620,
+      "first_failure": {
+        "reason": "grip_base_or_handle_error",
+        "phase": "open",
+        "first_failure_substep": 10620,
+        "interval_start_s": 21.238,
+        "interval_end_s": 21.240000000000002,
+        "door_deg": 6.275001939083319,
+        "finger_load_n": [
+          3.455566644668579,
+          2.5262348651885986
+        ],
+        "wheel_load_n": [
+          107.4758071899414,
+          119.15821838378906,
+          95.56837463378906,
+          108.43201446533203
+        ],
+        "door_net_force_n": 1.5296758406962123,
+        "door_contact_sum_n": 6.098882176070296,
+        "tcp_handle_error_m": 0.0050017182348792745,
+        "min_arm_margin_rad": 0.8310321620841981
+      },
+      "final_door_deg": 6.278630903966711
+    }
+  ]
+}

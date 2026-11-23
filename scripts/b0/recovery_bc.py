@@ -7,7 +7,7 @@ import numpy as np
 import torch
 from supermimic.tasks.task_spec import build_actor_obs_td
 
-from learning.b0.contact_policy import DoorMotions, PRIVILEGED_TRANSLATION, build_actor, sensor
+from learning.b0.contact_policy import ApproachWheelActor, DoorMotions, PRIVILEGED_DOOR_ANGLE, PRIVILEGED_TRANSLATION, build_actor, sensor
 from learning.b0.model import RobotRepresentation, full_state, tensor
 from learning.b0.physics import ActionMap, make_model
 
@@ -43,7 +43,7 @@ def episode(path, split, bank, rep, device):
                   for key in ("qpos", "qvel", "last_action")]
     physical = sensor(rep, full_state(q, v), prev)
     h = physical[(k[:, None] + torch.arange(-9, 1, device=device)).clamp_min(0)]
-    _, goal = bank.goals(rep, k + bank.starts[ref], q[k, :7])
+    _, goal = bank.goals(rep, k + bank.starts[ref], q[k, :7], q[k, 31])
     action = tensor(np.load(path / "action_clipped.npy")[:n], device)[k]
     return goal, h, action
 
@@ -61,9 +61,13 @@ def migrate(old, actor):
             continue
         fill = {"encoders.motion.0.weight": 0., "goal_normalizers.motion._mean": 0.,
                 "goal_normalizers.motion._std": .05, "goal_normalizers.motion._var": .05 ** 2}[name]
-        if value.shape[-1] != 540 or new[name].shape[-1] != 570:
+        if value.shape[-1] != 540 or new[name].shape[-1] not in (570, 571):
             raise ValueError(name)
         new[name].fill_(fill)
+        if new[name].shape[-1] == 571 and name.startswith("goal_normalizers.motion."):
+            # This scalar is either a reference-phase flag or hinge deviation in radians.
+            unit = 1. if isinstance(actor, ApproachWheelActor) else float(np.deg2rad(5.))
+            new[name][..., 570] = {"_mean": 0., "_std": unit, "_var": unit**2}[name.split(".")[-1]]
         new[name][..., :540].copy_(value)
     actor.load_state_dict(new, strict=True)
 
@@ -80,7 +84,7 @@ def score(actor, dataset, mapping):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--variant", choices=["A0", "A1", "A2", "A3"], required=True)
+    ap.add_argument("--variant", choices=["A0", "A1", "A2", "A3", "A4"], required=True)
     ap.add_argument("--run", required=True)
     ap.add_argument("--updates", type=int, default=128)
     ap.add_argument("--lr", type=float, default=2e-6)
@@ -98,9 +102,11 @@ def main():
     if source["updates"] or source["seed"] or source["collected"]:
         raise ValueError("Expected the frozen joint seed0 u0")
     cfg = dict(source["cfg"])
-    expanded = args.variant in ("A1", "A3")
-    augmented = args.variant in ("A2", "A3")
+    expanded = args.variant in ("A1", "A3", "A4")
+    augmented = args.variant in ("A2", "A3", "A4")
     cfg["actor_goal_schema"] = PRIVILEGED_TRANSLATION if expanded else "proprio_motion"
+    if args.variant == "A4":
+        cfg["actor_goal_schema"] = PRIVILEGED_DOOR_ANGLE
     cfg["reference_directory"] = str(REFERENCE)
     cfg["additional_bc_run"] = args.run
     model = make_model()
@@ -137,8 +143,8 @@ def main():
     extra = merge(list(coverage.values())) if coverage else nominal
     dump(out / "actual_config.json", dict(variant=args.variant, seed=0, source=str(ANCHOR),
         reference=str(REFERENCE), source_bc_reference="full_held_warp_r1", schema=cfg["actor_goal_schema"],
-        columns="0:480 joint q,v; 480:540 relative rotation6d; appended 540:570 ten root-frame reference XYZ when enabled",
-        normalization="source frozen; XYZ zero mean, 0.05 m std fixed from declared translation scale, no held-out fit",
+        columns="0:480 joint q,v; 480:540 relative rotation6d; appended 540:570 ten root-frame reference XYZ when enabled; A4 appends measured (imagined for H32) minus reference hinge angle in radians",
+        normalization="source frozen; XYZ zero mean, 0.05 m std fixed from declared translation scale, no held-out fit; A4 hinge 5 degree std",
         initial_raw_action_max_abs=diff, optimizer="AdamW, no decay, fixed lr, all Actor parameters", lr=args.lr,
         batch=128, updates=args.updates, selected="last step", history=10, target="measured clipped logical action",
         nominal_frames=len(nominal[0]), extra_frames={k:len(v[0]) for k,v in coverage.items()},

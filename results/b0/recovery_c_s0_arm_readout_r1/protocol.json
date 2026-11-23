@@ -1,0 +1,13 @@
+{
+  "variant": "six_arm_rows_clock_matched_teacher",
+  "source": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "fixed_reference": "results/raw_large/b0/full_warp_hold_park_r1",
+  "native_teacher": "results/raw_large/b0/full_native_margin_r1",
+  "status": "supervision only; zero additional H32. No evaluation episode is a label.",
+  "frozen": "All network parameters and normalizers except last six arm output rows and their biases; unchanged WM/Critic.",
+  "objective": "Per-side equally weighted mean native label squared error at same-clock agreed target poses plus equal mean squared change from frozen Warp Actor at all Warp teacher states; ridge 1e-4 on decoder correction. Analytic solve, no checkpoint selection.",
+  "filter": "same absolute frame/phase, manipulated phases, teacher world TCP goal distance <= 2 mm and angular distance <= 1 degree. All source actions real applied 20ms commands.",
+  "sources": {},
+  "metrics": {},
+  "ridge": 0.0001
+}

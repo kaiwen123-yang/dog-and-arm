@@ -2,6 +2,7 @@
 import argparse
 import csv
 import json
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -264,7 +265,7 @@ def parallel_full_dev(args, paths, group, directory, cases, output, raw_root, si
     pending = []
     for case in cases:
         folder = Path(side) / 'full' / case['id']
-        if args.resume and (output / folder / 'result.json').is_file():
+        if (args.resume or getattr(args, 'extend_from', None)) and (output / folder / 'result.json').is_file():
             continue
         if args.resume:
             preserve_partial(folder, output, raw_root)
@@ -288,9 +289,58 @@ def preserve_partial(folder, output, raw_root):
             print(f'Retained incomplete case at {saved}', file=sys.stderr, flush=True)
 
 
+def reuse_scored_cases(source, output, plan, policy):
+    """Carry forward measured cases from the same immutable package and protocol."""
+    previous = json.loads((source / 'run_spec.json').read_text())['plan']
+    for field in ('checkpoint', 'source', 'backend', 'mujoco', 'manifest', 'groups'):
+        if plan[field] != previous[field]:
+            raise ValueError(f'Cannot extend {source}: different {field}')
+    if not (source / 'evaluation.json').is_file():
+        raise ValueError('The source evaluation must be complete')
+    if any(not json.loads((source/group/'nominal/result.json').read_text())['passed']
+           for group in plan['groups']):
+        raise ValueError('Full-C extension requires all requested source nominals to pass')
+    ids = []
+    for path in sorted(source.glob('*/full/*/result.json')):
+        record = json.loads(path.read_text())
+        folder = path.parent.relative_to(source)
+        if folder.parts[-1] == 'nominal' and plan['video'] and not (path.parent/'episode.mp4').is_file():
+            raise ValueError('Missing requested original nominal video')
+        # Replay two recorded, noninitial, measured Actor inputs in every case.
+        raw = Path(record['raw_directory'])
+        q,v,a,actions = [np.load(raw/(key+'.npy'),mmap_mode='r') for key in
+                         ('qpos','qvel','clipped_action','raw_action')]
+        for k in {min(10,len(actions)-1),len(actions)-1}:
+            if k < 10:
+                raise ValueError(f'Cannot check the policy on a real history for {folder}')
+            predicted=policy(Path(plan['source'])/record['episode'],k,q[k-9:k+1],v[k-9:k+1],a[k-10:k])
+            np.testing.assert_allclose(predicted,actions[k],atol=2e-5,rtol=2e-5)
+        target = output / folder
+        target.mkdir(parents=True,exist_ok=True)
+        if (target/'result.json').exists() and (target/'result.json').read_bytes() != path.read_bytes():
+            raise ValueError(f'Existing carried-forward result differs at {folder}')
+        shutil.copy2(path,target/'result.json')
+        if (path.parent/'episode.mp4').is_file():
+            shutil.copy2(path.parent/'episode.mp4',target/'episode.mp4')
+        ids.append(str(folder))
+    provenance = dict(source=str(source),cases=ids,
+         identity='same backend, model version, checkpoint, scene, references and groups; two reproduced policy inputs per case',
+         original_raw='raw_directory in each result points to the original measured array')
+    manifest = output/'inherited_cases.json'
+    if manifest.is_file():
+        if json.loads(manifest.read_text()) != provenance:
+            raise ValueError('Source cases changed since the previous evaluation')
+    else:
+        dump(manifest, provenance)
+    return set(ids)
+
+
 def main(args):
     if args.dev_workers < 1 or (args.dev_workers > 1 and not (args.full_task and args.dev and args.backend == 'warp')):
         raise ValueError('Parallel development workers require a complete Warp task and --dev')
+    extend = getattr(args, 'extend_from', None)
+    if extend and (not args.dev or not args.full_task or args.full_cases):
+        raise ValueError('--extend-from expands one completed full-task diagnostic to C01-C20')
     selected = getattr(args, 'full_cases', None)
     if selected and (not args.full_task or not args.dev or len(selected) != len(set(selected))):
         raise ValueError('--full-cases requires --full-task --dev and unique development IDs')
@@ -323,6 +373,8 @@ def main(args):
     plan=dict(checkpoint=str(args.checkpoint), backend=args.backend, mujoco=mj.__version__,
               source=str(directory), manifest=str(args.manifest), groups=[k for k,_ in trial_groups],
               requested_dev=args.dev, video=args.video)
+    if extend:
+        plan['extended_from'] = str(extend)
     if selected:
         plan['diagnostic_cases'] = selected
         plan['score_selected_after_nominal_failure'] = True
@@ -361,6 +413,7 @@ def main(args):
         if legacy:
             checked=check_legacy_actor(output,directory,raw_root,policy)
             dump(spec_path,dict(plan=plan,legacy_identity_check=checked))
+        inherited = reuse_scored_cases(extend, output, plan, policy) if extend else set()
         model=integrator=None
         current_side=None
         accepted_nominals=set()
@@ -381,7 +434,7 @@ def main(args):
                 for case in cases:
                     folder=Path(side)/segment/case['id']
                     record=output/folder/'result.json'
-                    if (args.resume or parallel) and record.is_file():
+                    if (args.resume or parallel or str(folder) in inherited) and record.is_file():
                         r=json.loads(record.read_text())
                         if (r['backend']!=args.backend or r['mujoco']!=mj.__version__
                                 or r['episode']!=group['episode'] or r['segment']!=segment
@@ -424,6 +477,7 @@ if __name__=='__main__':
     parser.add_argument('--references',type=Path)
     parser.add_argument('--manifest',type=Path,default=ROOT/'config/b0/contact_dev_v1.json')
     parser.add_argument('--resume',action='store_true',help='Continue unfinished cases in the same run')
+    parser.add_argument('--extend-from', type=Path, help='Use verified recorded cases from a completed diagnostic run for the same package and score the remaining full development conditions')
     parser.add_argument('--full-cases', nargs='+', type=int, help='Explicit C IDs for a diagnostic subset, scored even after nominal failure')
     parser.add_argument('--dev-workers', type=int, default=1, help='parallel independent full-task Warp development cases after a passed nominal')
     parser.add_argument('--dev',action='store_true',help='after passing nominal, evaluate the registered twenty')
