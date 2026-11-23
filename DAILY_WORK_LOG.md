@@ -720,3 +720,17 @@ eb79802e 已普通推送并核对 GitHub main。标准 546 维共同包的无动
 
 f0812006 已普通推送并通过 GitHub main 回读。原生 3.3 的同包完整 C 两组已结束：546维站位臂补偿 u0 前拉9/20、背推9/20；同初始化同协议真实H32-u1 前拉9/20、背推10/20，背推新增 C08，其余通过项相同。这是单seed、单侧多通过一个固定开发条件；跨侧≥18/20门槛未过。更新后同一包 native3.3、CPU3.16、Warp3.16 双侧名义均过。u5前拉到退站时11.59mm，超过10mm到位要求，固定参考耗尽。上次只学到端点的前拉高角失败已保留，另独立训练角2.25574°的前拉校时教师实测通过；背推4.09980°教师抓持失败，不作为成功标签。真实权重、优化器与原始物理数组仍按对应平台恢复。
 用户要求稳定后退出。第二平台通过 ssh autodl-dog-arm 在 /root/autodl-tmp/dog-and-arm-b0-recovery 启动 tmux b0-recovery-20261123:jobs。守护登记当时仍活动的本轮7个评测工作项及1项本轮平面/臂包的原生名义验证；完成状态以各 run 实际写出的结果文件判定。既有进程继续原位计分，不中断正在仿真的 case；同一 worktree、run、参数和后代进程均已查验后才尝试恢复。标准 evaluator 使用 --resume，已完成案例保留；单案例未完成材料另存 interrupted。退出 SSH 后从第二次新连接核对，tmux detached、pane_alive，守护PID165986，直接派生的实际原生物理评分PID165989已落盘前拉结果，原有长回归完成计数也在增加。登记与20:45实际快照见 results/b0/recovery_tmux_20261123。较晚形成的完整C分母交由后台回收。第二平台 tmux b0-receive-20261123 承接小结果、汇总与普通推送，原始大数组/pt不进Git。没有开启H、独立seed或设备。
+
+## 2026-11-23 21:12 北京时间｜tmux 物理评分回收
+
+- recovery_b_phase_td_u10_nominal_r1：pull 名义失败，开发未测；push 名义通过，开发未测
+- recovery_b_stance_u1_full_c_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
+- recovery_b_stance_u5_nominal_r1：pull 名义失败，开发未测；push 名义通过，开发未测
+- recovery_b_tracking_u1_full_c_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
+- recovery_c_integrated_warp316_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
+- recovery_endpoint_hinge_tail_warp_r2：pull 名义通过，开发未测；push 名义通过，开发1/1
+- recovery_planar_arm_native_tmux_r1：pull 名义通过，开发未测；push 名义通过，开发未测
+- recovery_planar_arm_screen_warp_r1：pull 名义通过，开发2/6；push 名义通过，开发3/6
+- recovery_planar_screen_warp_r1：pull 名义通过，开发0/4；push 名义通过，开发1/4
+
+逐案物理结果及实际分母见 results/b0/recovery_round_20261123/case_index.csv 和各 run 目录。独立 seed 与 H 保持封存。

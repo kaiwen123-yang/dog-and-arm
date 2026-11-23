@@ -46,3 +46,17 @@ A2–A4 的新增扰动标签降低了动作拟合误差，三组的前拉与背
 | 同包起点，真实 H32 更新一次 | 9/20 | 10/20 |
 
 u1 背推新增通过 C08（初始门角 2°）。这是在一个固定 seed 和开发条件上直接测得的差异。全套 Warp C 仍在跑，逐案计数与恢复命令见 [tmux 工作清单](../results/b0/recovery_tmux_20261123/jobs.json)。[原生 u1 原表](../results/b0/recovery_b_stance_u1_native_full_c_r1/cases.csv)
+
+## 2026-11-23 21:12 北京时间｜tmux 物理评分回收
+
+- recovery_b_phase_td_u10_nominal_r1：pull 名义失败，开发未测；push 名义通过，开发未测
+- recovery_b_stance_u1_full_c_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
+- recovery_b_stance_u5_nominal_r1：pull 名义失败，开发未测；push 名义通过，开发未测
+- recovery_b_tracking_u1_full_c_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
+- recovery_c_integrated_warp316_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
+- recovery_endpoint_hinge_tail_warp_r2：pull 名义通过，开发未测；push 名义通过，开发1/1
+- recovery_planar_arm_native_tmux_r1：pull 名义通过，开发未测；push 名义通过，开发未测
+- recovery_planar_arm_screen_warp_r1：pull 名义通过，开发2/6；push 名义通过，开发3/6
+- recovery_planar_screen_warp_r1：pull 名义通过，开发0/4；push 名义通过，开发1/4
+
+逐案物理结果及实际分母见 results/b0/recovery_round_20261123/case_index.csv 和各 run 目录。独立 seed 与 H 保持封存。
