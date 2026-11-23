@@ -1,0 +1,862 @@
+{
+  "worktree": "/root/autodl-tmp/dog-and-arm-b0-pair-v1",
+  "processes": {
+    "pair_canonical_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "canonical",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": null
+      },
+      "updates": [
+        1,
+        50
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 75312,
+        "attempted": 256000,
+        "reset_prefix_lane_substeps": 640000,
+        "cohorts": 50,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 50,
+        "valid": 75312,
+        "attempted": 256000
+      },
+      "process_seconds": 264.91968946531415,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/pair_canonical_s0_v1/checkpoint_000050.pt",
+      "checkpoint_sha256": "3187b8c4ed4eded6a2c31b50c617dc09dddda75362acbc63d59d66aeb7103bfb",
+      "recovery": "results/b0/pair_canonical_s0_v1/cohort_state.pt",
+      "recovery_bytes": 785996989,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_canonical.yaml",
+        "--run",
+        "pair_canonical_s0_v1",
+        "--updates",
+        "50"
+      ],
+      "actual_config": "results/b0/pair_canonical_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "pair_effort_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": null
+      },
+      "updates": [
+        1,
+        50
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 69610,
+        "attempted": 256000,
+        "reset_prefix_lane_substeps": 640000,
+        "cohorts": 50,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 50,
+        "valid": 69610,
+        "attempted": 256000
+      },
+      "process_seconds": 263.82483862526715,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/pair_effort_s0_v1/checkpoint_000050.pt",
+      "checkpoint_sha256": "bd87ea9796a95ab97e27a0c9bde58833fb6016c107bb1e5f9451aeaaf1c52f10",
+      "recovery": "results/b0/pair_effort_s0_v1/cohort_state.pt",
+      "recovery_bytes": 785765821,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort.yaml",
+        "--run",
+        "pair_effort_s0_v1",
+        "--updates",
+        "50"
+      ],
+      "actual_config": "results/b0/pair_effort_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "return_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": null
+      },
+      "updates": [
+        1,
+        50
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 42757,
+        "attempted": 256000,
+        "reset_prefix_lane_substeps": 640000,
+        "cohorts": 50,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 50,
+        "valid": 42757,
+        "attempted": 256000
+      },
+      "process_seconds": 371.0282331947237,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/return_s0_v1/checkpoint_000050.pt",
+      "checkpoint_sha256": "e973ab597d3aa9b5ca3410327728e77ea5f3ae802404320d5e31901abb75ed82",
+      "recovery": "results/b0/return_s0_v1/cohort_state.pt",
+      "recovery_bytes": 785389113,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort_return.yaml",
+        "--run",
+        "return_s0_v1",
+        "--updates",
+        "50"
+      ],
+      "actual_config": "results/b0/return_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "ratio_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": null
+      },
+      "updates": [
+        1,
+        50
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 54306,
+        "attempted": 337920,
+        "reset_prefix_lane_substeps": 844800,
+        "cohorts": 66,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 50,
+        "valid": 54306,
+        "attempted": 337920
+      },
+      "process_seconds": 472.0042737927288,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/ratio_s0_v1/checkpoint_000050.pt",
+      "checkpoint_sha256": "bc864a6d40ddf12b61025835a91def1e88323a176ad653e401bc24b727338eff",
+      "recovery": "results/b0/ratio_s0_v1/cohort_state.pt",
+      "recovery_bytes": 785406201,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort_return_ratio.yaml",
+        "--run",
+        "ratio_s0_v1",
+        "--updates",
+        "50"
+      ],
+      "actual_config": "results/b0/ratio_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "cliplast_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": null
+      },
+      "updates": [
+        1,
+        50
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 53579,
+        "attempted": 343040,
+        "reset_prefix_lane_substeps": 857600,
+        "cohorts": 67,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 50,
+        "valid": 53579,
+        "attempted": 343040
+      },
+      "process_seconds": 474.3501625303179,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/cliplast_s0_v1/checkpoint_000050.pt",
+      "checkpoint_sha256": "4d9916257321fc44adf6d79fbce2cbf86e3825e6a47769989a3d40177a064a5a",
+      "recovery": "results/b0/cliplast_s0_v1/cohort_state.pt",
+      "recovery_bytes": 785375353,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort_return_ratio_cliplast.yaml",
+        "--run",
+        "cliplast_s0_v1",
+        "--updates",
+        "50"
+      ],
+      "actual_config": "results/b0/cliplast_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "aligned_grip_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": null
+      },
+      "updates": [
+        1,
+        50
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 53595,
+        "attempted": 302080,
+        "reset_prefix_lane_substeps": 755200,
+        "cohorts": 59,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 50,
+        "valid": 53595,
+        "attempted": 302080
+      },
+      "process_seconds": 452.07778121717274,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/aligned_grip_s0_v1/checkpoint_000050.pt",
+      "checkpoint_sha256": "d2e70fc059ae9dc64dc31fef4a3c5d380d82cd3c858af9c52e1efbc46aa4b49f",
+      "recovery": "results/b0/aligned_grip_s0_v1/cohort_state.pt",
+      "recovery_bytes": 785541113,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort_aligned_grip.yaml",
+        "--run",
+        "aligned_grip_s0_v1",
+        "--updates",
+        "50"
+      ],
+      "actual_config": "results/b0/aligned_grip_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "aligned_grip_fixed_stats_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": null
+      },
+      "updates": [
+        1,
+        50
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 53704,
+        "attempted": 327680,
+        "reset_prefix_lane_substeps": 819200,
+        "cohorts": 64,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 50,
+        "valid": 53704,
+        "attempted": 327680
+      },
+      "process_seconds": 430.34020207077265,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/aligned_grip_fixed_stats_s0_v1/checkpoint_000050.pt",
+      "checkpoint_sha256": "895c3fa0798b943af533000c68b67cac5254c6632c31228fe2de8245e76954e2",
+      "recovery": "results/b0/aligned_grip_fixed_stats_s0_v1/cohort_state.pt",
+      "recovery_bytes": 785331705,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort_aligned_grip_fixed_stats.yaml",
+        "--run",
+        "aligned_grip_fixed_stats_s0_v1",
+        "--updates",
+        "50"
+      ],
+      "actual_config": "results/b0/aligned_grip_fixed_stats_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "pair_canonical_to200_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "canonical",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": "results/b0/pair_canonical_s0_v1/cohort_state.pt"
+      },
+      "updates": [
+        51,
+        200
+      ],
+      "new_cost": {
+        "actor_h32": 150,
+        "wm_minibatches": 1500,
+        "critic_minibatches": 3000,
+        "valid": 309118,
+        "attempted": 768000,
+        "reset_prefix_lane_substeps": 1920000,
+        "cohorts": 150,
+        "wm_online_stored_positions": 1996800,
+        "wm_offline_stored_positions": 614400,
+        "wm_online_successor_targets": 1689600,
+        "wm_offline_successor_targets": 537600,
+        "imagined_policy_steps": 1228800
+      },
+      "cumulative": {
+        "actor_updates": 200,
+        "valid": 384430,
+        "attempted": 1024000
+      },
+      "process_seconds": 933.5373925827444,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/pair_canonical_to200_v1/checkpoint_000200.pt",
+      "checkpoint_sha256": "e0f0d7253b49ce1f84b88a943dfd9e54227e0da2195ac8f91264b788f68cfc30",
+      "recovery": "results/b0/pair_canonical_to200_v1/cohort_state.pt",
+      "recovery_bytes": 787055037,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_canonical.yaml",
+        "--run",
+        "pair_canonical_to200_v1",
+        "--updates",
+        "200",
+        "--resume",
+        "results/b0/pair_canonical_s0_v1/cohort_state.pt"
+      ],
+      "actual_config": "results/b0/pair_canonical_to200_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "pair_effort_to200_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": "results/b0/pair_effort_s0_v1/cohort_state.pt"
+      },
+      "updates": [
+        51,
+        200
+      ],
+      "new_cost": {
+        "actor_h32": 150,
+        "wm_minibatches": 1500,
+        "critic_minibatches": 3000,
+        "valid": 383087,
+        "attempted": 768000,
+        "reset_prefix_lane_substeps": 1920000,
+        "cohorts": 150,
+        "wm_online_stored_positions": 1996800,
+        "wm_offline_stored_positions": 614400,
+        "wm_online_successor_targets": 1689600,
+        "wm_offline_successor_targets": 537600,
+        "imagined_policy_steps": 1228800
+      },
+      "cumulative": {
+        "actor_updates": 200,
+        "valid": 452697,
+        "attempted": 1024000
+      },
+      "process_seconds": 932.8302518315613,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/pair_effort_to200_v1/checkpoint_000200.pt",
+      "checkpoint_sha256": "7c1e0e0b0bb3e7e97ad851b34f96dc81983f2b601a8b60c89c365bf8107cac26",
+      "recovery": "results/b0/pair_effort_to200_v1/cohort_state.pt",
+      "recovery_bytes": 787353149,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort.yaml",
+        "--run",
+        "pair_effort_to200_v1",
+        "--updates",
+        "200",
+        "--resume",
+        "results/b0/pair_effort_s0_v1/cohort_state.pt"
+      ],
+      "actual_config": "results/b0/pair_effort_to200_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "return_to100_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": "results/b0/return_s0_v1/cohort_state.pt"
+      },
+      "updates": [
+        51,
+        100
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 85098,
+        "attempted": 256000,
+        "reset_prefix_lane_substeps": 640000,
+        "cohorts": 50,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 100,
+        "valid": 127855,
+        "attempted": 512000
+      },
+      "process_seconds": 411.19654645211995,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/return_to100_s0_v1/checkpoint_000100.pt",
+      "checkpoint_sha256": "6825b4741e4bf965557c2983f0e264429319fdadf23183313d1fa04cc0402d98",
+      "recovery": "results/b0/return_to100_s0_v1/cohort_state.pt",
+      "recovery_bytes": 786548153,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort_return.yaml",
+        "--run",
+        "return_to100_s0_v1",
+        "--updates",
+        "100",
+        "--resume",
+        "results/b0/return_s0_v1/cohort_state.pt"
+      ],
+      "actual_config": "results/b0/return_to100_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "lane_age_s0_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": null
+      },
+      "updates": [
+        1,
+        50
+      ],
+      "new_cost": {
+        "actor_h32": 50,
+        "wm_minibatches": 500,
+        "critic_minibatches": 1000,
+        "valid": 54028,
+        "attempted": 353280,
+        "reset_prefix_lane_substeps": 883200,
+        "cohorts": 69,
+        "wm_online_stored_positions": 665600,
+        "wm_offline_stored_positions": 204800,
+        "wm_online_successor_targets": 563200,
+        "wm_offline_successor_targets": 179200,
+        "imagined_policy_steps": 409600
+      },
+      "cumulative": {
+        "actor_updates": 50,
+        "valid": 54028,
+        "attempted": 353280
+      },
+      "process_seconds": 302.41193398088217,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/lane_age_s0_v1/checkpoint_000050.pt",
+      "checkpoint_sha256": "01367630001bf0d757622d7db2ec77b6f6b3b642195d774a4d93be25df98fe7b",
+      "recovery": "results/b0/lane_age_s0_v1/cohort_state.pt",
+      "recovery_bytes": 785390585,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort_aligned_grip_fixed_stats_lane_age.yaml",
+        "--run",
+        "lane_age_s0_v1",
+        "--updates",
+        "50"
+      ],
+      "actual_config": "results/b0/lane_age_s0_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "pair_canonical_to350_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "canonical",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": "results/b0/pair_canonical_to200_v1/cohort_state.pt"
+      },
+      "updates": [
+        201,
+        350
+      ],
+      "new_cost": {
+        "actor_h32": 150,
+        "wm_minibatches": 1500,
+        "critic_minibatches": 3000,
+        "valid": 433818,
+        "attempted": 768000,
+        "reset_prefix_lane_substeps": 1920000,
+        "cohorts": 150,
+        "wm_online_stored_positions": 1996800,
+        "wm_offline_stored_positions": 614400,
+        "wm_online_successor_targets": 1689600,
+        "wm_offline_successor_targets": 537600,
+        "imagined_policy_steps": 1228800
+      },
+      "cumulative": {
+        "actor_updates": 350,
+        "valid": 818248,
+        "attempted": 1792000
+      },
+      "process_seconds": 571.1769051793963,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/pair_canonical_to350_v1/checkpoint_000350.pt",
+      "checkpoint_sha256": "dc5d92b5039bb717a286b0607a9dac0a27c16d576412f97ac41667301522202e",
+      "recovery": "results/b0/pair_canonical_to350_v1/cohort_state.pt",
+      "recovery_bytes": 787518461,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_canonical.yaml",
+        "--run",
+        "pair_canonical_to350_v1",
+        "--updates",
+        "350",
+        "--resume",
+        "results/b0/pair_canonical_to200_v1/cohort_state.pt"
+      ],
+      "actual_config": "results/b0/pair_canonical_to350_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "pair_effort_to350_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": "results/b0/pair_effort_to200_v1/cohort_state.pt"
+      },
+      "updates": [
+        201,
+        350
+      ],
+      "new_cost": {
+        "actor_h32": 150,
+        "wm_minibatches": 1500,
+        "critic_minibatches": 3000,
+        "valid": 464741,
+        "attempted": 768000,
+        "reset_prefix_lane_substeps": 1920000,
+        "cohorts": 150,
+        "wm_online_stored_positions": 1996800,
+        "wm_offline_stored_positions": 614400,
+        "wm_online_successor_targets": 1689600,
+        "wm_offline_successor_targets": 537600,
+        "imagined_policy_steps": 1228800
+      },
+      "cumulative": {
+        "actor_updates": 350,
+        "valid": 917438,
+        "attempted": 1792000
+      },
+      "process_seconds": 570.474208176136,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/pair_effort_to350_v1/checkpoint_000350.pt",
+      "checkpoint_sha256": "07c70105c768df2783db37ba7274514338318876f24014ae899db73464b1775f",
+      "recovery": "results/b0/pair_effort_to350_v1/cohort_state.pt",
+      "recovery_bytes": 787596989,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort.yaml",
+        "--run",
+        "pair_effort_to350_v1",
+        "--updates",
+        "350",
+        "--resume",
+        "results/b0/pair_effort_to200_v1/cohort_state.pt"
+      ],
+      "actual_config": "results/b0/pair_effort_to350_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "pair_canonical_to500_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "canonical",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": "results/b0/pair_canonical_to350_v1/cohort_state.pt"
+      },
+      "updates": [
+        351,
+        500
+      ],
+      "new_cost": {
+        "actor_h32": 150,
+        "wm_minibatches": 1500,
+        "critic_minibatches": 3000,
+        "valid": 473008,
+        "attempted": 768000,
+        "reset_prefix_lane_substeps": 1920000,
+        "cohorts": 150,
+        "wm_online_stored_positions": 1996800,
+        "wm_offline_stored_positions": 614400,
+        "wm_online_successor_targets": 1689600,
+        "wm_offline_successor_targets": 537600,
+        "imagined_policy_steps": 1228800
+      },
+      "cumulative": {
+        "actor_updates": 500,
+        "valid": 1291256,
+        "attempted": 2560000
+      },
+      "process_seconds": 500.202012212947,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/pair_canonical_to500_v1/checkpoint_000500.pt",
+      "checkpoint_sha256": "613994b07829db3cfba10bfe8835e16f578dd9085f6a26ae89ddf2d7aba5e1f3",
+      "recovery": "results/b0/pair_canonical_to500_v1/cohort_state.pt",
+      "recovery_bytes": 787593725,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_canonical.yaml",
+        "--run",
+        "pair_canonical_to500_v1",
+        "--updates",
+        "500",
+        "--resume",
+        "results/b0/pair_canonical_to350_v1/cohort_state.pt"
+      ],
+      "actual_config": "results/b0/pair_canonical_to500_v1/actual_config.json",
+      "runner_exit": 0
+    },
+    "pair_effort_to500_v1": {
+      "seed": 0,
+      "actor": "EffortScaledActor",
+      "reward_units": "fixed_effort",
+      "source_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+      "initialization": {
+        "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+        "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+        "resume": "results/b0/pair_effort_to350_v1/cohort_state.pt"
+      },
+      "updates": [
+        351,
+        500
+      ],
+      "new_cost": {
+        "actor_h32": 150,
+        "wm_minibatches": 1500,
+        "critic_minibatches": 3000,
+        "valid": 475258,
+        "attempted": 768000,
+        "reset_prefix_lane_substeps": 1920000,
+        "cohorts": 150,
+        "wm_online_stored_positions": 1996800,
+        "wm_offline_stored_positions": 614400,
+        "wm_online_successor_targets": 1689600,
+        "wm_offline_successor_targets": 537600,
+        "imagined_policy_steps": 1228800
+      },
+      "cumulative": {
+        "actor_updates": 500,
+        "valid": 1392696,
+        "attempted": 2560000
+      },
+      "process_seconds": 499.2873139027506,
+      "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+      "checkpoint": "results/b0/pair_effort_to500_v1/checkpoint_000500.pt",
+      "checkpoint_sha256": "18b985b18122e9bedb336ad255b43700a8ee0ff568e59f500edaa384d4235519",
+      "recovery": "results/b0/pair_effort_to500_v1/cohort_state.pt",
+      "recovery_bytes": 787594237,
+      "command": [
+        "bash",
+        "scripts/b0/env.sh",
+        "python",
+        "-u",
+        "scripts/b0/train_contact.py",
+        "--config",
+        "config/b0/pair_effort.yaml",
+        "--run",
+        "pair_effort_to500_v1",
+        "--updates",
+        "500",
+        "--resume",
+        "results/b0/pair_effort_to350_v1/cohort_state.pt"
+      ],
+      "actual_config": "results/b0/pair_effort_to500_v1/actual_config.json",
+      "runner_exit": 0
+    }
+  },
+  "distinct_process_totals": {
+    "actor_h32": 1350,
+    "wm_minibatches": 13500,
+    "critic_minibatches": 27000,
+    "valid": 3081019,
+    "attempted": 7296000,
+    "reset_prefix_lane_substeps": 18240000,
+    "cohorts": 1425,
+    "wm_online_stored_positions": 17971200,
+    "wm_offline_stored_positions": 5529600,
+    "wm_online_successor_targets": 15206400,
+    "wm_offline_successor_targets": 4838400,
+    "imagined_policy_steps": 11059200
+  },
+  "training_process_hours": 2.0693504847818986,
+  "union_training_wall_hours": 0.6649117234680387,
+  "attributable_gpu_hours": null,
+  "timing_scope": "Contact training processes including initialization/checkpoint I/O, overlapping on one shared GPU. Inherited free-policy and door-WM training time excluded."
+}

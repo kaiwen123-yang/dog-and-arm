@@ -2,11 +2,7 @@
 
 本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先按开源SuperMimic完成标准迁移，以达到或接近论文指标为目标，单独保留结果供后续比较；之后才开发多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
-**最新已结束轮为638fddc，标准接触仍未通过。** 五条seed0配置真实训练，gain32到H32-u200/345,268有效转移、Warp/native正式接触各0/10；其他四条u50 Warp各0/10。415条nominal均失败。它们保留官方核心、但action-rate坐标、ReturnSampler、实际replay调度等还需对齐，不能称已完全复现论文配方。
-
-独立结果：[B0_STANDARD_TRANSFER_BASELINE.md](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [可解析清单](results/b0/standard_baseline_20261123/baseline_manifest.json)。当前为未完成中间快照，最终候选尚缺。完整归一化tracking目标≥0.90、接近数值带≥0.88是本项目预登记的迁移指标，同时须过原物理门槛；不是把论文G1分母直接换成开门成功率。
-
-下一轮优先实际配对验证官方动作率单位，再落实采样/调度和WM接触精度；依次完成接触、完整单门、多seed/H。[论文指标协议](docs/B0_PAPER_BASELINE_PROTOCOL.md) · [官方源码审查](docs/B0_OFFICIAL_IMPLEMENTATION_AUDIT_20261123.md) · [最新实验审查](reports/B0_STANDARD_ROUND_REVIEW_20261123.md) · [下一执行计划](docs/B0_STANDARD_TRANSFER_PLAN_20261123.md) · [启动词](prompts/B0_START.txt) · [目标差距](docs/GOAL_GAP_20261123.md) · [每日详细日志](DAILY_WORK_LOG.md)。本次文档发布没有新增实验。
+**11 月 24 日标准 B0 接触迁移仍未通过。** 已实际完成原坐标与固定 effort 的匹配训练至 u500，以及 ReturnSampler、Ratio、尾帧、WM 握持数据/统计、按 lane/age 重放的对照。八条配置链均为 seed0，u500 配对各 0/10，完整任务回报 NA。[独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [机器清单](results/b0/standard_baseline_20261124/baseline_manifest.json) · [逐案评分](results/b0/pair_units_v1/nominal_segments.csv) · [接续入口](prompts/NEXT_RUN.txt)
 
 P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000动作BC和解析补偿的有效成绩单列保留，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
 

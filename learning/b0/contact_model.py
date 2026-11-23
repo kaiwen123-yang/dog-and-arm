@@ -138,10 +138,12 @@ class ContactRepresentation(RobotRepresentation):
         return super().joint_state(rep_state[..., :58])
 
     def compute_wm_reward_from_reference(self, next_rep_state, next_aux_state, next_joint_state,
-                                         action, last_action, *target_bodies, previous_valid=True):
+                                         action, last_action, target_body_pos_w, target_body_quat_w,
+                                         target_body_lin_vel_w, target_body_ang_vel_w, *, previous_valid=True):
         act, prev = reward_actions(self, action, last_action, self.reward_coordinates, previous_valid)
-        return super().compute_wm_reward_from_reference(next_rep_state, next_aux_state, next_joint_state,
-                                                        act, prev, *target_bodies)
+        return super().compute_wm_reward_from_reference(
+            next_rep_state, next_aux_state, next_joint_state, act, prev, target_body_pos_w, target_body_quat_w,
+            target_body_lin_vel_w, target_body_ang_vel_w)
 
     def compute_wm_obs(self, rep_state, aux_state, joint_state, sim_ctx):
         return super().compute_wm_obs(rep_state[..., :58], aux_state, joint_state, sim_ctx)

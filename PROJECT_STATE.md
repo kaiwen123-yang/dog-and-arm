@@ -1,10 +1,15 @@
-# 项目状态：SuperMimic 标准迁移与独立论文指标基线
+# 项目状态：SuperMimic 标准迁移
 
-## 11 月 24 日执行状态
+## 2026-11-24 北京时间
 
-现场为 AutoDL `/root/autodl-tmp/dog-and-arm-b0-pair-v1`。配对控制/固定 effort 与 ReturnSampler、Ratio、末帧夹取的三个具名配置均完成 u50，五者各 0/10。正在执行配对 u200、ReturnSampler 续训和握持数据/固定统计。所有模型仍为 seed0。[当前实测](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [逐日记录](DAILY_WORK_LOG.md)
+固定源码 SuperMimic abc124c / mjlab dd51a9f。八条 seed0 配置链实际采集、训练和 Warp 接触评测。原坐标与固定 effort 的匹配端点 u500 分别有 1,291,256、1,392,696 条累计有效转移。两支十项正式接触均为 0/10，十片段共同口径均值 0.22961 / 0.25963。本轮 23 套十项名义，230 条逐案评分。完整双侧回报 NA，尚无最终候选。D、完整任务与 C、同包 native 双侧完整名义、独立 seed1/2 和冻结后的 H 均待前置门槛。
+
+同记录的奖励单位和 reset 哨兵已核对。ReturnSampler、有效转移驱动的 Ratio、clip 尾观测、握持训练数据、WM 固定输入统计与逐样本 lane/age 抽取都有具名配置和真实训练回执。八条链合计 1,350 H32、3,081,019 有效转移。R/J 的额外 BC、解析补偿和参考前馈单独保留。
+
+AutoDL 实验现场为 `/root/autodl-tmp/dog-and-arm-b0-pair-v1`。完整训练状态保存在各 run 的 `cohort_state.pt`。原先两棵有修改的训练工作树保留。下一次接续先读[独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md)、[本轮机器清单](results/b0/standard_baseline_20261124/baseline_manifest.json)、[逐日记录](DAILY_WORK_LOG.md)和[NEXT_RUN](prompts/NEXT_RUN.txt)。
 
 ## 11 月 23 日启动前审查
+
 
 更新：2026-11-23，北京时间。最新已结束实验端点为 [638fddc](https://github.com/kaiwen123-yang/dog-and-arm/commit/638fddcb2f025006595f79f27a977a8fba41cbc2)，22:50:39 回收；本次仅核读论文/官方源码、审查结果并发布下一计划，没有新训练、物理评测或硬件动作。
 

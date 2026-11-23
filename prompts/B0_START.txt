@@ -1,36 +1,13 @@
-当前任务：完成SuperMimic标准迁移，达到或接近论文指标，并形成独立结果供后续比较。
+继续标准迁移时，当前执行入口为 prompts/NEXT_RUN.txt。
 
-仓库：kaiwen123-yang/dog-and-arm。用户授权直接完成本轮范围内实现、仿真数据采集、训练、评测、详细日志和普通GitHub推送；不要再只写一份计划停下。当前仍是标准迁移B0-04，先接触→完整单门→独立seed/H；其后才做多模态/VLA和新方法。WM、可微动力学和H32现在就属于B0。
+当前处于 SuperMimic 标准 B0-04。2026-11-24 匹配训练已到 u500，两个端点 Warp 名义各 0/10。完整开发回报 NA，最终候选为空。最新现场为 /root/autodl-tmp/dog-and-arm-b0-pair-v1。
 
-先同步核查main和未提交修改，再依次读：
-AGENTS.md
-PROJECT_STATE.md
-DAILY_WORK_LOG.md最近日期
-reports/B0_STANDARD_TRANSFER_BASELINE.md
-reports/B0_STANDARD_ROUND_REVIEW_20261123.md
-docs/B0_PAPER_BASELINE_PROTOCOL.md
-docs/B0_OFFICIAL_IMPLEMENTATION_AUDIT_20261123.md
-docs/B0_STANDARD_TRANSFER_PLAN_20261123.md
-prompts/NEXT_RUN.txt
-results/b0/standard_baseline_20261123/baseline_manifest.json
-然后读受影响的固定官方源码、实际配置、原始结果和恢复信息。旧恢复计划/对象相对v2草稿不是当前入口。
+先核对 main、工作树、.local-pair/*.exit、results/b0/<run>/outcome.json 与物理评分。读 PROJECT_STATE.md、DAILY_WORK_LOG.md 近日、reports/B0_STANDARD_TRANSFER_BASELINE.md、results/b0/standard_baseline_20261124/baseline_manifest.json 和 contact_training.json。后者给出各 run 原始命令、初始化与完整状态路径；已结束的旧队列不重开。
 
-已结束轮的真实端点为638fddcb2f025006595f79f27a977a8fba41cbc2：5条seed0配置链新增400 H32、4000 WM、8000 Critic、657570有效转移；不是5seed或单模型预算。control/gripdata/padding/wmcoords末点u50，gain32到u200（345268有效转移），正式十项各0/10，gain200同包Warp/native各0/10。415原始nominal/55run全失败，275正式记录加140额外v1；native gain50只有正式5项，另5项未评。D/完整C/seed1/2/H未执行。不要按旧tmux文字重复启动已回收队列。
+下一道正式验收仍是同一个无额外动作BC/参考直通/解析反馈的标准策略在 Warp 过十项接触。先看 pair_units_v1/grip_commands.csv、nominal_score_details.jsonl、pair_sampling_audit_v1/replay_draw_grip_fixed_stats_u50.json 和 pair_wm_comparison_v1 的同窗误差，识别握持指载荷、开口、TCP/把手误差、前拉/背推存续和真实就绪事件。保留所有失败、阈值、参考版本和全分母。进一步的同类预算应依据两个方向持续双指接触或裁判阶段的真实进展；如补训练数据，须另登记训练身份，保留独立验证，明确比较对接触 WM 与真实控制各有什么影响。
 
-目标独立方法ID：SuperMimic-M1Piper-standard-v1；当前snapshot b0-standard-s0-638fddc是未完成中间结果，没有最终成功候选。维护独立报告和manifest，不用R/J混合能力替代S。原论文G1的129514训练动作覆盖不是本任务分母；0.90是论文SONIC参照线。按协议测完整真实回合归一化tracking，目标>=0.90，接近带>=0.88（本项目事先定0.02容差），同时必须满足原物理门槛。所有最终seed/侧/split单列；不把Policy/reward、单步0.0908/.1、失败后继续积分或想象分数当完整回报。缺项NA。论文WM0.007–0.011也不是H32 TCP米数。
+正式评测命令为 bash scripts/b0/evaluate_standard_contact.sh <新训练run> <冻结节点> warp。十项均过后，各 D01–D20 至少 18/20；随后同包连续双侧完整 Warp 名义及 C 各至少 18/20、原 native3.3 双侧完整名义。seed1/2 各自独立完成初始化和 B0-03，三 seed 的规则和候选全部冻结后再开 H，每 seed/侧至少 40/50。完整物理归一化回报目标为0.90，项目接近带0.88；缺完整回合写 NA。仅在原物理门槛也满足时评定。
 
-固定官方：SuperMimic abc124c1bd5976341034668af3d12c087f2f1f55；mjlab_research dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd。5fb9229仅候选未采用。保持EffortScaledActor/MultiEncoderAE、GenCoord、原tracking系数/softdone/H32/官方ActorCritic。原8storedframes实际7scoredtransitions，当前H7不是少训一步；当前额外H1配方另记。官方隐藏权重Muon、其他Adam，不静默改成纯AdamW。官方benchmark.py测速度，不是全动作回报评测。
+继续使用独立环境与固定官方 WM、原 tracking/softdone、H32 和网络。按北京时间追加唯一 DAILY_WORK_LOG.md，同步独立报告与manifest，普通commit/push并回读。仅仿真；外部物理设备、旧G1、R/J混合策略成绩和多模态/VLA维持各自独立身份。
 
-立即按计划实际执行：
-1. 恢复已有标准锚点、完整cohort状态和需要的真实数组，核对现场进程/配置。沿既有评分入口增加完整真实回报、分项tracking/动作率/限位、固定计划长度、失败余段、误差与成本记录。阶段前缀不记成完整策略能力，失败后诊断积分不记正式回报。不制造新框架或大量形式测试。
-2. 第一优先做动作率单位的匹配学习。当前canonical动作直接进入官方平滑项，等物理J2变化的惩罚较基础effort单位约弱3948倍，这是已证语义差异，首步超力的因果仍待验证。用相同记录先拆分项，再把固定home/基础effort单位转换一致应用到真实和想象reward及上一动作；原系数不变、不新加force/phase reward。gain32只改变优化参数化，正则单位不能跟着变32倍。保留旧分支及新坐标版本。
-3. 从相同标准初始Actor/WM/Critic/normalizer、同seed/数据资格/预算，实际训练canonical与固定effort坐标一对。u0/1/5/10再50/200等合理节点，比较首动作跳变/峰值力/阶段/完整回报/WM。有进展持续训练，不在代数或一次梯度处结束；不无依据复跑旧u1000或盲续gain200。
-4. 接着复用官方ReturnSampler和实际Ratio调度。固定mjlab是全拼接timeline约0.2s bins，区别论文1s；按固定源码语义处理ragged clip/eligible边界、terminal、clip_end、cohort截断和无效lane，保存sampler状态。当前replay_ratio16未生效，不能仅沿用YAML说已对齐。每轮14848WM目标/17408窗口位置（含offline）、8192 imaginedsteps、最多5120attempted；实际有效数据另记。资源批量逐步适配可用96GB GPU，不机械复制4096也不无理由固守小批量。
-5. 对齐官方按clip末有效帧夹紧的未来观测，和当前零槽配对；不延长任务参考、保持或时限。保护WM接触覆盖，复用已有验证与grip训练身份，验证不进normalizer/replay。区分统计换算的瞬时函数保持与优化器轨迹；保持联合更新，不默认新H32监督/任务头。新策略验证补足push样本覆盖，不把重叠窗当独立episode。
-6. 形成持续真实标准训练能力：同一候选十项接触nominal和各D>=18/20；同包连续完整前拉60°/背推25°，Warp C各>=18/20、native3.3双侧nominal。无教师接管/reset/门驱动，原v1与hold-margin身份/物理阈值/时限不变。随后seed1/2各自初始化/采集并过B0-03；三seed配方/选模/候选冻结后才开H，每seed/侧>=40/50。H不调参、不换困难case、不拼不同模型最佳侧。标准未完成就继续报告具体缺口，不自动切到新方法。
-
-标准Actor起点results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt（B0-03已有1000H32/1088000转移），门WM为results/b0/contact_s0_wm_held_r2/wm_002000.pt（2000教师minibatch）。本轮完整状态按actual_config/outcome恢复，权重-only称warm start。旧contact_s0_tracking_r3是历史u1000负例。R/J的参考前馈、15000BC、Jacobian等只作分列对照；禁止作为标准起点或悄悄合入，不默认新reward/风险head/解析补偿/对象相对v2。
-
-现场位置先核实：AutoDL /root/autodl-tmp/dog-and-arm-b0-standard；第二平台 /home/kaiwen/research/dog-and-arm-standard；别名dev2-ubuntu/dev2-ubuntu-lan、autodl-dog-arm。保留其他项目进程、主树修改、原native3.3和隔离环境，不重装ROS/CUDA/Conda base，不重跑P6/B0-03整批或已关闭G1。当前只仿真，硬件/多模态/VLA/RoboMIND/双门后置。
-
-有依赖价值的评分/官方接口、WM数据与训练评测可并行，共享接口由单一集成者维护。长任务完整checkpoint/tmux可恢复，不设后台强制墙钟kill，真实任务时限仍固定。更新独立结果、manifest、PROJECT_STATE、阶段报告、NEXT_RUN和唯一DAILY_WORK_LOG；日志按北京时间逐日详记动作、问题证据、原因/假设、修复复测、失败未执行、命令run预算和下一步。普通commit/push并回读GitHub已授权，不再问，不强推/reset/clean、不盲stage、不建压缩归档。最终报告真实成绩、论文口径缺口、下一项和提交号。
+原 11 月 23 日启动词随 95159f7 保存；docs/B0_STANDARD_TRANSFER_PLAN_20261123.md 和 docs/B0_PAPER_BASELINE_PROTOCOL.md 继续定义研究范围和验收。

@@ -1,29 +1,9 @@
-11月24日现场已实际接续。恢复首查 /root/autodl-tmp/dog-and-arm-b0-pair-v1 的 .local-pair/*.exit、outcome.json、物理评测与训练状态，按 PROJECT_STATE.md 顶部及 DAILY_WORK_LOG.md 继续；首对和三条调度组的 u50 已回收。
+当前处于 SuperMimic 标准 B0-04。2026-11-24 匹配训练已到 u500，两个端点 Warp 名义各 0/10。完整开发回报 NA，最终候选为空。最新现场为 /root/autodl-tmp/dog-and-arm-b0-pair-v1。
 
-以下为 11 月 23 日首次执行入口。
-下一实际工作：对齐官方动作率坐标，真实配对学习，并补论文口径的独立迁移结果。
+先核对 main、工作树、.local-pair/*.exit、results/b0/<run>/outcome.json 与物理评分。读 PROJECT_STATE.md、DAILY_WORK_LOG.md 近日、reports/B0_STANDARD_TRANSFER_BASELINE.md、results/b0/standard_baseline_20261124/baseline_manifest.json 和 contact_training.json。后者给出各 run 原始命令、初始化与完整状态路径；已结束的旧队列不重开。
 
-最新已结束实验：main@638fddcb2f025006595f79f27a977a8fba41cbc2，2026-11-23 22:50:39北京时间完成回收。本次之后的审查/计划文档没有新实验。核对main后先读PROJECT_STATE、DAILY_WORK_LOG最近日期、reports/B0_STANDARD_TRANSFER_BASELINE.md、reports/B0_STANDARD_ROUND_REVIEW_20261123.md、docs/B0_PAPER_BASELINE_PROTOCOL.md、docs/B0_OFFICIAL_IMPLEMENTATION_AUDIT_20261123.md、docs/B0_STANDARD_TRANSFER_PLAN_20261123.md。完整执行授权和方法边界见prompts/B0_START.txt。
+下一道正式验收仍是同一个无额外动作BC/参考直通/解析反馈的标准策略在 Warp 过十项接触。先看 pair_units_v1/grip_commands.csv、nominal_score_details.jsonl、pair_sampling_audit_v1/replay_draw_grip_fixed_stats_u50.json 和 pair_wm_comparison_v1 的同窗误差，识别握持指载荷、开口、TCP/把手误差、前拉/背推存续和真实就绪事件。保留所有失败、阈值、参考版本和全分母。进一步的同类预算应依据两个方向持续双指接触或裁判阶段的真实进展；如补训练数据，须另登记训练身份，保留独立验证，明确比较对接触 WM 与真实控制各有什么影响。
 
-当前阶段仍是SuperMimic标准迁移B0-04。用户新增目标：达到或接近论文指标，单独形成结果供后续比较；之后才新开发/多模态VLA。目标基线SuperMimic-M1Piper-standard-v1尚未完成，最终candidate为空。
+正式评测命令为 bash scripts/b0/evaluate_standard_contact.sh <新训练run> <冻结节点> warp。十项均过后，各 D01–D20 至少 18/20；随后同包连续双侧完整 Warp 名义及 C 各至少 18/20、原 native3.3 双侧完整名义。seed1/2 各自独立完成初始化和 B0-03，三 seed 的规则和候选全部冻结后再开 H，每 seed/侧至少 40/50。完整物理归一化回报目标为0.90，项目接近带0.88；缺完整回合写 NA。仅在原物理门槛也满足时评定。
 
-已经回收：五条seed0链400 H32/657570有效转移。gain32-u200自身200 H32/345268，Warp/native正式接触各0/10；其他四条u50 Warp各0/10。415条名义记录不是415个独立任务；27套完整十项加native gain50仅5项正式评分。D、完整任务、独立seed/H未执行。不要重复启动旧b0-standard-finish/b0-standard-receive收尾队列；执行时核实真实进程回执。
-
-立即实施顺序：
-1. 现场恢复标准锚点与必要原始轨迹，补完整物理归一化tracking、误差和训练成本记录。完整计划长度固定、失败余段零、诊断越限后积分不入正式成绩。目标回报0.90、接近数值带0.88是与物理门槛同时使用的迁移指标，不是G1同benchmark复现；当前缺项NA。
-2. 动作率单位是第一对真实训练：现canonical动作的J2平滑惩罚约弱3948倍。用原系数，把固定effort动作坐标和上一动作在真实/想象中统一；gain32不改变reward单位。相同标准初态/seed/数据/预算，canonical控制vs固定effort语义修复实际训练，不止诊断。u0/1/5/10/50/200按实际进展，后续有效时继续。
-3. 接续移入官方ReturnSampler与实际Ratio。fixed mjlab global timeline约0.2s bins，不混论文1s；处理motion边界、terminal、无效lane和cohort截断。replay_ratio16必须实际用于已声明调度，在线/离线窗口、有效/attempted和imagined成本分别记。
-4. 原官方尾部观测夹末帧与当前零槽对照，任务时限保持。WM统计/优化器/接触覆盖按现有同窗验证，补push独立覆盖；联合学习不断链，不默认BC/force reward/风险头/解析控制。
-5. 同一标准候选接触nominal→各D≥18/20→完整双侧Warp C≥18/20/native名义→独立seed1/2→三seed全部冻结后的H≥40/50。同时形成完整论文导向回报和预算。无合格候选就写未完成，不自动切方法。
-
-现有可核实入口（先看真实CLI，不把计划中新选项冒充已有）：
-bash scripts/b0/env.sh python scripts/b0/train_contact.py --help
-bash scripts/b0/env.sh python scripts/b0/standard_contact_validation.py --help
-bash scripts/b0/env.sh python scripts/b0/eval_contact_segments.py --help
-新坐标/采样/评分配置须按计划实现并明确命名，然后使用这些现有入口实际训练和评测。当前文档不宣称新配置已存在或已执行。
-
-已知现场：AutoDL /root/autodl-tmp/dog-and-arm-b0-standard；第二平台 /home/kaiwen/research/dog-and-arm-standard；SSH别名dev2-ubuntu/dev2-ubuntu-lan→autodl-dog-arm。先实际核对。git fetch origin main后审查增量、正常快进；保留未提交修改，不reset/clean。完整权重/优化器/normalizer/RNG/replay在现场，Git小记录不等于资产已恢复。
-
-固定pin abc124c1bd5976341034668af3d12c087f2f1f55 / dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd；B0-03 Actor free_s0_cloud_servo_r2/checkpoint_001000.pt、门WM contact_s0_wm_held_r2/wm_002000.pt。本轮失败链作对照，R/J参考直通/BC/解析补偿不当标准起点。B0-03/P6/G1不整批重做，当前只仿真。
-
-过程按北京时间更新唯一DAILY_WORK_LOG，细记问题、证据、修复复测、失败/未执行、预算和命令；同步独立结果/manifest、PROJECT_STATE、报告与提示词。长任务可恢复、不墙钟kill、保留其他项目。已授权普通commit/push并回读GitHub，无需再问，不强推、不归档压缩、不盲stage。
+继续使用独立环境与固定官方 WM、原 tracking/softdone、H32 和网络。按北京时间追加唯一 DAILY_WORK_LOG.md，同步独立报告与manifest，普通commit/push并回读。仅仿真；外部物理设备、旧G1、R/J混合策略成绩和多模态/VLA维持各自独立身份。

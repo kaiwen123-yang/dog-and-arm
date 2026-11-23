@@ -64,6 +64,19 @@ def index(names):
                                checkpoint=str(checkpoint),checkpoint_sha256=sha,
                                recovery=str(run/'cohort_state.pt'),recovery_bytes=(run/'cohort_state.pt').stat().st_size)
         endpoints[name] = endpoint
+        config_files = [p for p in actual['execution_source_sha256'] if p.startswith('config/b0/')]
+        if len(config_files) != 1:
+            raise ValueError(f'Ambiguous executed configuration at {run}: {config_files}')
+        command = ['bash','scripts/b0/env.sh','python','-u','scripts/b0/train_contact.py',
+                   '--config',config_files[0],'--run',name,'--updates',str(last)]
+        if parent:
+            command += ['--resume',parent]
+        processes[name]['command'] = command
+        processes[name]['actual_config'] = str(run/'actual_config.json')
+        receipt = Path('.local-pair')/(name+'.exit')
+        processes[name]['runner_exit'] = int(receipt.read_text()) if receipt.is_file() else None
+        if processes[name]['runner_exit'] not in (None, 0):
+            raise ValueError(f'Nonzero runner exit at {run}')
         intervals.append((outcome['started_unix'],outcome['finished_unix']))
     totals = {k:sum(p['new_cost'][k] for p in processes.values()) for k in effort}
     return dict(worktree=str(Path.cwd()),processes=processes,distinct_process_totals=totals,

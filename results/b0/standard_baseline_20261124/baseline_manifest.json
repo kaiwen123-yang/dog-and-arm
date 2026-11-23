@@ -1,0 +1,605 @@
+{
+  "schema": "b0_standard_transfer_result_snapshot_v2",
+  "snapshot_id": "b0-standard-s0-matched-20261124",
+  "target_method_id": "SuperMimic-M1Piper-standard-v1",
+  "status": "incomplete_standard_transfer_B0_04",
+  "final_candidate": null,
+  "final_baseline_frozen": false,
+  "observed_seed": 0,
+  "training_chains": 8,
+  "training_processes": 15,
+  "previous_snapshot": "results/b0/standard_baseline_20261123/baseline_manifest.json",
+  "run_source_base": "95159f77745d754b41ca135c726e2f2ba55c907e",
+  "execution_source": "Each process records its resolved config, source hashes and initialization in actual_config.json; the detached worktree used changes atop the base.",
+  "upstream": {
+    "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+    "mjlab_research": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd"
+  },
+  "training": "results/b0/standard_baseline_20261124/contact_training.json",
+  "distinct_contact_cost": {
+    "actor_h32": 1350,
+    "wm_minibatches": 13500,
+    "critic_minibatches": 27000,
+    "valid": 3081019,
+    "attempted": 7296000,
+    "reset_prefix_lane_substeps": 18240000,
+    "cohorts": 1425,
+    "wm_online_stored_positions": 17971200,
+    "wm_offline_stored_positions": 5529600,
+    "wm_online_successor_targets": 15206400,
+    "wm_offline_successor_targets": 4838400,
+    "imagined_policy_steps": 11059200
+  },
+  "inheritance": {
+    "actor_checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "actor_updates": 1000,
+    "free_wm_minibatches": 10000,
+    "free_critic_minibatches": 20000,
+    "free_valid_online_transitions": 1088000,
+    "door_wm_checkpoint": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "door_teacher_wm_minibatches": 2000
+  },
+  "protocols": {
+    "reference": [
+      "contact_dev_v1",
+      "contact_dev_hold_margin_v2"
+    ],
+    "primary_score": "fixed_effort_successor_2ms_v1",
+    "normalized_segment_missing_suffix": "Original physical failure stops scoring; zero remainder to the registered duration",
+    "segment_prefix": "registered teacher prefix only, excluded from score",
+    "paper_target": 0.9,
+    "near_band": 0.88,
+    "near_band_absolute_tolerance": 0.02,
+    "physical_gates_also_required": true,
+    "teacher_action_bc_updates_in_standard_actor": 0,
+    "analytic_compensation": false,
+    "reference_action_feedforward": false
+  },
+  "paper_comparable_G1_state_loss": null,
+  "paper_comparable_G1_state_loss_reason": "Transferred robot/door channels and measured contact corpus differ. Matched loss function with transfer-specific scales is tabulated.",
+  "endpoints": {
+    "pair_canonical_s0_v1": {
+      "chain": "pair_canonical_s0_v1",
+      "resume_from": null,
+      "update": 50,
+      "valid": 75312,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": -0.03412718698778428,
+      "segment_mean_by_side": {
+        "pull": 0.18957641697752736,
+        "push": -0.2578307909530959
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 50.61207717756705,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 33.13802052857679,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/pair_canonical_s0_v1/checkpoint_000050.pt",
+      "sha256": "3187b8c4ed4eded6a2c31b50c617dc09dddda75362acbc63d59d66aeb7103bfb"
+    },
+    "pair_effort_s0_v1": {
+      "chain": "pair_effort_s0_v1",
+      "resume_from": null,
+      "update": 50,
+      "valid": 69610,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": -0.04738196045692695,
+      "segment_mean_by_side": {
+        "pull": -0.061709365885002594,
+        "push": -0.03305455502885131
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 50.876011402258094,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 22.204083168413955,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/pair_effort_s0_v1/checkpoint_000050.pt",
+      "sha256": "bd87ea9796a95ab97e27a0c9bde58833fb6016c107bb1e5f9451aeaaf1c52f10"
+    },
+    "return_s0_v1": {
+      "chain": "return_s0_v1",
+      "resume_from": null,
+      "update": 50,
+      "valid": 42757,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": -0.02687903201448462,
+      "segment_mean_by_side": {
+        "pull": -0.07279110287156952,
+        "push": 0.019033038842600287
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 51.01381979918304,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 6.696892203491093,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/return_s0_v1/checkpoint_000050.pt",
+      "sha256": "e973ab597d3aa9b5ca3410327728e77ea5f3ae802404320d5e31901abb75ed82"
+    },
+    "ratio_s0_v1": {
+      "chain": "ratio_s0_v1",
+      "resume_from": null,
+      "update": 50,
+      "valid": 54306,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": -0.03854636763794086,
+      "segment_mean_by_side": {
+        "pull": -0.05593304187563944,
+        "push": -0.021159693400242274
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 51.00336121574394,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 19.448358442357105,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/ratio_s0_v1/checkpoint_000050.pt",
+      "sha256": "bc864a6d40ddf12b61025835a91def1e88323a176ad653e401bc24b727338eff"
+    },
+    "cliplast_s0_v1": {
+      "chain": "cliplast_s0_v1",
+      "resume_from": null,
+      "update": 50,
+      "valid": 53579,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": -0.03296802462630099,
+      "segment_mean_by_side": {
+        "pull": -0.04704355606255292,
+        "push": -0.018892493190049053
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 51.881567748598165,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 9.401649096250852,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/cliplast_s0_v1/checkpoint_000050.pt",
+      "sha256": "4d9916257321fc44adf6d79fbce2cbf86e3825e6a47769989a3d40177a064a5a"
+    },
+    "aligned_grip_s0_v1": {
+      "chain": "aligned_grip_s0_v1",
+      "resume_from": null,
+      "update": 50,
+      "valid": 53595,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": -0.04992368509829729,
+      "segment_mean_by_side": {
+        "pull": -0.08245742666690392,
+        "push": -0.01738994352969066
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 51.026181700430314,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 23.52561124762541,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/aligned_grip_s0_v1/checkpoint_000050.pt",
+      "sha256": "d2e70fc059ae9dc64dc31fef4a3c5d380d82cd3c858af9c52e1efbc46aa4b49f"
+    },
+    "aligned_grip_fixed_stats_s0_v1": {
+      "chain": "aligned_grip_fixed_stats_s0_v1",
+      "resume_from": null,
+      "update": 50,
+      "valid": 53704,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": -0.03504488034486875,
+      "segment_mean_by_side": {
+        "pull": -0.03057229947455613,
+        "push": -0.03951746121518137
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 51.01816068271424,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 30.08659413873127,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/aligned_grip_fixed_stats_s0_v1/checkpoint_000050.pt",
+      "sha256": "895c3fa0798b943af533000c68b67cac5254c6632c31228fe2de8245e76954e2"
+    },
+    "pair_canonical_to200_v1": {
+      "chain": "pair_canonical_s0_v1",
+      "resume_from": "results/b0/pair_canonical_s0_v1/cohort_state.pt",
+      "update": 200,
+      "valid": 384430,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": 0.31311791427408925,
+      "segment_mean_by_side": {
+        "pull": 0.3375951156350466,
+        "push": 0.2886407129131318
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 43.55078169721448,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 61.49935629602671,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/pair_canonical_to200_v1/checkpoint_000200.pt",
+      "sha256": "e0f0d7253b49ce1f84b88a943dfd9e54227e0da2195ac8f91264b788f68cfc30"
+    },
+    "pair_effort_to200_v1": {
+      "chain": "pair_effort_s0_v1",
+      "resume_from": "results/b0/pair_effort_s0_v1/cohort_state.pt",
+      "update": 200,
+      "valid": 452697,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": 0.13728380385137293,
+      "segment_mean_by_side": {
+        "pull": 0.1603062144213939,
+        "push": 0.11426139328135194
+      },
+      "first_substep_failures": 3,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 35.64213457741156,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 8,
+          "peak_n": 1.550637257557466,
+          "failure": "grip_base_or_handle_error"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/pair_effort_to200_v1/checkpoint_000200.pt",
+      "sha256": "7c1e0e0b0bb3e7e97ad851b34f96dc81983f2b601a8b60c89c365bf8107cac26"
+    },
+    "return_to100_s0_v1": {
+      "chain": "return_s0_v1",
+      "resume_from": "results/b0/return_s0_v1/cohort_state.pt",
+      "update": 100,
+      "valid": 127855,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": 0.056389420870647626,
+      "segment_mean_by_side": {
+        "pull": 0.025607201326371735,
+        "push": 0.08717164041492352
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 53.45151786470858,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 26.603318313113096,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/return_to100_s0_v1/checkpoint_000100.pt",
+      "sha256": "6825b4741e4bf965557c2983f0e264429319fdadf23183313d1fa04cc0402d98"
+    },
+    "lane_age_s0_v1": {
+      "chain": "lane_age_s0_v1",
+      "resume_from": null,
+      "update": 50,
+      "valid": 54028,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": -0.045764122115341185,
+      "segment_mean_by_side": {
+        "pull": -0.06494454095160143,
+        "push": -0.026583703279080936
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 51.02880822695029,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 32.11076396529883,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/lane_age_s0_v1/checkpoint_000050.pt",
+      "sha256": "01367630001bf0d757622d7db2ec77b6f6b3b642195d774a4d93be25df98fe7b"
+    },
+    "pair_canonical_to350_v1": {
+      "chain": "pair_canonical_s0_v1",
+      "resume_from": "results/b0/pair_canonical_to200_v1/cohort_state.pt",
+      "update": 350,
+      "valid": 818248,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": 0.3683221233616098,
+      "segment_mean_by_side": {
+        "pull": 0.3962143379144271,
+        "push": 0.3404299088087925
+      },
+      "first_substep_failures": 3,
+      "stable_grip": {
+        "pull": {
+          "steps": 34,
+          "peak_n": 4.33138124008572,
+          "failure": "grip_base_or_handle_error"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 38.80693434377323,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/pair_canonical_to350_v1/checkpoint_000350.pt",
+      "sha256": "dc5d92b5039bb717a286b0607a9dac0a27c16d576412f97ac41667301522202e"
+    },
+    "pair_effort_to350_v1": {
+      "chain": "pair_effort_s0_v1",
+      "resume_from": "results/b0/pair_effort_to200_v1/cohort_state.pt",
+      "update": 350,
+      "valid": 917438,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": 0.3021518897752005,
+      "segment_mean_by_side": {
+        "pull": 0.2569911361645523,
+        "push": 0.3473126433858488
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 21.440845669551063,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 9.179619303097446,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/pair_effort_to350_v1/checkpoint_000350.pt",
+      "sha256": "07c70105c768df2783db37ba7274514338318876f24014ae899db73464b1775f"
+    },
+    "pair_canonical_to500_v1": {
+      "chain": "pair_canonical_s0_v1",
+      "resume_from": "results/b0/pair_canonical_to350_v1/cohort_state.pt",
+      "update": 500,
+      "valid": 1291256,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": 0.22960670432483055,
+      "segment_mean_by_side": {
+        "pull": 0.17106211967690946,
+        "push": 0.2881512889727516
+      },
+      "first_substep_failures": 3,
+      "stable_grip": {
+        "pull": {
+          "steps": 23,
+          "peak_n": 2.198327496436694,
+          "failure": "grip_base_or_handle_error"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 10.946723583388957,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/pair_canonical_to500_v1/checkpoint_000500.pt",
+      "sha256": "613994b07829db3cfba10bfe8835e16f578dd9085f6a26ae89ddf2d7aba5e1f3"
+    },
+    "pair_effort_to500_v1": {
+      "chain": "pair_effort_s0_v1",
+      "resume_from": "results/b0/pair_effort_to350_v1/cohort_state.pt",
+      "update": 500,
+      "valid": 1392696,
+      "formal_warp_nominal": {
+        "passed": 0,
+        "scored": 10
+      },
+      "normalized_segment_mean": 0.25962705975799516,
+      "segment_mean_by_side": {
+        "pull": 0.16922685289544617,
+        "push": 0.3500272666205441
+      },
+      "first_substep_failures": 6,
+      "stable_grip": {
+        "pull": {
+          "steps": 1,
+          "peak_n": 16.344505850979477,
+          "failure": "door_force_limit"
+        },
+        "push": {
+          "steps": 1,
+          "peak_n": 8.311857201411025,
+          "failure": "door_force_limit"
+        }
+      },
+      "full_from_start_return": null,
+      "checkpoint": "results/b0/pair_effort_to500_v1/checkpoint_000500.pt",
+      "sha256": "18b985b18122e9bedb336ad255b43700a8ee0ff568e59f500edaa384d4235519"
+    }
+  },
+  "evaluation": {
+    "formal_checkpoint_groups": 23,
+    "formal_records": 230,
+    "formal_records_passed": 0,
+    "first_2ms_failures": 129,
+    "failure_counts": {
+      "operation_station_drift": 43,
+      "door_force_limit": 129,
+      "unexpected_contact:finger_non_grasp_handle": 25,
+      "wheel_support_or_tilt": 7,
+      "reference_exhausted": 9,
+      "timeout:release": 5,
+      "unexpected_contact:gripper_base_handle": 1,
+      "grip_base_or_handle_error": 9,
+      "unexpected_contact:robot_panel": 1,
+      "persistent_saturation:piper_gripper_joint1": 1
+    },
+    "not_independent_tasks": true,
+    "registered_phase_events": [
+      {
+        "checkpoint": "results/b0/pair_canonical_to350_v1/checkpoint_000350.pt",
+        "side": "pull",
+        "segment": "release_retreat",
+        "events": [
+          {
+            "phase": "release",
+            "end_step": 2057,
+            "ref_end_step": 14127,
+            "ticks": 75,
+            "door_deg": 4.8510577612974,
+            "width_m": 0.08144326508045197,
+            "net_force_n": 0.0
+          }
+        ]
+      }
+    ],
+    "per_checkpoint": "results/b0/pair_units_v1/nominal_summary.json",
+    "per_case": "results/b0/pair_units_v1/nominal_segments.csv",
+    "errors_and_signed_terms": "results/b0/pair_units_v1/nominal_score_details.jsonl",
+    "case_grip_commands": "results/b0/pair_units_v1/grip_commands.csv",
+    "measured_failure_videos": [
+      "results/b0/pair_units_v1/canonical_u50_pull_approach_grasp.mp4",
+      "results/b0/pair_units_v1/canonical_u350_pull_release_retreat.mp4"
+    ]
+  },
+  "independent_wm": {
+    "index": "results/b0/pair_wm_comparison_v1/index.json",
+    "coverage": "results/b0/pair_wm_comparison_v1/coverage.csv",
+    "loss": "results/b0/pair_wm_comparison_v1/state_loss.csv",
+    "physical_errors": "results/b0/pair_wm_comparison_v1/physical_errors.csv",
+    "weight_statistics": "results/b0/pair_wm_comparison_v1/wm_statistics.json",
+    "score_processes": 27,
+    "datasets": 5,
+    "new_validation_sampling": {
+      "cohorts": 80,
+      "paired_distinct_rng_seeds": 40,
+      "lanes": 5120,
+      "attempted": 136000,
+      "full_valid": 28769,
+      "physical_terminations": 4716,
+      "teacher_prefix_substeps": 512000
+    },
+    "score_process_seconds": 563.542271791026
+  },
+  "remaining": {
+    "contact_nominal_any_ten_passed": false,
+    "contact_D": null,
+    "full_warp_nominal": null,
+    "full_warp_C": null,
+    "full_native33_nominal": null,
+    "independent_seed1": null,
+    "independent_seed2": null,
+    "holdout_H": null,
+    "full_episode_normalized_tracking_return": null,
+    "per_seed_side_split_full_return": null,
+    "reason": "No single standard checkpoint passed all ten registered Warp nominal contacts. Later physical gates and independent seeds were not opened. H remains unopened."
+  },
+  "artifact_root": "/root/autodl-tmp/dog-and-arm-b0-pair-v1"
+}
