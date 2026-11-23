@@ -61,3 +61,35 @@ bash scripts/b0/env.sh python -u -m scripts.b0.recovery_backend_ablation \
 ```
 
 原生和 Warp 默认物理仍各自用于正式评分。这些对照为后端迁移提供了有针对性的采样条件；是否能由新策略同时容忍两种接触分布，要由该策略在两个原始后端上的独立闭环决定。
+
+### 在 Warp 重现原生侧的失败
+
+Warp 的胶囊–网格夹指碰撞在此场景每指生成一个接触点。仅对四个轮胎启用最深支撑点分支，真实反馈闭环即重现原生两个失败事件。前拉在第 31,310 步退臂超时，背推在第 10,620 步越过 5 mm 抓持门槛，两者与原生分别相差 0 与 9 步。其短窗根/TCP 差和力差见前述逐窗表。Warp 此次背推加载时出现一次 float 转换 overflow 警告，两侧物理记录有限，接触缓冲 overflow 位均为 0。已保留未改设置的正式 Warp 结果。[Warp 单点轮地诊断的两条闭环与视频](../results/b0/recovery_c_anchor_warp316_wheel_deepest_r1)
+
+## 同一参考下直接换包与六臂读出试验
+
+在两条固定 Warp 参考下，历史 native 成功包也无法直接迁移。native3.3 前拉/背推分别在 12.680°/5.284° 出现抓持几何失败。该权重在 CPU3.16 只完成背推，前拉耗尽参考。native/Warp 两套实际训练教师的 `open` 起点相差 13 帧，操作期间的同钟 TCP 教师目标中位差为 5.94 mm（前拉）、6.17 mm（背推）。[native3.3](../results/b0/recovery_c_native_anchor_on_warp_refs_native33_r1) · [CPU3.16](../results/b0/recovery_c_native_anchor_on_warp_refs_cpu316_r1)
+
+选取两个实际 native 训练教师中与固定 Warp 时钟同阶段且 TCP 目标差≤2 mm、姿态差≤1°的动作标签，前拉 450 帧、背推 436 帧。两个 nominal 评测回放均未提供教师标签。第一个试验冻结 Warp Actor 主体，最小二乘调整末层出端的六个臂关节，原 Warp 两个训练教师的 3,786/2,802 帧用于约束原动作，系数见 `protocol.json`。实测训练 RMSE 从 0.02102/0.01257 rad 减到 0.00262/0.00231 rad。原生复测两侧都超过 6 N，Warp 前拉超过 6 N、背推抓持超时。默认两端均 0/2，保留此负结果。[拟合](../results/b0/recovery_c_s0_arm_readout_r1) · [原生回归](../results/b0/recovery_c_arm_readout_native33_r1) · [Warp 回归](../results/b0/recovery_c_arm_readout_warp316_r1)
+
+## 将实测根位移偏差映射为六臂角度修正
+
+在固定 Warp 参考第 753 个策略时刻，原冻结 Actor 在原生上的所在根位置与给定参考的差约 3.5 mm，两个方向的 TCP–把手误差为 3.17/3.42 mm；在原 Warp 环境上为 0.13/0.17 mm。背推约在第 1,061 帧触及 5 mm。继承 Warp u0 主体与 23 个输出通道，利用仿真真值当前根位置和给定参考的根位置得到世界系平移误差。在公共参考姿态预计算抓取点对六臂的位姿雅可比，将平移误差映射到六个臂参考动作残差。角速度行的长度尺度为 0.12 m，阻尼 0.01，每个关节修正限幅为 ±0.05 rad，近收臂参考按距初始姿态幅度平滑衰减。此处采用仿真特权根平移和模型运动学。整个运动学表只取决于提供的公共参考，两端共用；部署不读取接触力、未来真实状态、后端 ID 或教师动作。
+
+冻结全部原网络参数，在上述 450/436 个对齐训练帧上，两侧等权拟合一个共享系数。无约束解为 1.339，按事前区间 [0,1] 取 1.0。两组训练残差变为 0.01193/0.00276 rad。先用独立实现验证闭环，原生 3.3 前拉/背推 37,059/27,955 步均通过，约 59.9772°/24.9942°。CPU3.16 两侧 37,373/27,512 步均通过。Warp 两侧 37,376/27,514 步均通过。这是带几何前馈的监督初始化，新增 H32=0。[标定](../results/b0/recovery_c_s0_stance_r1) · [native3.3](../results/b0/recovery_c_stance_native33_r1) · [CPU3.16](../results/b0/recovery_c_stance_cpu316_r1) · [Warp](../results/b0/recovery_c_stance_warp316_r1)
+
+### 标准 Actor、物理采集和想象入口
+
+将独立实现迁入标准 Actor。保留原 540 个参考分量，末尾追加六个弧度单位的修正。六个新编码器列初始化为零，新归一化列均值 0、标准差 0.05 rad；原编码器和归一化器逐列复制。Actor 直接将六臂修正加到原六臂物理输出。相同入口还可叠加 A3 的 570 维和 A4 的 571 维输入，分别得到 576/577 维。WM 与 Critic 输入维度保持既有定义。实际物理采集与 `DoorImagination._update_goal` 都经 `DoorMotions.goals` 从当时根位置重算修正，想象中根位置来自预测，梯度可通过位移回到模型动作链。额外的六个神经输入列可在随后的联训中更新。
+
+两侧共 71 个扰根观测，标准物理 Actor 与独立实现的最大归一化动作差为 5.96×10⁻⁸。六个新分量对当前根 XYZ 的偏导与中心差分最大差为 4.63×10⁻⁷ rad/m。核对工具初次因 PyTorch 编译图不允许复用捐赠缓冲区而中断；关闭该核对工具的编译优化后，逐列偏导和数值比对均通过。第二平台和 AutoDL 标准测试使用同一完整文件，SHA-256 为 `7f86370f47d549ce6a1570a8d66f3996abb80708f50162ba42a5927cb5dff61f`。原生 3.3 标准入口再次双侧通过，37,056/27,948 步，59.9774°/24.9950°。接触处的数值微差会使长轨迹的终点步数小幅改变。[标准包与验算](../results/b0/recovery_c_s0_stance_integrated_r1) · [标准加载的原生逐案](../results/b0/recovery_c_integrated_native33_r1)
+
+```bash
+bash scripts/b0/env.sh python -m scripts.b0.recovery_backend_fit --checkpoint results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt --run recovery_c_s0_arm_readout_r1
+bash scripts/b0/env.sh python -m scripts.b0.recovery_backend_stance fit --checkpoint results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt --run recovery_c_s0_stance_r1
+bash scripts/b0/env.sh python -m scripts.b0.recovery_backend_package --source results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt --fit results/b0/recovery_c_s0_stance_r1/fit.json --references results/raw_large/b0/full_warp_hold_park_r1 --run recovery_c_s0_stance_integrated_r1
+```
+
+同一台第二平台的标准 Warp 入口随后完成前拉 37,373 步、59.96510°与背推 27,514 步、25.02920°，两侧均通过。两套 CPU/GPU 运行时的原始差异保留在对应的 `warp_capacity`、实际步数和审计数组中。采用 A3/A4 权重作为底座时，也已分别核对 576/577 维的字段迁移与根位置梯度；装包不计作它们的物理通过。[标准 Warp 双侧复测](../results/b0/recovery_c_integrated_warp316_laptop_r1) · [A3 装包](../results/b0/recovery_c_s0_A3_stance_r1/package.json) · [A4 装包](../results/b0/recovery_c_s0_A4_stance_r1/package.json)
+
+真实训练材料现已分别在第二平台和云端 `torch.load` 实载。两端的固定参考数组形状、完整可读与有限性检查，三个本地监督试验及云端独立/A3/A4 组合包的路径、权重字节数、SHA、Actor/WM/Critic 张量数与能否接续在线优化器见[复核清单](../results/b0/recovery_c_s0_stance_integrated_r1/recovery_inventory.json)。这些离线几何拟合只产生新的 Actor 包，不生成在线 replay、优化器或 RNG 状态；后续真实 H32 在各自 run 单独保存恢复边界。

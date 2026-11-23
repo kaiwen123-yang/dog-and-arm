@@ -76,8 +76,14 @@ def main():
     if not args.index:
         collect(trial["side"], trial["goal"], trial["split"], RAW, evidence,
             hold_seconds=1.5, full_task=True, backend="warp", extra_final_park=True, trial=trial)
+    index_teacher_clock(trial, RAW, OUT)
+
+
+def index_teacher_clock(trial, raw, out):
+    case=trial["episode_id"]
+    evidence=out/(case+".json")
     tr = json.loads(evidence.read_text())
-    folder = RAW / case
+    folder = raw / case
     clock = np.load(folder/"t.npy")
     steps = np.load(folder/"physics_step.npy")
     if not np.isfinite(clock).all() or not np.all(np.diff(clock) > 0):
@@ -135,7 +141,7 @@ def main():
           complete_phase_mismatch_or_outside_reference=int((valid&~aligned).sum()),
           intervention_frames=np.flatnonzero(pulse).tolist(), failure_frames=np.flatnonzero(~safe).tolist(),
           clock_s_source="integer physical substeps at 2ms; completed phase ends are taken from dense per-substep phase, not rounded float time")
-    clock_file = OUT / (case+"_clock.json")
+    clock_file = out / (case+"_clock.json")
     tmp = clock_file.with_suffix(".pending")
     tmp.write_text(json.dumps(ev,indent=2,allow_nan=False)+"\n")
     tmp.replace(clock_file)

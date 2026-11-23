@@ -10,9 +10,11 @@ from supermimic.representations import GOAL_FRAME_STRIDE, NUM_GOAL_FRAMES
 
 from .model import EffortScaledActor, RobotActor, RobotRepresentation, full_state, tensor
 from .physics import ActionMap, make_model
+from . import endpoint_policy
 
 
 PRIVILEGED_TRANSLATION = "privileged_reference_translation"
+APPROACH_LEG_WHEEL = "privileged_translation_approach_leg_wheel_residual"
 APPROACH_WHEEL = "privileged_translation_approach_wheel_residual"
 PRIVILEGED_DOOR_ANGLE = "privileged_reference_translation_and_door_angle"
 
@@ -26,7 +28,9 @@ ARM_MAP_BASES = {STANCE_ARM: "proprio_motion", TRANSLATION_STANCE_ARM: PRIVILEGE
 
 def actor_goal_schema(cfg):
     schema = cfg.get("actor_goal_schema", "proprio_motion")
-    if ARM_MAP_BASES.get(schema, schema) not in ("proprio_motion", PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL):
+    if schema == endpoint_policy.SCHEMA:
+        return schema
+    if ARM_MAP_BASES.get(schema, schema) not in ("proprio_motion", PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL, APPROACH_LEG_WHEEL):
         raise ValueError(f"Unsupported actor goal schema {schema!r}")
     return schema
 
@@ -38,6 +42,7 @@ class DoorMotions:
         self.ids, self.starts, self.metas = {}, {}, {}
         q, v, starts, ends = [], [], [], []
         approach = []
+        endpoint_clock = []
         for path in map(Path, paths):
             meta = json.loads((path / 'metadata.json').read_text())
             if not (meta['finished'] and meta['held_action_replay'] and meta['success'] and meta['wm_split']=='train'
@@ -56,7 +61,9 @@ class DoorMotions:
             ends.append(start+n+1)
             q.append(np.load(path/'qpos.npy',mmap_mode='r')[:n+1])
             v.append(np.load(path/'qvel.npy',mmap_mode='r')[:n+1])
-            if self.actor_schema == APPROACH_WHEEL:
+            if self.actor_schema == endpoint_policy.SCHEMA:
+                endpoint_clock.append(endpoint_policy.reference_clock(path,meta,n))
+            if self.actor_schema in (APPROACH_WHEEL, APPROACH_LEG_WHEEL):
                 phase = np.load(path / 'phase.npy')[:n]
                 eligible = np.asarray(meta['phases'])[phase] == 'approach_base'
                 approach.append(np.r_[eligible, False])
@@ -67,6 +74,8 @@ class DoorMotions:
             # enter this table. All roots used during rollout are supplied by aux.
             model = make_model()
             self.reference_arm_map = tensor(np.concatenate([ReferenceArmMap(model, clip).gain for clip in q]), device)
+        if endpoint_clock:
+            self.endpoint_clock=tensor(np.concatenate(endpoint_clock),device)
         if approach:
             self.approach = tensor(np.concatenate(approach), device)
         self.motion_ends = torch.tensor(ends,device=device)
@@ -97,7 +106,7 @@ class DoorMotions:
                               for chunk,w in zip(chunks,widths)],-1)
         wm = mask(wm,(48,3,6))
         actor = mask(actor,(48,6))
-        if self.base_schema in (PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL):
+        if self.base_schema in (PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL, APPROACH_LEG_WHEEL):
             # Keep the 540 trained columns in place. WM columns 480:510 are
             # ten reference-root positions expressed in the current root frame.
             actor = torch.cat((actor, wm[:, 480:510]), dim=-1)
@@ -105,12 +114,17 @@ class DoorMotions:
             if door_angle is None or door_angle.shape != frames.shape:
                 raise ValueError("A current measured or imagined hinge angle is required for each actor observation")
             actor = torch.cat((actor, (door_angle - self.qpos[frames, 31]).unsqueeze(-1)), dim=-1)
-        if self.actor_schema == APPROACH_WHEEL:
+        if self.actor_schema in (APPROACH_WHEEL, APPROACH_LEG_WHEEL):
             actor = torch.cat((actor, self.approach[frames, None]), dim=-1)
         if self.actor_schema in ARM_MAP_BASES:
             shift = self.root_pos_w[frames] - aux[..., :3]
             delta = torch.matmul(self.reference_arm_map[frames], shift.unsqueeze(-1)).squeeze(-1)
             actor = torch.cat((actor, delta.clamp(-.05, .05)), dim=-1)
+        if self.actor_schema == endpoint_policy.SCHEMA:
+            if door_angle is None or door_angle.shape != frames.shape:
+                raise ValueError("Current hinge required for endpoint residual")
+            error=(door_angle-self.qpos[frames,31]).unsqueeze(-1)
+            actor=torch.cat((actor,error,self.endpoint_clock[frames]),dim=-1)
         return wm, actor
 
 
@@ -195,26 +209,61 @@ class ApproachWheelActor(ReferenceResidualActor):
         return torch.cat((baseline[:, :12], baseline[:, 12:16] + delta, baseline[:, 16:]), dim=-1)
 
 
+class ApproachLegWheelActor(ApproachWheelActor):
+    """Add one learned yaw-trim rate to the fitted approach wheel feedback."""
+    def set_servo_units(self, model, mapping, device):
+        super().set_servo_units(model, mapping, device)
+        from .approach_legs import yaw_trim_vector
+        gain = tensor(yaw_trim_vector(model) / mapping.scale[:12], device)
+        self.register_buffer("leg_trim_gain", gain)
+        self.register_buffer("leg_trim_projection", gain / gain.square().sum())
+        self.trim_rate = torch.nn.Sequential(torch.nn.Linear(10, 32), torch.nn.Tanh(),
+                                            torch.nn.Linear(32, 1), torch.nn.Tanh()).to(device)
+
+    def trim_inputs(self, obs):
+        x, initial_gate = self.wheel_inputs(obs)
+        previous = obs["history"][:, -1, -23:-11] @ self.leg_trim_projection
+        return torch.cat((x, previous[:, None] / .1), dim=-1), previous[:, None], initial_gate
+
+    def raw(self, obs_td):
+        baseline = super().raw(obs_td)
+        x, previous, gate = self.trim_inputs(obs_td)
+        active = obs_td["goal_motion"][:, -1:]
+        rate = self.trim_rate(x) * .08  # rad/s of body yaw trim
+        desired = (previous + active * .02 * rate).clamp(-.27925, .27925)
+        # The physical approach teacher retains its final stance after parking.
+        carry = (previous.abs() / .002 - 1).clamp(0, 1)
+        enabled = torch.maximum(gate, carry)
+        residual = enabled * (desired - (baseline[:, :12] @ self.leg_trim_projection)[:, None])
+        return torch.cat((baseline[:, :12] + residual * self.leg_trim_gain, baseline[:, 12:]), dim=-1)
+
+
 def build_actor(rep, cfg, model, device):
     task = make_motion_task(rep,570)
     schema = actor_goal_schema(cfg)
-    if schema in (PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL):
+    if schema in (PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL, APPROACH_LEG_WHEEL):
         task = replace(task, goal_dim=570 if schema == PRIVILEGED_TRANSLATION else 571,
                        extract_training_goal=lambda motion, t, aux: motion.goals(rep, t, aux)[1])
     if schema in ARM_MAP_BASES:
         dim = {"proprio_motion": 540, PRIVILEGED_TRANSLATION: 570, PRIVILEGED_DOOR_ANGLE: 571}[ARM_MAP_BASES[schema]]
         task = replace(task, goal_dim=dim+6,
                        extract_training_goal=lambda motion, t, aux: motion.goals(rep, t, aux)[1])
+    if schema == endpoint_policy.SCHEMA:
+        task = replace(task, goal_dim=544, extract_training_goal=lambda motion,t,aux: motion.goals(rep,t,aux)[1])
     velocity = make_velocity_task((-1.5,1.5),(-.5,.5),(-3.14,3.14),25,(.5,.5,.785),device)
     actor_type = {None:EffortScaledActor,REFERENCE_RESIDUAL:ReferenceResidualActor}[cfg.get("actor_parameterization")]
-    if schema == APPROACH_WHEEL:
+    if schema in (APPROACH_WHEEL, APPROACH_LEG_WHEEL):
         if actor_type is not ReferenceResidualActor:
             raise ValueError("Wheel feedback requires a reference-residual base")
-        actor_type = ApproachWheelActor
+        actor_type = ApproachLegWheelActor if schema == APPROACH_LEG_WHEEL else ApproachWheelActor
     if schema in ARM_MAP_BASES:
         if actor_type is not ReferenceResidualActor:
             raise ValueError("Arm map requires the reference residual base")
         actor_type = StanceArmActor
+    if schema == endpoint_policy.SCHEMA:
+        if actor_type is not ReferenceResidualActor:
+            raise ValueError("Hinge feedback requires the reference residual Actor")
+        actor_type=endpoint_policy.actor_class()
     actor = actor_type(77,23,[task,velocity],{'motion':1.,'velocity':0.},
                               32,tuple(cfg['actor_hidden']),.1,10).to(device)
     actor.set_servo_units(model,ActionMap(model),device)

@@ -10,6 +10,7 @@ import numpy as np
 
 from scripts.b0.collect_reference import DECIMATION, ROOT, Recorder, dump_json
 from learning.b0.physics import ActionMap
+from p6_arm import Arm
 from p6_contacts import ContactMeter
 from p6_scene import settings
 from p6_single_door import run
@@ -48,7 +49,7 @@ class HeldTeacher:
 
 
 def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False, hold_seconds=3, full_task=False, backend="native", extra_final_park=False, *,
-            trial=None):
+            trial=None, arm_factory=Arm):
     episode_id = f"{side}_{goal}_{split}" + ("_drop" if release_during_hold else "")
     if hold_grasp_pose:
         episode_id += "_grip"
@@ -108,7 +109,7 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
         from scripts.b0.check_door_teacher import TeacherPhysics
         integrator = TeacherPhysics()
     passed = run(cfg, path, False, False, False, step_observer=observe, held_teacher=held,
-                 integrator=integrator)
+                 integrator=integrator, arm_factory=arm_factory)
     summary = json.loads((path / "summary.json").read_text())
     steps = summary["physics_steps"]
     if integrator is not None and steps != integrator.steps:

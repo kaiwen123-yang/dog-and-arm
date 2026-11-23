@@ -36,7 +36,7 @@ def quat(mat):
     return result
 
 
-def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None, integrator=None, held_teacher=None):
+def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None, integrator=None, held_teacher=None, arm_factory=Arm):
     model = build(cfg)
     advance = mj.mj_step if integrator is None else integrator.step
     physics_source = 'native MuJoCo mj_step' if integrator is None else integrator.source
@@ -62,7 +62,7 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
     d.qpos[door_q] = np.deg2rad(case.get('door', 0))
     mj.mj_forward(model, d)
     initial_q = d.qpos.tolist()
-    drive, arm = BaseDrive(model, d, cfg), Arm(model, d, cfg)
+    drive, arm = BaseDrive(model, d, cfg), arm_factory(model, d, cfg)
     meter = ContactMeter(model, 'preview_floor', 'back' if stage == 'push' else 'front',
                          cfg['contact_threshold_n'], cfg['wheel_threshold_n'])
     if live:
@@ -332,7 +332,9 @@ def run(cfg, out, live, video, hold_final, view_factory=None, step_observer=None
                 if phase == 'final' and held_teacher is not None:
                     seconds = cfg.get('final_reference_hold_s', seconds)
             good_time = good_time+dt if ready else 0.
-            if good_time+1e-10 >= seconds:
+            release_allowed = (phase != 'hold' or
+                               step >= cfg.get('teacher_release_earliest_step', 0))
+            if good_time+1e-10 >= seconds and release_allowed:
                 events.append(dict(phase=phase, time_s=d.time, door_deg=angle, xy=state['xy'].tolist(),
                                    yaw_deg=math.degrees(state['yaw']), root_z_m=q0[2], speed_m_s=state['speed'],
                                    yaw_rate_deg_s=math.degrees(state['yaw_rate']), loads_N=c.normal.tolist(),
