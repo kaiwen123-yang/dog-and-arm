@@ -70,7 +70,8 @@ def compare_model(path, checkpoint):
     rep=ContactRepresentation(model,'cpu')
     mapping=ActionMap(model)
     ckpt=torch.load(checkpoint,map_location='cpu',weights_only=False)
-    dyn=Dynamics(rep,23,len(CONTEXT_NAMES),tensor(mapping.scale,'cpu'),tensor(mapping.offset,'cpu'),ckpt['hidden'])
+    hidden = ckpt['hidden'] if 'hidden' in ckpt else ckpt['cfg']['wm_hidden']
+    dyn=Dynamics(rep,23,len(CONTEXT_NAMES),tensor(mapping.scale,'cpu'),tensor(mapping.offset,'cpu'),tuple(hidden))
     dyn.load_state_dict(ckpt['dyn'])
     dyn.eval().requires_grad_(False)
     rows=[]

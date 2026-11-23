@@ -43,9 +43,13 @@ class OnlineContactReplay:
     A failed lane contributes its valid 20 ms terminal interval, then leaves the
     sampling pool. Remaining lanes continue to the end of this collection cohort.
     """
-    def __init__(self, capacity, device):
+    def __init__(self, capacity, device, draw="single_cohort"):
+        if draw not in ("single_cohort", "official_lane_age"):
+            raise ValueError(f"Unknown contact replay draw mode {draw}")
         self.chunks = deque(maxlen=capacity)
         self.device = device
+        self.draw = draw
+        self.index = {}
 
     def append(self, rows):
         data = torch.stack(rows,1)
@@ -58,6 +62,7 @@ class OnlineContactReplay:
                 starts[steps] = valid.unfold(1,steps,1).all(-1).nonzero()
         if len(starts[1]):
             self.chunks.append((data,starts))
+            self.index.clear()
 
     def pick(self, steps, batch):
         available = [(data,idx[steps]) for data,idx in self.chunks if len(idx[steps])]
@@ -68,19 +73,30 @@ class OnlineContactReplay:
         ij = starts[torch.randint(len(starts),(batch,),device=self.device)]
         return data, ij[:,0], ij[:,1]
 
+    def sample(self, steps, batch, select):
+        if self.draw == "single_cohort":
+            picked = self.pick(steps,batch)
+            return None if picked is None else select(*picked)
+        from .contact_replay_draw import LaneAgeIndex, gather_groups
+        if steps not in self.index:
+            self.index[steps] = LaneAgeIndex(self.chunks, steps)
+        starts = self.index[steps].draw(batch)
+        return None if starts is None else gather_groups(self.chunks, starts, select)
+
+    def initial(self, batch):
+        return self.sample(1, batch, lambda data,i,t: data[i,t].clone())
+
     def windows(self, steps, batch):
-        picked = self.pick(steps,batch)
-        if picked is None:
-            return None
-        data,i,t = picked
-        ix = t[:,None]+torch.arange(steps,device=self.device)
-        s = data['state'][i[:,None],ix]
-        a = data['action'][i[:,None],ix]
-        ctx = data['sim_ctx'][i,t][:,None]
-        ns = data['next_state'][i,ix[:,-1]]
-        return TensorDict(dict(state=torch.cat((s,ns[:,None]),1),
-                               action=torch.cat((a,a[:,-1:]),1),
-                               sim_ctx=ctx.expand(-1,steps+1,-1)),batch_size=(batch,steps+1))
+        def select(data, i, t):
+            ix = t[:,None]+torch.arange(steps,device=self.device)
+            s = data['state'][i[:,None],ix]
+            a = data['action'][i[:,None],ix]
+            ctx = data['sim_ctx'][i,t][:,None]
+            ns = data['next_state'][i,ix[:,-1]]
+            return TensorDict(dict(state=torch.cat((s,ns[:,None]),1),
+                                   action=torch.cat((a,a[:,-1:]),1),
+                                   sim_ctx=ctx.expand(-1,steps+1,-1)),batch_size=(len(t),steps+1))
+        return self.sample(steps,batch,select)
 
 
 class DoorImagination(MultiTaskWorldModelEnv):
@@ -118,8 +134,7 @@ class DoorImagination(MultiTaskWorldModelEnv):
         return aux, rep, joints, term, reward
 
     def sample_initial_states(self):
-        data,i,t = self.replay_buffer.pick(1,self.num_envs)
-        batch = data[i,t].clone()
+        batch = self.replay_buffer.initial(self.num_envs)
         batch['sensor_window'] = batch['history'].unflatten(-1,(10,77))
         batch['pad_mask'] = torch.zeros((self.num_envs,10),device=self.device,dtype=torch.bool)
         return batch
@@ -207,7 +222,7 @@ class ContactRun:
         if len(set(e.group for e in eps)) != len(eps):
             raise ValueError('Duplicate teacher episode group')
         self.offline={n:ContactWindows(eps,n) for n in self.learners}
-        self.replay=OnlineContactReplay(cfg['replay_cohorts'],device)
+        self.replay=OnlineContactReplay(cfg['replay_cohorts'],device,cfg.get('contact_replay_draw','single_cohort'))
         self.n=cfg['worlds']
         self.steps=cfg['cohort_steps']
         pc=ActorCriticPolicyLearnerCfg(batch_size=cfg['actor_batch'],horizon=32,noise=cfg['collection_noise'])

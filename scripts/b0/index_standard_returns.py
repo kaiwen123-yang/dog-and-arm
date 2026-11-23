@@ -73,8 +73,12 @@ def main(args):
                     raise ValueError(f'Nonformal case at {p} {key}')
                 detail = p.parent/key/r['case']/'return.json'
                 physical = read(detail)
+                verdict = read(detail.with_name('result.json'))
+                completed = [event['phase'] for event in verdict['events']]
                 row = dict(training_run=train, checkpoint=str(checkpoint), backend=evaluation['backend'],
                            protocol=protocol, **r, physical_wall_seconds=physical['physical_wall_seconds'],
+                           completed_phases=','.join(completed),
+                           failure_phase=(physical['first_failure'] or {}).get('phase'),
                            error_tcp_rmse_m=(physical['tracking_errors'] or {}).get('tcp_position_rmse_m'),
                            error_door_angle_rmse_deg=(physical['tracking_errors'] or {}).get('door_angle_rmse_deg'),
                            score_path=str(detail))
@@ -117,8 +121,12 @@ def main(args):
     temporary = details.with_suffix('.jsonl.tmp')
     with temporary.open('w') as f:
         for row in all_rows:
-            score = read(Path(row['score_path']))
-            score.update(checkpoint=row['checkpoint'], reference_protocol=row['protocol'])
+            path = Path(row['score_path'])
+            score = read(path)
+            verdict = read(path.with_name('result.json'))
+            score.update(checkpoint=row['checkpoint'], reference_protocol=row['protocol'],
+                         completed_physical_events=verdict['events'],
+                         phase_longest_ready_substeps=verdict['longest_ready_steps'])
             f.write(json.dumps(score,allow_nan=False)+'\n')
     temporary.replace(details)
     summary = args.output/'nominal_summary.json'

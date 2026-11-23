@@ -3,6 +3,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import time
 
 os.environ.setdefault("TORCH_COMPILE_DISABLE", "1")
 import numpy as np
@@ -19,34 +20,79 @@ from scripts.b0.h32_recovery import write
 
 
 def collect(args):
+    started = time.monotonic()
     weight = torch.load(args.actor, map_location="cpu", weights_only=False)
     cfg = dict(weight["cfg"], cohort_steps=40, worlds=64)
     reference_root = Path(cfg["reference_directory"])
     refs = [reference_root / name for name in cfg["references"]]
     out = Path("results/b0") / args.run
     raw = Path("results/raw_large/b0") / args.run
-    out.mkdir(exist_ok=False)
-    raw.mkdir(exist_ok=False)
+    out.mkdir(exist_ok=args.resume)
+    raw.mkdir(exist_ok=args.resume)
     registration = dict(actor=str(args.actor), update=weight["updates"], behavior="frozen standard Actor with its training exploration",
                         reference_directory=str(reference_root), references=cfg["references"], worlds=cfg["worlds"],
                         policy_dt=cfg["policy_dt"], steps=40, collection_noise=cfg["collection_noise"],
                         seeds=args.seeds, split="validation", excluded_from_updates_and_replay=True,
-                        backend="MuJoCo Warp; ten 2 ms substeps per target")
-    write(out / "registration.json", registration)
+                        backend="MuJoCo Warp; ten 2 ms substeps per target",
+                        reference_tail=cfg.get("reference_tail", "zero"), rsi_starts=args.rsi_starts)
+    registered = out / "registration.json"
+    if registered.is_file() and args.resume:
+        saved = json.loads(registered.read_text())
+        saved.setdefault("reference_tail", "zero")
+        saved.setdefault("rsi_starts", "uniform_registered")
+        if saved != registration:
+            raise ValueError("Cannot resume validation under a different registration")
+    else:
+        write(registered, registration)
     run = ContactRun(cfg, refs, refs, weight, weight, "cuda:0")
+    if args.rsi_starts == "push_approach_arm":
+        from learning.b0.contact_warp import PHASE_ID
+        # Condition only on reference side/phase at reset. Neither measured
+        # survival nor a future model error is used to select a lane.
+        filtered = [ids[(run.sides[ids] == 1) & (run.phases[ids, 0] == PHASE_ID["approach_arm"])]
+                    for ids in run.eligible]
+        run.eligible = [ids for ids in filtered if len(ids)]
+        if not run.eligible:
+            raise ValueError("No registered push approach_arm starts")
     rows = []
     for seed in args.seeds:
         torch.manual_seed(seed)
         np.random.seed(seed)
         name = f"validation_{seed}"
         folder = raw / name
+        receipt = raw / (name + ".json")
+        if args.resume and receipt.is_file():
+            rows.append(json.loads(receipt.read_text()))
+            continue
+        attempt = 1
+        while args.resume and folder.exists():
+            attempt += 1
+            folder = raw / f"{name}_attempt_{attempt}"
+        cohort_start = time.monotonic()
         row = run.collect(folder, training=False)
-        row.update(split="validation", group=name, seed=seed, path=str(folder))
+        row.update(split="validation", group=name, seed=seed, path=str(folder),
+                   collection_seconds=time.monotonic()-cohort_start)
+        tmp = receipt.with_suffix(".pending")
+        tmp.write_text(json.dumps(row, allow_nan=False))
+        tmp.replace(receipt)
         rows.append(row)
         print(name, row, flush=True)
     if len(run.replay.chunks):
         raise RuntimeError("Validation collection entered replay")
-    write(out / "cohorts.json", rows)
+    total = 0
+    for row in rows:
+        total += row["valid_transitions"]
+        row["cumulative_valid_transitions"] = total
+    if not (out / "cohorts.json").is_file():
+        write(out / "cohorts.json", rows)
+    if (out / "collection_cost.json").is_file():
+        return
+    write(out / "collection_cost.json", dict(final_process_wall_seconds=time.monotonic()-started,
+          successful_cohort_seconds=sum(row["collection_seconds"] for row in rows),
+          device=torch.cuda.get_device_name(), torch_dtype=str(next(run.actor.parameters()).dtype),
+          attempted_lane_intervals=sum(row["simulated_lane_intervals"] for row in rows),
+          valid_lane_intervals=sum(row["valid_transitions"] for row in rows), actor_updates=0, wm_updates=0,
+          reset_prefix_steps_per_lane=100))
 
 
 def verify_intervals(folder, bank, *, has_substep_states):
@@ -79,6 +125,7 @@ def verify_intervals(folder, bank, *, has_substep_states):
 
 
 def score(args):
+    started = time.monotonic()
     registration = json.loads((args.data / "registration.json").read_text())
     rows = json.loads((args.data / "cohorts.json").read_text())
     # Registered paths are relative to the workspace that collected each dataset.
@@ -103,7 +150,7 @@ def score(args):
     paths = [source_root / registration["reference_directory"] / name for name in refs]
     bank = DoorMotions(paths, rep, args.device)
     counts = {row["group"]: verify_intervals(Path(row["path"]), bank, has_substep_states=not challenge) for row in rows}
-    episodes, _ = load_cohorts(rows, paths, bank, model, args.device)
+    episodes, details = load_cohorts(rows, paths, bank, model, args.device)
     mapping = ActionMap(model)
     weight = torch.load(args.wm, map_location="cpu", weights_only=False)
     hidden = weight["hidden"] if "hidden" in weight else weight["cfg"]["wm_hidden"]
@@ -127,7 +174,14 @@ def score(args):
           modes="first interval: physical finger loads and commanded reference phase; recontact uses branch-local contact history",
           predictor="open-loop propagation with measured clipped commands; comparison uses identical windows and successors",
           nonfinite="count per predictor, metric, side, horizon and mode; large finite errors retained in maximum"))
-    validate(rep, dyn, model, episodes, out / "errors.csv", args.window_cap, window_details=True)
+    if args.state_loss or registration.get("rsi_starts") == "push_approach_arm":
+        from scripts.b0.standard_wm_state_score import score_recorded_states
+        score_recorded_states(rep, dyn, model, episodes, details, out, args.window_cap)
+    else:
+        validate(rep, dyn, model, episodes, out / "errors.csv", args.window_cap, window_details=True)
+    write(out / "scoring_cost.json", dict(wall_seconds=time.monotonic()-started, device=args.device,
+          gpu=torch.cuda.get_device_name(args.device) if str(args.device).startswith("cuda") else None,
+          validation_lanes=len(episodes), valid_transitions=sum(len(ep.action) for ep in episodes)))
     print(out, counts, flush=True)
 
 
@@ -138,12 +192,16 @@ def main():
     src.add_argument("--actor", type=Path, required=True)
     src.add_argument("--seeds", type=int, nargs="+", required=True)
     src.add_argument("--run", required=True)
+    src.add_argument("--rsi-starts", choices=("uniform_registered", "push_approach_arm"),
+                     default="uniform_registered", help="Validation start stratum inside the training reference bank")
+    src.add_argument("--resume", action="store_true", help="Continue completed validation cohorts from their per-seed receipts")
     val = sub.add_parser("score")
     val.add_argument("--wm", type=Path, required=True)
     val.add_argument("--data", type=Path, required=True)
     val.add_argument("--run", required=True)
     val.add_argument("--window-cap", type=int, default=512)
     val.add_argument("--device", default="cpu")
+    val.add_argument("--state-loss", action="store_true", help="Fixed GenCoord state loss at 1/7/8/32 successors by side, contact mode and phase")
     val.add_argument("--normalizers-from", type=Path, help="Diagnostic forward pass: replace only WM state/action normalizer buffers")
     args = parser.parse_args()
     if Path(args.run).name != args.run or args.run in ("", ".", ".."):

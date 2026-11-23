@@ -1,0 +1,177 @@
+{
+  "cfg": {
+    "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+    "worlds": 128,
+    "wm_batch": 256,
+    "wm_batches": 10,
+    "actor_batch": 256,
+    "wm_hidden": [
+      2048,
+      2048,
+      2048
+    ],
+    "actor_hidden": [
+      2048,
+      1024,
+      512,
+      256
+    ],
+    "critic_hidden": [
+      256,
+      128
+    ],
+    "buffer_size": 1000,
+    "replay_ratio": 16,
+    "physics_dt": 0.002,
+    "policy_dt": 0.02,
+    "history_length": 10,
+    "free_motion_clip_frames": 351,
+    "actor_horizon": 32,
+    "wm_window": 8,
+    "collection_noise": 0.1,
+    "milestones": [
+      0,
+      1000,
+      5000,
+      10000
+    ],
+    "periodic_updates": 10000,
+    "diagnostic_block": 50000,
+    "window_recipe": "terminal_one_step_and_seven_step",
+    "one_step_batches": 2,
+    "network_output_units": "quarter_effort_over_servo_gain",
+    "additional_physical_checks": [
+      50,
+      200
+    ],
+    "hypothesis": "Keep the held-action initializer's state and physical-action statistics during joint learning to limit contact prediction drift. WM weights and their optimizers keep updating.",
+    "base": "config/b0/pair_effort_aligned_grip.yaml",
+    "cohort_steps": 40,
+    "replay_cohorts": 32,
+    "rsi_phases": [
+      "approach_arm",
+      "grasp",
+      "open",
+      "hold",
+      "release",
+      "retreat_arm",
+      "post_release_hold"
+    ],
+    "reference_directory": "results/raw_large/b0/contact_held_r1",
+    "references": [
+      "pull_0_train_grip",
+      "push_0_train_grip",
+      "pull_5_train",
+      "push_5_train",
+      "pull_15_train",
+      "push_15_train"
+    ],
+    "additional_teacher_episodes": [
+      "pull_0_train",
+      "push_0_train",
+      "pull_5_train_drop",
+      "push_5_train_drop"
+    ],
+    "actor_checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "wm_checkpoint": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "reward": "pinned_o1_tracking",
+    "reward_at": "successor_reference",
+    "diagnostic_updates": [
+      0,
+      1,
+      5,
+      10,
+      50,
+      200,
+      1000
+    ],
+    "arm_jaw_output_gain": 32.0,
+    "action_rate_coordinates": "fixed_effort",
+    "contact_reset_sampling": "official_return",
+    "contact_update_schedule": "official_ratio_valid",
+    "reference_tail": "official_clip_last",
+    "wm_grip_cohorts": "results/b0/recovery_b_grip_challenge_r1",
+    "freeze_wm_input_statistics": true
+  },
+  "run": "aligned_grip_fixed_stats_s0_v1",
+  "seed": 0,
+  "git_revision": "95159f77745d754b41ca135c726e2f2ba55c907e",
+  "physics": "MuJoCo Warp; exact 10 x 2 ms held targets",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "migration": "Actor incl. normalizers strict load; critic input layer initialized, shape-compatible hidden and output restored; door WM initialized from explicitly listed pretraining checkpoint. Joint optimizers fresh unless --resume.",
+  "initialization": {
+    "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "resume": null
+  },
+  "max_step_reward": 0.1,
+  "max_critic_value": 9.999999999999991,
+  "validation_excluded": true,
+  "cohort_truncation": 40,
+  "requested_endpoint": 50,
+  "actor_class": "EffortScaledActor",
+  "started_unix": 1795449924.496641,
+  "policy_learner": "ActorCriticPolicyLearner",
+  "wm_horizons": [
+    1,
+    7
+  ],
+  "return_sampling": {
+    "config": {
+      "gamma": 0.99,
+      "horizon": 20,
+      "memory": 256,
+      "steepness": 25.0,
+      "explore": 0.5,
+      "keep": 0.1
+    },
+    "frames": 9765,
+    "global_bins": 977,
+    "eligible_by_motion": [
+      734,
+      736,
+      916,
+      908,
+      1194,
+      1185
+    ],
+    "reset_support": "fixed mjlab bin->frame distribution conditioned on eligible physical prefixes"
+  },
+  "ratio_schedule": {
+    "ratio": 16,
+    "wm_stored_positions": 17408,
+    "clock": "complete replay-eligible 20ms lane intervals; updates grouped after each physical cohort"
+  },
+  "supplemental_wm_data": {
+    "seeds": [
+      71200,
+      71201,
+      71202,
+      71203,
+      71204,
+      71205,
+      71206,
+      71207
+    ],
+    "lanes": 512,
+    "transitions": 14396,
+    "h7_windows": 11644,
+    "source_behavior": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+    "source": "results/b0/recovery_b_grip_challenge_r1",
+    "use": "physical state, clipped action and successor for H7 WM only"
+  },
+  "execution_source_sha256": {
+    "scripts/b0/train_contact.py": "2f6c14af301ab1bbff2e42f42d93d37261183b034594db3140a46fa8891f09c1",
+    "learning/b0/model.py": "d62d1d6c8ad862f414d2cd79edaf5a9138414d2a305b2b6e8bcbd9770139f7b2",
+    "learning/b0/contact_events.py": "5bcee39206199d182ea01994885add12f248a1767635ad91520d8ed4ef08d387",
+    "learning/b0/contact_force.py": "dc5fc76590325f9e6d4e61f91611e1fb083fc3d78e80094e1385b6660bb5e1ce",
+    "learning/b0/contact_model.py": "dcc12881baa2522b4506f6c8d7ebc41726641acad40abcafca15af2023bcdff1",
+    "learning/b0/contact_policy.py": "251a8ee8aebb80050efe52ed7adecc4c57d1450725976f1ef21a9c36c043a4e5",
+    "learning/b0/contact_replay.py": "2d54137bb9fe24ac5f5799b31812312715b7f11879c374e188c4b5f7144ad04b",
+    "learning/b0/contact_reward.py": "90432e3db5cadf14cad02c298dd0bc5df65de9eaaee159d5db824106da80c4d4",
+    "learning/b0/contact_sampling.py": "5c42f286972bada1351c1064966760adaa687058616fdd3893dfe3177471a014",
+    "learning/b0/contact_training.py": "c489b692cfd27e3bf68de5bcae2aabaa4767fe36556be1389a9a2366a0c5644a",
+    "learning/b0/contact_warp.py": "f96c0044247deaff042d11dc22147ed5b5057f639e0e4e249434f2991774d3f1",
+    "config/b0/pair_effort_aligned_grip_fixed_stats.yaml": "be6e44d11184d6197c2e7bf650a00cd09e6e877ef6f132d898e7592a29cf7d40"
+  }
+}

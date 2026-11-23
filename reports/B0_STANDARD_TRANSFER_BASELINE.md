@@ -6,6 +6,10 @@
 
 相同物理记录的六个 tracking 分项与限位一致，Piper J2 的同位移罚比为 3947.84。u50 背推稳定握持的首步门力在固定 effort 分支为 22.20 N；仅额外接入官方 ReturnSampler 后为 6.697 N，仍超出 6 N。ReturnSampler、Ratio 和尾帧三组均已实训到 u50，各 0/10。详见[逐案实测](../results/b0/pair_units_v1/nominal_segments.csv)、[奖励复算](../results/b0/pair_units_v1/measured.json)和[采样调度账本](../results/b0/pair_sampling_audit_v1/completed_training.json)。配对 u200、补接触数据和统计处理的实验另行回收。
 
+u200 的 canonical / effort 各为 0/10，累计有效转移 384,430 / 452,697。十个片段以共同 effort 坐标等权计分为 0.31312 / 0.13728。effort 的背推三项由首步超力变为在 16 ms 触发抓持几何失败，双指失载。两组已从完整训练状态续至 u350 目标。
+
+独立双指验证固定在前拉 412 窗/51 lanes、背推 450 窗/56 lanes。补充训练 grip 后，WM 的 H32 TCP P95 为 238.55 / 264.18 mm，固定输入统计后为 104.18 / 107.70 mm，两组真实十项均 0/10。逐样本按固定源码抽取合法 lane/age 后，H7 每批涉及的不同 episode 从 19.55 增至 155.77；其 u50 双指误差为 242.02 / 196.77 mm，正式仍 0/10。[WM 同窗误差](../results/b0/pair_wm_comparison_v1/physical_errors.csv) · [重放实测](../results/b0/pair_sampling_audit_v1/replay_draw_grip_fixed_stats_u50.json)
+
 ## 11 月 23 日历史快照
 
 结果快照：`b0-standard-s0-638fddc`。日期：2026-11-23，北京时间。实验截止提交：[638fddc](https://github.com/kaiwen123-yang/dog-and-arm/commit/638fddcb2f025006595f79f27a977a8fba41cbc2)。

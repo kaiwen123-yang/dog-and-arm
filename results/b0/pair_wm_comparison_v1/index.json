@@ -1,0 +1,3286 @@
+{
+  "definition": {
+    "source": "abc124c WorldModelLearner._compute_losses and _rollout",
+    "groups": {
+      "root_pos": {
+        "width": 3,
+        "unit": "m",
+        "nominal_error": 0.01
+      },
+      "root_ori": {
+        "width": 9,
+        "unit": "sqrt(0.5) times rotation matrix entries; nominal in rad",
+        "nominal_error": 0.02
+      },
+      "joint_pos": {
+        "width": 22,
+        "unit": "rad",
+        "nominal_error": 0.1
+      },
+      "joint_vel": {
+        "width": 22,
+        "unit": "rad/s",
+        "nominal_error": 3.14
+      },
+      "finger_pos": {
+        "width": 2,
+        "unit": "m",
+        "nominal_error": 0.002
+      },
+      "finger_vel": {
+        "width": 2,
+        "unit": "m/s",
+        "nominal_error": 0.05
+      },
+      "door_angle": {
+        "width": 1,
+        "unit": "rad",
+        "nominal_error": 0.03490658503988659
+      },
+      "door_speed": {
+        "width": 1,
+        "unit": "rad/s",
+        "nominal_error": 0.1
+      }
+    },
+    "state_loss": "mean squared error over h successor steps and all channels weighted by 1/nominal_error^2; then mean over sampled windows",
+    "group_columns": "unweighted group MSE over channels and all h successors",
+    "horizons": [
+      1,
+      7,
+      8,
+      32
+    ],
+    "window": "Within-lane valid 20 ms recorded clipped commands. Complete terminal interval included; no crossing reset or cohort boundary.",
+    "sampling": "Each side/h/stratum independently capped without replacement, numpy seed 301. All, physical start mode, and reference start phase overlap; do not add their counts.",
+    "physical_columns": "Endpoint errors at successor h. RMSE/P95/max over finite windows; nonfinite windows counted.",
+    "interpretation": "Recorded-action open loop on the transferred robot and door; dataset, channels and scales differ from G1."
+  },
+  "scores": {
+    "pair_wm_canonical10_canonical_v1": {
+      "source_path": "results/b0/pair_wm_canonical10_canonical_v1",
+      "wm": "results/b0/pair_canonical_s0_v1/checkpoint_000010.pt",
+      "validation": "pair_wm_validation_canonical10_v1",
+      "cost": {
+        "wall_seconds": 24.838279673829675,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1024,
+        "valid_transitions": 10488
+      }
+    },
+    "pair_wm_canonical10_effort_v1": {
+      "source_path": "results/b0/pair_wm_canonical10_effort_v1",
+      "wm": "results/b0/pair_effort_s0_v1/checkpoint_000010.pt",
+      "validation": "pair_wm_validation_canonical10_v1",
+      "cost": {
+        "wall_seconds": 26.351444337517023,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1024,
+        "valid_transitions": 10488
+      }
+    },
+    "pair_wm_canonical10_held_v1": {
+      "source_path": "results/b0/pair_wm_canonical10_held_v1",
+      "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+      "validation": "pair_wm_validation_canonical10_v1",
+      "cost": {
+        "wall_seconds": 13.830242784693837,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1024,
+        "valid_transitions": 10488
+      }
+    },
+    "pair_wm_effort10_canonical_v1": {
+      "source_path": "results/b0/pair_wm_effort10_canonical_v1",
+      "wm": "results/b0/pair_canonical_s0_v1/checkpoint_000010.pt",
+      "validation": "pair_wm_validation_effort10_v1",
+      "cost": {
+        "wall_seconds": 59.5622549764812,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1024,
+        "valid_transitions": 11073
+      }
+    },
+    "pair_wm_effort10_effort_v1": {
+      "source_path": "results/b0/pair_wm_effort10_effort_v1",
+      "wm": "results/b0/pair_effort_s0_v1/checkpoint_000010.pt",
+      "validation": "pair_wm_validation_effort10_v1",
+      "cost": {
+        "wall_seconds": 52.91937045566738,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1024,
+        "valid_transitions": 11073
+      }
+    },
+    "pair_wm_effort10_held_v1": {
+      "source_path": "results/b0/pair_wm_effort10_held_v1",
+      "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+      "validation": "pair_wm_validation_effort10_v1",
+      "cost": {
+        "wall_seconds": 29.573212338611484,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1024,
+        "valid_transitions": 11073
+      }
+    },
+    "pair_wm_grip_canonical200_v1": {
+      "source_path": "results/b0/pair_wm_grip_canonical200_v1",
+      "wm": "results/b0/pair_canonical_to200_v1/checkpoint_000200.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 7.020885583013296,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_canonical50_v1": {
+      "source_path": "results/b0/pair_wm_grip_canonical50_v1",
+      "wm": "results/b0/pair_canonical_s0_v1/checkpoint_000050.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 7.952449720352888,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_canonical_v1": {
+      "source_path": "results/b0/pair_wm_grip_canonical_v1",
+      "wm": "results/b0/pair_canonical_s0_v1/checkpoint_000010.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 12.870845545083284,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_cliplast50_v1": {
+      "source_path": "results/b0/pair_wm_grip_cliplast50_v1",
+      "wm": "results/b0/cliplast_s0_v1/checkpoint_000050.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 13.14326710626483,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_effort200_v1": {
+      "source_path": "results/b0/pair_wm_grip_effort200_v1",
+      "wm": "results/b0/pair_effort_to200_v1/checkpoint_000200.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 7.020865332335234,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_effort50_v1": {
+      "source_path": "results/b0/pair_wm_grip_effort50_v1",
+      "wm": "results/b0/pair_effort_s0_v1/checkpoint_000050.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 9.180562680587173,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_effort_v1": {
+      "source_path": "results/b0/pair_wm_grip_effort_v1",
+      "wm": "results/b0/pair_effort_s0_v1/checkpoint_000010.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 8.22839874215424,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_fixedstats50_v1": {
+      "source_path": "results/b0/pair_wm_grip_fixedstats50_v1",
+      "wm": "results/b0/aligned_grip_fixed_stats_s0_v1/checkpoint_000050.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 19.294084083288908,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_grip50_v1": {
+      "source_path": "results/b0/pair_wm_grip_grip50_v1",
+      "wm": "results/b0/aligned_grip_s0_v1/checkpoint_000050.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 16.346435382962227,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_held_v2": {
+      "source_path": "results/b0/pair_wm_grip_held_v2",
+      "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 10.172910194844007,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_grip_laneage50_v1": {
+      "source_path": "results/b0/pair_wm_grip_laneage50_v1",
+      "wm": "results/b0/lane_age_s0_v1/checkpoint_000050.pt",
+      "validation": "recovery_b_grip_challenge_r1",
+      "cost": {
+        "wall_seconds": 11.973848406225443,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 192,
+        "valid_transitions": 4761
+      }
+    },
+    "pair_wm_push_canonical10_canonical_v1": {
+      "source_path": "results/b0/pair_wm_push_canonical10_canonical_v1",
+      "wm": "results/b0/pair_canonical_s0_v1/checkpoint_000010.pt",
+      "validation": "pair_wm_push_approach_canonical10_v1",
+      "cost": {
+        "wall_seconds": 41.3265393152833,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1536,
+        "valid_transitions": 3570
+      }
+    },
+    "pair_wm_push_canonical10_effort_v1": {
+      "source_path": "results/b0/pair_wm_push_canonical10_effort_v1",
+      "wm": "results/b0/pair_effort_s0_v1/checkpoint_000010.pt",
+      "validation": "pair_wm_push_approach_canonical10_v1",
+      "cost": {
+        "wall_seconds": 41.87524124793708,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1536,
+        "valid_transitions": 3570
+      }
+    },
+    "pair_wm_push_canonical10_held_v1": {
+      "source_path": "results/b0/pair_wm_push_canonical10_held_v1",
+      "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+      "validation": "pair_wm_push_approach_canonical10_v1",
+      "cost": {
+        "wall_seconds": 42.188574058935046,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1536,
+        "valid_transitions": 3570
+      }
+    },
+    "pair_wm_push_effort10_canonical_v1": {
+      "source_path": "results/b0/pair_wm_push_effort10_canonical_v1",
+      "wm": "results/b0/pair_canonical_s0_v1/checkpoint_000010.pt",
+      "validation": "pair_wm_push_approach_effort10_v1",
+      "cost": {
+        "wall_seconds": 29.83971676789224,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1536,
+        "valid_transitions": 3638
+      }
+    },
+    "pair_wm_push_effort10_effort_v1": {
+      "source_path": "results/b0/pair_wm_push_effort10_effort_v1",
+      "wm": "results/b0/pair_effort_s0_v1/checkpoint_000010.pt",
+      "validation": "pair_wm_push_approach_effort10_v1",
+      "cost": {
+        "wall_seconds": 17.618293652310967,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1536,
+        "valid_transitions": 3638
+      }
+    },
+    "pair_wm_push_effort10_held_v1": {
+      "source_path": "results/b0/pair_wm_push_effort10_held_v1",
+      "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+      "validation": "pair_wm_push_approach_effort10_v1",
+      "cost": {
+        "wall_seconds": 31.2660924308002,
+        "device": "cuda:0",
+        "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "validation_lanes": 1536,
+        "valid_transitions": 3638
+      }
+    }
+  },
+  "datasets": {
+    "pair_wm_validation_canonical10_v1": {
+      "data_path": "results/b0/pair_wm_validation_canonical10_v1",
+      "registration": {
+        "actor": "results/b0/pair_canonical_s0_v1/checkpoint_000010.pt",
+        "update": 10,
+        "behavior": "frozen standard Actor with its training exploration",
+        "reference_directory": "results/raw_large/b0/contact_held_r1",
+        "references": [
+          "pull_0_train_grip",
+          "push_0_train_grip",
+          "pull_5_train",
+          "push_5_train",
+          "pull_15_train",
+          "push_15_train"
+        ],
+        "worlds": 64,
+        "policy_dt": 0.02,
+        "steps": 40,
+        "collection_noise": 0.1,
+        "seeds": [
+          82401,
+          82402,
+          82403,
+          82404,
+          82405,
+          82406,
+          82407,
+          82408,
+          82409,
+          82410,
+          82411,
+          82412,
+          82413,
+          82414,
+          82415,
+          82416
+        ],
+        "split": "validation",
+        "excluded_from_updates_and_replay": true,
+        "backend": "MuJoCo Warp; ten 2 ms substeps per target"
+      },
+      "interval_counts": {
+        "validation_82401": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 694,
+          "valid_h32_lanes": 12,
+          "valid_h32_windows": 108,
+          "physical_failures": 52,
+          "full_terminal_included": true
+        },
+        "validation_82402": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 541,
+          "valid_h32_lanes": 8,
+          "valid_h32_windows": 72,
+          "physical_failures": 56,
+          "full_terminal_included": true
+        },
+        "validation_82403": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 627,
+          "valid_h32_lanes": 10,
+          "valid_h32_windows": 90,
+          "physical_failures": 54,
+          "full_terminal_included": true
+        },
+        "validation_82404": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 606,
+          "valid_h32_lanes": 11,
+          "valid_h32_windows": 99,
+          "physical_failures": 53,
+          "full_terminal_included": true
+        },
+        "validation_82405": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 710,
+          "valid_h32_lanes": 13,
+          "valid_h32_windows": 117,
+          "physical_failures": 51,
+          "full_terminal_included": true
+        },
+        "validation_82406": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 742,
+          "valid_h32_lanes": 13,
+          "valid_h32_windows": 117,
+          "physical_failures": 51,
+          "full_terminal_included": true
+        },
+        "validation_82407": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 493,
+          "valid_h32_lanes": 7,
+          "valid_h32_windows": 63,
+          "physical_failures": 57,
+          "full_terminal_included": true
+        },
+        "validation_82408": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 680,
+          "valid_h32_lanes": 13,
+          "valid_h32_windows": 117,
+          "physical_failures": 51,
+          "full_terminal_included": true
+        },
+        "validation_82409": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 711,
+          "valid_h32_lanes": 12,
+          "valid_h32_windows": 108,
+          "physical_failures": 52,
+          "full_terminal_included": true
+        },
+        "validation_82410": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 646,
+          "valid_h32_lanes": 10,
+          "valid_h32_windows": 90,
+          "physical_failures": 54,
+          "full_terminal_included": true
+        },
+        "validation_82411": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 689,
+          "valid_h32_lanes": 12,
+          "valid_h32_windows": 108,
+          "physical_failures": 52,
+          "full_terminal_included": true
+        },
+        "validation_82412": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 660,
+          "valid_h32_lanes": 9,
+          "valid_h32_windows": 81,
+          "physical_failures": 55,
+          "full_terminal_included": true
+        },
+        "validation_82413": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 720,
+          "valid_h32_lanes": 14,
+          "valid_h32_windows": 126,
+          "physical_failures": 50,
+          "full_terminal_included": true
+        },
+        "validation_82414": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 761,
+          "valid_h32_lanes": 14,
+          "valid_h32_windows": 126,
+          "physical_failures": 50,
+          "full_terminal_included": true
+        },
+        "validation_82415": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 503,
+          "valid_h32_lanes": 7,
+          "valid_h32_windows": 63,
+          "physical_failures": 57,
+          "full_terminal_included": true
+        },
+        "validation_82416": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 705,
+          "valid_h32_lanes": 14,
+          "valid_h32_windows": 124,
+          "physical_failures": 51,
+          "full_terminal_included": true
+        }
+      },
+      "validation_cohorts": [
+        {
+          "valid_transitions": 694,
+          "cumulative_valid_transitions": 694,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 52,
+          "start_ref_min": 849,
+          "start_ref_max": 9641,
+          "split": "validation",
+          "group": "validation_82401",
+          "seed": 82401,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82401",
+          "collection_seconds": 4.749312575906515
+        },
+        {
+          "valid_transitions": 541,
+          "cumulative_valid_transitions": 1235,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 56,
+          "start_ref_min": 705,
+          "start_ref_max": 9537,
+          "split": "validation",
+          "group": "validation_82402",
+          "seed": 82402,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82402",
+          "collection_seconds": 2.9228267557919025
+        },
+        {
+          "valid_transitions": 627,
+          "cumulative_valid_transitions": 1862,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 54,
+          "start_ref_min": 612,
+          "start_ref_max": 9527,
+          "split": "validation",
+          "group": "validation_82403",
+          "seed": 82403,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82403",
+          "collection_seconds": 2.6526414155960083
+        },
+        {
+          "valid_transitions": 606,
+          "cumulative_valid_transitions": 2468,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 53,
+          "start_ref_min": 742,
+          "start_ref_max": 9597,
+          "split": "validation",
+          "group": "validation_82404",
+          "seed": 82404,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82404",
+          "collection_seconds": 3.260695781558752
+        },
+        {
+          "valid_transitions": 710,
+          "cumulative_valid_transitions": 3178,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 51,
+          "start_ref_min": 615,
+          "start_ref_max": 9566,
+          "split": "validation",
+          "group": "validation_82405",
+          "seed": 82405,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82405",
+          "collection_seconds": 3.034579759463668
+        },
+        {
+          "valid_transitions": 742,
+          "cumulative_valid_transitions": 3920,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 51,
+          "start_ref_min": 608,
+          "start_ref_max": 9633,
+          "split": "validation",
+          "group": "validation_82406",
+          "seed": 82406,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82406",
+          "collection_seconds": 3.1206739619374275
+        },
+        {
+          "valid_transitions": 493,
+          "cumulative_valid_transitions": 4413,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 57,
+          "start_ref_min": 609,
+          "start_ref_max": 9615,
+          "split": "validation",
+          "group": "validation_82407",
+          "seed": 82407,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82407",
+          "collection_seconds": 3.120922027155757
+        },
+        {
+          "valid_transitions": 680,
+          "cumulative_valid_transitions": 5093,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 51,
+          "start_ref_min": 623,
+          "start_ref_max": 9344,
+          "split": "validation",
+          "group": "validation_82408",
+          "seed": 82408,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82408",
+          "collection_seconds": 3.074101524427533
+        },
+        {
+          "valid_transitions": 711,
+          "cumulative_valid_transitions": 5804,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 52,
+          "start_ref_min": 649,
+          "start_ref_max": 9456,
+          "split": "validation",
+          "group": "validation_82409",
+          "seed": 82409,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82409",
+          "collection_seconds": 3.443668393418193
+        },
+        {
+          "valid_transitions": 646,
+          "cumulative_valid_transitions": 6450,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 54,
+          "start_ref_min": 628,
+          "start_ref_max": 9319,
+          "split": "validation",
+          "group": "validation_82410",
+          "seed": 82410,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82410",
+          "collection_seconds": 3.0742328967899084
+        },
+        {
+          "valid_transitions": 689,
+          "cumulative_valid_transitions": 7139,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 52,
+          "start_ref_min": 609,
+          "start_ref_max": 9674,
+          "split": "validation",
+          "group": "validation_82411",
+          "seed": 82411,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82411",
+          "collection_seconds": 3.2346116974949837
+        },
+        {
+          "valid_transitions": 660,
+          "cumulative_valid_transitions": 7799,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 55,
+          "start_ref_min": 654,
+          "start_ref_max": 9598,
+          "split": "validation",
+          "group": "validation_82412",
+          "seed": 82412,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82412",
+          "collection_seconds": 3.0330103244632483
+        },
+        {
+          "valid_transitions": 720,
+          "cumulative_valid_transitions": 8519,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 50,
+          "start_ref_min": 643,
+          "start_ref_max": 9626,
+          "split": "validation",
+          "group": "validation_82413",
+          "seed": 82413,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82413",
+          "collection_seconds": 3.375140231102705
+        },
+        {
+          "valid_transitions": 761,
+          "cumulative_valid_transitions": 9280,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 50,
+          "start_ref_min": 723,
+          "start_ref_max": 9664,
+          "split": "validation",
+          "group": "validation_82414",
+          "seed": 82414,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82414",
+          "collection_seconds": 3.1007995437830687
+        },
+        {
+          "valid_transitions": 503,
+          "cumulative_valid_transitions": 9783,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 57,
+          "start_ref_min": 637,
+          "start_ref_max": 9633,
+          "split": "validation",
+          "group": "validation_82415",
+          "seed": 82415,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82415",
+          "collection_seconds": 2.864955434575677
+        },
+        {
+          "valid_transitions": 705,
+          "cumulative_valid_transitions": 10488,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 51,
+          "start_ref_min": 611,
+          "start_ref_max": 9671,
+          "split": "validation",
+          "group": "validation_82416",
+          "seed": 82416,
+          "path": "results/raw_large/b0/pair_wm_validation_canonical10_v1/validation_82416",
+          "collection_seconds": 2.7885971404612064
+        }
+      ],
+      "cap": 512,
+      "sampling_seed": 301,
+      "collection_cost": {
+        "final_process_wall_seconds": 57.93390904739499,
+        "successful_cohort_seconds": 50.850769463926554,
+        "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "torch_dtype": "torch.float32",
+        "attempted_lane_intervals": 40960,
+        "valid_lane_intervals": 10488,
+        "actor_updates": 0,
+        "wm_updates": 0,
+        "reset_prefix_steps_per_lane": 100
+      }
+    },
+    "pair_wm_validation_effort10_v1": {
+      "data_path": "results/b0/pair_wm_validation_effort10_v1",
+      "registration": {
+        "actor": "results/b0/pair_effort_s0_v1/checkpoint_000010.pt",
+        "update": 10,
+        "behavior": "frozen standard Actor with its training exploration",
+        "reference_directory": "results/raw_large/b0/contact_held_r1",
+        "references": [
+          "pull_0_train_grip",
+          "push_0_train_grip",
+          "pull_5_train",
+          "push_5_train",
+          "pull_15_train",
+          "push_15_train"
+        ],
+        "worlds": 64,
+        "policy_dt": 0.02,
+        "steps": 40,
+        "collection_noise": 0.1,
+        "seeds": [
+          82401,
+          82402,
+          82403,
+          82404,
+          82405,
+          82406,
+          82407,
+          82408,
+          82409,
+          82410,
+          82411,
+          82412,
+          82413,
+          82414,
+          82415,
+          82416
+        ],
+        "split": "validation",
+        "excluded_from_updates_and_replay": true,
+        "backend": "MuJoCo Warp; ten 2 ms substeps per target"
+      },
+      "interval_counts": {
+        "validation_82401": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 745,
+          "valid_h32_lanes": 14,
+          "valid_h32_windows": 126,
+          "physical_failures": 50,
+          "full_terminal_included": true
+        },
+        "validation_82402": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 579,
+          "valid_h32_lanes": 10,
+          "valid_h32_windows": 90,
+          "physical_failures": 54,
+          "full_terminal_included": true
+        },
+        "validation_82403": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 742,
+          "valid_h32_lanes": 15,
+          "valid_h32_windows": 135,
+          "physical_failures": 49,
+          "full_terminal_included": true
+        },
+        "validation_82404": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 523,
+          "valid_h32_lanes": 8,
+          "valid_h32_windows": 72,
+          "physical_failures": 56,
+          "full_terminal_included": true
+        },
+        "validation_82405": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 664,
+          "valid_h32_lanes": 11,
+          "valid_h32_windows": 99,
+          "physical_failures": 53,
+          "full_terminal_included": true
+        },
+        "validation_82406": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 827,
+          "valid_h32_lanes": 17,
+          "valid_h32_windows": 153,
+          "physical_failures": 47,
+          "full_terminal_included": true
+        },
+        "validation_82407": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 520,
+          "valid_h32_lanes": 8,
+          "valid_h32_windows": 72,
+          "physical_failures": 56,
+          "full_terminal_included": true
+        },
+        "validation_82408": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 728,
+          "valid_h32_lanes": 15,
+          "valid_h32_windows": 135,
+          "physical_failures": 49,
+          "full_terminal_included": true
+        },
+        "validation_82409": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 798,
+          "valid_h32_lanes": 15,
+          "valid_h32_windows": 135,
+          "physical_failures": 49,
+          "full_terminal_included": true
+        },
+        "validation_82410": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 691,
+          "valid_h32_lanes": 12,
+          "valid_h32_windows": 108,
+          "physical_failures": 52,
+          "full_terminal_included": true
+        },
+        "validation_82411": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 741,
+          "valid_h32_lanes": 14,
+          "valid_h32_windows": 126,
+          "physical_failures": 50,
+          "full_terminal_included": true
+        },
+        "validation_82412": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 735,
+          "valid_h32_lanes": 12,
+          "valid_h32_windows": 108,
+          "physical_failures": 52,
+          "full_terminal_included": true
+        },
+        "validation_82413": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 774,
+          "valid_h32_lanes": 16,
+          "valid_h32_windows": 144,
+          "physical_failures": 48,
+          "full_terminal_included": true
+        },
+        "validation_82414": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 813,
+          "valid_h32_lanes": 16,
+          "valid_h32_windows": 144,
+          "physical_failures": 48,
+          "full_terminal_included": true
+        },
+        "validation_82415": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 533,
+          "valid_h32_lanes": 8,
+          "valid_h32_windows": 72,
+          "physical_failures": 56,
+          "full_terminal_included": true
+        },
+        "validation_82416": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 660,
+          "valid_h32_lanes": 12,
+          "valid_h32_windows": 108,
+          "physical_failures": 52,
+          "full_terminal_included": true
+        }
+      },
+      "validation_cohorts": [
+        {
+          "valid_transitions": 745,
+          "cumulative_valid_transitions": 745,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 50,
+          "start_ref_min": 849,
+          "start_ref_max": 9641,
+          "split": "validation",
+          "group": "validation_82401",
+          "seed": 82401,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82401",
+          "collection_seconds": 4.132021544501185
+        },
+        {
+          "valid_transitions": 579,
+          "cumulative_valid_transitions": 1324,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 54,
+          "start_ref_min": 705,
+          "start_ref_max": 9537,
+          "split": "validation",
+          "group": "validation_82402",
+          "seed": 82402,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82402",
+          "collection_seconds": 2.8084037862718105
+        },
+        {
+          "valid_transitions": 742,
+          "cumulative_valid_transitions": 2066,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 49,
+          "start_ref_min": 612,
+          "start_ref_max": 9527,
+          "split": "validation",
+          "group": "validation_82403",
+          "seed": 82403,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82403",
+          "collection_seconds": 3.0433525629341602
+        },
+        {
+          "valid_transitions": 523,
+          "cumulative_valid_transitions": 2589,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 56,
+          "start_ref_min": 742,
+          "start_ref_max": 9597,
+          "split": "validation",
+          "group": "validation_82404",
+          "seed": 82404,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82404",
+          "collection_seconds": 2.6001028921455145
+        },
+        {
+          "valid_transitions": 664,
+          "cumulative_valid_transitions": 3253,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 53,
+          "start_ref_min": 615,
+          "start_ref_max": 9566,
+          "split": "validation",
+          "group": "validation_82405",
+          "seed": 82405,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82405",
+          "collection_seconds": 2.748433532193303
+        },
+        {
+          "valid_transitions": 827,
+          "cumulative_valid_transitions": 4080,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 47,
+          "start_ref_min": 608,
+          "start_ref_max": 9633,
+          "split": "validation",
+          "group": "validation_82406",
+          "seed": 82406,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82406",
+          "collection_seconds": 2.76799501106143
+        },
+        {
+          "valid_transitions": 520,
+          "cumulative_valid_transitions": 4600,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 56,
+          "start_ref_min": 609,
+          "start_ref_max": 9615,
+          "split": "validation",
+          "group": "validation_82407",
+          "seed": 82407,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82407",
+          "collection_seconds": 2.7230897545814514
+        },
+        {
+          "valid_transitions": 728,
+          "cumulative_valid_transitions": 5328,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 49,
+          "start_ref_min": 623,
+          "start_ref_max": 9344,
+          "split": "validation",
+          "group": "validation_82408",
+          "seed": 82408,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82408",
+          "collection_seconds": 2.6989842988550663
+        },
+        {
+          "valid_transitions": 798,
+          "cumulative_valid_transitions": 6126,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 49,
+          "start_ref_min": 649,
+          "start_ref_max": 9456,
+          "split": "validation",
+          "group": "validation_82409",
+          "seed": 82409,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82409",
+          "collection_seconds": 2.7060478888452053
+        },
+        {
+          "valid_transitions": 691,
+          "cumulative_valid_transitions": 6817,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 52,
+          "start_ref_min": 628,
+          "start_ref_max": 9319,
+          "split": "validation",
+          "group": "validation_82410",
+          "seed": 82410,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82410",
+          "collection_seconds": 2.4869371354579926
+        },
+        {
+          "valid_transitions": 741,
+          "cumulative_valid_transitions": 7558,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 50,
+          "start_ref_min": 609,
+          "start_ref_max": 9674,
+          "split": "validation",
+          "group": "validation_82411",
+          "seed": 82411,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82411",
+          "collection_seconds": 2.932211959734559
+        },
+        {
+          "valid_transitions": 735,
+          "cumulative_valid_transitions": 8293,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 52,
+          "start_ref_min": 654,
+          "start_ref_max": 9598,
+          "split": "validation",
+          "group": "validation_82412",
+          "seed": 82412,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82412",
+          "collection_seconds": 2.5447056721895933
+        },
+        {
+          "valid_transitions": 774,
+          "cumulative_valid_transitions": 9067,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 48,
+          "start_ref_min": 643,
+          "start_ref_max": 9626,
+          "split": "validation",
+          "group": "validation_82413",
+          "seed": 82413,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82413",
+          "collection_seconds": 2.866080852225423
+        },
+        {
+          "valid_transitions": 813,
+          "cumulative_valid_transitions": 9880,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 48,
+          "start_ref_min": 723,
+          "start_ref_max": 9664,
+          "split": "validation",
+          "group": "validation_82414",
+          "seed": 82414,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82414",
+          "collection_seconds": 2.681554092094302
+        },
+        {
+          "valid_transitions": 533,
+          "cumulative_valid_transitions": 10413,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 56,
+          "start_ref_min": 637,
+          "start_ref_max": 9633,
+          "split": "validation",
+          "group": "validation_82415",
+          "seed": 82415,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82415",
+          "collection_seconds": 3.2173081897199154
+        },
+        {
+          "valid_transitions": 660,
+          "cumulative_valid_transitions": 11073,
+          "starts_per_motion": [
+            10,
+            10,
+            11,
+            11,
+            11,
+            11
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 52,
+          "start_ref_min": 611,
+          "start_ref_max": 9671,
+          "split": "validation",
+          "group": "validation_82416",
+          "seed": 82416,
+          "path": "results/raw_large/b0/pair_wm_validation_effort10_v1/validation_82416",
+          "collection_seconds": 2.984620040282607
+        }
+      ],
+      "cap": 512,
+      "sampling_seed": 301,
+      "collection_cost": {
+        "final_process_wall_seconds": 52.20175592787564,
+        "successful_cohort_seconds": 45.94184921309352,
+        "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "torch_dtype": "torch.float32",
+        "attempted_lane_intervals": 40960,
+        "valid_lane_intervals": 11073,
+        "actor_updates": 0,
+        "wm_updates": 0,
+        "reset_prefix_steps_per_lane": 100
+      }
+    },
+    "recovery_b_grip_challenge_r1": {
+      "data_path": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/b0/recovery_b_grip_challenge_r1",
+      "registration": {
+        "anchor": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+        "reference_directory": "results/raw_large/b0/full_warp_hold_park_r1",
+        "allocation": [
+          [
+            "train",
+            71200
+          ],
+          [
+            "train",
+            71201
+          ],
+          [
+            "train",
+            71202
+          ],
+          [
+            "train",
+            71203
+          ],
+          [
+            "train",
+            71204
+          ],
+          [
+            "train",
+            71205
+          ],
+          [
+            "train",
+            71206
+          ],
+          [
+            "train",
+            71207
+          ],
+          [
+            "calibration",
+            71300
+          ],
+          [
+            "calibration",
+            71301
+          ],
+          [
+            "validation",
+            71400
+          ],
+          [
+            "validation",
+            71401
+          ],
+          [
+            "validation",
+            71402
+          ]
+        ],
+        "worlds": 64,
+        "steps": 40,
+        "design": "Each lane: independent open/hold RSI, 100 real prefix substeps, 1/3/5/10 x 20ms perturbed learned feedback then return to unperturbed feedback. Total jaw width additions Uniform[0,14] mm; arm vector random direction, norm Uniform[0,25] mrad, every fourth lane zero arm or zero jaw. Validity stops after first hard terminal. All attempts retained; no case references."
+      },
+      "interval_counts": {
+        "validation_71400": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 1598,
+          "valid_h32_lanes": 36,
+          "valid_h32_windows": 324,
+          "physical_failures": 28,
+          "full_terminal_included": true
+        },
+        "validation_71401": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 1524,
+          "valid_h32_lanes": 34,
+          "valid_h32_windows": 306,
+          "physical_failures": 30,
+          "full_terminal_included": true
+        },
+        "validation_71402": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 1639,
+          "valid_h32_lanes": 38,
+          "valid_h32_windows": 342,
+          "physical_failures": 26,
+          "full_terminal_included": true
+        }
+      },
+      "validation_cohorts": [
+        {
+          "split": "validation",
+          "group": "validation_71400",
+          "seed": 71400,
+          "path": "results/raw_large/b0/recovery_b_grip_challenge_r1/validation_71400",
+          "prefix_accepted": 64,
+          "valid": 1598,
+          "hard_terminal": 28,
+          "interrupted_dual": 32,
+          "restored_before_terminal": 13
+        },
+        {
+          "split": "validation",
+          "group": "validation_71401",
+          "seed": 71401,
+          "path": "results/raw_large/b0/recovery_b_grip_challenge_r1/validation_71401",
+          "prefix_accepted": 64,
+          "valid": 1524,
+          "hard_terminal": 30,
+          "interrupted_dual": 34,
+          "restored_before_terminal": 11
+        },
+        {
+          "split": "validation",
+          "group": "validation_71402",
+          "seed": 71402,
+          "path": "results/raw_large/b0/recovery_b_grip_challenge_r1/validation_71402",
+          "prefix_accepted": 64,
+          "valid": 1639,
+          "hard_terminal": 26,
+          "interrupted_dual": 31,
+          "restored_before_terminal": 12
+        }
+      ],
+      "cap": 512,
+      "sampling_seed": 301
+    },
+    "pair_wm_push_approach_canonical10_v1": {
+      "data_path": "results/b0/pair_wm_push_approach_canonical10_v1",
+      "registration": {
+        "actor": "results/b0/pair_canonical_s0_v1/checkpoint_000010.pt",
+        "update": 10,
+        "behavior": "frozen standard Actor with its training exploration",
+        "reference_directory": "results/raw_large/b0/contact_held_r1",
+        "references": [
+          "pull_0_train_grip",
+          "push_0_train_grip",
+          "pull_5_train",
+          "push_5_train",
+          "pull_15_train",
+          "push_15_train"
+        ],
+        "worlds": 64,
+        "policy_dt": 0.02,
+        "steps": 40,
+        "collection_noise": 0.1,
+        "seeds": [
+          82601,
+          82602,
+          82603,
+          82604,
+          82605,
+          82606,
+          82607,
+          82608,
+          82609,
+          82610,
+          82611,
+          82612,
+          82613,
+          82614,
+          82615,
+          82616,
+          82617,
+          82618,
+          82619,
+          82620,
+          82621,
+          82622,
+          82623,
+          82624
+        ],
+        "split": "validation",
+        "excluded_from_updates_and_replay": true,
+        "backend": "MuJoCo Warp; ten 2 ms substeps per target",
+        "reference_tail": "zero",
+        "rsi_starts": "push_approach_arm"
+      },
+      "interval_counts": {
+        "validation_82601": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 169,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82602": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 130,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82603": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 131,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82604": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 128,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82605": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 129,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82606": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 128,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82607": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 169,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82608": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 168,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82609": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 170,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82610": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 128,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82611": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 131,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82612": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 206,
+          "valid_h32_lanes": 2,
+          "valid_h32_windows": 18,
+          "physical_failures": 62,
+          "full_terminal_included": true
+        },
+        "validation_82613": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 207,
+          "valid_h32_lanes": 2,
+          "valid_h32_windows": 18,
+          "physical_failures": 62,
+          "full_terminal_included": true
+        },
+        "validation_82614": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 133,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82615": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 130,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82616": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 167,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82617": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 129,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82618": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 166,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82619": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 130,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82620": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 128,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82621": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 167,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82622": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 168,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82623": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 129,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82624": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 129,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        }
+      },
+      "validation_cohorts": [
+        {
+          "valid_transitions": 169,
+          "cumulative_valid_transitions": 169,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2027,
+          "start_ref_max": 8653,
+          "split": "validation",
+          "group": "validation_82601",
+          "seed": 82601,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82601",
+          "collection_seconds": 5.3139682952314615
+        },
+        {
+          "valid_transitions": 130,
+          "cumulative_valid_transitions": 299,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2026,
+          "start_ref_max": 8658,
+          "split": "validation",
+          "group": "validation_82602",
+          "seed": 82602,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82602",
+          "collection_seconds": 0.7918289080262184
+        },
+        {
+          "valid_transitions": 131,
+          "cumulative_valid_transitions": 430,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2036,
+          "start_ref_max": 8656,
+          "split": "validation",
+          "group": "validation_82603",
+          "seed": 82603,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82603",
+          "collection_seconds": 0.912667840719223
+        },
+        {
+          "valid_transitions": 128,
+          "cumulative_valid_transitions": 558,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 128,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2027,
+          "start_ref_max": 8659,
+          "split": "validation",
+          "group": "validation_82604",
+          "seed": 82604,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82604",
+          "collection_seconds": 0.6243327353149652
+        },
+        {
+          "valid_transitions": 129,
+          "cumulative_valid_transitions": 687,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2024,
+          "start_ref_max": 8663,
+          "split": "validation",
+          "group": "validation_82605",
+          "seed": 82605,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82605",
+          "collection_seconds": 0.7133861072361469
+        },
+        {
+          "valid_transitions": 128,
+          "cumulative_valid_transitions": 815,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 128,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2027,
+          "start_ref_max": 8660,
+          "split": "validation",
+          "group": "validation_82606",
+          "seed": 82606,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82606",
+          "collection_seconds": 0.5423809997737408
+        },
+        {
+          "valid_transitions": 169,
+          "cumulative_valid_transitions": 984,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2029,
+          "start_ref_max": 8655,
+          "split": "validation",
+          "group": "validation_82607",
+          "seed": 82607,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82607",
+          "collection_seconds": 3.212930416688323
+        },
+        {
+          "valid_transitions": 168,
+          "cumulative_valid_transitions": 1152,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2028,
+          "start_ref_max": 8656,
+          "split": "validation",
+          "group": "validation_82608",
+          "seed": 82608,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82608",
+          "collection_seconds": 4.1234234888106585
+        },
+        {
+          "valid_transitions": 170,
+          "cumulative_valid_transitions": 1322,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2031,
+          "start_ref_max": 8658,
+          "split": "validation",
+          "group": "validation_82609",
+          "seed": 82609,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82609",
+          "collection_seconds": 4.233023809269071
+        },
+        {
+          "valid_transitions": 128,
+          "cumulative_valid_transitions": 1450,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 128,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2025,
+          "start_ref_max": 8658,
+          "split": "validation",
+          "group": "validation_82610",
+          "seed": 82610,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82610",
+          "collection_seconds": 0.5895541310310364
+        },
+        {
+          "valid_transitions": 131,
+          "cumulative_valid_transitions": 1581,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2025,
+          "start_ref_max": 8640,
+          "split": "validation",
+          "group": "validation_82611",
+          "seed": 82611,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82611",
+          "collection_seconds": 0.6216171607375145
+        },
+        {
+          "valid_transitions": 206,
+          "cumulative_valid_transitions": 1787,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 62,
+          "start_ref_min": 2024,
+          "start_ref_max": 8659,
+          "split": "validation",
+          "group": "validation_82612",
+          "seed": 82612,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82612",
+          "collection_seconds": 3.362908722832799
+        },
+        {
+          "valid_transitions": 207,
+          "cumulative_valid_transitions": 1994,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 62,
+          "start_ref_min": 2035,
+          "start_ref_max": 8656,
+          "split": "validation",
+          "group": "validation_82613",
+          "seed": 82613,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82613",
+          "collection_seconds": 2.6895898673683405
+        },
+        {
+          "valid_transitions": 133,
+          "cumulative_valid_transitions": 2127,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2026,
+          "start_ref_max": 8651,
+          "split": "validation",
+          "group": "validation_82614",
+          "seed": 82614,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82614",
+          "collection_seconds": 0.5134333502501249
+        },
+        {
+          "valid_transitions": 130,
+          "cumulative_valid_transitions": 2257,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2031,
+          "start_ref_max": 8648,
+          "split": "validation",
+          "group": "validation_82615",
+          "seed": 82615,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82615",
+          "collection_seconds": 1.1180905792862177
+        },
+        {
+          "valid_transitions": 167,
+          "cumulative_valid_transitions": 2424,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2029,
+          "start_ref_max": 8663,
+          "split": "validation",
+          "group": "validation_82616",
+          "seed": 82616,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82616",
+          "collection_seconds": 4.2244936022907495
+        },
+        {
+          "valid_transitions": 129,
+          "cumulative_valid_transitions": 2553,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2026,
+          "start_ref_max": 8656,
+          "split": "validation",
+          "group": "validation_82617",
+          "seed": 82617,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82617",
+          "collection_seconds": 0.7857775446027517
+        },
+        {
+          "valid_transitions": 166,
+          "cumulative_valid_transitions": 2719,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2032,
+          "start_ref_max": 8659,
+          "split": "validation",
+          "group": "validation_82618",
+          "seed": 82618,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82618",
+          "collection_seconds": 3.8445293568074703
+        },
+        {
+          "valid_transitions": 130,
+          "cumulative_valid_transitions": 2849,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2029,
+          "start_ref_max": 8657,
+          "split": "validation",
+          "group": "validation_82619",
+          "seed": 82619,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82619",
+          "collection_seconds": 0.9300937466323376
+        },
+        {
+          "valid_transitions": 128,
+          "cumulative_valid_transitions": 2977,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 128,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2047,
+          "start_ref_max": 8662,
+          "split": "validation",
+          "group": "validation_82620",
+          "seed": 82620,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82620",
+          "collection_seconds": 0.7804990634322166
+        },
+        {
+          "valid_transitions": 167,
+          "cumulative_valid_transitions": 3144,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2036,
+          "start_ref_max": 8660,
+          "split": "validation",
+          "group": "validation_82621",
+          "seed": 82621,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82621",
+          "collection_seconds": 4.3114260248839855
+        },
+        {
+          "valid_transitions": 168,
+          "cumulative_valid_transitions": 3312,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2046,
+          "start_ref_max": 8663,
+          "split": "validation",
+          "group": "validation_82622",
+          "seed": 82622,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82622",
+          "collection_seconds": 4.122924474999309
+        },
+        {
+          "valid_transitions": 129,
+          "cumulative_valid_transitions": 3441,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2024,
+          "start_ref_max": 8663,
+          "split": "validation",
+          "group": "validation_82623",
+          "seed": 82623,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82623",
+          "collection_seconds": 0.8759272899478674
+        },
+        {
+          "valid_transitions": 129,
+          "cumulative_valid_transitions": 3570,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2028,
+          "start_ref_max": 8652,
+          "split": "validation",
+          "group": "validation_82624",
+          "seed": 82624,
+          "path": "results/raw_large/b0/pair_wm_push_approach_canonical10_v1/validation_82624",
+          "collection_seconds": 0.8924030605703592
+        }
+      ],
+      "cap": 512,
+      "sampling_seed": 301,
+      "collection_cost": {
+        "final_process_wall_seconds": 57.4382299631834,
+        "successful_cohort_seconds": 50.13121057674289,
+        "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "torch_dtype": "torch.float32",
+        "attempted_lane_intervals": 28032,
+        "valid_lane_intervals": 3570,
+        "actor_updates": 0,
+        "wm_updates": 0,
+        "reset_prefix_steps_per_lane": 100
+      }
+    },
+    "pair_wm_push_approach_effort10_v1": {
+      "data_path": "results/b0/pair_wm_push_approach_effort10_v1",
+      "registration": {
+        "actor": "results/b0/pair_effort_s0_v1/checkpoint_000010.pt",
+        "update": 10,
+        "behavior": "frozen standard Actor with its training exploration",
+        "reference_directory": "results/raw_large/b0/contact_held_r1",
+        "references": [
+          "pull_0_train_grip",
+          "push_0_train_grip",
+          "pull_5_train",
+          "push_5_train",
+          "pull_15_train",
+          "push_15_train"
+        ],
+        "worlds": 64,
+        "policy_dt": 0.02,
+        "steps": 40,
+        "collection_noise": 0.1,
+        "seeds": [
+          82601,
+          82602,
+          82603,
+          82604,
+          82605,
+          82606,
+          82607,
+          82608,
+          82609,
+          82610,
+          82611,
+          82612,
+          82613,
+          82614,
+          82615,
+          82616,
+          82617,
+          82618,
+          82619,
+          82620,
+          82621,
+          82622,
+          82623,
+          82624
+        ],
+        "split": "validation",
+        "excluded_from_updates_and_replay": true,
+        "backend": "MuJoCo Warp; ten 2 ms substeps per target",
+        "reference_tail": "zero",
+        "rsi_starts": "push_approach_arm"
+      },
+      "interval_counts": {
+        "validation_82601": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 244,
+          "valid_h32_lanes": 3,
+          "valid_h32_windows": 27,
+          "physical_failures": 61,
+          "full_terminal_included": true
+        },
+        "validation_82602": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 170,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82603": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 133,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82604": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 167,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82605": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 143,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82606": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 169,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82607": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 179,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82608": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 142,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82609": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 209,
+          "valid_h32_lanes": 2,
+          "valid_h32_windows": 18,
+          "physical_failures": 62,
+          "full_terminal_included": true
+        },
+        "validation_82610": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 128,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82611": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 132,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82612": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 130,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82613": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 134,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82614": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 133,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82615": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 159,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82616": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 167,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82617": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 181,
+          "valid_h32_lanes": 1,
+          "valid_h32_windows": 9,
+          "physical_failures": 63,
+          "full_terminal_included": true
+        },
+        "validation_82618": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 132,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82619": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 130,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82620": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 128,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82621": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 132,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82622": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 131,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82623": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 134,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        },
+        "validation_82624": {
+          "attempted_lanes": 64,
+          "valid_lanes": 64,
+          "valid_transitions": 131,
+          "valid_h32_lanes": 0,
+          "valid_h32_windows": 0,
+          "physical_failures": 64,
+          "full_terminal_included": true
+        }
+      },
+      "validation_cohorts": [
+        {
+          "valid_transitions": 244,
+          "cumulative_valid_transitions": 244,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 61,
+          "start_ref_min": 2027,
+          "start_ref_max": 8653,
+          "split": "validation",
+          "group": "validation_82601",
+          "seed": 82601,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82601",
+          "collection_seconds": 5.549285115674138
+        },
+        {
+          "valid_transitions": 170,
+          "cumulative_valid_transitions": 414,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2026,
+          "start_ref_max": 8658,
+          "split": "validation",
+          "group": "validation_82602",
+          "seed": 82602,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82602",
+          "collection_seconds": 4.077254440635443
+        },
+        {
+          "valid_transitions": 133,
+          "cumulative_valid_transitions": 547,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 256,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2036,
+          "start_ref_max": 8656,
+          "split": "validation",
+          "group": "validation_82603",
+          "seed": 82603,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82603",
+          "collection_seconds": 1.0684047024697065
+        },
+        {
+          "valid_transitions": 167,
+          "cumulative_valid_transitions": 714,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2027,
+          "start_ref_max": 8659,
+          "split": "validation",
+          "group": "validation_82604",
+          "seed": 82604,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82604",
+          "collection_seconds": 3.636240404099226
+        },
+        {
+          "valid_transitions": 143,
+          "cumulative_valid_transitions": 857,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 1024,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2024,
+          "start_ref_max": 8663,
+          "split": "validation",
+          "group": "validation_82605",
+          "seed": 82605,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82605",
+          "collection_seconds": 2.140528403222561
+        },
+        {
+          "valid_transitions": 169,
+          "cumulative_valid_transitions": 1026,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2027,
+          "start_ref_max": 8660,
+          "split": "validation",
+          "group": "validation_82606",
+          "seed": 82606,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82606",
+          "collection_seconds": 4.542271964251995
+        },
+        {
+          "valid_transitions": 179,
+          "cumulative_valid_transitions": 1205,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2029,
+          "start_ref_max": 8655,
+          "split": "validation",
+          "group": "validation_82607",
+          "seed": 82607,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82607",
+          "collection_seconds": 3.676341811195016
+        },
+        {
+          "valid_transitions": 142,
+          "cumulative_valid_transitions": 1347,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 832,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2028,
+          "start_ref_max": 8656,
+          "split": "validation",
+          "group": "validation_82608",
+          "seed": 82608,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82608",
+          "collection_seconds": 1.7894895933568478
+        },
+        {
+          "valid_transitions": 209,
+          "cumulative_valid_transitions": 1556,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 62,
+          "start_ref_min": 2031,
+          "start_ref_max": 8658,
+          "split": "validation",
+          "group": "validation_82609",
+          "seed": 82609,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82609",
+          "collection_seconds": 3.4752311427146196
+        },
+        {
+          "valid_transitions": 128,
+          "cumulative_valid_transitions": 1684,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 128,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2025,
+          "start_ref_max": 8658,
+          "split": "validation",
+          "group": "validation_82610",
+          "seed": 82610,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82610",
+          "collection_seconds": 0.4833300765603781
+        },
+        {
+          "valid_transitions": 132,
+          "cumulative_valid_transitions": 1816,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2025,
+          "start_ref_max": 8640,
+          "split": "validation",
+          "group": "validation_82611",
+          "seed": 82611,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82611",
+          "collection_seconds": 0.8186826873570681
+        },
+        {
+          "valid_transitions": 130,
+          "cumulative_valid_transitions": 1946,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2024,
+          "start_ref_max": 8659,
+          "split": "validation",
+          "group": "validation_82612",
+          "seed": 82612,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82612",
+          "collection_seconds": 0.6461638621985912
+        },
+        {
+          "valid_transitions": 134,
+          "cumulative_valid_transitions": 2080,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 256,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2035,
+          "start_ref_max": 8656,
+          "split": "validation",
+          "group": "validation_82613",
+          "seed": 82613,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82613",
+          "collection_seconds": 0.6385254003107548
+        },
+        {
+          "valid_transitions": 133,
+          "cumulative_valid_transitions": 2213,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2026,
+          "start_ref_max": 8651,
+          "split": "validation",
+          "group": "validation_82614",
+          "seed": 82614,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82614",
+          "collection_seconds": 0.7186025157570839
+        },
+        {
+          "valid_transitions": 159,
+          "cumulative_valid_transitions": 2372,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 1024,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2031,
+          "start_ref_max": 8648,
+          "split": "validation",
+          "group": "validation_82615",
+          "seed": 82615,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82615",
+          "collection_seconds": 1.787982877343893
+        },
+        {
+          "valid_transitions": 167,
+          "cumulative_valid_transitions": 2539,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2029,
+          "start_ref_max": 8663,
+          "split": "validation",
+          "group": "validation_82616",
+          "seed": 82616,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82616",
+          "collection_seconds": 3.3735912684351206
+        },
+        {
+          "valid_transitions": 181,
+          "cumulative_valid_transitions": 2720,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 2560,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 63,
+          "start_ref_min": 2026,
+          "start_ref_max": 8656,
+          "split": "validation",
+          "group": "validation_82617",
+          "seed": 82617,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82617",
+          "collection_seconds": 3.824523700401187
+        },
+        {
+          "valid_transitions": 132,
+          "cumulative_valid_transitions": 2852,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 256,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2032,
+          "start_ref_max": 8659,
+          "split": "validation",
+          "group": "validation_82618",
+          "seed": 82618,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82618",
+          "collection_seconds": 0.9248475264757872
+        },
+        {
+          "valid_transitions": 130,
+          "cumulative_valid_transitions": 2982,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2029,
+          "start_ref_max": 8657,
+          "split": "validation",
+          "group": "validation_82619",
+          "seed": 82619,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82619",
+          "collection_seconds": 0.5804772246629
+        },
+        {
+          "valid_transitions": 128,
+          "cumulative_valid_transitions": 3110,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 128,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2047,
+          "start_ref_max": 8662,
+          "split": "validation",
+          "group": "validation_82620",
+          "seed": 82620,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82620",
+          "collection_seconds": 0.4620543122291565
+        },
+        {
+          "valid_transitions": 132,
+          "cumulative_valid_transitions": 3242,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2036,
+          "start_ref_max": 8660,
+          "split": "validation",
+          "group": "validation_82621",
+          "seed": 82621,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82621",
+          "collection_seconds": 0.5816652607172728
+        },
+        {
+          "valid_transitions": 131,
+          "cumulative_valid_transitions": 3373,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2046,
+          "start_ref_max": 8663,
+          "split": "validation",
+          "group": "validation_82622",
+          "seed": 82622,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82622",
+          "collection_seconds": 0.7276749908924103
+        },
+        {
+          "valid_transitions": 134,
+          "cumulative_valid_transitions": 3507,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 320,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2024,
+          "start_ref_max": 8663,
+          "split": "validation",
+          "group": "validation_82623",
+          "seed": 82623,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82623",
+          "collection_seconds": 1.0201957020908594
+        },
+        {
+          "valid_transitions": 131,
+          "cumulative_valid_transitions": 3638,
+          "starts_per_motion": [
+            0,
+            21,
+            0,
+            21,
+            0,
+            22
+          ],
+          "simulated_lane_intervals": 192,
+          "prefix_steps_per_lane": 100,
+          "prefix_invalid": 0,
+          "failed_lanes": 64,
+          "start_ref_min": 2028,
+          "start_ref_max": 8652,
+          "split": "validation",
+          "group": "validation_82624",
+          "seed": 82624,
+          "path": "results/raw_large/b0/pair_wm_push_approach_effort10_v1/validation_82624",
+          "collection_seconds": 0.718055734410882
+        }
+      ],
+      "cap": 512,
+      "sampling_seed": 301,
+      "collection_cost": {
+        "final_process_wall_seconds": 55.05389822460711,
+        "successful_cohort_seconds": 47.2614207174629,
+        "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+        "torch_dtype": "torch.float32",
+        "attempted_lane_intervals": 26048,
+        "valid_lane_intervals": 3638,
+        "actor_updates": 0,
+        "wm_updates": 0,
+        "reset_prefix_steps_per_lane": 100
+      }
+    }
+  },
+  "usage": "Join CSVs on data/side/h/stratum/label. Each scored window has h successors and h+1 frames. Shared kinematic controls are reported once per dataset."
+}
