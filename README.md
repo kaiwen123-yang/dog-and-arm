@@ -1,12 +1,14 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-本仓库基于智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机，开展 MuJoCo 腿臂协同研究。**当前先完成 SuperMimic 标准迁移 B0**：世界模型、可微动力学与 H32 Actor/Critic 学习都属于本阶段。标准迁移完成后，再发展腕部 RGB-D、语言、本体历史的多模态/VLA 联合模型与实机验证。
+本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先按开源SuperMimic完成标准迁移，以达到或接近论文指标为目标，单独保留结果供后续比较；之后才开发多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
-**当前标准迁移尚未跑通接触与完整单门。** P6 工程教师与 B0-03 无接触学习已通过；采用较纯官方网络和原 tracking 的接触 H32-u1000 在 Warp/native 原 v1 十项 nominal 均为 0/10。下一轮从已通过的 B0-03 Actor 和门 WM 预训练锚点接续，保留官方核心机制，逐项核对必要的平台动作、状态、参考与数据映射。
+**最新已结束轮为638fddc，标准接触仍未通过。** 五条seed0配置真实训练，gain32到H32-u200/345,268有效转移、Warp/native正式接触各0/10；其他四条u50 Warp各0/10。415条nominal均失败。它们保留官方核心、但action-rate坐标、ReturnSampler、实际replay调度等还需对齐，不能称已完全复现论文配方。
 
-最新恢复轮结束于 `23c9068`。540/546 维全程包均继承五段共 15,000 次 BC 和参考臂/夹口前馈，546 维另有解析根平移臂补偿。546 维混合包经真实 H32-u1 后同包三端双侧 nominal 通过；Warp 完整 C 各 9/20，native 为 9/20、10/20。这些真实结果作为能力对照保留，不能转写为标准迁移通过；持续更新、最终候选接触回归、独立 seed 与 H 仍未完成。本次只审查和发布文档，没有新实验。详见[最新审查](reports/B0_RECOVERY_REVIEW_20261123.md)、[目标差距](docs/GOAL_GAP_20261123.md)和[项目状态](PROJECT_STATE.md)。
+独立结果：[B0_STANDARD_TRANSFER_BASELINE.md](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [可解析清单](results/b0/standard_baseline_20261123/baseline_manifest.json)。当前为未完成中间快照，最终候选尚缺。完整归一化tracking目标≥0.90、接近数值带≥0.88是本项目预登记的迁移指标，同时须过原物理门槛；不是把论文G1分母直接换成开门成功率。
 
-下一轮：[SuperMimic 标准迁移计划](docs/B0_STANDARD_TRANSFER_PLAN_20261123.md) · [Codex 启动提示词](prompts/B0_START.txt) · [每日详细工作记录](DAILY_WORK_LOG.md)。每日记录按北京时间持续追加，包含实际工作、问题证据、修复与复测、失败、未完成项和下一步。
+下一轮优先实际配对验证官方动作率单位，再落实采样/调度和WM接触精度；依次完成接触、完整单门、多seed/H。[论文指标协议](docs/B0_PAPER_BASELINE_PROTOCOL.md) · [官方源码审查](docs/B0_OFFICIAL_IMPLEMENTATION_AUDIT_20261123.md) · [最新实验审查](reports/B0_STANDARD_ROUND_REVIEW_20261123.md) · [下一执行计划](docs/B0_STANDARD_TRANSFER_PLAN_20261123.md) · [启动词](prompts/B0_START.txt) · [目标差距](docs/GOAL_GAP_20261123.md) · [每日详细日志](DAILY_WORK_LOG.md)。本次文档发布没有新增实验。
+
+P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000动作BC和解析补偿的有效成绩单列保留，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 

@@ -1,5 +1,7 @@
 # B0：SuperMimic 在 M1＋Piper H 上的迁移与基线验证
 
+> 当前更新（2026-11-23）：用户要求按开源SuperMimic详细迁移，以达到或接近论文指标为目标并单独保留比较结果。最新638fddc标准接触仍未过；当前执行[标准迁移计划](B0_STANDARD_TRANSFER_PLAN_20261123.md)、[论文指标协议](B0_PAPER_BASELINE_PROTOCOL.md)和[官方源码审查](B0_OFFICIAL_IMPLEMENTATION_AUDIT_20261123.md)，独立成绩见[结果报告](../reports/B0_STANDARD_TRANSFER_BASELINE.md)。以下早期状态以PROJECT_STATE顶部为准，阶段顺序仍为B0→后续R1–R8。
+
 首次规划日期：2026-11-21；接续更新：2026-11-23（Asia/Shanghai）。
 
 **当前仍是 SuperMimic 标准迁移阶段。** 用户明确先保留官方核心网络与学习机制，把 B0 在 M1＋Piper H 上跑通，再进入多模态/VLA。世界模型、可微动力学与 H32 Actor/Critic 本来就在本阶段训练。P6 与 B0-03 已通过；较纯原 tracking 接触 u1000 的 Warp/native 原 v1 十项 nominal 各 0/10，标准接触与全程迁移尚未完成。当前执行 [标准迁移计划](B0_STANDARD_TRANSFER_PLAN_20261123.md)，依据见[最新审查](../reports/B0_RECOVERY_REVIEW_20261123.md)与[目标差距](GOAL_GAP_20261123.md)。

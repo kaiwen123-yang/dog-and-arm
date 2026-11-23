@@ -1,5 +1,7 @@
 # 腿臂协同研究主线与阶段依赖
 
+> 当前更新（2026-11-23）：用户要求按开源SuperMimic详细迁移，以达到或接近论文指标为目标并单独保留比较结果。最新638fddc标准接触仍未过；当前执行[标准迁移计划](B0_STANDARD_TRANSFER_PLAN_20261123.md)、[论文指标协议](B0_PAPER_BASELINE_PROTOCOL.md)和[官方源码审查](B0_OFFICIAL_IMPLEMENTATION_AUDIT_20261123.md)，独立成绩见[结果报告](../reports/B0_STANDARD_TRANSFER_BASELINE.md)。以下早期状态以PROJECT_STATE顶部为准，阶段顺序仍为B0→后续R1–R8。
+
 更新：2026-11-23（Asia/Shanghai），证据截止 `23c9068`。用户明确当前是 SuperMimic 标准迁移阶段：先完成固定官方核心机制在本平台上的 B0，再进入多模态/VLA。P6 与 B0-03 已通过，较纯原 tracking 接触 u1000 的 Warp/native 十项 nominal 各 0/10；540/546 混合策略已有成功作为对照保留，不代替标准迁移通过。当前执行 [标准迁移计划](B0_STANDARD_TRANSFER_PLAN_20261123.md)，尚未进入 R1；[目标差距](GOAL_GAP_20261123.md)逐项说明剩余证据。本文件与 [B0 总计划](B0_SUPERMIMIC_PLAN.md)、[原接触协议](B0_CONTACT_EXECUTION_PLAN.md)、[数据与模型约定](B0_DATA_MODEL_CONTRACT.md)共同规定后续工作；实际状态以 [PROJECT_STATE](../PROJECT_STATE.md) 为准，每日过程写入 [DAILY_WORK_LOG](../DAILY_WORK_LOG.md)。本次文档发布不执行训练。
 
 ## 1. 最终目标与当前入口

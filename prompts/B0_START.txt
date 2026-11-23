@@ -1,79 +1,36 @@
-请在“腿臂协同控制 / dog-and-arm”已有工作区真正执行下一轮 B0：依照固定官方 SuperMimic O1 的核心机制完成 M1＋Piper 的标准迁移，先推进接触学习，再推进同一策略的双侧完整任务，维护每日详细日志并普通提交推送 GitHub。不要停在再次写计划或只交一组诊断。
+当前任务：完成SuperMimic标准迁移，达到或接近论文指标，并形成独立结果供后续比较。
 
-一、研究顺序与当前入口
+仓库：kaiwen123-yang/dog-and-arm。用户授权直接完成本轮范围内实现、仿真数据采集、训练、评测、详细日志和普通GitHub推送；不要再只写一份计划停下。当前仍是标准迁移B0-04，先接触→完整单门→独立seed/H；其后才做多模态/VLA和新方法。WM、可微动力学和H32现在就属于B0。
 
-用户已明确纠正：现在是“根据 SuperMimic 进行迁移的标准阶段”。顺序是官方机制迁移到腿臂系统、完成 B0，再进入多模态/VLA、世界模型与可微动力学联合扩展及实机。具名历史对话“分析SuperMimic融入腿臂控制”目前只取得检索摘要，不能声称已阅读全文或全部历史对话。
-
-当前执行 docs/B0_STANDARD_TRANSFER_PLAN_20261123.md。不要执行此前任务对齐草稿默认“新全程对象相对v2→新任务奖励/风险头→共同BC”的主线。保留既有全部实验和限制证据；方法扩展只能单独命名，不能自行取代当前标准迁移。
-
-二、读取与现场恢复
-
-先读 AGENTS.md、PROJECT_STATE.md、prompts/NEXT_RUN.txt、DAILY_WORK_LOG.md 最近日期，再完整读：
+先同步核查main和未提交修改，再依次读：
+AGENTS.md
+PROJECT_STATE.md
+DAILY_WORK_LOG.md最近日期
+reports/B0_STANDARD_TRANSFER_BASELINE.md
+reports/B0_STANDARD_ROUND_REVIEW_20261123.md
+docs/B0_PAPER_BASELINE_PROTOCOL.md
+docs/B0_OFFICIAL_IMPLEMENTATION_AUDIT_20261123.md
 docs/B0_STANDARD_TRANSFER_PLAN_20261123.md
-docs/B0_SUPERMIMIC_PLAN.md
-docs/B0_CONTACT_EXECUTION_PLAN.md
-docs/B0_DATA_MODEL_CONTRACT.md
-reports/B0_RECOVERY_REVIEW_20261123.md
-docs/GOAL_GAP_20261123.md
-以及受影响源码、实际配置和原始结果。
+prompts/NEXT_RUN.txt
+results/b0/standard_baseline_20261123/baseline_manifest.json
+然后读受影响的固定官方源码、实际配置、原始结果和恢复信息。旧恢复计划/对象相对v2草稿不是当前入口。
 
-已结束实验的证据起点为 main@23c90684522a030e2625bf0e44118fa86884ebf4，审查和新计划在其后。核对远端新增提交、工作树、他人修改、相关进程、实际资源和资产，不 reset/clean/强推、不覆盖旧 run。先读真实 CLI，不把计划中的待实现选项当成现成命令。
+已结束轮的真实端点为638fddcb2f025006595f79f27a977a8fba41cbc2：5条seed0配置链新增400 H32、4000 WM、8000 Critic、657570有效转移；不是5seed或单模型预算。control/gripdata/padding/wmcoords末点u50，gain32到u200（345268有效转移），正式十项各0/10，gain200同包Warp/native各0/10。415原始nominal/55run全失败，275正式记录加140额外v1；native gain50只有正式5项，另5项未评。D/完整C/seed1/2/H未执行。不要按旧tmux文字重复启动已回收队列。
 
-已知 AutoDL 独立树 /root/autodl-tmp/dog-and-arm-b0-recovery，历史 contact 树与主树继续保留；第二平台别名 dev2-ubuntu / dev2-ubuntu-lan、云端别名 autodl-dog-arm，执行时核实当前可用路径。results/b0/recovery_tmux_20261123/outcome.json 的 2026-11-23 21:11:04+08:00 快照为8个登记任务全部completed、pids=[]。这是历史快照，仍要核实现状，但不能按旧“仍运行”文案重复启动。
+目标独立方法ID：SuperMimic-M1Piper-standard-v1；当前snapshot b0-standard-s0-638fddc是未完成中间结果，没有最终成功候选。维护独立报告和manifest，不用R/J混合能力替代S。原论文G1的129514训练动作覆盖不是本任务分母；0.90是论文SONIC参照线。按协议测完整真实回合归一化tracking，目标>=0.90，接近带>=0.88（本项目事先定0.02容差），同时必须满足原物理门槛。所有最终seed/侧/split单列；不把Policy/reward、单步0.0908/.1、失败后继续积分或想象分数当完整回报。缺项NA。论文WM0.007–0.011也不是H32 TCP米数。
 
-保持 SuperMimic abc124c1bd5976341034668af3d12c087f2f1f55、mjlab_research dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd。复用隔离训练环境和原 native MuJoCo 3.3.0 工程，不改 vendor、Conda base、ROS/CUDA/驱动。Git 不含全部权重、大数组和 replay，沿 actual_config、inventory、review 与日志恢复。只有权重称 warm start；模型、normalizer、优化器、replay/cohort、计数和 RNG 完整兼容才称 resume。
+固定官方：SuperMimic abc124c1bd5976341034668af3d12c087f2f1f55；mjlab_research dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd。5fb9229仅候选未采用。保持EffortScaledActor/MultiEncoderAE、GenCoord、原tracking系数/softdone/H32/官方ActorCritic。原8storedframes实际7scoredtransitions，当前H7不是少训一步；当前额外H1配方另记。官方隐藏权重Muon、其他Adam，不静默改成纯AdamW。官方benchmark.py测速度，不是全动作回报评测。
 
-三、标准主线、BC与混合控制分层
+立即按计划实际执行：
+1. 恢复已有标准锚点、完整cohort状态和需要的真实数组，核对现场进程/配置。沿既有评分入口增加完整真实回报、分项tracking/动作率/限位、固定计划长度、失败余段、误差与成本记录。阶段前缀不记成完整策略能力，失败后诊断积分不记正式回报。不制造新框架或大量形式测试。
+2. 第一优先做动作率单位的匹配学习。当前canonical动作直接进入官方平滑项，等物理J2变化的惩罚较基础effort单位约弱3948倍，这是已证语义差异，首步超力的因果仍待验证。用相同记录先拆分项，再把固定home/基础effort单位转换一致应用到真实和想象reward及上一动作；原系数不变、不新加force/phase reward。gain32只改变优化参数化，正则单位不能跟着变32倍。保留旧分支及新坐标版本。
+3. 从相同标准初始Actor/WM/Critic/normalizer、同seed/数据资格/预算，实际训练canonical与固定effort坐标一对。u0/1/5/10再50/200等合理节点，比较首动作跳变/峰值力/阶段/完整回报/WM。有进展持续训练，不在代数或一次梯度处结束；不无依据复跑旧u1000或盲续gain200。
+4. 接着复用官方ReturnSampler和实际Ratio调度。固定mjlab是全拼接timeline约0.2s bins，区别论文1s；按固定源码语义处理ragged clip/eligible边界、terminal、clip_end、cohort截断和无效lane，保存sampler状态。当前replay_ratio16未生效，不能仅沿用YAML说已对齐。每轮14848WM目标/17408窗口位置（含offline）、8192 imaginedsteps、最多5120attempted；实际有效数据另记。资源批量逐步适配可用96GB GPU，不机械复制4096也不无理由固守小批量。
+5. 对齐官方按clip末有效帧夹紧的未来观测，和当前零槽配对；不延长任务参考、保持或时限。保护WM接触覆盖，复用已有验证与grip训练身份，验证不进normalizer/replay。区分统计换算的瞬时函数保持与优化器轨迹；保持联合更新，不默认新H32监督/任务头。新策略验证补足push样本覆盖，不把重叠窗当独立episode。
+6. 形成持续真实标准训练能力：同一候选十项接触nominal和各D>=18/20；同包连续完整前拉60°/背推25°，Warp C各>=18/20、native3.3双侧nominal。无教师接管/reset/门驱动，原v1与hold-margin身份/物理阈值/时限不变。随后seed1/2各自初始化/采集并过B0-03；三seed配方/选模/候选冻结后才开H，每seed/侧>=40/50。H不调参、不换困难case、不拼不同模型最佳侧。标准未完成就继续报告具体缺口，不自动切到新方法。
 
-标准 Actor 使用 learning/b0/model.py 的 EffortScaledActor：固定官方 MultiEncoderAE，motion encoder、latent32、history10、共享 decoder，外加平台 home 偏置、effort/gain 常数单位换算和统一限幅。23路腿/轮/臂/爪混合动作、两指耦合、FK、门状态representation和2ms×10接口可作为已登记平台适配保留；不要为了“原样”误删正确单位和物理接口。
+标准Actor起点results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt（B0-03已有1000H32/1088000转移），门WM为results/b0/contact_s0_wm_held_r2/wm_002000.pt（2000教师minibatch）。本轮完整状态按actual_config/outcome恢复，权重-only称warm start。旧contact_s0_tracking_r3是历史u1000负例。R/J的参考前馈、15000BC、Jacobian等只作分列对照；禁止作为标准起点或悄悄合入，不默认新reward/风险head/解析补偿/对象相对v2。
 
-标准主线不默认使用 ReferenceResidualActor。它将当帧参考臂/夹爪姿态直接加入动作；546维包又叠加固定参考Jacobian的根平移补偿。planar、endpoint、轮速头、动作先验、教师动作BC、phase奖励/真实TD辅助与终止风险头均分层记录。仍调用官方H32，不等于整个混合包就是标准方法。
+现场位置先核实：AutoDL /root/autodl-tmp/dog-and-arm-b0-standard；第二平台 /home/kaiwen/research/dog-and-arm-standard；别名dev2-ubuntu/dev2-ubuntu-lan、autodl-dog-arm。保留其他项目进程、主树修改、原native3.3和隔离环境，不重装ROS/CUDA/Conda base，不重跑P6/B0-03整批或已关闭G1。当前只仿真，硬件/多模态/VLA/RoboMIND/双门后置。
 
-官方 auxiliary bc_loss 是非anchor encoder向anchor latent对齐，不是本仓库的教师动作回归。现有full/546底座沿 contact reference-residual→full pull→full push→full joint→full Warp joint 五段各3000次，累计继承15000次教师动作BC；末份文件只写3000不代表总预算。BC、WM、H32和几何拟合分别计数，不把监督/解析反馈收益归给H32。
-
-标准迁移的干净来源：
-- results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt：B0-03已通过，源码56f6396，配置config/b0/free_servo_cloud.yaml；1000次H32、1088000条在线转移。无需从零重做B0-03。
-- results/b0/contact_s0_wm_held_r2/wm_002000.pt：动态门WM，2000个教师WM minibatch。可继承，但其全程/当前策略分布质量仍须按已有证据处理。
-- 标准接触链 contact_s0_tracking_r2→contact_s0_tracking_r3，来源config/b0/contact_servo_cloud.yaml；r3已1000次接触H32、572118有效转移，native/Warp十项nominal各0/10。保留负结果，不原封不动重复同一失败配方。
-
-若既有标准接触u0整包实际可读，可继承其完整已登记初始化；否则从B0-03和门WM按字段语义建立接触迁移初始化，明确新输入/normalizer/Critic层和优化器处理。不要从546包删字段或绕过前馈后冒称恢复了原Actor，也不要无理由从已退化r3继续盲训。
-
-恢复轮的540维full/recovery tracking包仍可能含ReferenceResidualActor，不能凭维数或reward名字判断。546-u0/u1在三端双侧全程nominal通过是真实混合成果；u1 Warp全C各9/20、native9/20与10/20，不是标准B0-04/05已经通过。保留作能力对照，不作下一标准主线默认初始化。
-
-四、围绕具体迁移问题修复并实际训练
-
-1. 核对固定官方接口与当前平台实现。重点是动作rad/rad/s/m、总夹口与单指伺服、offset/scale、原始/限幅动作、噪声、上一动作、真实与WM的边界一致。15°参考部分臂姿远离home与原输出单位已是已知事实；标准幅度小不等于物理不可表达。若重参数化输出单位，匹配补偿decoder并核对初始物理行为、探索和优化步长，单列有依据的单位适配；不默认32倍加BC，不改力学阈值凑成功。
-
-2. 核对Actor/WM/Critic normalizer与语义一致的参数迁移。门任务新增输入/输出不能按shape盲装；统计量是否更新、由哪些train数据拟合写清。validation/H不回流训练，不机械复用不兼容优化器。只做当前结果需要的检查，不建立泛化哈希/冒烟测试框架。
-
-3. 核对实际参考的MotionID、侧别、episode起点、绝对帧、当前/未来槽、尾部mask、根坐标/世界速度及夹爪字段。20ms held-action目标与实测qpos不同：从2ms×10记录恢复真实s/a/s_next，确保teacher、reference、replay、WM动作与时钟一致。复用合法接触参考和失败数据；same_phase或P6自行成功不是完整任务正监督资格。已有片段hold-margin v2按冻结manifest继承，与新全程对象相对v2不同；不默改参考或延时。
-
-4. 默认保持原tracking、官方soft termination及ActorCritic机制，真实/想象的参考后继时刻、dt、reward上界和Critic裁剪一致。完整2ms物理裁判继续独立评分。原高度/倾斜softdone不覆盖全部接触/阶段失败，如实说明；不能假称已闭合，也不能据此默认加新风险头、phase reward或真实TD辅助。确需必要接口适配时，登记最小变化及匹配原对照；实质方法扩展另列，不自行替换标准主线。
-
-5. 复用40步cohort与现有工具，检查当前标准Actor附近的H1/H7/H32模型误差、接触分布和真实动作效果。标准主线维持既定H1/H7监督，40步用于当前分布覆盖与独立H32诊断；在线H32监督仅在证据支持时作为具名数据变体比较。常规joint在线H1/H7、独立H32预拟合、在线H32真正进入joint分别写清。长窗不跨terminal/reset，短失败保留合法后继；按独立episode/cohort、模式和分母报告，区分first touch/recontact。仅一窗改善不作为依据。WM窗口/数据配方变化单列比较，不同时改输入、奖励、控制器和任务。
-
-6. 根据上述证据选择最小修复，在新标准run中执行真实WM/Actor/Critic训练与物理评测。继承ContactRun、train_contact和官方调用链，不重写算法。h32_recovery默认混合锚点/全程参考不能直接照用并冠名标准。实际CLI、配置来源和checkpoint身份核实后再运行；梯度/参数变化仅证明实际执行，成功靠物理评分。明确退化时修问题，不只重复证明梯度存在。
-
-五、按接触→完整任务→冻结验证推进
-
-先完成B0-04接近抓持、稳定保持、小角推拉、释放退臂的双侧共同标准Actor。先nominal，再对可用候选做每项D01–D20；有明确失败时不无条件跑满分母。已有混合BC十项20/20不能代填。记录接触u0/u1/u5/u10及后续有意义节点，有能力保持和学习进展就继续50/200/1000或预登记预算，不为凑次数盲训。
-
-接触能力成立后按B0-05完成前拉60°、背推25°、共同参考库的同一WM/Actor，从规定0.30m外初态连续执行。保留原门角误差、5mm/6N、抓持确认、目标保持、两次独立3s、碰撞/限位/失稳、时限和参考长度。无教师接管、门驱动、中途reset、按case换参考答案。保持原全程任务，不将局部静态端点冲突直接推成全局无解，不默认换对象相对任务绕过标准迁移。
-
-最终同一标准H32候选须十项接触nominal且每项D01–D20≥18/20，主后端双侧完整C各≥18/20，同包native3.3双侧nominal通过，并有持续真实H32证据。CPU3.16只按实际风险做必要回归，不加无关门槛。C是开发集；继承nominal不重复计数，未测不写0/20。
-
-门槛达到后按B0-06执行seed1/2独立初始化、采集和训练，各自先过B0-03；不能复制seed0包后只换评测随机数称独立链。三seed候选/配方/选模规则冻结后再开每侧H01–H50，目标每seed每侧≥40/50。H不用于选择任务、阈值、时限或方法，不重生成容易条件。
-
-有明确标准迁移限制时保留失败，区分可实施的平台/数据修复与后续方法创新。不得自动把创新替换当前主线；仍有可执行修复时，不能只写限制报告结束本轮。
-
-六、持续工作、详细日志与交付
-
-B0-03、A0–A4、matched bootstrap、完整Critic恢复、40步采集和轮地/夹指后端原因已做，不从头重做；只对本次变化做必要回归。可并行平台/参考数据、WM和评测准备，一个集成任务维护共享接口；资源按现场调配，不设后台强制墙钟kill，不跑无关任务占GPU。
-
-本提示词授权仿真实现、采集、训练、评测和GitHub交付，不自动启动多模态/VLA、RoboMIND、双门、旧G1或硬件；最终RGB-D＋语言＋本体历史＋世界模型/可微动力学＋实机目标保留在后续阶段。
-
-DAILY_WORK_LOG.md是唯一每日详细日志，按北京时间逐日记录工作与目的、代码/配置/数据/权重/环境、真实命令/run、指标和准确分母、失败/中断/未执行、证据、已证实原因与假设、修复复测、未解决项与下一步。跨日继续记，不把提交时间冒充实验起止。
-
-同步PROJECT_STATE、阶段报告、逐案索引、必要视频、资产恢复位置与NEXT_RUN，按有意义节点普通commit/push至kaiwen123-yang/dog-and-arm并回读核对。保留他人修改和有价值失败，不盲目stage、不建压缩归档；已有上传授权，不再询问。
-
-最后用中文交付标准迁移真实阶段、标准/BC/混合扩展分别的作用、完整/局部/跨端分母、每日解决的问题、剩余门槛与总目标差距、GitHub提交和下一条真实可执行命令。不要把文件创建、一个诊断或再次规划当成本轮最终目标。
+有依赖价值的评分/官方接口、WM数据与训练评测可并行，共享接口由单一集成者维护。长任务完整checkpoint/tmux可恢复，不设后台强制墙钟kill，真实任务时限仍固定。更新独立结果、manifest、PROJECT_STATE、阶段报告、NEXT_RUN和唯一DAILY_WORK_LOG；日志按北京时间逐日详记动作、问题证据、原因/假设、修复复测、失败未执行、命令run预算和下一步。普通commit/push并回读GitHub已授权，不再问，不强推/reset/clean、不盲stage、不建压缩归档。最终报告真实成绩、论文口径缺口、下一项和提交号。

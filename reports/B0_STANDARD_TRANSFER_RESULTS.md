@@ -1,5 +1,7 @@
 # M1＋Piper H 标准 SuperMimic 接触迁移实测
 
+> 本轮已于2026-11-23 22:50:39北京时间回收，实验端点638fddc。下文“运行中/待回收”是执行时原始记录。最终独立成绩见[B0_STANDARD_TRANSFER_BASELINE.md](B0_STANDARD_TRANSFER_BASELINE.md)，全部分母和后回收WM结果见[最新审查](B0_STANDARD_ROUND_REVIEW_20261123.md)，下一步以[标准计划](../docs/B0_STANDARD_TRANSFER_PLAN_20261123.md)为准。原实验正文保留。
+
 2026-11-23，北京时间。承接 main@5e6db44。当前在 B0-04 双侧接触阶段。原尺度、六臂/夹口 ×32、补充握持 WM 数据三组在 u50 均实际完成 Warp 接触名义计分，三组分别为 0/10。后三者分别保持各自权重。当前尚无可以推进 B0-05 完整单门的标准候选。运行中的末节点与机器回收结果见本报告后续回收段、[快照](../results/b0/standard_handoff_20261123/snapshot.json)及[逐案索引](../results/b0/standard_handoff_20261123/case_index.csv)。
 
 ## 恢复的官方机制与实际配置
