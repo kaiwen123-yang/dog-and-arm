@@ -813,3 +813,13 @@ f0812006 已普通推送并通过 GitHub main 回读。原生 3.3 的同包完�
 云端命令 `bash scripts/b0/env.sh python -u scripts/b0/train_contact.py --config config/b0/standard_contact_40.yaml --run standard_s0_control40_r1 --updates 10`。u0/1/5/10 保存，实得 17,736 / 51,200 个 lane 间隔有效，10/100/200 次 Actor/WM/Critic 更新；u0 Warp 原 v1 为 0/10，额外五个已登记 hold-margin 为 0/5。首个前拉 open_5 控制间隔在第 1 个 2 ms 触发 51.07 N 合力。逐节点物理结果正在按实际完成状态收集。
 
 从同一对锚点独立启动 standard_s0_gain32_r1，针对有实测依据的六臂/夹口尺度做初始化等价的单因素比较。夹口发送全宽、单电机乘 0.5，两真实指从反馈计算宽度。机械与动作映射细节、预训练分布和等价复测见 results/b0/standard_transfer_action_audit/action_units.json。两个尺度的规定扭矩/速度/物理限幅、探索和前动作定义相同。十项接触 D、完整任务 C、native 完整名义与多 seed/H 尚未执行。
+
+### 22:30–22:42 配对训练、物理复测及脱离聊天运行
+
+第一节点 e87e1b5 已普通推送并经 GitHub API 回读。开发机直接 HTTPS 推送缺少凭据，改由 Windows 已认证的既有 delivery.git 传送同一提交，未改主树和凭据。云端 train_contact.py 对 original/×32/补握持数据三个 u50 节点分别累计采到 69,480 / 70,425 / 73,163 条有效转移（每组 256,000 个候选 lane 间隔）；各自 50 H32＋500 WM＋1,000 Critic。control u10→50 的新 run 从完整 cohort_state 接续，同一条链只计一次。三组 Warp 正式十项 nominal 均 0/10；×32 同包 native 原 v1 0/10，逐项失败和 native 视频均保存。原尺度与×32 u0/1/5/10 的物理节点已回收。原尺度/×32 前拉 open_5 u50 首步约 51.01/50.87 N，背推 33.12/33.32 N。×32 拉侧接近延长但仍未抓住；其动作/关节力变化支持把该链从 u50 状态继续到 u200，需观察末点是否真实改善。
+
+真实物理和统计的复查，以及每一项配置、机器可读结果、命令入口、失败与分母，记录在 reports/B0_STANDARD_TRANSFER_RESULTS.md。两侧 batch 与独立逐侧相同前缀物理一致，但首步训练源 phase 和正式阶段边界有 3 子步差。20 回合 held 数据的真实后继未见时序错误。发现 raw 零填充在 motion normalizer 后出现 116.85 伪信号；修复使全部 1350 个无效槽为零、96300 个有效槽不变，padding 配对独立训练。既有 u1000 失败入口没有尾槽，不将首步失败归因于该问题。
+
+独立冻结采集 81101–81103 共 2321 个有效转移、142 次物理终止；逐 lane 核 s/a/s_next、上一动作、帧、终端和硬事件。WM 分布诊断发现 control-u50 的两指 H32 TCP P95 前拉/背推 688.06/166.67 mm。仅以预登记训练握持窗替换每个 H7 minibatch 的 32 行后，u50 为 106.62/145.39 mm，仍差于 held_r2 的 50.53/40.36 mm。未向 Actor 加动作监督。单换输入统计会显著改变原模型的物理预测；另做首层权重/bias 等价换算配对，1725 个真实输入的单步 TCP 最大单坐标偏移 12.412→0.000358 mm。该复测只验证数值映射。原官方优化器及其 moment 在新坐标沿用，正式末点待收。
+
+实际入口为云端 bash scripts/b0/env.sh python -u scripts/b0/train_contact.py；配置 standard_contact_40{,_gain32,_gripdata,_goal_padding,_wmcoords}.yaml。×32 后续命令附 --resume results/b0/standard_s0_gain32_r1/cohort_state.pt --run standard_s0_gain32_to200_r1 --updates 200。评测使用 eval_contact_segments.py 配两份冻结 manifest；验证使用 standard_contact_validation.py collect/score。按用户补充要求在 tmux 稳定后结束对话：云端 b0-standard-finish 编排剩余已登记节点（含 u200 双端与同入口受力诊断），第二平台 b0-standard-receive 同步小结果、更新每日记录/状态及普通推送。新标准接触 D、完整 C、独立 seed/H、硬件未执行；云端大权重、RNG、优化器与 replay 保留。

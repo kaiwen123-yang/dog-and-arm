@@ -15,6 +15,29 @@ from learning.b0.contact_model import SCHEMA
 from learning.b0.contact_training import ContactRun
 
 
+def add_grip_windows(run, directory):
+    """H7 dynamics data only, from the preregistered training cohorts."""
+    from learning.b0.contact_policy import DoorMotions
+    from learning.b0.contact_replay import ContactWindows
+    from scripts.b0.h32_fit_recovery_wm import load_cohorts
+
+    registration = json.loads((directory / 'registration.json').read_text())
+    original = Path(registration['anchor']).parent / 'actual_config.json'
+    source = json.loads(original.read_text())['cfg']
+    paths = [Path(registration['reference_directory']) / name for name in source['references']]
+    motions = DoorMotions(paths, run.rep, run.device)
+    cohorts = json.loads((directory / 'cohorts.json').read_text())
+    rows = [row for row in cohorts if row['split'] == 'train']
+    expected = [seed for split, seed in registration['allocation'] if split == 'train']
+    if not rows or [row['seed'] for row in rows] != expected or len(set(expected)) != len(rows):
+        raise ValueError('Expected the complete preregistered training split')
+    episodes, _ = load_cohorts(rows, paths, motions, run.model, run.device)
+    run.grip_windows = ContactWindows(episodes, 7)
+    return dict(seeds=expected, lanes=len(episodes), transitions=sum(len(e.action) for e in episodes),
+                h7_windows=len(run.grip_windows.starts), source_behavior=registration['anchor'],
+                source=str(directory), use='physical state, clipped action and successor for H7 WM only')
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config',type=Path,default=Path('config/b0/contact_servo_cloud.yaml'))
@@ -53,6 +76,7 @@ def main():
         if not (p/'metadata.json').is_file():
             raise FileNotFoundError(p)
     run=ContactRun(cfg,refs,teachers,source,wm,'cuda:0',from_free_anchor=args.resume is None)
+    grip_data = add_grip_windows(run, Path(cfg['wm_grip_cohorts'])) if cfg.get('wm_grip_cohorts') else None
     out=Path('results/b0')/args.run
     raw=Path('results/raw_large/b0')/args.run
     out.mkdir(exist_ok=False)
@@ -63,6 +87,11 @@ def main():
                   initialization=dict(actor=str(cfg.get('calibrated_actor',cfg['actor_checkpoint'])),wm=str(cfg['wm_checkpoint']),resume=str(args.resume) if args.resume else None),
                   max_step_reward=run.policy.wm_env.max_step_reward,max_critic_value=run.policy._v_max,
                   validation_excluded=True,cohort_truncation=cfg['cohort_steps'],requested_endpoint=args.updates)
+    metadata['actor_class'] = type(run.actor).__name__
+    metadata['policy_learner'] = type(run.policy).__name__
+    metadata['wm_horizons'] = list(run.learners)
+    if grip_data is not None:
+        metadata['supplemental_wm_data'] = grip_data
     metadata['execution_source_sha256'] = {
         str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in
         [Path(__file__).resolve().relative_to(Path.cwd()), *sorted(Path('learning/b0').glob('contact*.py')), args.config]

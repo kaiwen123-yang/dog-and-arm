@@ -1,0 +1,117 @@
+{
+  "cfg": {
+    "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+    "worlds": 128,
+    "wm_batch": 256,
+    "wm_batches": 10,
+    "actor_batch": 256,
+    "wm_hidden": [
+      2048,
+      2048,
+      2048
+    ],
+    "actor_hidden": [
+      2048,
+      1024,
+      512,
+      256
+    ],
+    "critic_hidden": [
+      256,
+      128
+    ],
+    "buffer_size": 1000,
+    "replay_ratio": 16,
+    "physics_dt": 0.002,
+    "policy_dt": 0.02,
+    "history_length": 10,
+    "free_motion_clip_frames": 351,
+    "actor_horizon": 32,
+    "wm_window": 8,
+    "collection_noise": 0.1,
+    "milestones": [
+      0,
+      1000,
+      5000,
+      10000
+    ],
+    "periodic_updates": 10000,
+    "diagnostic_block": 50000,
+    "window_recipe": "terminal_one_step_and_seven_step",
+    "one_step_batches": 2,
+    "network_output_units": "quarter_effort_over_servo_gain",
+    "additional_physical_checks": [
+      50,
+      200
+    ],
+    "hypothesis": "Reparameterize the final six arm rows and full-opening jaw row while retaining the initial physical policy and the exploration amplitude. Compare the same H32 budget against standard_contact_40.",
+    "base": "config/b0/standard_contact_40.yaml",
+    "cohort_steps": 40,
+    "replay_cohorts": 32,
+    "rsi_phases": [
+      "approach_arm",
+      "grasp",
+      "open",
+      "hold",
+      "release",
+      "retreat_arm",
+      "post_release_hold"
+    ],
+    "reference_directory": "results/raw_large/b0/contact_held_r1",
+    "references": [
+      "pull_0_train_grip",
+      "push_0_train_grip",
+      "pull_5_train",
+      "push_5_train",
+      "pull_15_train",
+      "push_15_train"
+    ],
+    "additional_teacher_episodes": [
+      "pull_0_train",
+      "push_0_train",
+      "pull_5_train_drop",
+      "push_5_train_drop"
+    ],
+    "actor_checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "wm_checkpoint": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "reward": "pinned_o1_tracking",
+    "reward_at": "successor_reference",
+    "diagnostic_updates": [
+      0,
+      1,
+      5,
+      10,
+      50,
+      200,
+      1000
+    ],
+    "arm_jaw_output_gain": 32.0
+  },
+  "run": "standard_s0_gain32_r1",
+  "seed": 0,
+  "git_revision": "5e6db443316f5acec6d840f0be36c6ca1b1bf88a",
+  "physics": "MuJoCo Warp; exact 10 x 2 ms held targets",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "migration": "Actor incl. normalizers strict load; critic input layer initialized, shape-compatible hidden and output restored; door WM initialized from explicitly listed pretraining checkpoint. Joint optimizers fresh unless --resume.",
+  "initialization": {
+    "actor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "wm": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "resume": null
+  },
+  "max_step_reward": 0.1,
+  "max_critic_value": 9.999999999999991,
+  "validation_excluded": true,
+  "cohort_truncation": 40,
+  "requested_endpoint": 50,
+  "execution_source_sha256": {
+    "scripts/b0/train_contact.py": "c43720736ceaf97e1bae71d16153a3790c6120438578f1fe0bb15bb18bed1c77",
+    "learning/b0/contact_events.py": "d472beb7bfabe10d90b728a7fc1e6ca8063613030dcc24fa6dd6d407df3b357a",
+    "learning/b0/contact_force.py": "dc5fc76590325f9e6d4e61f91611e1fb083fc3d78e80094e1385b6660bb5e1ce",
+    "learning/b0/contact_model.py": "5ca6f091aa0400d41ec01b75e29d9a4b51da188a5f9c5115b4e8c032da0a24b8",
+    "learning/b0/contact_policy.py": "59923bab726b40329aa5256091623bb8315c25a4b91b999615f41e8997eca530",
+    "learning/b0/contact_replay.py": "2d54137bb9fe24ac5f5799b31812312715b7f11879c374e188c4b5f7144ad04b",
+    "learning/b0/contact_training.py": "9f0868fa409e35c051f7ee99278bce78b82267c24606af34e0dcb86ecb11ee04",
+    "learning/b0/contact_warp.py": "100da0517bf5956d700d1fe473e2b28a62257d27f416f9a0c695bc2f2b0cd679",
+    "config/b0/standard_contact_40_gain32.yaml": "6417560c198c24f7b7f20a3395f2d77f84debfd79c9a2c60abf863b294623b43"
+  }
+}

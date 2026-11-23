@@ -1,0 +1,66 @@
+{
+  "wm": "results/b0/standard_s0_control40_to50_r1/checkpoint_000050.pt",
+  "data": "results/b0/standard_transfer_wm_validation_control10_r1",
+  "device": "cpu",
+  "registration": {
+    "actor": "results/b0/standard_s0_control40_r1/checkpoint_000010.pt",
+    "update": 10,
+    "behavior": "frozen standard Actor with its training exploration",
+    "reference_directory": "results/raw_large/b0/contact_held_r1",
+    "references": [
+      "pull_0_train_grip",
+      "push_0_train_grip",
+      "pull_5_train",
+      "push_5_train",
+      "pull_15_train",
+      "push_15_train"
+    ],
+    "worlds": 64,
+    "policy_dt": 0.02,
+    "steps": 40,
+    "collection_noise": 0.1,
+    "seeds": [
+      81101,
+      81102,
+      81103
+    ],
+    "split": "validation",
+    "excluded_from_updates_and_replay": true,
+    "backend": "MuJoCo Warp; ten 2 ms substeps per target"
+  },
+  "counts": {
+    "validation_81101": {
+      "attempted_lanes": 64,
+      "valid_lanes": 64,
+      "valid_transitions": 1009,
+      "valid_h32_lanes": 23,
+      "valid_h32_windows": 207,
+      "physical_failures": 41,
+      "full_terminal_included": true
+    },
+    "validation_81102": {
+      "attempted_lanes": 64,
+      "valid_lanes": 64,
+      "valid_transitions": 600,
+      "valid_h32_lanes": 12,
+      "valid_h32_windows": 108,
+      "physical_failures": 52,
+      "full_terminal_included": true
+    },
+    "validation_81103": {
+      "attempted_lanes": 64,
+      "valid_lanes": 64,
+      "valid_transitions": 712,
+      "valid_h32_lanes": 15,
+      "valid_h32_windows": 135,
+      "physical_failures": 49,
+      "full_terminal_included": true
+    }
+  },
+  "window_cap": 512,
+  "sampling_seed": 301,
+  "substep_state_check": "every valid row matched recorded final physical substep",
+  "modes": "first interval: physical finger loads and commanded reference phase; recontact uses branch-local contact history",
+  "predictor": "open-loop propagation with measured clipped commands; comparison uses identical windows and successors",
+  "nonfinite": "count per predictor, metric, side, horizon and mode; large finite errors retained in maximum"
+}

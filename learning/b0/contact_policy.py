@@ -259,6 +259,18 @@ class ApproachLegWheelActor(ApproachWheelActor):
         return torch.cat((baseline[:, :12] + residual * self.leg_trim_gain, baseline[:, 12:]), dim=-1)
 
 
+def _mask_normalized_motion_padding(_normalizer, inputs, normalized):
+    """Keep the six-dimensional rotation sentinel neutral after normalization."""
+    joint_width = NUM_GOAL_FRAMES * 48
+    raw_rotation = inputs[0][..., joint_width:].unflatten(-1, (NUM_GOAL_FRAMES, 6))
+    # The two columns of a valid rotation matrix cannot both be zero.
+    valid = raw_rotation.ne(0).any(-1, keepdim=True)
+    joints, rotation = normalized.split((joint_width, NUM_GOAL_FRAMES * 6), dim=-1)
+    joints = joints.unflatten(-1, (NUM_GOAL_FRAMES, 48)).masked_fill(~valid, 0)
+    rotation = rotation.unflatten(-1, (NUM_GOAL_FRAMES, 6)).masked_fill(~valid, 0)
+    return torch.cat((joints.flatten(-2), rotation.flatten(-2)), dim=-1)
+
+
 def build_actor(rep, cfg, model, device):
     task = make_motion_task(rep,570)
     schema = actor_goal_schema(cfg)
@@ -288,6 +300,10 @@ def build_actor(rep, cfg, model, device):
     actor = actor_type(77,23,[task,velocity],{'motion':1.,'velocity':0.},
                               32,tuple(cfg['actor_hidden']),.1,10).to(device)
     actor.set_servo_units(model,ActionMap(model),device)
+    if cfg.get("neutral_normalized_goal_padding"):
+        if actor_type is not EffortScaledActor or schema != "proprio_motion":
+            raise ValueError("Normalized goal padding is defined for the standard 540-column motion actor")
+        actor.goal_normalizers["motion"].register_forward_hook(_mask_normalized_motion_padding)
     if "planar_stance_rate" in cfg:
         if schema not in (PRIVILEGED_TRANSLATION, TRANSLATION_STANCE_ARM):
             raise ValueError("Planar feedback needs the ten privileged XYZ slots")

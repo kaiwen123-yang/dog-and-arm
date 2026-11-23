@@ -132,6 +132,25 @@ class DoorImagination(MultiTaskWorldModelEnv):
         self._build_task_goals()
 
 
+def wm_input_coordinates(dynamics):
+    normalizers = (dynamics.state_normalizer, dynamics.action_normalizer)
+    mean = torch.cat([n.mean for n in normalizers])
+    denominator = torch.cat([n.std + n.eps for n in normalizers])
+    return mean, denominator
+
+
+@torch.no_grad()
+def rebase_wm_input_layer(dynamics, previous):
+    """Preserve the learned first-layer preactivations across a stats update."""
+    old_mean, old_denominator = previous
+    new_mean, new_denominator = wm_input_coordinates(dynamics)
+    linear = dynamics.mlp[0]
+    # Inputs are normalized state, normalized physical action, then unscaled context.
+    weights = linear.weight[:, :old_mean.numel()]
+    linear.bias.add_(weights @ ((new_mean - old_mean) / old_denominator))
+    weights.mul_(new_denominator / old_denominator)
+
+
 @torch.no_grad()
 def rescale_standard_arm_jaw(actor, gain):
     """Change decoder update units while preserving pretrained physical commands."""
@@ -172,6 +191,7 @@ class ContactRun:
         self.dyn = Dynamics(rep,23,5,tensor(mapping.scale,device),tensor(mapping.offset,device),
                             tuple(cfg['wm_hidden'])).to(device)
         self.dyn.load_state_dict(wm_checkpoint['dyn'])
+        self.grip_windows = None
         self.b = cfg['wm_batch']
         horizons = [(1, 2), (7, self.seven_batches)]
         if self.h32_teacher_batches:
@@ -322,10 +342,14 @@ class ContactRun:
                 np.save(raw_path/(n+'.npy'),np.stack([r[n] for r in records]))
         valid_count=sum(int(r['valid'].sum()) for r in rows)
         if training and valid_count:
+            preserved = (wm_input_coordinates(self.dyn)
+                         if self.cfg.get("preserve_wm_input_function") else None)
             for r in rows:
                 ix=r['valid']
                 if ix.any():
                     self.learners[7].update_normalization(r['state'][ix],r['action'][ix])
+            if preserved is not None:
+                rebase_wm_input_layer(self.dyn, preserved)
         if training:
             self.replay.append(rows)
         self.total+=valid_count
@@ -351,7 +375,11 @@ class ContactRun:
                 if n==7:
                     online_long+=count
                 if count<self.b:
-                    teacher=self.offline[n].sample(self.b-count)
+                    remaining = self.b - count
+                    grip_count = remaining // 2 if n == 7 and self.grip_windows is not None else 0
+                    teacher = self.offline[n].sample(remaining - grip_count)
+                    if grip_count:
+                        teacher = torch.cat([teacher, self.grip_windows.sample(grip_count)])
                     batch=teacher if batch is None else torch.cat([batch,teacher])
                 batches.append(batch)
             metrics=self.learners[n].update(batches)

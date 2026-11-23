@@ -1,0 +1,779 @@
+{
+  "source": "B0-03 u1000, door WM u2000, original contact_held_r1. All episodes checked at all recorded boundaries. C and H task rolls excluded.",
+  "clock": "state[j] and previously applied clipped command[j-1]; target[j] held across ten 2 ms physics steps; measured successor at j+1. Tail partials excluded; six concatenated reference IDs each retain its own mask.",
+  "normalizer": {
+    "actor": {
+      "obs_normalizer": {
+        "count": 1089050,
+        "shape": [
+          1,
+          77
+        ],
+        "std_min": 0.0020501497201621532,
+        "std_max": 1.069233775138855
+      },
+      "goal_normalizers.motion": {
+        "count": 1089050,
+        "shape": [
+          1,
+          540
+        ],
+        "std_min": 2.5695189265206864e-07,
+        "std_max": 1.116339087486267
+      },
+      "goal_normalizers.velocity": {
+        "count": 0,
+        "shape": [
+          1,
+          3
+        ],
+        "std_min": 1.0,
+        "std_max": 1.0
+      }
+    },
+    "wm": {
+      "state_normalizer": {
+        "count": 10808,
+        "shape": [
+          1,
+          75
+        ],
+        "std_min": 2.282132072650711e-06,
+        "std_max": 0.9809246063232422
+      },
+      "action_normalizer": {
+        "count": 10808,
+        "shape": [
+          1,
+          23
+        ],
+        "std_min": 0.0022385099437087774,
+        "std_max": 0.9833924174308777
+      }
+    }
+  },
+  "goal_stride": 5,
+  "goal_frames": 10,
+  "actor_class": "EffortScaledActor",
+  "normalizer_epsilon": 0.01,
+  "episodes": [
+    {
+      "name": "pull_0_train",
+      "split": "train",
+      "as_reference": false,
+      "as_joint_wm_teacher": true,
+      "group": "pull_0_train",
+      "full": 876,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 5
+    },
+    {
+      "name": "pull_0_train_grip",
+      "split": "train",
+      "as_reference": true,
+      "as_joint_wm_teacher": true,
+      "group": "pull_0_train_grip",
+      "full": 1415,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 8
+    },
+    {
+      "name": "pull_0_validation",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "pull_0_validation",
+      "full": 868,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 5
+    },
+    {
+      "name": "pull_0_validation_grip",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "pull_0_validation_grip",
+      "full": 1407,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 8
+    },
+    {
+      "name": "pull_15_train",
+      "split": "train",
+      "as_reference": true,
+      "as_joint_wm_teacher": true,
+      "group": "pull_15_train",
+      "full": 1875,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 7
+    },
+    {
+      "name": "pull_15_validation",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "pull_15_validation",
+      "full": 1867,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 9
+    },
+    {
+      "name": "pull_5_train",
+      "split": "train",
+      "as_reference": true,
+      "as_joint_wm_teacher": true,
+      "group": "pull_5_train",
+      "full": 1597,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 9
+    },
+    {
+      "name": "pull_5_train_drop",
+      "split": "train",
+      "as_reference": false,
+      "as_joint_wm_teacher": true,
+      "group": "pull_5_train_drop",
+      "full": 1092,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 6
+    },
+    {
+      "name": "pull_5_validation",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "pull_5_validation",
+      "full": 1589,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 9
+    },
+    {
+      "name": "pull_5_validation_drop",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "pull_5_validation_drop",
+      "full": 1055,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 5
+    },
+    {
+      "name": "push_0_train",
+      "split": "train",
+      "as_reference": false,
+      "as_joint_wm_teacher": true,
+      "group": "push_0_train",
+      "full": 876,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 5
+    },
+    {
+      "name": "push_0_train_grip",
+      "split": "train",
+      "as_reference": true,
+      "as_joint_wm_teacher": true,
+      "group": "push_0_train_grip",
+      "full": 1417,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 8
+    },
+    {
+      "name": "push_0_validation",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "push_0_validation",
+      "full": 866,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 5
+    },
+    {
+      "name": "push_0_validation_grip",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "push_0_validation_grip",
+      "full": 1408,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 8
+    },
+    {
+      "name": "push_15_train",
+      "split": "train",
+      "as_reference": true,
+      "as_joint_wm_teacher": true,
+      "group": "push_15_train",
+      "full": 1866,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 9
+    },
+    {
+      "name": "push_15_validation",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "push_15_validation",
+      "full": 1857,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 9
+    },
+    {
+      "name": "push_5_train",
+      "split": "train",
+      "as_reference": true,
+      "as_joint_wm_teacher": true,
+      "group": "push_5_train",
+      "full": 1589,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 9
+    },
+    {
+      "name": "push_5_train_drop",
+      "split": "train",
+      "as_reference": false,
+      "as_joint_wm_teacher": true,
+      "group": "push_5_train_drop",
+      "full": 1037,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 6
+    },
+    {
+      "name": "push_5_validation",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "push_5_validation",
+      "full": 1579,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 8
+    },
+    {
+      "name": "push_5_validation_drop",
+      "split": "validation",
+      "as_reference": false,
+      "as_joint_wm_teacher": false,
+      "group": "push_5_validation_drop",
+      "full": 1045,
+      "partial": 1,
+      "max_abs_q_boundary": 0.0,
+      "max_abs_v_boundary": 0.0,
+      "max_abs_full_dt_error": 0.0,
+      "max_abs_held_target_delta": 0.0,
+      "max_abs_action_remap_error": 0.0,
+      "max_abs_prev_action_error": 0.0,
+      "invalid_steps_mask": 0,
+      "interval_start_phase_mismatch": 0,
+      "transition_intervals_mixed_phase": 5
+    }
+  ],
+  "references": [
+    {
+      "name": "pull_0_train_grip",
+      "id": 0,
+      "start": 0,
+      "end_exclusive": 1416,
+      "reference_frames": 1416,
+      "physical_prefix_actions": 10,
+      "physical_prefix_steps": 100,
+      "eligible_40step_rsi_frames": 734,
+      "all_eligible_cover_40_plus_H32_plus_successor": true,
+      "concatenated_vs_isolated_goal_absmax": 0.0,
+      "final_invalid_goal_slots_max": 0.0,
+      "robot_vs_contact_history_sensor_absmax": 0.0,
+      "raw_goal_normalized_channel_absmax_by_frame_p50": 80.88146209716797,
+      "raw_goal_normalized_channel_absmax_by_frame_p95": 111.082275390625,
+      "raw_goal_normalized_channel_absmax": 116.85234069824219,
+      "peak": {
+        "frame": 1371,
+        "column": 442,
+        "source": "m1_RAR_KNEE_JOINT",
+        "goal_value": 0.0,
+        "b003_mean": 1.2253808975219727,
+        "b003_std": 0.0004865762311965227,
+        "most_frequent_frame_maximum_fields": [
+          [
+            "piper_joint5",
+            856
+          ],
+          [
+            "piper_joint4",
+            120
+          ],
+          [
+            "speed_m1_FBL_FOOT_JOINT",
+            94
+          ],
+          [
+            "m1_FAR_FOOT_JOINT",
+            76
+          ],
+          [
+            "speed_piper_joint5",
+            69
+          ]
+        ]
+      },
+      "eligible_start_with_mask_in_40step_collection": 10,
+      "eligible_start_with_mask_in_40step_collection_or_possible_H32": 42
+    },
+    {
+      "name": "push_0_train_grip",
+      "id": 1,
+      "start": 1416,
+      "end_exclusive": 2834,
+      "reference_frames": 1418,
+      "physical_prefix_actions": 10,
+      "physical_prefix_steps": 100,
+      "eligible_40step_rsi_frames": 736,
+      "all_eligible_cover_40_plus_H32_plus_successor": true,
+      "concatenated_vs_isolated_goal_absmax": 0.0,
+      "final_invalid_goal_slots_max": 0.0,
+      "robot_vs_contact_history_sensor_absmax": 0.0,
+      "raw_goal_normalized_channel_absmax_by_frame_p50": 152.60629272460938,
+      "raw_goal_normalized_channel_absmax_by_frame_p95": 182.13832092285156,
+      "raw_goal_normalized_channel_absmax": 182.2587127685547,
+      "peak": {
+        "frame": 568,
+        "column": 451,
+        "source": "piper_joint4",
+        "goal_value": 1.8249447345733643,
+        "b003_mean": -6.619060286539025e-07,
+        "b003_std": 1.2939642147102859e-05,
+        "most_frequent_frame_maximum_fields": [
+          [
+            "piper_joint4",
+            1017
+          ],
+          [
+            "speed_m1_FBL_FOOT_JOINT",
+            94
+          ],
+          [
+            "speed_piper_joint4",
+            80
+          ],
+          [
+            "m1_FAR_FOOT_JOINT",
+            76
+          ],
+          [
+            "speed_m1_RAR_FOOT_JOINT",
+            54
+          ]
+        ]
+      },
+      "eligible_start_with_mask_in_40step_collection": 10,
+      "eligible_start_with_mask_in_40step_collection_or_possible_H32": 42
+    },
+    {
+      "name": "pull_5_train",
+      "id": 2,
+      "start": 2834,
+      "end_exclusive": 4432,
+      "reference_frames": 1598,
+      "physical_prefix_actions": 10,
+      "physical_prefix_steps": 100,
+      "eligible_40step_rsi_frames": 916,
+      "all_eligible_cover_40_plus_H32_plus_successor": true,
+      "concatenated_vs_isolated_goal_absmax": 0.0,
+      "final_invalid_goal_slots_max": 0.0,
+      "robot_vs_contact_history_sensor_absmax": 0.0,
+      "raw_goal_normalized_channel_absmax_by_frame_p50": 100.80328369140625,
+      "raw_goal_normalized_channel_absmax_by_frame_p95": 115.1848373413086,
+      "raw_goal_normalized_channel_absmax": 116.85234069824219,
+      "peak": {
+        "frame": 1553,
+        "column": 442,
+        "source": "m1_RAR_KNEE_JOINT",
+        "goal_value": 0.0,
+        "b003_mean": 1.2253808975219727,
+        "b003_std": 0.0004865762311965227,
+        "most_frequent_frame_maximum_fields": [
+          [
+            "piper_joint5",
+            1045
+          ],
+          [
+            "piper_joint4",
+            113
+          ],
+          [
+            "speed_m1_FBL_FOOT_JOINT",
+            94
+          ],
+          [
+            "m1_FAR_FOOT_JOINT",
+            76
+          ],
+          [
+            "speed_piper_joint5",
+            69
+          ]
+        ]
+      },
+      "eligible_start_with_mask_in_40step_collection": 10,
+      "eligible_start_with_mask_in_40step_collection_or_possible_H32": 42
+    },
+    {
+      "name": "push_5_train",
+      "id": 3,
+      "start": 4432,
+      "end_exclusive": 6022,
+      "reference_frames": 1590,
+      "physical_prefix_actions": 10,
+      "physical_prefix_steps": 100,
+      "eligible_40step_rsi_frames": 908,
+      "all_eligible_cover_40_plus_H32_plus_successor": true,
+      "concatenated_vs_isolated_goal_absmax": 0.0,
+      "final_invalid_goal_slots_max": 0.0,
+      "robot_vs_contact_history_sensor_absmax": 0.0,
+      "raw_goal_normalized_channel_absmax_by_frame_p50": 151.41073608398438,
+      "raw_goal_normalized_channel_absmax_by_frame_p95": 181.99966430664062,
+      "raw_goal_normalized_channel_absmax": 182.2587127685547,
+      "peak": {
+        "frame": 568,
+        "column": 451,
+        "source": "piper_joint4",
+        "goal_value": 1.8249447345733643,
+        "b003_mean": -6.619060286539025e-07,
+        "b003_std": 1.2939642147102859e-05,
+        "most_frequent_frame_maximum_fields": [
+          [
+            "piper_joint4",
+            1189
+          ],
+          [
+            "speed_m1_FBL_FOOT_JOINT",
+            94
+          ],
+          [
+            "speed_piper_joint4",
+            80
+          ],
+          [
+            "m1_FAR_FOOT_JOINT",
+            76
+          ],
+          [
+            "speed_m1_RAR_FOOT_JOINT",
+            54
+          ]
+        ]
+      },
+      "eligible_start_with_mask_in_40step_collection": 10,
+      "eligible_start_with_mask_in_40step_collection_or_possible_H32": 42
+    },
+    {
+      "name": "pull_15_train",
+      "id": 4,
+      "start": 6022,
+      "end_exclusive": 7898,
+      "reference_frames": 1876,
+      "physical_prefix_actions": 10,
+      "physical_prefix_steps": 100,
+      "eligible_40step_rsi_frames": 1194,
+      "all_eligible_cover_40_plus_H32_plus_successor": true,
+      "concatenated_vs_isolated_goal_absmax": 0.0,
+      "final_invalid_goal_slots_max": 0.0,
+      "robot_vs_contact_history_sensor_absmax": 0.0,
+      "raw_goal_normalized_channel_absmax_by_frame_p50": 109.91726684570312,
+      "raw_goal_normalized_channel_absmax_by_frame_p95": 134.48886108398438,
+      "raw_goal_normalized_channel_absmax": 134.5263214111328,
+      "peak": {
+        "frame": 1462,
+        "column": 452,
+        "source": "piper_joint5",
+        "goal_value": -0.7554394602775574,
+        "b003_mean": 0.6000040173530579,
+        "b003_std": 7.567575084976852e-05,
+        "most_frequent_frame_maximum_fields": [
+          [
+            "piper_joint5",
+            1368
+          ],
+          [
+            "piper_joint4",
+            113
+          ],
+          [
+            "speed_m1_FBL_FOOT_JOINT",
+            94
+          ],
+          [
+            "m1_FAR_FOOT_JOINT",
+            76
+          ],
+          [
+            "speed_piper_joint5",
+            69
+          ]
+        ]
+      },
+      "eligible_start_with_mask_in_40step_collection": 10,
+      "eligible_start_with_mask_in_40step_collection_or_possible_H32": 42
+    },
+    {
+      "name": "push_15_train",
+      "id": 5,
+      "start": 7898,
+      "end_exclusive": 9765,
+      "reference_frames": 1867,
+      "physical_prefix_actions": 10,
+      "physical_prefix_steps": 100,
+      "eligible_40step_rsi_frames": 1185,
+      "all_eligible_cover_40_plus_H32_plus_successor": true,
+      "concatenated_vs_isolated_goal_absmax": 0.0,
+      "final_invalid_goal_slots_max": 0.0,
+      "robot_vs_contact_history_sensor_absmax": 0.0,
+      "raw_goal_normalized_channel_absmax_by_frame_p50": 156.6833038330078,
+      "raw_goal_normalized_channel_absmax_by_frame_p95": 181.56076049804688,
+      "raw_goal_normalized_channel_absmax": 182.2587127685547,
+      "peak": {
+        "frame": 568,
+        "column": 451,
+        "source": "piper_joint4",
+        "goal_value": 1.8249447345733643,
+        "b003_mean": -6.619060286539025e-07,
+        "b003_std": 1.2939642147102859e-05,
+        "most_frequent_frame_maximum_fields": [
+          [
+            "piper_joint4",
+            1466
+          ],
+          [
+            "speed_m1_FBL_FOOT_JOINT",
+            94
+          ],
+          [
+            "speed_piper_joint4",
+            80
+          ],
+          [
+            "m1_FAR_FOOT_JOINT",
+            76
+          ],
+          [
+            "speed_m1_RAR_FOOT_JOINT",
+            54
+          ]
+        ]
+      },
+      "eligible_start_with_mask_in_40step_collection": 10,
+      "eligible_start_with_mask_in_40step_collection_or_possible_H32": 42
+    }
+  ],
+  "terminal_mask_at_prior_physical_failures": [
+    {
+      "case": "pull/approach_grasp",
+      "last_actor_frame": 610,
+      "last_valid_reference_frame": 1415,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "pull/stable_grip",
+      "last_actor_frame": 875,
+      "last_valid_reference_frame": 1415,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "pull/open_5",
+      "last_actor_frame": 875,
+      "last_valid_reference_frame": 1597,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "pull/open_15",
+      "last_actor_frame": 875,
+      "last_valid_reference_frame": 1875,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "pull/release_retreat",
+      "last_actor_frame": 1211,
+      "last_valid_reference_frame": 1597,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "push/approach_grasp",
+      "last_actor_frame": 638,
+      "last_valid_reference_frame": 1417,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "push/stable_grip",
+      "last_actor_frame": 875,
+      "last_valid_reference_frame": 1417,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "push/open_5",
+      "last_actor_frame": 875,
+      "last_valid_reference_frame": 1589,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "push/open_15",
+      "last_actor_frame": 875,
+      "last_valid_reference_frame": 1866,
+      "last_actor_call_includes_invalid_future_slots": false
+    },
+    {
+      "case": "push/release_retreat",
+      "last_actor_frame": 1200,
+      "last_valid_reference_frame": 1589,
+      "last_actor_call_includes_invalid_future_slots": false
+    }
+  ]
+}

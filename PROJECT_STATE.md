@@ -1,5 +1,9 @@
 # 项目状态：当前是 SuperMimic 标准迁移阶段
 
+## 标准接触实测及 tmux 接续（2026-11-23 北京时间）
+
+从 5e6db44 和指定 B0-03 Actor / held_r2 门 WM 实际完成标准 H32 训练。原尺度、×32 与抓持数据三组 u50 在 Warp 登记组合各 0/10，×32 包 native 原 v1 为 0/10。独立握持窗口 WM TCP P95 在补数据后比同预算控制改善，正式接触仍失败。当前出口仍是 B0-04。最新依据见 [标准迁移实测](reports/B0_STANDARD_TRANSFER_RESULTS.md)、[逐案索引](results/b0/standard_handoff_20261123/case_index.csv)与 [tmux 接续](prompts/NEXT_RUN.txt)。下方 5e6db44 的审查/计划为此前状态。
+
 更新：2026-11-23（Asia/Shanghai）。审查证据截止 [`23c90684522a030e2625bf0e44118fa86884ebf4`](https://github.com/kaiwen123-yang/dog-and-arm/commit/23c90684522a030e2625bf0e44118fa86884ebf4)，承接 `b9a1129` 后的八个实验提交。本次只审查、补充审计记录和发布计划，没有启动新训练、仿真评测或硬件。
 
 ## 当前结论与下一入口

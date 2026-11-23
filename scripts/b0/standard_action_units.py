@@ -81,14 +81,48 @@ def measure_transfer(model, rep, workspace, mapping):
                 physical_noise_sigma=(exploration.numpy()*mapping.scale*anchor["cfg"]["collection_noise"]).tolist())
 
 
+
+def measure_cohort(path, model, mapping, sat_fraction):
+    def read(name):
+        return np.load(path / (name + ".npy"), mmap_mode="r")
+    active = read("active")
+    raw, clipped = read("raw")[active], read("clipped")[active]
+    np.testing.assert_array_equal(clipped, raw.clip(-1., 1.))
+    targets = clipped * mapping.scale + mapping.offset
+    target_error = abs(targets - read("physical_target")[active])
+    np.testing.assert_allclose(target_error, 0., atol=3e-7, rtol=0.)
+    first = read("first_fail_substep")[active]
+    # Count real interactions through the first failure, inclusive. Warp also
+    # integrates the rest of the held interval for fixed-dt WM supervision.
+    keep = (first[:, None] == 0) | (np.arange(1, 11)[None, :] <= first[:, None])
+    force = read("sub_actuator_force")[active][keep][:, mapping.actuator_ids]
+    wheel_ids = mapping.actuator_ids[12:16]
+    ctrl = read("sub_ctrl")[active][:, :, wheel_ids]
+    wheel_error = abs(ctrl - targets[:, None, 12:16])[keep]
+    np.testing.assert_allclose(wheel_error, 0., atol=5e-7, rtol=0.)
+    return dict(path=str(path), active_policy_calls=int(active.sum()), valid_20ms=int(read("valid").sum()),
+                substeps_through_first_failure=int(keep.sum()), clip_count=(raw!=clipped).sum(0).tolist(),
+                target_min=targets.min(0).tolist(), target_max=targets.max(0).tolist(),
+                wm_target_max_difference=float(target_error.max()), wheel_ctrl_max_difference=float(wheel_error.max()),
+                saturation_fraction=sat_fraction,
+                force_saturated_substeps=(abs(force) >= sat_fraction*model.actuator_forcerange[mapping.actuator_ids,1]).sum(0).tolist())
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--asset-workspace", type=Path, default=Path("."))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--cohorts", type=Path, nargs="+", help="Only measure the listed real online cohorts")
     args = parser.parse_args()
     workspace = args.asset_workspace
     model = make_model()
     mapping = ActionMap(model)
+    if args.cohorts:
+        from p6_scene import settings
+        fraction = settings("mobile", 1)["sat_fraction"]
+        out = dict(channel_order=mapping.names, cohorts=[measure_cohort(p, model, mapping, fraction) for p in args.cohorts])
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(out, indent=2, allow_nan=False) + "\n")
+        return
     anchor = measure_transfer(model, RobotRepresentation(model, "cpu"), workspace, mapping)
     home = model.key("home").qpos[mapping.q].copy()
     home[12:16] = 0.

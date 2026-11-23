@@ -1,3 +1,12 @@
+当前入口｜2026-11-23 标准 B0-04 已实际训练，先回读 tmux 结果
+
+从 Windows 查看云端真实训练进度、后台物理评测及回收：
+ssh dev2-ubuntu "ssh autodl-dog-arm 'cd /root/autodl-tmp/dog-and-arm-b0-standard && tail -1 results/b0/standard_s0_gain32_to200_r1/updates.jsonl && tail -6 results/raw_large/b0/standard_handoff_20261123/events.log'"
+ssh dev2-ubuntu "cd /home/kaiwen/research/dog-and-arm-standard && cat results/raw_large/b0/standard_handoff_20261123/received.txt && ls results/raw_large/b0/standard_handoff_20261123/"
+GitHub 读 main 上 reports/B0_STANDARD_TRANSFER_RESULTS.md、DAILY_WORK_LOG.md、results/b0/standard_handoff_20261123/snapshot.json 与 case_index.csv。若产生单独 closeout 分支先审阅承接；先验 finished/failed/published 回执，防止重复启动。
+
+本轮从原 B0-03 和 held_r2 接续，官方 EffortScaledActor、原 tracking/softdone 和 H32，0 次额外动作BC。旧 r3 两端各0/10。新原尺度、×32、补WM抓持数据 u50 的 Warp 正式组合各0/10；×32 u50 native v1为0/10。归一化尾槽修复与 WM 第一层坐标变换均是单列配对。核对 u200 真实首步方向、各组 WM 的自由与抓持分布、十项分母，再选有依据的同预算修复；若有同包全部接触名义通过，才测登记 D 和后续同包完整前拉/背推。独立 seed/H 仍按原冻结门槛。以下为承接本轮时的历史协议与恢复来源。
+
 当前入口｜固定官方SuperMimic标准迁移：接触→完整任务→多seed/H，然后才多模态/VLA
 
 用户明确纠正：当前是“根据supermimic进行迁移的标准阶段”。具名对话“分析SuperMimic融入腿臂控制”目前仅有检索摘要，不声称阅读全文/所有历史对话。执行 docs/B0_STANDARD_TRANSFER_PLAN_20261123.md，不执行此前草稿默认全程对象相对v2、新reward/风险head及共同BC主线。
