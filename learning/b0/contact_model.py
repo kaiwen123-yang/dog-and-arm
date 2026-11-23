@@ -7,8 +7,9 @@ import torch
 from mjlab.utils.lab_api.math import quat_apply, quat_apply_inverse, quat_mul
 from supermimic.utils.gencoord_helpers import compute_gencoord_state
 
-from .model import B0WorldModelCfg, RobotRepresentation, full_state, tensor
-from .physics import ARM
+from .model import B0WorldModelCfg, RobotRepresentation, base_servo_coordinates, full_state, tensor
+from .physics import ARM, ActionMap
+from .contact_reward import reward_actions
 
 
 SCHEMA = 'b0_contact_gencoord_v1'
@@ -50,6 +51,10 @@ class ContactRepresentation(RobotRepresentation):
 
     def __init__(self, model, device):
         super().__init__(model, device)
+        self.reward_coordinates = 'canonical'
+        home, unit = base_servo_coordinates(model, ActionMap(model), device)
+        self.register_buffer('reward_home', home, persistent=False)
+        self.register_buffer('reward_unit', unit, persistent=False)
         self.full_state_dim = 63
         self.rep_state_dim = 75
         self.prediction_dim = 31
@@ -131,6 +136,12 @@ class ContactRepresentation(RobotRepresentation):
 
     def joint_state(self, rep_state):
         return super().joint_state(rep_state[..., :58])
+
+    def compute_wm_reward_from_reference(self, next_rep_state, next_aux_state, next_joint_state,
+                                         action, last_action, *target_bodies, previous_valid=True):
+        act, prev = reward_actions(self, action, last_action, self.reward_coordinates, previous_valid)
+        return super().compute_wm_reward_from_reference(next_rep_state, next_aux_state, next_joint_state,
+                                                        act, prev, *target_bodies)
 
     def compute_wm_obs(self, rep_state, aux_state, joint_state, sim_ctx):
         return super().compute_wm_obs(rep_state[..., :58], aux_state, joint_state, sim_ctx)

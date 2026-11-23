@@ -37,8 +37,11 @@ def actor_goal_schema(cfg):
 
 class DoorMotions:
     """One clock per episode. Partial terminal states stay in the raw record."""
-    def __init__(self, paths, rep, device, *, actor_schema="proprio_motion"):
+    def __init__(self, paths, rep, device, *, actor_schema="proprio_motion", reference_tail="zero"):
         self.actor_schema = actor_goal_schema({"actor_goal_schema": actor_schema})
+        if reference_tail not in ("zero", "official_clip_last"):
+            raise ValueError(f"Unknown reference tail representation: {reference_tail}")
+        self.reference_tail = reference_tail
         self.ids, self.starts, self.metas = {}, {}, {}
         q, v, starts, ends = [], [], [], []
         approach = []
@@ -95,17 +98,18 @@ class DoorMotions:
 
     def goals(self, rep, frames, aux, door_angle=None):
         wm, actor = rep.compute_wm_goal(self, frames, aux)
-        ends = self.motion_ends[torch.searchsorted(self.motion_ends,frames,right=True)]
-        offsets = torch.arange(NUM_GOAL_FRAMES,device=frames.device)*GOAL_FRAME_STRIDE
-        valid = frames[:,None]+offsets < ends[:,None]
-        # The pretrained encoder keeps its 10-frame shape. Invalid future slots
-        # contain zero features, with no observations drawn from adjacent clips.
-        def mask(values, widths):
-            chunks = values.split([NUM_GOAL_FRAMES*w for w in widths],-1)
-            return torch.cat([(chunk.unflatten(-1,(NUM_GOAL_FRAMES,w))*valid[:,:,None]).flatten(1)
-                              for chunk,w in zip(chunks,widths)],-1)
-        wm = mask(wm,(48,3,6))
-        actor = mask(actor,(48,6))
+        # The pinned representation has already clamped to the current clip's
+        # last frame. The original transfer additionally zeroed those slots.
+        if self.reference_tail == "zero":
+            ends = self.motion_ends[torch.searchsorted(self.motion_ends,frames,right=True)]
+            offsets = torch.arange(NUM_GOAL_FRAMES,device=frames.device)*GOAL_FRAME_STRIDE
+            valid = frames[:,None]+offsets < ends[:,None]
+            def mask(values, widths):
+                chunks = values.split([NUM_GOAL_FRAMES*w for w in widths],-1)
+                return torch.cat([(chunk.unflatten(-1,(NUM_GOAL_FRAMES,w))*valid[:,:,None]).flatten(1)
+                                  for chunk,w in zip(chunks,widths)],-1)
+            wm = mask(wm,(48,3,6))
+            actor = mask(actor,(48,6))
         if self.base_schema in (PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL, APPROACH_LEG_WHEEL):
             # Keep the 540 trained columns in place. WM columns 480:510 are
             # ten reference-root positions expressed in the current root frame.
@@ -329,7 +333,8 @@ def load_policy(checkpoint, episode_paths, device):
     model = make_model()
     rep = RobotRepresentation(model,device)
     cfg = dict(weights['cfg'])
-    bank = DoorMotions(episode_paths,rep,device,actor_schema=actor_goal_schema(cfg))
+    bank = DoorMotions(episode_paths,rep,device,actor_schema=actor_goal_schema(cfg),
+                       reference_tail=cfg.get("reference_tail", "zero"))
     if 'actor_parameterization' in weights:
         cfg['actor_parameterization'] = weights['actor_parameterization']
     actor, _ = build_actor(rep,cfg,model,device)

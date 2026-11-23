@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import time
 
 os.environ.setdefault('TORCH_COMPILE_DISABLE','1')
 import numpy as np
@@ -39,6 +40,8 @@ def add_grip_windows(run, directory):
 
 
 def main():
+    process_start = time.monotonic()
+    started_unix = time.time()
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config',type=Path,default=Path('config/b0/contact_servo_cloud.yaml'))
     parser.add_argument('--run',required=True,help='Fresh result directory name')
@@ -88,13 +91,22 @@ def main():
                   max_step_reward=run.policy.wm_env.max_step_reward,max_critic_value=run.policy._v_max,
                   validation_excluded=True,cohort_truncation=cfg['cohort_steps'],requested_endpoint=args.updates)
     metadata['actor_class'] = type(run.actor).__name__
+    metadata['started_unix'] = started_unix
     metadata['policy_learner'] = type(run.policy).__name__
     metadata['wm_horizons'] = list(run.learners)
+    if run.sampler is not None:
+        metadata['return_sampling'] = dict(config=vars(run.sampler.cfg), frames=run.sampler.frame_count,
+                  global_bins=run.sampler.bin_count, eligible_by_motion=[len(x) for x in run.eligible],
+                  reset_support="fixed mjlab bin->frame distribution conditioned on eligible physical prefixes")
+    if run.schedule is not None:
+        metadata['ratio_schedule'] = dict(ratio=cfg['replay_ratio'], wm_stored_positions=run.schedule.positions,
+                  clock="complete replay-eligible 20ms lane intervals; updates grouped after each physical cohort")
     if grip_data is not None:
         metadata['supplemental_wm_data'] = grip_data
     metadata['execution_source_sha256'] = {
         str(path): hashlib.sha256(path.read_bytes()).hexdigest() for path in
-        [Path(__file__).resolve().relative_to(Path.cwd()), *sorted(Path('learning/b0').glob('contact*.py')), args.config]
+        [Path(__file__).resolve().relative_to(Path.cwd()), Path('learning/b0/model.py'),
+         *sorted(Path('learning/b0').glob('contact*.py')), args.config]
     }
     if 'peak_force_checkpoint' in cfg:
         metadata['peak_force_checkpoint_sha256'] = hashlib.sha256(Path(cfg['peak_force_checkpoint']).read_bytes()).hexdigest()
@@ -106,6 +118,10 @@ def main():
         state.update(optimizers=[o.state_dict() for o in run.optimizer_list()],
                      replay=list(run.replay.chunks),simulated=run.simulated,
                      cpu_rng=torch.get_rng_state(),gpu_rng=torch.cuda.get_rng_state(),numpy_rng=np.random.get_state())
+        if run.schedule is not None:
+            state['ratio_state'] = run.schedule.state_dict()
+        if run.sampler is not None:
+            state['return_sampler_state'] = run.sampler.state_dict()
         tmp=out/'cohort_state.pt.tmp'
         torch.save(state,tmp)
         tmp.replace(out/'cohort_state.pt')
@@ -120,6 +136,10 @@ def main():
             o.load_state_dict(s)
         run.replay.chunks.extend(state['replay'])
         run.total,run.simulated=state['collected'],state['simulated']
+        if run.schedule is not None:
+            run.schedule.load_state_dict(state['ratio_state'])
+        if run.sampler is not None:
+            run.sampler.load_state_dict(state['return_sampler_state'])
         torch.set_rng_state(state['cpu_rng'].cpu())
         torch.cuda.set_rng_state(state['gpu_rng'].cpu())
         np.random.set_state(state['numpy_rng'])
@@ -132,9 +152,22 @@ def main():
     try:
         with (out/'updates.jsonl').open('x',buffering=1) as log:
             for count in range(start+1,args.updates+1):
-                data=run.collect(raw/f'cohort_{count:06}' if count in (start+1,50,200,1000) else None)
+                if run.schedule is None:
+                    data=run.collect(raw/f'cohort_{count:06}' if count in (start+1,50,200,1000) else None)
+                else:
+                    before_valid, before_simulated = run.total, run.simulated
+                    while not run.schedule.pending:
+                        cohort = run.schedule.cohorts + 1
+                        sampled = run.collect(raw/f'cohort_{cohort:06}' if cohort in (1,50,200,1000) else None)
+                        with (out/'cohorts.jsonl').open('a') as collected:
+                            collected.write(json.dumps(dict(cohort=cohort, due=run.schedule.pending, **sampled))+'\n')
+                    data = dict(valid_transitions=run.total-before_valid, cumulative_valid_transitions=run.total,
+                                simulated_lane_intervals=run.simulated-before_simulated, cohort=run.schedule.cohorts)
                 update=run.update()
-                row=dict(update=count,**data,**update)
+                if run.schedule is not None:
+                    run.schedule.pending -= 1
+                    data['remaining_updates_on_cohort'] = run.schedule.pending
+                row=dict(update=count,process_elapsed_s=time.monotonic()-process_start,**data,**update)
                 log.write(json.dumps(row,allow_nan=False)+'\n')
                 last=count
                 if count in cfg['diagnostic_updates'] or count%1000==0 or count==args.updates:
@@ -147,7 +180,8 @@ def main():
         raise
     (out/'outcome.json').write_text(json.dumps(dict(actor_updates=last,wm_minibatches=last*10,
                     critic_minibatches=last*20,valid_online_transitions=run.total,
-                    simulated_lane_intervals=run.simulated),indent=2)+'\n')
+                    simulated_lane_intervals=run.simulated,elapsed_process_s=time.monotonic()-process_start,
+                    started_unix=started_unix,finished_unix=time.time()),indent=2)+'\n')
 
 
 if __name__=='__main__':

@@ -887,3 +887,12 @@ f0812006 已普通推送并通过 GitHub main 回读。原生 3.3 的同包完�
 ### 复核与发布
 
 三个独立子任务交叉复核新基线数字/manifest、源码计划和论文口径；修正了最初计划把论文1s分箱写成固定源码默认的问题，补首步previous哨兵与不足20ms末段计分说明。仅对本次文档/JSON做相对链接、计数/字段一致、语法和git diff检查，不新增形式化测试套件、不跑训练。推送前核对远端HEAD，普通提交仅含本次明确文档和小结果，回读远端并逐文件核对；本节点文档自身提交号随发布在聊天交付，不预填未生成SHA，后续日志可补记。
+
+## 2026-11-23 23:47–23:56 北京时间｜标准 B0 实施与同源配对
+
+GitHub main 与新检出均为 `95159f77745d754b41ca135c726e2f2ba55c907e`。相对 `638fddc` 的 17 个变更文件为协议、审查、状态和小型结果清单。第二平台旧标准工作树在 a28f765，AutoDL 旧标准目录在 5e6db44，均有未提交结果或源码。AutoDL 的旧 B0 tmux pane 已退出。使用独立 `/root/autodl-tmp/dog-and-arm-b0-pair-v1`，复用项目环境、模型、参考、动作数据和两份标准锚点。实查 RTX PRO 6000 Blackwell、25 核 CPU 配额，首次盘点可用显存 91,655 MiB、数据盘可用 203 GiB。固定 vendor 两库分别为 abc124c 和 dd51a9f。
+
+- `bash scripts/b0/env.sh python scripts/b0/measure_action_rate_units.py --cohort results/raw_large/b0/standard_s0_gain32_r1/cohort_000001 --source-config results/b0/standard_s0_gain32_r1/actual_config.json --output results/b0/pair_units_v1/measured.json`。原训练标记有效 1,725 行，扣去在 20 ms 结束前已经触发物理失败的行，合法后继 1,640。相同状态/参考/命令下，六正项和限位均相同。canonical / fixed effort 的平均动作率项 −0.0002441 / −0.6080893，Piper J2 同位移罚比 3947.84155，动作率对 canonical 动作的平均 L2 梯度 0.0004624 / 1.113626。针对实际批次将分项之和与固定上游函数比对，最大绝对差 1.91e−6。基础 effort 的前动作 reset 哨兵 L2=0，而有效的全零 canonical 命令 L2=33.3881。
+- 两条新命令均为 `bash scripts/b0/env.sh python -u scripts/b0/train_contact.py --config config/b0/pair_<canonical|effort>.yaml --run pair_<canonical|effort>_s0_v1 --updates 50`。独立持久进程、相同 seed0/gain32/物理探索幅度，128×40 采集、batch 256；官方 H32、10 WM/20 Critic 每轮。两条 u0 逐张量比较，Actor 68、含统计的 Dynamics 24、Critic 10 张量全部完全相同。运行时数据由策略产生，u1 后允许轨迹分化。新旧结果均保留。
+- u0 两条都实测 0/10。相同初始权重在 Warp 双测的前拉 release_retreat 有 500 / 504 子步数值差异，解释后续小差异时保留该现象。独立采集/评分与正式接触训练分开，训练、回报和验证大数组均在同一项目的新现场目录。
+- 在 1,636 个真实非终止训练区间测量当前合法 J4 目标。u0 归一化绝对值最大 182.205，而 32 维 motion latent 中绝对值达到 0.99 的比例是 0；u10 两条该比例均低于 0.12%。这些观测支持保留 encoder 架构。

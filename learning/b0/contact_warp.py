@@ -125,7 +125,8 @@ class ContactPlant(ResearchPlant):
                 data.cvel, base._force, self.cfg['contact_threshold_n'], self.metrics_wp])
         current.wait_stream(base._torch_stream)
 
-    def step_contact(self, actions, side_bits, phase_ids, record=False, measure_peak_force=False):
+    def step_contact(self, actions, side_bits, phase_ids, record=False, measure_peak_force=False,
+                     capture_first_failure_state=False):
         if actions.shape != (self.count, 23):
             raise ValueError('Expected one clipped action per world with 23 channels')
         if side_bits.shape != (self.count,) or phase_ids.shape not in ((self.count,), (self.count, 10)):
@@ -140,6 +141,10 @@ class ContactPlant(ResearchPlant):
         target = (actions * self.scale + self.offset) * self.finger_factor
         first = torch.zeros(self.count, device=self.device, dtype=torch.int32)
         peak_force = torch.zeros(self.count, device=self.device) if measure_peak_force else None
+        if capture_first_failure_state:
+            stop_q = torch.zeros_like(self.data.qpos[:])
+            stop_v = torch.zeros_like(self.data.qvel[:])
+            stop_valid = torch.zeros_like(finite)
         reason = torch.zeros_like(first)
         overflow = torch.zeros_like(first)
         rod_id = self.rod_ids[side_bits.long()]
@@ -186,6 +191,11 @@ class ContactPlant(ResearchPlant):
                 hit = (first == 0) & failed
                 reason = torch.where(hit, code, reason)
                 first = torch.where(hit, substep+1, first)
+            if capture_first_failure_state:
+                stopped = first == substep + 1
+                stop_q = torch.where(stopped[:, None], data.qpos[:], stop_q)
+                stop_v = torch.where(stopped[:, None], data.qvel[:], stop_v)
+                stop_valid |= stopped & finite
             if measure_peak_force:
                 peak_force = torch.maximum(peak_force, force_norm)
             if record:
@@ -198,6 +208,8 @@ class ContactPlant(ResearchPlant):
                     records.setdefault(key, []).append(value.clone())
         result = dict(first_fail_substep=first, reason=reason, overflow=overflow,
                       valid_full_interval=finite, physics_steps=torch.full_like(first,10))
+        if capture_first_failure_state:
+            result.update(stop_qpos=stop_q, stop_qvel=stop_v, stop_valid=stop_valid)
         if measure_peak_force:
             result['peak_force_n'] = peak_force
         if record:

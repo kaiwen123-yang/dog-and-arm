@@ -172,8 +172,10 @@ class ContactRun:
         self.seven_batches = 8 - self.h32_teacher_batches
         rep_type = ContactTcpLoss if self.h32_teacher_batches else ContactRepresentation
         self.rep = rep = rep_type(model,device)
+        rep.reward_coordinates = cfg.get('action_rate_coordinates', 'canonical')
         self.robot = RobotRepresentation(model,device)
-        self.bank = bank = DoorMotions(refs,rep,device,actor_schema=actor_goal_schema(cfg))
+        self.bank = bank = DoorMotions(refs,rep,device,actor_schema=actor_goal_schema(cfg),
+                                      reference_tail=cfg.get("reference_tail", "zero"))
         self.actor, task = build_actor(rep,cfg,model,device)
         # Keep the original physical exploration magnitude when a calibrated
         # arm/jaw decoder uses a larger unit to represent nominal poses.
@@ -264,6 +266,19 @@ class ContactRun:
         self.eligible=eligible
         self.actions=torch.cat(actions)
         self.total=self.simulated=0
+        self.sampler = None
+        if cfg.get("contact_reset_sampling") == "official_return":
+            from .contact_sampling import EligibleReturnSampler, SamplerReference
+            self.sampler = EligibleReturnSampler(bank, eligible, self.n, cfg["policy_dt"], env.max_step_reward, device)
+            self.sampler_reference = SamplerReference(refs, bank, device)
+        elif cfg.get("contact_reset_sampling", "uniform_motion") != "uniform_motion":
+            raise ValueError("Unknown contact_reset_sampling")
+        self.schedule = None
+        if cfg.get("contact_update_schedule") == "official_ratio_valid":
+            from .contact_sampling import ContactUpdateSchedule
+            self.schedule = ContactUpdateSchedule(self)
+        elif cfg.get("contact_update_schedule", "one_per_cohort") != "one_per_cohort":
+            raise ValueError("Unknown contact_update_schedule")
 
     def sense(self,q,v,prev):
         return sensor(self.robot,full_state(q,v),prev)
@@ -274,9 +289,12 @@ class ContactRun:
     @torch.no_grad()
     def collect(self,raw_path=None,*,training=True):
         bank,plant=self.bank,self.plant
-        frames=torch.cat([x[torch.randint(len(x),((self.n+j)//len(self.eligible),),device=self.device)]
-                          for j,x in enumerate(self.eligible)])
-        frames=frames[torch.randperm(len(frames),device=self.device)]
+        if training and self.sampler is not None:
+            frames = self.sampler.sample(self.n)
+        else:
+            frames=torch.cat([x[torch.randint(len(x),((self.n+j)//len(self.eligible),),device=self.device)]
+                              for j,x in enumerate(self.eligible)])
+            frames=frames[torch.randperm(len(frames),device=self.device)]
         start=frames.clone()
         side=self.sides[frames]
         ctx=self.ctx[side]
@@ -291,6 +309,8 @@ class ContactRun:
         hist=torch.stack(hist[1:]+[self.sense(plant.data.qpos[:],plant.data.qvel[:],prev)],1)
         noisy=self.robot.add_proprio_noise(hist)
         rows,records=[],[]
+        sampler_rows = []
+        sample_returns = training and self.sampler is not None
         self.actor.eval()
         failures=torch.zeros(self.n,device=self.device,dtype=torch.long)
         prefixes_invalid=int((~alive).sum())
@@ -303,7 +323,7 @@ class ContactRun:
             action=raw.clamp(-1,1)
             force_reward = self.policy.wm_env.force_head is not None
             evidence=plant.step_contact(action,side,self.phases[frames],record=raw_path is not None,
-                                        measure_peak_force=force_reward)
+                                        measure_peak_force=force_reward,capture_first_failure_state=sample_returns)
             q1,v1=plant.data.qpos[:].clone(),plant.data.qvel[:].clone()
             ns=contact_state(q1,v1)
             valid=alive & evidence['valid_full_interval']
@@ -315,6 +335,13 @@ class ContactRun:
             rr=self.rep.represent(ns)
             reward=self.rep.compute_wm_reward_from_reference(rr,ns[:,:7],self.rep.joint_state(rr),
                                        action,prev,*bank.body_state(frames+1))
+            if sample_returns:
+                measured = alive & (evidence['valid_full_interval'] | evidence['stop_valid'])
+                actual_reward = self.sampler_reference.rewards(
+                    self.rep, reward, frames, measured, evidence['first_fail_substep'],
+                    evidence['stop_qpos'], evidence['stop_qvel'], action, prev)
+                sampler_rows.append(dict(motion_time=frames, valid=measured, terminated=terminal,
+                                         reward=actual_reward))
             reward=self.policy.wm_env.contact_reward(reward, rr, frames+1, ctx)
             if force_reward:
                 reward = self.policy.wm_env.force_adjusted_reward(reward, evidence['peak_force_n'], frames)
@@ -341,7 +368,7 @@ class ContactRun:
             for n in records[0]:
                 np.save(raw_path/(n+'.npy'),np.stack([r[n] for r in records]))
         valid_count=sum(int(r['valid'].sum()) for r in rows)
-        if training and valid_count:
+        if training and valid_count and not self.cfg.get('freeze_wm_input_statistics', False):
             preserved = (wm_input_coordinates(self.dyn)
                          if self.cfg.get("preserve_wm_input_function") else None)
             for r in rows:
@@ -352,15 +379,22 @@ class ContactRun:
                 rebase_wm_input_layer(self.dyn, preserved)
         if training:
             self.replay.append(rows)
+            if self.sampler is not None:
+                self.sampler.record_cohort(sampler_rows)
+            if self.schedule is not None:
+                self.schedule.add_cohort(self.total, [int(r['valid'].sum()) for r in rows])
         self.total+=valid_count
         self.simulated+=self.n*len(rows)
+        counts = torch.bincount(torch.searchsorted(bank.motion_ends, start, right=True),minlength=len(self.eligible))
         return dict(valid_transitions=valid_count,cumulative_valid_transitions=self.total,
+                    starts_per_motion=counts.tolist(),
                     simulated_lane_intervals=self.n*len(rows),prefix_steps_per_lane=100,
                     prefix_invalid=prefixes_invalid,failed_lanes=int(failures.sum()),
                     start_ref_min=int(start.min()),start_ref_max=int(start.max()))
 
     def update(self):
         online_long=0
+        online_short=0
         if self.h32_teacher_batches:
             long_windows = [self.offline[32].sample(self.b) for _ in range(self.h32_teacher_batches)]
             metrics = self.learners[32].update(long_windows)
@@ -374,6 +408,8 @@ class ContactRun:
                 count=take if batch is not None else 0
                 if n==7:
                     online_long+=count
+                else:
+                    online_short+=count
                 if count<self.b:
                     remaining = self.b - count
                     grip_count = remaining // 2 if n == 7 and self.grip_windows is not None else 0
@@ -391,6 +427,13 @@ class ContactRun:
         out.update(actor_max_weight_change=float((self.actor.decoder[-1].weight.detach()-prev).abs().max()),
                    wm_frozen=all(not p.requires_grad for p in self.dyn.parameters()),
                    online_seven_step_windows=online_long,total_seven_step_windows=self.seven_batches*self.b)
+        stored = self.b * (2 * 2 + self.seven_batches * 8 + self.h32_teacher_batches * 33)
+        scored = self.b * (2 + self.seven_batches * 7 + self.h32_teacher_batches * 32)
+        out.update(wm_online_stored_positions=online_long*8 + online_short*2,
+                   wm_offline_stored_positions=stored - online_long*8 - online_short*2,
+                   wm_online_successor_targets=online_long*7 + online_short,
+                   wm_offline_successor_targets=scored - online_long*7 - online_short,
+                   imagined_policy_steps=32*self.cfg["actor_batch"])
         if self.h32_teacher_batches:
             out['teacher_thirtytwo_step_windows'] = self.h32_teacher_batches*self.b
         if not all(np.isfinite(x) for x in out.values()):
