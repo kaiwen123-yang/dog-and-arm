@@ -37,3 +37,12 @@ A2–A4 的新增扰动标签降低了动作拟合误差，三组的前拉与背
 标准 546 维策略的 6 个附加量来自给定参考臂雅可比和当前根平移。在 886 条真实配对教师标签上拟合一个系数，冻结原骨干。在原始 native3.3、CPU3.16、Warp3.16，监督 u0 和真实 H32-u1 均已用同一个各自编号的检查点通过三端双侧名义。u1 的三端数据、整包来源、梯度与单因素价值对照见[H32 实测报告](B0_H32_RECOVERY_20261123.md)。u0 在原生 3.3 的完整开发仍仅前拉 9/20、背推 9/20。[原生 u0 逐案](../results/b0/recovery_c_integrated_native33_full_c_r1/cases.csv)
 
 站位反馈另行按 12 个注册训练身份选择一个标量增益。监督样本的驶近时钟与公共参考不同；这项拟合直接在 Warp 上比较真实物理站位误差。取固定 settle 最后 600 ms 的最大 XY 误差小于 10 mm、最大航向误差小于 1°，且无采集硬失败。原 Actor 在 12 个训练起点和 4 个独立验证起点分别过 3、0 个；选定增益 4/s 后分别过 12、4 个。该表是到站位的局部诊断。[预登记](../results/b0/recovery_planar_calibration_r1/registration.json) · [所有实测起点](../results/b0/recovery_planar_calibration_r1/stations.json)
+
+### tmux 交接时已经完成的同包对照
+
+| 完整 C，未经修改的原生 MuJoCo 3.3 | 前拉 | 背推 |
+| --- | ---: | ---: |
+| 站位补偿监督 u0 | 9/20 | 9/20 |
+| 同包起点，真实 H32 更新一次 | 9/20 | 10/20 |
+
+u1 背推新增通过 C08（初始门角 2°）。这是在一个固定 seed 和开发条件上直接测得的差异。全套 Warp C 仍在跑，逐案计数与恢复命令见 [tmux 工作清单](../results/b0/recovery_tmux_20261123/jobs.json)。[原生 u1 原表](../results/b0/recovery_b_stance_u1_native_full_c_r1/cases.csv)

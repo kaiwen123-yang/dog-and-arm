@@ -1,5 +1,15 @@
 # 项目状态
 
+## 2026-11-23 北京时间 20:45｜B0 已交给 tmux
+
+第二开发平台管理 AutoDL 的 b0-recovery-20261123。Windows 执行以下命令可直接接入。按 Ctrl-b，再按 d 可分离会话。
+
+    ssh -t dev2-ubuntu-lan "ssh -t autodl-dog-arm tmux attach -t b0-recovery-20261123"
+
+第二平台回收窗口使用 `ssh -t dev2-ubuntu-lan tmux attach -t b0-receive-20261123`。云端独立树 /root/autodl-tmp/dog-and-arm-b0-recovery，实时状态 results/raw_large/b0/recovery_tmux_20261123/status.json。8项登记及交接快照见 results/b0/recovery_tmux_20261123；终态日志与单案例原始结果在各自run。GitHub只在普通推送回读后算交付。
+
+546维同一真实H32-u1已在native3.3、CPU3.16、Warp3.16名义前拉/背推全部通过。原生完整C，监督u0为9/20、9/20；H32-u1为9/20、10/20（新增背推C08）。Warp完整C尚在进行。当前已知失败数足以排除这一候选通过双侧18/20。十项局部监督历史成绩仍属于原监督包，独立seed和H保留。运行中的下一份逐案结果由已登记进程生成，不重复启动同名回归。
+
 更新日期：2026-11-23（Asia/Shanghai）。
 
 ## 接续执行（2026-11-23，北京时间）

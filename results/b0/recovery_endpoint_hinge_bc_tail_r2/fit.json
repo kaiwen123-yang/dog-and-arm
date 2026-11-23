@@ -1,0 +1,78 @@
+{
+  "nominal_pull": {
+    "frames": 3786,
+    "conditioned_frames": 0,
+    "max_abs_added_rad_m": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "nominal_push": {
+    "frames": 2802,
+    "conditioned_frames": 0,
+    "max_abs_added_rad_m": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "perturbed_push": {
+    "frames": 2802,
+    "conditioned_frames": 831,
+    "max_abs_added_rad_m": [
+      0.01680513842970097,
+      0.1587267085499815,
+      0.2962179619329136,
+      0.14672957399973624,
+      0.047763910406783745,
+      0.19615205819083725,
+      0.05481542615769393
+    ],
+    "active_rms_before_rad_m": [
+      0.010607245444132258,
+      0.10495268922004979,
+      0.15846282676441406,
+      0.06678827442690598,
+      0.02256651264440719,
+      0.08989038698036984,
+      0.009806642860342567
+    ],
+    "active_rms_after_rad_m": [
+      0.0001393584690523396,
+      0.0007912870292110484,
+      0.001377751886913362,
+      0.0006510917385976695,
+      0.0002946867295139327,
+      0.0007913011408052885,
+      8.343817098534067e-05
+    ]
+  },
+  "design": {
+    "anchor": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+    "teacher": "results/raw_large/b0/recovery_endpoint_release_teacher_r2/endpoint_aug_push_06_train_door",
+    "frozen_reference": "results/raw_large/b0/full_warp_hold_park_r1",
+    "seed": 0,
+    "schema": "original 540 reference features + measured or predicted hinge minus frozen hinge, push grasp, push open, progress through named reference phase",
+    "nominal_guard": "both nominal trajectories included; zero residual for error <= 0.2 deg, ramp 0.2\u20130.4 deg; negative errors outside single positive training support remain inactive",
+    "labels": "all full 20ms supervised teacher intervals with a frozen judge pass; includes legal early hold on the frozen open clock",
+    "fit": "one full-batch physical-unit smooth ridge solve. 25 linear spline knots per reference phase; second-difference penalty .06 plus .002 ridge",
+    "channels": "six arm angles in rad with response linear in measured hinge error; jaw width in m with a saturated gain. No leg/wheel changes",
+    "nonlinear_scaling": "arm scaling capped at 2 x 2.8deg; jaw reaches full delayed-close command from 1deg, then saturates",
+    "source_reference_bc_updates": 3000,
+    "new_actor_parameters": 350,
+    "new_solve_count": 1,
+    "wm_updates": 0,
+    "h32_updates": 0,
+    "clock": "one common nominal library per side; no perturbed or C-specific reference; zero pull residual",
+    "terminal_feedback": true
+  }
+}

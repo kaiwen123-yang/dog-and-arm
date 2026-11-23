@@ -73,3 +73,11 @@ PCG64 种子 231123 预先确定每侧六个训练回合与两个验证回合，
 - **真实与预测输入**。另在 4 个真实 Warp world 中采集，32 个 lane 区间包含 26 个有效转移。以实测校时轨迹的第 808 个政策帧启动固定 WM 和官方 `DoorImagination`，连续 32 步全部核对输入中的门角差等于预测门角减冻结参考角。即时回报对首动作和新增系数的梯度 L2 为 0.02438、0.01798。首次诊断将单行起点送进按四行分配的想象环境，触发张量尺寸异常；修正想象环境为单行后重新完成。该项无 WM、Actor 或 Critic 更新。
 
 训练命令为 `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 bash scripts/b0/env.sh python -m scripts.b0.fit_endpoint_policy`。拟合与前向通路数据位于 `results/b0/recovery_endpoint_hinge_bc_r1`，两侧物理评分位于 `recovery_endpoint_hinge_{pull,push}_warp_r1`。完整 checkpoint 和实际闭环数组在 AutoDL 的专用 recovery 树。该策略的接触进展来自教师监督和固定时钟的状态反馈；没有把它计为 H32 学习收益。
+
+### 终点反馈配对与两个新训练角
+
+C08 原门角反馈在开门末段跟随实际门角一起回落。单列 `recovery_endpoint_hinge_bc_tail_r2`，仍用同一监督数据和同一解法，只在背推 open 末段逐渐将反馈目标转向冻结名义参考 hold 的平衡角。新增第 545 维只由给定参考计算，当前实际/预测门角继续决定是否启用修正。AutoDL 已完成 `bash scripts/b0/env.sh python -m scripts.b0.fit_endpoint_policy --terminal-feedback`。真实 Warp 评分分别运行背推 C08 与双侧名义，入口为 `scripts.b0.endpoint_targeted_rollout`，结果目录 `results/b0/recovery_endpoint_hinge_tail_warp_r2`。北京时间 20:40 核查时三案正在积分，尚无逐案评分记录。
+
+为检验高门角的失败是否仅来自学习器的外推，在原 A0–A3 以外另预登记一次训练抽样。PCG64 种子 2026112305 在 [4°, 4.8°) 的首抽为背推 +4.09980082°。第二平台 Warp 按与 +2.8068° 成功样本相同的固定端点、最早释放时钟与原阈值实采。首次指定把手接触出现在 approach_arm 第 7,297 个零基物理区间；该区间一侧指定夹指的法向载荷 0.631 N、另一侧为零。进入 grasp 时门角已达 4.343°；第 7,990 个区间实测门合力峰值 36.021 N，仅一侧夹指承载，门角 14.638°。完整冻结裁判在第 10,022 步抓持超时，此时门角 109.987°，TCP 距把手 679 mm。这说明该角度下现有教师进手路径也无法形成合法正例。保留真实终止后继，没有将其用作第二个成功监督样本。登记与结果为 `config/b0/recovery_endpoint_upper_angle.json`、`results/b0/recovery_endpoint_upper_r1`。
+
+独立前拉小角训练抽样使用不同种子 2026112306，在 [1°, 2.6°) 首抽为 +2.25573988°，登记在 `config/b0/recovery_endpoint_lower_pull.json`。第二平台已启动 `bash scripts/b0/env.sh python -m scripts.b0.recovery_upper_door_teacher --pull-low`。20:41 复核，P6 教师和固定完整裁判均已通过。冻结裁判实计 37365 步，13 个阶段连续完成，末角 60.05627°，两次停车均为 1,500 步。该实测回合有 3786 条真实完整 20 ms 转移，3723 条满足固定同相位正监督掩码。所有新教师任务与策略计分分开；该身份未用于前述拟合。

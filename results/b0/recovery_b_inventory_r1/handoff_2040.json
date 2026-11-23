@@ -1,0 +1,177 @@
+{
+  "observed": "2026-11-23T20:41:22.368044+08:00",
+  "working_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery",
+  "jobs": [
+    {
+      "run": "recovery_b_tracking_u1_full_c_r1",
+      "pid": 128504,
+      "live": true,
+      "stdout": "/tmp/dog_b_u1_dev.log",
+      "stdin": "/dev/null",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "scripts.b0.eval_contact_segments",
+        "--checkpoint",
+        "results/b0/recovery_b_tracking_u1_r1/checkpoint_000001.pt",
+        "--references",
+        "results/raw_large/b0/full_warp_hold_park_r1",
+        "--full-task",
+        "--side",
+        "pull",
+        "push",
+        "--backend",
+        "warp",
+        "--device",
+        "cuda",
+        "--run",
+        "recovery_b_tracking_u1_full_c_r1",
+        "--dev",
+        "--dev-workers",
+        "6"
+      ],
+      "stats": {
+        "pull": {
+          "done": 20,
+          "passed": 9
+        },
+        "push": {
+          "done": 15,
+          "passed": 6
+        }
+      },
+      "complete": false,
+      "resume_if_exited_before_complete": "bash scripts/b0/env.sh python -u -m scripts.b0.eval_contact_segments --checkpoint results/b0/recovery_b_tracking_u1_r1/checkpoint_000001.pt --references results/raw_large/b0/full_warp_hold_park_r1 --full-task --side pull push --backend warp --device cuda --run recovery_b_tracking_u1_full_c_r1 --dev --dev-workers 6 --resume"
+    },
+    {
+      "run": "recovery_b_stance_u1_full_c_r1",
+      "pid": 155864,
+      "live": true,
+      "stdout": "/tmp/dog_b_stance_u1_dev.log",
+      "stdin": "/dev/null",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "scripts.b0.eval_contact_segments",
+        "--checkpoint",
+        "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+        "--references",
+        "results/raw_large/b0/full_warp_hold_park_r1",
+        "--full-task",
+        "--side",
+        "pull",
+        "push",
+        "--backend",
+        "warp",
+        "--device",
+        "cuda",
+        "--run",
+        "recovery_b_stance_u1_full_c_r1",
+        "--dev",
+        "--dev-workers",
+        "4",
+        "--extend-from",
+        "results/b0/recovery_b_stance_u1_nominal_r1"
+      ],
+      "stats": {
+        "pull": {
+          "done": 12,
+          "passed": 4
+        },
+        "push": {
+          "done": 0,
+          "passed": 0
+        }
+      },
+      "complete": false,
+      "resume_if_exited_before_complete": "bash scripts/b0/env.sh python -u -m scripts.b0.eval_contact_segments --checkpoint results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt --references results/raw_large/b0/full_warp_hold_park_r1 --full-task --side pull push --backend warp --device cuda --run recovery_b_stance_u1_full_c_r1 --dev --dev-workers 4 --extend-from results/b0/recovery_b_stance_u1_nominal_r1 --resume"
+    },
+    {
+      "run": "recovery_b_stance_u5_nominal_r1",
+      "pid": 159214,
+      "live": true,
+      "stdout": "/tmp/dog_b_stance_u5_nominal.log",
+      "stdin": "/dev/null",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "scripts.b0.eval_contact_segments",
+        "--checkpoint",
+        "results/b0/recovery_b_stance_u5_r1/checkpoint_000005.pt",
+        "--references",
+        "results/raw_large/b0/full_warp_hold_park_r1",
+        "--backend",
+        "warp",
+        "--device",
+        "cuda",
+        "--full-task",
+        "--side",
+        "pull",
+        "push",
+        "--run",
+        "recovery_b_stance_u5_nominal_r1",
+        "--video"
+      ],
+      "stats": {
+        "pull": {
+          "done": 1,
+          "passed": 0
+        },
+        "push": {
+          "done": 0,
+          "passed": 0
+        }
+      },
+      "complete": false,
+      "resume_if_exited_before_complete": "bash scripts/b0/env.sh python -u -m scripts.b0.eval_contact_segments --checkpoint results/b0/recovery_b_stance_u5_r1/checkpoint_000005.pt --references results/raw_large/b0/full_warp_hold_park_r1 --backend warp --device cuda --full-task --side pull push --run recovery_b_stance_u5_nominal_r1 --video --resume"
+    },
+    {
+      "run": "recovery_b_phase_td_u10_nominal_r1",
+      "pid": 164413,
+      "live": true,
+      "stdout": "/tmp/dog_b_phase_u10_nominal.log",
+      "stdin": "/dev/null",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "scripts.b0.eval_contact_segments",
+        "--checkpoint",
+        "results/b0/recovery_b_phase_td_u10_r1/checkpoint_000010.pt",
+        "--references",
+        "results/raw_large/b0/full_warp_hold_park_r1",
+        "--backend",
+        "warp",
+        "--device",
+        "cuda",
+        "--full-task",
+        "--side",
+        "pull",
+        "push",
+        "--run",
+        "recovery_b_phase_td_u10_nominal_r1",
+        "--video"
+      ],
+      "stats": {
+        "pull": {
+          "done": 0,
+          "passed": 0
+        },
+        "push": {
+          "done": 0,
+          "passed": 0
+        }
+      },
+      "complete": false,
+      "resume_if_exited_before_complete": "bash scripts/b0/env.sh python -u -m scripts.b0.eval_contact_segments --checkpoint results/b0/recovery_b_phase_td_u10_r1/checkpoint_000010.pt --references results/raw_large/b0/full_warp_hold_park_r1 --backend warp --device cuda --full-task --side pull push --run recovery_b_phase_td_u10_nominal_r1 --video --resume"
+    }
+  ],
+  "completed_packages": [
+    "results/b0/recovery_b_phase_td_u10_r1",
+    "results/b0/recovery_b_stance_u5_r1"
+  ],
+  "check": "Wait on the existing processes. Read evaluation.json before deciding to resume. Keep checkpoint, reference, backend, case list, video, worker and extend-from arguments identical."
+}
