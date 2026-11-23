@@ -12,7 +12,7 @@ from supermimic.learners.policy_learner import ActorCriticPolicyLearner, ActorCr
 from supermimic.learners.wm_learner import WorldModelLearner
 
 from .contact_model import ContactRepresentation, ContactTcpLoss, ContactWorldModelCfg, contact_context, contact_state
-from .contact_policy import DoorMotions, build_actor, sensor
+from .contact_policy import DoorMotions, actor_goal_schema, build_actor, sensor
 from .contact_replay import ContactEpisode, ContactWindows
 from .model import RobotRepresentation, full_state, tensor
 from .physics import ActionMap, make_model
@@ -143,7 +143,7 @@ class ContactRun:
         rep_type = ContactTcpLoss if self.h32_teacher_batches else ContactRepresentation
         self.rep = rep = rep_type(model,device)
         self.robot = RobotRepresentation(model,device)
-        self.bank = bank = DoorMotions(refs,rep,device)
+        self.bank = bank = DoorMotions(refs,rep,device,actor_schema=actor_goal_schema(cfg))
         self.actor, task = build_actor(rep,cfg,model,device)
         # Keep the original physical exploration magnitude when a calibrated
         # arm/jaw decoder uses a larger unit to represent nominal poses.

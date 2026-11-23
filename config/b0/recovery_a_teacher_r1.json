@@ -1,0 +1,234 @@
+{
+  "seed": 231123,
+  "generator": "numpy default_rng PCG64; independent uniform continuous draws per side and family",
+  "ranges": {
+    "dx_m": [
+      -0.045,
+      0.045
+    ],
+    "dy_m": [
+      -0.045,
+      0.045
+    ],
+    "yaw_deg": [
+      -4.8,
+      4.8
+    ],
+    "door_deg": [
+      0.3,
+      4.8
+    ]
+  },
+  "selection": "all 16 draws retained; no performance filtering or replacement; finite in-range root and hinge starts",
+  "reference": "results/raw_large/b0/full_warp_hold_park_r1",
+  "clock": "simulation frame k = frozen same-side reference frame k from 0; no retiming",
+  "teacher": "P6 closed loop, one clamped physical target for ten 2 ms steps; measure all 13 phases and both parking windows",
+  "intervention": "only named hold-opening pulses; resume teacher after pulse if physical judgement still alive; failed intervals retained",
+  "split": "entire independent physical episode; validation never used for supervised fitting",
+  "cases": [
+    {
+      "episode_id": "aug_pull_01_train_xy",
+      "side": "pull",
+      "goal": 60,
+      "split": "train",
+      "family": "xy",
+      "perturbation": {
+        "dx": -0.03270660600634675,
+        "dy": 0.002182974562636046
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_push_01_train_xy",
+      "side": "push",
+      "goal": 25,
+      "split": "train",
+      "family": "xy",
+      "perturbation": {
+        "dx": 0.008665198681358378,
+        "dy": 0.04181643819508296
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_pull_02_train_combined",
+      "side": "pull",
+      "goal": 60,
+      "split": "train",
+      "family": "combined",
+      "perturbation": {
+        "dx": -0.04495067351224072,
+        "dy": -0.04313658979409001,
+        "yaw": -4.174175223712256,
+        "door": 4.117227980765359
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_push_02_train_combined",
+      "side": "push",
+      "goal": 25,
+      "split": "train",
+      "family": "combined",
+      "perturbation": {
+        "dx": -0.03882022498951672,
+        "dy": -0.01954816116698895,
+        "yaw": 0.5804695806558282,
+        "door": 4.6138824173315
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_pull_03_validation_combined",
+      "side": "pull",
+      "goal": 60,
+      "split": "validation",
+      "family": "combined",
+      "perturbation": {
+        "dx": -0.038250137467887295,
+        "dy": 0.040777060384026134,
+        "yaw": -4.719148580687104,
+        "door": 3.098645002778024
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_push_03_validation_combined",
+      "side": "push",
+      "goal": 25,
+      "split": "validation",
+      "family": "combined",
+      "perturbation": {
+        "dx": 0.005191324650135956,
+        "dy": -0.007661169174158239,
+        "yaw": -3.1255242016295663,
+        "door": 1.1689966203160194
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_pull_04_train_xy",
+      "side": "pull",
+      "goal": 60,
+      "split": "train",
+      "family": "xy",
+      "perturbation": {
+        "dx": 0.039439341965740615,
+        "dy": -0.01882619974549957
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_push_04_train_xy",
+      "side": "push",
+      "goal": 25,
+      "split": "train",
+      "family": "xy",
+      "perturbation": {
+        "dx": 0.012357748471716536,
+        "dy": -0.016573463979315896
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_pull_05_train_yaw",
+      "side": "pull",
+      "goal": 60,
+      "split": "train",
+      "family": "yaw",
+      "perturbation": {
+        "yaw": 3.8234066992927636
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_push_05_train_yaw",
+      "side": "push",
+      "goal": 25,
+      "split": "train",
+      "family": "yaw",
+      "perturbation": {
+        "yaw": -0.2257731197354511
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_pull_06_train_door",
+      "side": "pull",
+      "goal": 60,
+      "split": "train",
+      "family": "door",
+      "perturbation": {
+        "door": 3.683199783656149
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_push_06_train_door",
+      "side": "push",
+      "goal": 25,
+      "split": "train",
+      "family": "door",
+      "perturbation": {
+        "door": 2.806796448527481
+      },
+      "hold_open_policy_ticks": 0
+    },
+    {
+      "episode_id": "aug_pull_07_train_combined_recover",
+      "side": "pull",
+      "goal": 60,
+      "split": "train",
+      "family": "combined_recover",
+      "perturbation": {
+        "dx": 0.020947085323813425,
+        "dy": -0.037248948437904036,
+        "yaw": -4.743078850470934,
+        "door": 3.3886132273503056
+      },
+      "hold_open_policy_ticks": 2
+    },
+    {
+      "episode_id": "aug_push_07_train_combined_recover",
+      "side": "push",
+      "goal": 25,
+      "split": "train",
+      "family": "combined_recover",
+      "perturbation": {
+        "dx": -0.021823747631607653,
+        "dy": 0.0349691766641303,
+        "yaw": -1.4298211717749862,
+        "door": 2.0766409369075145
+      },
+      "hold_open_policy_ticks": 2
+    },
+    {
+      "episode_id": "aug_pull_08_validation_combined_drop",
+      "side": "pull",
+      "goal": 60,
+      "split": "validation",
+      "family": "combined_drop",
+      "perturbation": {
+        "dx": -0.0411387355708335,
+        "dy": -0.038761934813214244,
+        "yaw": 1.6284064208636746,
+        "door": 2.139299856114655
+      },
+      "hold_open_policy_ticks": 16
+    },
+    {
+      "episode_id": "aug_push_08_validation_combined_drop",
+      "side": "push",
+      "goal": 25,
+      "split": "validation",
+      "family": "combined_drop",
+      "perturbation": {
+        "dx": -0.028698310377177825,
+        "dy": -0.034966227175582586,
+        "yaw": 3.4160882918560658,
+        "door": 3.9406996595776924
+      },
+      "hold_open_policy_ticks": 16
+    }
+  ]
+}

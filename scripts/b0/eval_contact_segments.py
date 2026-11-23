@@ -291,8 +291,13 @@ def preserve_partial(folder, output, raw_root):
 def main(args):
     if args.dev_workers < 1 or (args.dev_workers > 1 and not (args.full_task and args.dev and args.backend == 'warp')):
         raise ValueError('Parallel development workers require a complete Warp task and --dev')
+    selected = getattr(args, 'full_cases', None)
+    if selected and (not args.full_task or not args.dev or len(selected) != len(set(selected))):
+        raise ValueError('--full-cases requires --full-task --dev and unique development IDs')
     if args.full_task:
         from p6_scene import CASES
+        if selected and any(i not in CASES for i in selected):
+            raise ValueError('Unknown full-task development case')
         if not args.side or not args.references or args.segment:
             raise ValueError('Choose a full-task side and its fixed training reference directory')
         args.manifest = ROOT/'scripts/p6_scene.py'
@@ -301,7 +306,7 @@ def main(args):
             goal = 60 if side == 'pull' else 25
             cases[side+'/full'] = dict(episode=f'{side}_{goal}_train',
                 nominal=dict(id='nominal',perturbation={'p6_case':1}),
-                accepted=[dict(id=f'C{i:02d}',perturbation={'p6_case':i}) for i in sorted(CASES)])
+                accepted=[dict(id=f'C{i:02d}',perturbation={'p6_case':i}) for i in (selected or sorted(CASES))])
         manifest = dict(cases=cases,source=str(args.references))
     else:
         manifest=json.loads(args.manifest.read_text())
@@ -318,6 +323,9 @@ def main(args):
     plan=dict(checkpoint=str(args.checkpoint), backend=args.backend, mujoco=mj.__version__,
               source=str(directory), manifest=str(args.manifest), groups=[k for k,_ in trial_groups],
               requested_dev=args.dev, video=args.video)
+    if selected:
+        plan['diagnostic_cases'] = selected
+        plan['score_selected_after_nominal_failure'] = True
     spec_path=output/'run_spec.json'
     raw_root=ROOT/'results/raw_large/b0'/args.run
     legacy=False
@@ -358,7 +366,7 @@ def main(args):
         accepted_nominals=set()
         for development in ([False,True] if args.dev else [False]):
             for key,group in trial_groups:
-                if development and key not in accepted_nominals:
+                if development and not selected and key not in accepted_nominals:
                     continue
                 side,segment=key.split('/')
                 if current_side!=side and not args.full_task:
@@ -416,6 +424,7 @@ if __name__=='__main__':
     parser.add_argument('--references',type=Path)
     parser.add_argument('--manifest',type=Path,default=ROOT/'config/b0/contact_dev_v1.json')
     parser.add_argument('--resume',action='store_true',help='Continue unfinished cases in the same run')
+    parser.add_argument('--full-cases', nargs='+', type=int, help='Explicit C IDs for a diagnostic subset, scored even after nominal failure')
     parser.add_argument('--dev-workers', type=int, default=1, help='parallel independent full-task Warp development cases after a passed nominal')
     parser.add_argument('--dev',action='store_true',help='after passing nominal, evaluate the registered twenty')
     parser.add_argument('--video',action='store_true',help='record every nominal trial from its first input to terminal state')

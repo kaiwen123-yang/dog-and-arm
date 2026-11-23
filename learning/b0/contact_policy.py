@@ -1,4 +1,5 @@
 """The B0-03 proprio actor on a ragged bank of real passive-door references."""
+from dataclasses import replace
 import json
 from pathlib import Path
 
@@ -11,9 +12,20 @@ from .model import EffortScaledActor, RobotActor, RobotRepresentation, full_stat
 from .physics import ActionMap, make_model
 
 
+PRIVILEGED_TRANSLATION = "privileged_reference_translation"
+
+
+def actor_goal_schema(cfg):
+    schema = cfg.get("actor_goal_schema", "proprio_motion")
+    if schema not in ("proprio_motion", PRIVILEGED_TRANSLATION):
+        raise ValueError(f"Unsupported actor goal schema {schema!r}")
+    return schema
+
+
 class DoorMotions:
     """One clock per episode. Partial terminal states stay in the raw record."""
-    def __init__(self, paths, rep, device):
+    def __init__(self, paths, rep, device, *, actor_schema="proprio_motion"):
+        self.actor_schema = actor_goal_schema({"actor_goal_schema": actor_schema})
         self.ids, self.starts, self.metas = {}, {}, {}
         q, v, starts, ends = [], [], [], []
         for path in map(Path, paths):
@@ -59,7 +71,13 @@ class DoorMotions:
             chunks = values.split([NUM_GOAL_FRAMES*w for w in widths],-1)
             return torch.cat([(chunk.unflatten(-1,(NUM_GOAL_FRAMES,w))*valid[:,:,None]).flatten(1)
                               for chunk,w in zip(chunks,widths)],-1)
-        return mask(wm,(48,3,6)), mask(actor,(48,6))
+        wm = mask(wm,(48,3,6))
+        actor = mask(actor,(48,6))
+        if self.actor_schema == PRIVILEGED_TRANSLATION:
+            # Keep the 540 trained columns in place. WM columns 480:510 are
+            # ten reference-root positions expressed in the current root frame.
+            actor = torch.cat((actor, wm[:, 480:510]), dim=-1)
+        return wm, actor
 
 
 REFERENCE_RESIDUAL = "motion_reference_arm_jaw_residual"
@@ -104,6 +122,9 @@ class ReferenceResidualActor(EffortScaledActor):
 
 def build_actor(rep, cfg, model, device):
     task = make_motion_task(rep,570)
+    if actor_goal_schema(cfg) == PRIVILEGED_TRANSLATION:
+        task = replace(task, goal_dim=570,
+                       extract_training_goal=lambda motion, t, aux: motion.goals(rep, t, aux)[1])
     velocity = make_velocity_task((-1.5,1.5),(-.5,.5),(-3.14,3.14),25,(.5,.5,.785),device)
     actor_type = {None:EffortScaledActor,REFERENCE_RESIDUAL:ReferenceResidualActor}[cfg.get("actor_parameterization")]
     actor = actor_type(77,23,[task,velocity],{'motion':1.,'velocity':0.},
@@ -123,8 +144,8 @@ def load_policy(checkpoint, episode_paths, device):
     weights = torch.load(checkpoint,map_location=device,weights_only=False)
     model = make_model()
     rep = RobotRepresentation(model,device)
-    bank = DoorMotions(episode_paths,rep,device)
     cfg = dict(weights['cfg'])
+    bank = DoorMotions(episode_paths,rep,device,actor_schema=actor_goal_schema(cfg))
     if 'actor_parameterization' in weights:
         cfg['actor_parameterization'] = weights['actor_parameterization']
     actor, _ = build_actor(rep,cfg,model,device)

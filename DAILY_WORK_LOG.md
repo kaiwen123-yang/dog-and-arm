@@ -671,3 +671,14 @@ bash scripts/b0/env.sh python -u scripts/b0/train.py --seed 0 --run free_s0_clou
 本轮改动限定11个文档/提示文件，不修改学习代码、任务门槛、原始评测结果或旧失败记录。已完成差异/空白检查，新文档与已改入口的相对链接全部可达；冻结复核命令的参数和环境脚本已按当前源码静态核对。两份新文档经过代码、数值与原协议交叉复核，并修正了A0对照混杂、最终接触回归、独立seed先过B0-03、短H真实接口和Critic迁移语义等问题。没有为文档变更新增测试套件或启动物理实验。远端发布结果在本次回复给出。
 
 已确认读取最新远端2c15d35及旧计划865835c；本条与新计划随题为“Review completed B0 round and define controlled recovery plan”的普通文档提交保存。发布时核对远端未被其他提交推进，以预期旧HEAD进行快进更新，不强推；本提交自身的确切commit在发布完成后回复，后续日志可引用，不为嵌入自己的提交号制造重复提交。
+
+### 19:37–19:41｜接续实作启动，恢复冻结输入
+
+第二平台 b0/contact-baseline-20261122 从 2c15d35 正常 fetch、pull --ff-only 至 b9a11293；当时 origin/main 无后续提交。主树 fe6cc85 的 PROJECT_STATE、H0 文档和脚本以及未跟踪 P5 目录另有工作。专用树既有环境链接和两段视频保留。主机 RTX 3060 Laptop 6144 MiB、空闲内存约 12 GiB、研究分区可用 332 GiB，当前无 B0 训练。经第二平台可访问 AutoDL，RTX PRO 6000 97887 MiB 已用约 6151 MiB，数据盘余 269 GiB，另有 MCP-RL/DN-Splatter 进程；旧云树 67244fa 有既有源码和未跟踪实验，另建接续工作树。固定上游两项 git rev-parse 与规定提交一致。
+在第二平台用 scripts/b0/env.sh 的 torch.load 实载 full_s0_joint{,_warp}_prior_r1 两套 u0/u50，四包均包含 Actor 70 项、WM 24 项、Critic、cfg、seed、updates、collected；motion normalizer 原宽 540。实际 CUDA 张量求和通过。full_warp_hold_park_r1 的拉/推 qpos、qvel、action_clipped 与 valid_full_interval 均可读取且有限，动作分别 3787/2803 行；这是打包动作行数，完整 20 ms 行另按 valid 标记过滤。前轮成功、失败包保持冻结。本轮先测相对平移可观测性/教师覆盖、H32 即时与末端价值梯度和三端 2 ms 分歧；截至本条尚无新增策略成绩。
+
+### 19:43–19:46｜训练环境隔离、观测证据和 A0/A1 配对训练
+
+AutoDL 自身 HTTPS fetch 遇到 GnuTLS 连接中断；从已正常 fetch 的第二平台将相对云树已有提交的 Git 对象经 SSH 传到同一 Git 对象库，在 /root/autodl-tmp/dog-and-arm-b0-recovery 建独立 b9a1129 worktree。复用原环境、物理资产、固定参考与四个验证权重的链接，未 checkout 旧云树。云机磁盘 269 GiB 可用，未处理其他 GPU 进程。开发、整合与普通推送使用第二平台的专用树。
+在固定 root/参考上用旧 Actor 的真实 Warp 闭环观测比较双侧各 12 个开发初态、各 51 个动作。初始 C02–C05 的平移只在 WM goal 可见；C06/C07 的 yaw 已能区别。C08/C09 的 540 列和 570 列、历史、首动作都相同，前 51 帧最大动作差约 1e−7，而前拉真实把手相对 TCP 的最大分量分别偏 25.21 和 62.74 mm。输入增加平移仍缺门初角信息。结果 results/b0/recovery_a_observation_r1。登记 16 条独立扰动教师（seed 231123），每侧 6 train/2 validation，不取 C/H 轨迹。首条扰动前拉实采全程通过；20 ms 完整转移 3872，固定参考同相、有效的正样本 2788。两条时钟在驶近终点相差约 2.178 s；不能把越相位的物理动作当同帧监督。
+实现 privileged_reference_translation，新 goal 把十槽 XYZ 附在旧 540 列后；部署和想象共用 DoorMotions，旧列统计保持，新列固定 0.05 m 标度。云端实际运行 scripts.b0.recovery_bc --variant A0/A1 --run recovery_bc_A0_r1 / recovery_bc_A1_r1，各用相同 6588 个名义完整恒目标样本和 128 个新增 BC minibatch。A1 的旧包动作迁移差 5.96e−8。两者训练集轮速 RMSE 均约 0.005892 rad/s、臂角 RMSE 0.000304 rad，物理任务另行评测。新增 H32=0。配置/更新/拟合误差已回传；完整包和 optimizer/RNG 留在云树。B 和 C 独立目录另行回传实际结果。
