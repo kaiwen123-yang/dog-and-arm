@@ -1,5 +1,5 @@
 {
-  "beijing": "2026-11-23T22:43:43+08:00",
+  "beijing": "2026-11-23T22:50:39+08:00",
   "training": {
     "standard_s0_control40_r1": {
       "actor_updates": 10,
@@ -21,6 +21,13 @@
       "critic_minibatches": 1000,
       "valid_online_transitions": 70425,
       "simulated_lane_intervals": 256000
+    },
+    "standard_s0_gain32_to200_r1": {
+      "actor_updates": 200,
+      "wm_minibatches": 2000,
+      "critic_minibatches": 4000,
+      "valid_online_transitions": 345268,
+      "simulated_lane_intervals": 1024000
     },
     "standard_s0_gripdata_r1": {
       "actor_updates": 50,
@@ -44,7 +51,7 @@
       "simulated_lane_intervals": 256000
     }
   },
-  "completed_nominal_cases": 325,
+  "completed_nominal_cases": 415,
   "formal": [
     {
       "checkpoint": "results/b0/standard_s0_control40_r1/checkpoint_000000.pt",
@@ -102,6 +109,18 @@
     },
     {
       "checkpoint": "results/b0/standard_s0_gain32_r1/checkpoint_000005.pt",
+      "backend": "warp",
+      "passed": 0,
+      "scored": 10
+    },
+    {
+      "checkpoint": "results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt",
+      "backend": "native",
+      "passed": 0,
+      "scored": 10
+    },
+    {
+      "checkpoint": "results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt",
       "backend": "warp",
       "passed": 0,
       "scored": 10
@@ -174,6 +193,30 @@
     },
     {
       "checkpoint": "results/b0/standard_s0_wmcoords_r1/checkpoint_000000.pt",
+      "backend": "warp",
+      "passed": 0,
+      "scored": 10
+    },
+    {
+      "checkpoint": "results/b0/standard_s0_wmcoords_r1/checkpoint_000010.pt",
+      "backend": "warp",
+      "passed": 0,
+      "scored": 10
+    },
+    {
+      "checkpoint": "results/b0/standard_s0_wmcoords_r1/checkpoint_000001.pt",
+      "backend": "warp",
+      "passed": 0,
+      "scored": 10
+    },
+    {
+      "checkpoint": "results/b0/standard_s0_wmcoords_r1/checkpoint_000050.pt",
+      "backend": "warp",
+      "passed": 0,
+      "scored": 10
+    },
+    {
+      "checkpoint": "results/b0/standard_s0_wmcoords_r1/checkpoint_000005.pt",
       "backend": "warp",
       "passed": 0,
       "scored": 10

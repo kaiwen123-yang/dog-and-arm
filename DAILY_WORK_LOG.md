@@ -823,3 +823,27 @@ f0812006 已普通推送并通过 GitHub main 回读。原生 3.3 的同包完�
 独立冻结采集 81101–81103 共 2321 个有效转移、142 次物理终止；逐 lane 核 s/a/s_next、上一动作、帧、终端和硬事件。WM 分布诊断发现 control-u50 的两指 H32 TCP P95 前拉/背推 688.06/166.67 mm。仅以预登记训练握持窗替换每个 H7 minibatch 的 32 行后，u50 为 106.62/145.39 mm，仍差于 held_r2 的 50.53/40.36 mm。未向 Actor 加动作监督。单换输入统计会显著改变原模型的物理预测；另做首层权重/bias 等价换算配对，1725 个真实输入的单步 TCP 最大单坐标偏移 12.412→0.000358 mm。该复测只验证数值映射。原官方优化器及其 moment 在新坐标沿用，正式末点待收。
 
 实际入口为云端 bash scripts/b0/env.sh python -u scripts/b0/train_contact.py；配置 standard_contact_40{,_gain32,_gripdata,_goal_padding,_wmcoords}.yaml。×32 后续命令附 --resume results/b0/standard_s0_gain32_r1/cohort_state.pt --run standard_s0_gain32_to200_r1 --updates 200。评测使用 eval_contact_segments.py 配两份冻结 manifest；验证使用 standard_contact_validation.py collect/score。按用户补充要求在 tmux 稳定后结束对话：云端 b0-standard-finish 编排剩余已登记节点（含 u200 双端与同入口受力诊断），第二平台 b0-standard-receive 同步小结果、更新每日记录/状态及普通推送。新标准接触 D、完整 C、独立 seed/H、硬件未执行；云端大权重、RNG、优化器与 replay 保留。
+
+### 标准接触 tmux 回收
+
+北京时间 2026-11-23T22:50:39+08:00。已回收 415 条 nominal 物理记录，含同包不同参考协议的配对。记录索引见 results/b0/standard_handoff_20261123/case_index.csv。
+
+- standard_s0_control40_r1：累计 H32 10 次、有效在线转移 17736。
+- standard_s0_control40_to50_r1：累计 H32 50 次、有效在线转移 69480。
+- standard_s0_gain32_r1：累计 H32 50 次、有效在线转移 70425。
+- standard_s0_gain32_to200_r1：累计 H32 200 次、有效在线转移 345268。
+- standard_s0_gripdata_r1：累计 H32 50 次、有效在线转移 73163。
+- standard_s0_padding_r1：累计 H32 50 次、有效在线转移 82748。
+- standard_s0_wmcoords_r1：累计 H32 50 次、有效在线转移 86911。
+
+已完成末节点的十项原登记组合结果如下。
+
+- results/b0/standard_s0_control40_to50_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_gain32_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt，native，0/10。
+- results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt，warp，0/10。
+- results/b0/standard_s0_gripdata_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_padding_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_wmcoords_r1/checkpoint_000050.pt，warp，0/10。
+
+首步力和后继 tracking 的同起点双侧实测见 results/b0/standard_handoff_20261123/gain200_entry.json。开发 D、完整 C、独立 seed 与 H 本队列未执行。

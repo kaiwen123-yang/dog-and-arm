@@ -1,0 +1,90 @@
+{
+  "episode": "push_0_train_grip",
+  "side": "push",
+  "segment": "stable_grip",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 10275,
+  "reference_last_substep": 10275,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02173651847988367,
+    "grasp_error_m": 0.0018648100405177566,
+    "supported": true,
+    "finger_n": [
+      3.401200771331787,
+      2.4634456634521484
+    ],
+    "door_force_sum_n": 5.933870282099219,
+    "prefix_start_target_penetration_m": 0.000989740430697985,
+    "nominal_prefix_start_target_penetration_m": 0.000989740430697985,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "door_force_limit",
+    "phase": "hold",
+    "first_failure_substep": 1,
+    "interval_start_s": 0.0,
+    "interval_end_s": 0.002,
+    "door_deg": 0.3666817471607493,
+    "finger_load_n": [
+      0.0,
+      36.75932693481445
+    ],
+    "wheel_load_n": [
+      193.6926975250244,
+      147.42512130737305,
+      76.22850608825684,
+      133.1359043121338
+    ],
+    "door_net_force_n": 51.98553947430273,
+    "door_contact_sum_n": 51.98553947430273,
+    "tcp_handle_error_m": 0.0018657054587342477,
+    "min_arm_margin_rad": 0.7709653377532959
+  },
+  "events": [],
+  "policy_calls": 1,
+  "physics_steps": 1,
+  "final_door_deg": 0.36576199281989835,
+  "final_partial_substeps": 1,
+  "longest_ready_steps": {
+    "hold": 0
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 0.3666817471607493,
+    "width_m": 0.02173651847988367,
+    "finger_n": [
+      0.0,
+      36.75932693481445
+    ],
+    "net_door_force_n": 51.98553947430273,
+    "tcp_handle_error_m": 0.0018657054587342477,
+    "station_error_m": 0.0005944570641460375,
+    "tilt_deg": 0.09269466183290391,
+    "speed_m_s": 0.0007342390232721142,
+    "yaw_rate_deg_s": 0.011228508564196934,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 1500
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-standard/results/raw_large/b0/standard_s0_gain32_to200_r1_u200_warp_v1/push/stable_grip/nominal"
+}

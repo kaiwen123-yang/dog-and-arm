@@ -1,5 +1,30 @@
 当前入口｜2026-11-23 标准 B0-04 已实际训练，先回读 tmux 结果
 
+### 标准接触 tmux 回收
+
+北京时间 2026-11-23T22:50:39+08:00。已回收 415 条 nominal 物理记录，含同包不同参考协议的配对。记录索引见 results/b0/standard_handoff_20261123/case_index.csv。
+
+- standard_s0_control40_r1：累计 H32 10 次、有效在线转移 17736。
+- standard_s0_control40_to50_r1：累计 H32 50 次、有效在线转移 69480。
+- standard_s0_gain32_r1：累计 H32 50 次、有效在线转移 70425。
+- standard_s0_gain32_to200_r1：累计 H32 200 次、有效在线转移 345268。
+- standard_s0_gripdata_r1：累计 H32 50 次、有效在线转移 73163。
+- standard_s0_padding_r1：累计 H32 50 次、有效在线转移 82748。
+- standard_s0_wmcoords_r1：累计 H32 50 次、有效在线转移 86911。
+
+已完成末节点的十项原登记组合结果如下。
+
+- results/b0/standard_s0_control40_to50_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_gain32_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt，native，0/10。
+- results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt，warp，0/10。
+- results/b0/standard_s0_gripdata_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_padding_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_wmcoords_r1/checkpoint_000050.pt，warp，0/10。
+
+首步力和后继 tracking 的同起点双侧实测见 results/b0/standard_handoff_20261123/gain200_entry.json。开发 D、完整 C、独立 seed 与 H 本队列未执行。
+
+
 从 Windows 查看云端真实训练进度、后台物理评测及回收：
 ssh dev2-ubuntu "ssh autodl-dog-arm 'cd /root/autodl-tmp/dog-and-arm-b0-standard && tail -1 results/b0/standard_s0_gain32_to200_r1/updates.jsonl && tail -6 results/raw_large/b0/standard_handoff_20261123/events.log'"
 ssh dev2-ubuntu "cd /home/kaiwen/research/dog-and-arm-standard && cat results/raw_large/b0/standard_handoff_20261123/received.txt && ls results/raw_large/b0/standard_handoff_20261123/"

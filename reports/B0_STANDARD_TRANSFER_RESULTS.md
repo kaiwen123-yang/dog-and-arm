@@ -41,3 +41,27 @@
 云端工作树 /root/autodl-tmp/dog-and-arm-b0-standard。配置命令为 `bash scripts/b0/env.sh python scripts/b0/train_contact.py --config config/b0/standard_contact_40.yaml --run <新名称> --updates 50`。其他配置与实际运行参数随各 run 登记。云端 b0-standard-finish 收齐冻结物理评测；第二平台 b0-standard-receive 只收小型结果及证据视频，并从隔离交付树发普通提交。查看命令见 prompts/NEXT_RUN.txt。
 
 正式接触协议仍按登记的五个 v1 加五个 hold-margin。另跑全十项 v1 以供原 r3 同版比较；各组按包、后端、版本、case 分别计数。D 开发每项要求 ≥18/20，完整门同包主后端两侧 C 各 ≥18/20，native 两侧 nominal 及持续真实 H32 能力。此轮未进入完整任务评测、独立 seed1/2 或 H。旧混合结果、物理阶段时间用完、梯度和 WM 改善均保留各自含义。截止本次交接，没有标准包通过接触。
+
+### 标准接触 tmux 回收
+
+北京时间 2026-11-23T22:50:39+08:00。已回收 415 条 nominal 物理记录，含同包不同参考协议的配对。记录索引见 results/b0/standard_handoff_20261123/case_index.csv。
+
+- standard_s0_control40_r1：累计 H32 10 次、有效在线转移 17736。
+- standard_s0_control40_to50_r1：累计 H32 50 次、有效在线转移 69480。
+- standard_s0_gain32_r1：累计 H32 50 次、有效在线转移 70425。
+- standard_s0_gain32_to200_r1：累计 H32 200 次、有效在线转移 345268。
+- standard_s0_gripdata_r1：累计 H32 50 次、有效在线转移 73163。
+- standard_s0_padding_r1：累计 H32 50 次、有效在线转移 82748。
+- standard_s0_wmcoords_r1：累计 H32 50 次、有效在线转移 86911。
+
+已完成末节点的十项原登记组合结果如下。
+
+- results/b0/standard_s0_control40_to50_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_gain32_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt，native，0/10。
+- results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt，warp，0/10。
+- results/b0/standard_s0_gripdata_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_padding_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_wmcoords_r1/checkpoint_000050.pt，warp，0/10。
+
+首步力和后继 tracking 的同起点双侧实测见 results/b0/standard_handoff_20261123/gain200_entry.json。开发 D、完整 C、独立 seed 与 H 本队列未执行。

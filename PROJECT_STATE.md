@@ -1,5 +1,30 @@
 # 项目状态：当前是 SuperMimic 标准迁移阶段
 
+### 标准接触 tmux 回收
+
+北京时间 2026-11-23T22:50:39+08:00。已回收 415 条 nominal 物理记录，含同包不同参考协议的配对。记录索引见 results/b0/standard_handoff_20261123/case_index.csv。
+
+- standard_s0_control40_r1：累计 H32 10 次、有效在线转移 17736。
+- standard_s0_control40_to50_r1：累计 H32 50 次、有效在线转移 69480。
+- standard_s0_gain32_r1：累计 H32 50 次、有效在线转移 70425。
+- standard_s0_gain32_to200_r1：累计 H32 200 次、有效在线转移 345268。
+- standard_s0_gripdata_r1：累计 H32 50 次、有效在线转移 73163。
+- standard_s0_padding_r1：累计 H32 50 次、有效在线转移 82748。
+- standard_s0_wmcoords_r1：累计 H32 50 次、有效在线转移 86911。
+
+已完成末节点的十项原登记组合结果如下。
+
+- results/b0/standard_s0_control40_to50_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_gain32_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt，native，0/10。
+- results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt，warp，0/10。
+- results/b0/standard_s0_gripdata_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_padding_r1/checkpoint_000050.pt，warp，0/10。
+- results/b0/standard_s0_wmcoords_r1/checkpoint_000050.pt，warp，0/10。
+
+首步力和后继 tracking 的同起点双侧实测见 results/b0/standard_handoff_20261123/gain200_entry.json。开发 D、完整 C、独立 seed 与 H 本队列未执行。
+
+
 ## 标准接触实测及 tmux 接续（2026-11-23 北京时间）
 
 从 5e6db44 和指定 B0-03 Actor / held_r2 门 WM 实际完成标准 H32 训练。原尺度、×32 与抓持数据三组 u50 在 Warp 登记组合各 0/10，×32 包 native 原 v1 为 0/10。独立握持窗口 WM TCP P95 在补数据后比同预算控制改善，正式接触仍失败。当前出口仍是 B0-04。最新依据见 [标准迁移实测](reports/B0_STANDARD_TRANSFER_RESULTS.md)、[逐案索引](results/b0/standard_handoff_20261123/case_index.csv)与 [tmux 接续](prompts/NEXT_RUN.txt)。下方 5e6db44 的审查/计划为此前状态。

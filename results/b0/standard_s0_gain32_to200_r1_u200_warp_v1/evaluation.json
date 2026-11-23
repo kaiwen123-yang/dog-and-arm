@@ -1,0 +1,112 @@
+{
+  "checkpoint": "results/b0/standard_s0_gain32_to200_r1/checkpoint_000200.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "config/b0/contact_dev_v1.json",
+  "requested_dev": false,
+  "source": "results/raw_large/b0/contact_held_r1",
+  "passed": 0,
+  "evaluated": 10,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 580,
+      "policy_calls": 58,
+      "final_door_deg": 0.0,
+      "failure": "operation_station_drift"
+    },
+    {
+      "side": "pull",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.07000418961872758,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06996550300038179,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.07000487663970854,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 154,
+      "policy_calls": 16,
+      "final_door_deg": 3.3761275020178063,
+      "failure": "persistent_saturation:piper_gripper_joint1"
+    },
+    {
+      "side": "push",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 2683,
+      "policy_calls": 269,
+      "final_door_deg": 10.055888585750196,
+      "failure": "reference_exhausted"
+    },
+    {
+      "side": "push",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.36576199281989835,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.3657637804084702,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.36576063211814963,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 3001,
+      "policy_calls": 301,
+      "final_door_deg": 4.8517851764440065,
+      "failure": "timeout:release"
+    }
+  ]
+}
