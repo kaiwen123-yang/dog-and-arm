@@ -2,7 +2,11 @@
 
 首次规划日期：2026-11-21；接续更新：2026-11-23（Asia/Shanghai）。
 
-**当前状态：P6 与 B0-03 已冻结；B0 接触/完整单门轮已结束并交付 seed0 限制基线。局部接触监督策略通过、各后端双侧 nominal 可执行，但完整 C 四组各 9/20，同包跨端及统一 H32 能力未达标。** 具体事实见[最新审查](../reports/B0_REVIEW_20261123.md)，当前执行 [B0 接续计划](B0_RECOVERY_PLAN_20261123.md)；[原接触计划](B0_CONTACT_EXECUTION_PLAN.md)保留任务与冻结门槛。本文件下文的初始快照与起步说明为历史，方法来源和阶段定义继续有效。本次只审查与更新文档，没有新训练或硬件动作。
+**当前仍是 SuperMimic 标准迁移阶段。** 用户明确先保留官方核心网络与学习机制，把 B0 在 M1＋Piper H 上跑通，再进入多模态/VLA。世界模型、可微动力学与 H32 Actor/Critic 本来就在本阶段训练。P6 与 B0-03 已通过；较纯原 tracking 接触 u1000 的 Warp/native 原 v1 十项 nominal 各 0/10，标准接触与全程迁移尚未完成。当前执行 [标准迁移计划](B0_STANDARD_TRANSFER_PLAN_20261123.md)，依据见[最新审查](../reports/B0_RECOVERY_REVIEW_20261123.md)与[目标差距](GOAL_GAP_20261123.md)。
+
+标准恢复锚点为 `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt` 与 `results/b0/contact_s0_wm_held_r2/wm_002000.pt`，已完成接口、数据和诊断继续复用。540/546 全程包继承五段共 15,000 次 BC 和参考臂/夹口前馈，546 另有解析根平移臂补偿；546 维包的真实 H32-u1 三端双侧 nominal 通过，Warp C 各 9/20、native 9/20 与 10/20，作为混合能力对照保留，不当作标准迁移通过。动作/状态/参考/环境等必要平台映射逐项登记，不自动改任务协议、追加任务奖励、风险头或自研控制器来替代原机制结论。
+
+[原接触计划](B0_CONTACT_EXECUTION_PLAN.md)的任务与冻结门槛继续继承，CPU3.16 仍是按需诊断/回归；不无条件重做 B0-03/P6 或旧实验。标准迁移未完成就报告限制，不自动进入后续研究阶段。下文初始快照与起步说明为历史，方法来源和阶段定义继续有效；执行范围以上方当前入口为准。本次只审查与更新文档，没有新训练、物理评测或硬件动作。
 
 总路线见 [RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md)，状态/动作/数据细节见 [B0_DATA_MODEL_CONTRACT.md](B0_DATA_MODEL_CONTRACT.md)，执行入口见 [B0_START.txt](../prompts/B0_START.txt)。
 

@@ -1,58 +1,65 @@
-## 2026-11-23 21:12 北京时间｜tmux 物理评分回收
+当前入口｜固定官方SuperMimic标准迁移：接触→完整任务→多seed/H，然后才多模态/VLA
 
-- recovery_b_phase_td_u10_nominal_r1：pull 名义失败，开发未测；push 名义通过，开发未测
-- recovery_b_stance_u1_full_c_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
-- recovery_b_stance_u5_nominal_r1：pull 名义失败，开发未测；push 名义通过，开发未测
-- recovery_b_tracking_u1_full_c_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
-- recovery_c_integrated_warp316_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
-- recovery_endpoint_hinge_tail_warp_r2：pull 名义通过，开发未测；push 名义通过，开发1/1
-- recovery_planar_arm_native_tmux_r1：pull 名义通过，开发未测；push 名义通过，开发未测
-- recovery_planar_arm_screen_warp_r1：pull 名义通过，开发2/6；push 名义通过，开发3/6
-- recovery_planar_screen_warp_r1：pull 名义通过，开发0/4；push 名义通过，开发1/4
+用户明确纠正：当前是“根据supermimic进行迁移的标准阶段”。具名对话“分析SuperMimic融入腿臂控制”目前仅有检索摘要，不声称阅读全文/所有历史对话。执行 docs/B0_STANDARD_TRANSFER_PLAN_20261123.md，不执行此前草稿默认全程对象相对v2、新reward/风险head及共同BC主线。
 
-逐案物理结果及实际分母见 results/b0/recovery_round_20261123/case_index.csv 和各 run 目录。独立 seed 与 H 保持封存。
+证据截止main@23c90684522a030e2625bf0e44118fa86884ebf4，最后回收为2026-11-23 21:12北京时间。审查/新计划在其后；本次文档发布未新训练、仿真或硬件。用户下达prompts/B0_START.txt后直接完成已授权仿真实现、采集、训练、评测与GitHub交付，不停在再规划。
 
-## 2026-11-23 北京时间 20:45｜B0 已交给 tmux
+先读：
+AGENTS.md
+PROJECT_STATE.md
+DAILY_WORK_LOG.md最近日期
+docs/B0_STANDARD_TRANSFER_PLAN_20261123.md
+docs/B0_SUPERMIMIC_PLAN.md
+docs/B0_CONTACT_EXECUTION_PLAN.md
+docs/B0_DATA_MODEL_CONTRACT.md
+reports/B0_RECOVERY_REVIEW_20261123.md
+docs/GOAL_GAP_20261123.md
+results/b0/recovery_review_20261123/audit_summary.json
+再读受影响源码、实际配置和原始结果。旧恢复计划是历史，任务对齐草稿不是当前入口。
 
-第二开发平台管理 AutoDL 的 b0-recovery-20261123。Windows 执行以下命令可直接接入。按 Ctrl-b，再按 d 可分离会话。
+方法边界：
+- 标准Actor为EffortScaledActor：固定官方MultiEncoderAE＋平台home/effort-gain单位映射＋23路动作/统一clip。保留已验证representation、FK、2ms×10、参考与历史适配。
+- ReferenceResidualActor将当前参考臂/夹爪直通动作；546再加解析根平移Jacobian反馈。full/recovery的540 tracking也可能含前馈，不能凭维数/reward名判断标准。
+- 教师动作BC、参考前馈、stance/planar/endpoint/轮速头、动作先验、phase reward/真实TD辅助/风险head各自单列，不默认合入。官方aux bc_loss是latent对齐，不是动作BC。
+- full/546底座继承contact reference-residual→full pull→full push→full joint→full Warp joint五段各3000 BC，累计15000。BC、WM、H32和几何拟合分别记。
 
-    ssh -t dev2-ubuntu-lan "ssh -t autodl-dog-arm tmux attach -t b0-recovery-20261123"
+标准材料与负结果：
+B0-03：results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt
+来源config/b0/free_servo_cloud.yaml、源码56f6396；1000 H32、1088000在线转移，已通过，不重做。
+门WM：results/b0/contact_s0_wm_held_r2/wm_002000.pt（2000教师WM minibatch）。
+原标准接触：contact_s0_tracking_r2→contact_s0_tracking_r3，config/b0/contact_servo_cloud.yaml；r3为1000接触H32、572118有效转移，native/Warp nominal各0/10。
+既有标准u0完整可读则沿其身份继承；否则用B0-03＋门WM按语义建立接触迁移初始化。不能从546包删字段假装原Actor；保留r3负结果，不无理由重复同配方1000次。
 
-第二平台回收窗口使用 `ssh -t dev2-ubuntu-lan tmux attach -t b0-receive-20261123`。云端独立树 /root/autodl-tmp/dog-and-arm-b0-recovery，实时状态 results/raw_large/b0/recovery_tmux_20261123/status.json。8项登记及交接快照见 results/b0/recovery_tmux_20261123；终态日志与单案例原始结果在各自run。GitHub只在普通推送回读后算交付。
+混合旁支：
+results/b0/recovery_c_s0_stance_integrated_r1/checkpoint_000000.pt
+results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt
+全程共同参考results/raw_large/b0/full_warp_hold_park_r1。
+u0/u1三端双侧nominal是真实混合成果；u1 Warp全C9/20、9/20，native9/20、10/20。跨端能力先来自BC/解析补偿，不能宣布标准B0-04/05已过。标准、BC、混合分表。
+本轮387条full result，旧索引384漏endpoint-tail三条，六条nominal继承；子集2/6、3/6、1/1不拼全C。102视频完整解码，团队30视频90帧目视，不称逐帧全看。
 
-546维同一真实H32-u1已在native3.3、CPU3.16、Warp3.16名义前拉/背推全部通过。原生完整C，监督u0为9/20、9/20；H32-u1为9/20、10/20（新增背推C08）。Warp完整C尚在进行。当前已知失败数足以排除这一候选通过双侧18/20。十项局部监督历史成绩仍属于原监督包，独立seed和H保留。运行中的下一份逐案结果由已登记进程生成，不重复启动同名回归。
+现场恢复：
+已知AutoDL树/root/autodl-tmp/dog-and-arm-b0-recovery，历史contact/主树保留；别名dev2-ubuntu/dev2-ubuntu-lan、autodl-dog-arm先核实。
+results/b0/recovery_tmux_20261123/outcome.json快照2026-11-23 21:11:04+08:00，finished=true，8任务completed，pids=[]；执行时核实现状，不按旧交接重复启动。
+Git不含全部pt/大数组，沿actual_config、review、inventory及日志恢复。只有权重称warm start，完整兼容模型/normalizer/optimizer/replay/RNG才称resume。
+固定pin：SuperMimic abc124c1bd5976341034668af3d12c087f2f1f55；mjlab_research dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd。隔离环境与native3.3工程保留，不改vendor/ROS/CUDA/Conda base。
 
-2026-11-23 B0 接续已在执行。最新结果见 reports/B0_RECOVERY_RESULTS_20261123.md、reports/B0_RECOVERY_BACKENDS_20261123.md、DAILY_WORK_LOG.md。当前在线实验位于 AutoDL /root/autodl-tmp/dog-and-arm-b0-recovery，第二平台专用树用于整合。按现有 run 状态续接，避免重复采集或覆盖。
-检查正在写入的物理评分（从第二平台执行）：
-ssh autodl-dog-arm 'cd /root/autodl-tmp/dog-and-arm-b0-recovery && find results/b0/recovery_b_tracking_u1_full_c_r1 -name result.json'
-完整执行约定见 prompts/B0_START.txt。下列保留本轮之前的冻结复核入口。
+先现场只读核实（不计成实验）：
+git status --short --branch
+git log -8 --oneline
+git fetch origin main
+git log --oneline HEAD..origin/main
+审阅新增提交后正常快进，保留现有修改，不reset/clean/强推。现场主机/设备/CLI先查，不假设历史配置永远相同。
 
-当前入口：2026-11-23（北京时间），最新B0轮已经结束并完成审查，接续计划已发布。
+下一项实际工作：
+1. 从标准EffortScaledActor链核对动作单位/scale/offset、两指映射、clip/噪声/上一动作与normalizer迁移。单位重参数化须匹配decoder、保持初始物理行为并记录优化/探索含义，不默认前馈/BC。
+2. 核对参考MotionID/侧别/帧/尾槽和20ms held-action的s/a/s_next。实测姿态不等于伺服命令；same_phase不等于成功标签。复用合法参考与失败数据；片段hold-margin v2按已登记manifest，默认不改全程任务/阈值。
+3. 当前标准策略分布下检查WM H1/H7/H32和真实动作效果，复用40步cohort。S维持既定H1/H7监督，40步供覆盖与独立H32诊断；在线H32监督仅具名数据变体比较。区分joint在线H1/H7与独立H32预拟合；不跨terminal拼窗，采样配方变化另列匹配对照。
+4. 保持原tracking、官方softdone和H32 ActorCritic机制，真实/想象时刻、dt、价值上界一致；完整2ms裁判独立。已知softdone覆盖不足如实报告，不默认新任务reward、风险head、解析反馈或动作先验。必要接口适配可登记执行，方法扩展不自行替换主线。
+5. 实施有依据的最小修复并实际训练，先B0-04双侧十项，再B0-05同包完整60°/25°。h32_recovery默认混合锚点不可直接称标准。记录u0/1/5/10与后续节点，有进展继续有效预算，明确失败先修，不复做旧负结果或只交诊断。
+6. 最终同一标准H32候选：十项nominal、每项D01–D20≥18/20；双侧全C各≥18/20；同包native3.3 nominal；持续H32证据。之后seed1/2独立训练各自先过B0-03，全部配方/候选冻结后开H01–H50，每seed每侧≥40/50。H不调参、不换协议、不重生成。
 
-先读 AGENTS.md、PROJECT_STATE.md、DAILY_WORK_LOG.md 最近日期、reports/B0_REVIEW_20261123.md 和 docs/B0_RECOVERY_PLAN_20261123.md。要授权执行本轮仿真实现/训练/评测，使用 prompts/B0_START.txt。旧接触计划保留原门槛，不再从“接触接口待实现”开始。
+B0-03、A0–A4、matched bootstrap、完整Critic恢复、40步采集及后端轮地/夹指原因已完成，直接继承；仅对本次变化做必要回归，不新增泛化哈希/冒烟套件，不无条件跑满失败分母。
 
-审查事实截至 main@2c15d35eab4c6c24954ce1d67ae09f0247e1725b：
-- 接触参考残差监督u0（BC3000、WM2000）在两后端十项各20/20；是200个局部条件×2后端，XY±0.5mm/yaw±0.025°，片段有100步真实初始化前缀。
-- native/Warp各有一套共同双侧u0完成本后端全程nominal；完整四组C各9/20，均只通过C01、C10–C17。同包交叉后端失败；未展开的C不是0/20。
-- 纯tracking接触u1000两端各0/10；统一全程u50退化，局部H32与单侧成果单列。两个full H32 run都在Warp在线训练。
-- seed1/2未训练，H01–H50未做任务测试。监督成功不等于H32已跑通。
+并行有依赖价值的接口/数据/WM/评测工作，主接口由一个集成任务维护；不设后台强制墙钟kill。当前只执行仿真，不自动进入多模态/VLA、RoboMIND、双门、旧G1或硬件。
 
-下一实际工作：固定Warp参考/交互/计分，以full_s0_joint_warp_prior_r1/checkpoint_000000.pt及full_warp_hold_park_r1参考为能力锚点，分别检验A观测/教师覆盖、B真实与想象学习信号/Critic/分模式WM、C三后端差异，然后集成最小有效适配继续训练。具体配对、物理门槛和出口按新计划。最终H32候选保留十项接触门槛、两侧完整C各≥18/20、同包原生两侧nominal及H32机制证据明确后才接续独立seed与封存H验证；seed1/2仍须各自通过B0-03。本次计划发布没有启动这些实验。
-
-工作树和大材料恢复：
-上轮SSH dev2-ubuntu（或dev2-ubuntu-lan）对应 /home/kaiwen/research/dog-and-arm-b0-contact；AutoDL autodl-dog-arm 对应 /root/autodl-tmp/dog-and-arm-b0-contact。先核实实际位置、进程与资源，保留主树H0/P5工作，正常拉取。权重、normalizer和大数组不在Git，按 results/b0/full_baseline_seed0/checkpoint_inventory.json 核实实际可读性，不声称仅clone就已恢复完整训练状态。
-
-只读查看旧冻结结果（工作区确认后）：
-cd /home/kaiwen/research/dog-and-arm-b0-contact
-cat results/b0/full_baseline_seed0/full_scores.csv
-cat results/b0/full_baseline_seed0/checkpoint_inventory.json
-
-只有诊断确需复测才执行以下已有入口；运行前确认结果名未占用，必要时换新名，不例行重跑整批旧清单：
-
-原生两侧冻结nominal：
-MUJOCO_GL=egl OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 .venv/bin/python -u -m scripts.b0.eval_contact_segments --full-task --side pull push --backend native --device cpu --checkpoint results/b0/full_s0_joint_prior_r1/checkpoint_000000.pt --references results/raw_large/b0/full_native_margin_r1 --run review_frozen_seed0_native_both_r2 --video
-
-Warp两侧冻结nominal（在已有GPU隔离环境中先确认脚本CLI和材料）：
-bash scripts/b0/env.sh python -u -m scripts.b0.eval_contact_segments --full-task --side pull push --backend warp --device cuda --checkpoint results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt --references results/raw_large/b0/full_warp_hold_park_r1 --run review_frozen_seed0_warp_both_r2 --video
-
-新观测/短H/梯度诊断参数尚未实现，不能把拟定变体名当成现有CLI。按计划实现后把真实命令、run、计数、问题与复测逐日详细写入DAILY_WORK_LOG，并同步PROJECT_STATE、阶段报告和本入口；普通提交推送后核对远端。P6、B0-03、旧G1、双门、视觉语言、RoboMIND及硬件均不是本轮自动重跑项。
+维护唯一DAILY_WORK_LOG.md，按北京时间逐日详细记工作、问题、证据、修复复测、失败/未执行、分母、环境/命令/run和下一步；同步PROJECT_STATE、报告、必要视频/恢复清单和NEXT_RUN。普通commit/push到kaiwen123-yang/dog-and-arm并回读，无需再问上传权限，不盲目stage、不建压缩归档。交付标准迁移实际阶段、与混合旁支的分别贡献、剩余门槛和下一条真实命令。

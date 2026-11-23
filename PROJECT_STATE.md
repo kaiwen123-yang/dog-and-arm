@@ -1,4 +1,40 @@
-## 2026-11-23 21:12 北京时间｜tmux 物理评分回收
+# 项目状态：当前是 SuperMimic 标准迁移阶段
+
+更新：2026-11-23（Asia/Shanghai）。审查证据截止 [`23c90684522a030e2625bf0e44118fa86884ebf4`](https://github.com/kaiwen123-yang/dog-and-arm/commit/23c90684522a030e2625bf0e44118fa86884ebf4)，承接 `b9a1129` 后的八个实验提交。本次只审查、补充审计记录和发布计划，没有启动新训练、仿真评测或硬件。
+
+## 当前结论与下一入口
+
+**用户已明确：现在是根据 SuperMimic 迁移的标准阶段，先保留官方核心机制把 B0 跑通，再做多模态/VLA。** 世界模型、可微动力学和 H32 Actor/Critic 学习本来就在当前阶段；不是等视觉语言阶段才开始。P6 工程教师与 B0-03 无接触学习已通过，标准迁移的接触与完整单门尚未通过。混合策略的已有成功和标准主线的完成状态分别记录。
+
+| 当前证据 | 实际结果 | 身份与边界 |
+| --- | --- | --- |
+| B0-03 标准无接触学习，u1000 | Warp/CPU 三类各 20/20；native 为 20/20、20/20、19/20 | 已通过，继续继承；不无条件重做 |
+| 较纯官方网络＋原 tracking 的接触 u1000 | 原 v1 十项 nominal，Warp/native 各 0/10 | 接触更新 1,000，WM 10,000、Critic 20,000，有效转移 572,118；这是标准接触迁移负结果 |
+| 旧接触参考残差监督包 u0 | 两后端十项 nominal 通过，每项 D01–D20 为 20/20 | BC 3,000、门 WM 2,000、接触 H32=0；五项 v1＋五项 hold-margin v2，不能转记为标准 Actor/H32 通过 |
+| 540 维参考残差全程包，原 tracking H32-u1 | Warp nominal 2/2、完整 C 9/20＋9/20；同包 native nominal 0/2 | 继承参考臂/夹口前馈和分阶段 15,000 次 BC；关闭更新中的动作先验不等于原样 Actor |
+| 546 维解析补偿全程包，H32-u1 | 三端双侧 nominal 通过；Warp C 9/20＋9/20，native C 9/20＋10/20 | 在 540 底座上另加 Jacobian 根平移臂补偿；u0 已有跨端名义能力，u1 是真实更新后保持 |
+| 最终标准候选接触/完整任务、独立 seed1/2 与 H | 未完成 | 不能用不同包、不同方法或局部筛查拼接验收 |
+
+**标准主线恢复锚点：** `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt` 的 EffortScaledActor，加 `results/b0/contact_s0_wm_held_r2/wm_002000.pt` 的动态门预训练；固定 home/伺服单位映射与参考姿态直接前馈是不同的动作参数化。`results/b0/contact_s0_tracking_r3/checkpoint_001000.pt` 保留为原 tracking 接触 u1000 失败对照，已有失败不足以支持无依据继续长训。
+
+**混合能力对照：** `results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt`、`results/b0/recovery_b_tracking_u1_r1/checkpoint_000001.pt`、`results/b0/recovery_c_s0_stance_integrated_r1/checkpoint_000000.pt`、`results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt`。540/546 的完整任务 BC 继承链为接触、前拉、背推、native 双侧、Warp 双侧五段，各 3,000 次；总计 15,000 是分阶段继承，不是同一数据集单次训练。546 的 886 帧单系数拟合与解析动作修正另列。参考与完整权重/大数组按真实来源恢复，Git 登记不等于资产已经加载。[本轮审查](reports/B0_RECOVERY_REVIEW_20261123.md)
+
+**下一轮按标准迁移计划接续：** 核对固定官方网络、GenCoord、原 tracking/软终止、H32 rollout 和 Actor/Critic 调用链，明确必要的机器人/门状态、23 路动作、伺服单位、参考时刻、真实 held-action 数据和后端映射。复用既有接口、40 步在线采集、可用数据和诊断证据；只有具体风险或待验证改动才回归 B0-03/P6 或旧实验。参考前馈、额外 BC、解析补偿、phase-TD 和风险头仍作为已命名对照，不自动升级为主线。已有教师/固定目标冲突与学习信号问题用于定位标准迁移限制，不自动改任务协议、增加自研任务奖励或风险终止头来换一个通过结论。
+
+原门槛保持：最终标准候选在主后端十项接触 nominal 通过、每项 D01–D20≥18/20，同一候选双侧完整 C 各≥18/20，同包 native 3.3.0 双侧 nominal 通过并有真实 H32 学习链证据；CPU3.16 按需要诊断/回归，不新增正式门槛。独立 seed1/2 按原顺序各自通过 B0-03；三 seed 配方、选模与候选冻结后才开每侧 H01–H50，目标≥40/50。标准迁移未完成就如实报告限制，不能凭混合策略三端 nominal 通过进入多模态/VLA。
+
+当前入口：[最新审查](reports/B0_RECOVERY_REVIEW_20261123.md) · [标准迁移计划](docs/B0_STANDARD_TRANSFER_PLAN_20261123.md) · [距离总目标](docs/GOAL_GAP_20261123.md) · [启动提示词](prompts/B0_START.txt) · [现场接续](prompts/NEXT_RUN.txt) · [每日详细记录](DAILY_WORK_LOG.md)。
+
+## 审查覆盖与现场完成状态
+
+- 已提交最终快照时间为 2026-11-23 21:11:04 北京时间，`finished=true`，8 个登记作业均 completed、PID 列表为空；本次未重新登录训练现场。20:40/20:45 的“运行中”文字是历史，不代表仍有待回收任务。
+- 本轮变更结果/数据/配置共 926 文件、101,749,329 字节；结构化文本全量解析。原索引 384 条，实际新增完整任务 `result.json` 387 条，漏收 endpoint-tail 的两个 nominal 与 push C08；原索引保留，补充见[审计摘要](results/b0/recovery_review_20261123/audit_summary.json)。六条 nominal 来自 `--extend-from`，不是新的独立执行。
+- 102 个新增 MP4 完整解码 135,066 帧；团队实际目视 30 个视频各首/中/尾，共 90 帧。解码与抽帧目视不等于逐帧观看，也不能替代原始事件/力/保持时长数据。
+- planar-arm 的 2/6、3/6 和 endpoint-tail push C08 的 1/1 是不同分支的局部筛查；不能累加到共同 546-u1 的完整 C，更不能转记成标准迁移成绩。
+
+下文全部保留为历史现场记录与此前阶段快照。其中旧“下一轮”“当前”“运行中”以本页顶部和标准迁移计划为准。
+
+## 历史：2026-11-23 21:12 北京时间｜tmux 物理评分回收
 
 - recovery_b_phase_td_u10_nominal_r1：pull 名义失败，开发未测；push 名义通过，开发未测
 - recovery_b_stance_u1_full_c_r1：pull 名义通过，开发9/20；push 名义通过，开发9/20
@@ -12,9 +48,9 @@
 
 逐案物理结果及实际分母见 results/b0/recovery_round_20261123/case_index.csv 和各 run 目录。独立 seed 与 H 保持封存。
 
-# 项目状态
+## 历史项目状态与原始交接
 
-## 2026-11-23 北京时间 20:45｜B0 已交给 tmux
+## 历史：2026-11-23 北京时间 20:45｜B0 已交给 tmux（21:11 已回收完成）
 
 第二开发平台管理 AutoDL 的 b0-recovery-20261123。Windows 执行以下命令可直接接入。按 Ctrl-b，再按 d 可分离会话。
 

@@ -1,10 +1,12 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-本仓库基于智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机，开展 MuJoCo 腿臂协同与后续实机研究。最终目标是融合腕部 RGB-D、语言、本体历史的多模态/VLA 模型，与世界模型、可微动力学和 SuperMimic 式策略训练联合。
+本仓库基于智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机，开展 MuJoCo 腿臂协同研究。**当前先完成 SuperMimic 标准迁移 B0**：世界模型、可微动力学与 H32 Actor/Critic 学习都属于本阶段。标准迁移完成后，再发展腕部 RGB-D、语言、本体历史的多模态/VLA 联合模型与实机验证。
 
-**最新 B0 轮已结束并完成审查：局部接触监督基线通过，完整单门四组开发均为 9/20，尚未达到每侧 18/20。** 两套后端专用的双侧监督包分别完成 nominal；同一包跨后端失败，H32 双侧更新尚未保持既有能力。下一轮继续 B0 的观测、接触学习信号与后端适配。P6 和 B0-03 冻结结果保留。本次更新只审查与发布计划，没有启动新实验。详见 [2026-11-23 审查](reports/B0_REVIEW_20261123.md) 和 [项目状态](PROJECT_STATE.md)。
+**当前标准迁移尚未跑通接触与完整单门。** P6 工程教师与 B0-03 无接触学习已通过；采用较纯官方网络和原 tracking 的接触 H32-u1000 在 Warp/native 原 v1 十项 nominal 均为 0/10。下一轮从已通过的 B0-03 Actor 和门 WM 预训练锚点接续，保留官方核心机制，逐项核对必要的平台动作、状态、参考与数据映射。
 
-下一轮：[B0 接续执行计划](docs/B0_RECOVERY_PLAN_20261123.md) · [Codex 启动提示词](prompts/B0_START.txt) · [每日详细工作记录](DAILY_WORK_LOG.md)。每日记录按北京时间持续追加，包含实际工作、问题证据、修复与复测、失败、未完成项和下一步。
+最新恢复轮结束于 `23c9068`。540/546 维全程包均继承五段共 15,000 次 BC 和参考臂/夹口前馈，546 维另有解析根平移臂补偿。546 维混合包经真实 H32-u1 后同包三端双侧 nominal 通过；Warp 完整 C 各 9/20，native 为 9/20、10/20。这些真实结果作为能力对照保留，不能转写为标准迁移通过；持续更新、最终候选接触回归、独立 seed 与 H 仍未完成。本次只审查和发布文档，没有新实验。详见[最新审查](reports/B0_RECOVERY_REVIEW_20261123.md)、[目标差距](docs/GOAL_GAP_20261123.md)和[项目状态](PROJECT_STATE.md)。
+
+下一轮：[SuperMimic 标准迁移计划](docs/B0_STANDARD_TRANSFER_PLAN_20261123.md) · [Codex 启动提示词](prompts/B0_START.txt) · [每日详细工作记录](DAILY_WORK_LOG.md)。每日记录按北京时间持续追加，包含实际工作、问题证据、修复与复测、失败、未完成项和下一步。
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
@@ -30,7 +32,7 @@
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前学习策略进度见 **reports/B0_REVIEW_20261123.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前学习策略进度见 **reports/B0_RECOVERY_REVIEW_20261123.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -40,9 +42,9 @@
 
 ## 用户现在需要做什么
 
-在已有工作区先检查 git status，再正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给 Codex，从已冻结的 seed0 限制基线接续。接触训练与评测入口已经实现；本轮先做有对照的观测/数据适配和 H32 诊断，再继续训练，不重建已完成接口、不提前打开 H 测试。新变体选项由执行轮实现并核对真实 CLI。冻结结果与必要复核命令见[当前入口](prompts/NEXT_RUN.txt)。
+在已有工作区先检查 git status，再正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给 Codex，从 `23c9068` 已审查代码和结果接续[标准迁移计划](docs/B0_STANDARD_TRANSFER_PLAN_20261123.md)。恢复 `results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt` 与 `results/b0/contact_s0_wm_held_r2/wm_002000.pt`，保留纯 tracking 接触 u1000 的负结果及 540/546 混合包作为对照。复用已完成接口、数据和后端诊断，有具体风险才回归；不重跑整套 B0-03/P6，不提前打开 H，不用新任务协议或自研控制方法替代标准迁移结论。现场恢复和可执行入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
 
-上轮 B0 专用工作树为 `/home/kaiwen/research/dog-and-arm-b0-contact`，AutoDL 为 `/root/autodl-tmp/dog-and-arm-b0-contact`；先核实实际可用位置。主工作树 `/home/kaiwen/research/dog-and-arm` 的其他修改保留。B0 使用独立训练环境，当前任务仅在仿真中执行。
+最新恢复轮的 AutoDL 独立树为 `/root/autodl-tmp/dog-and-arm-b0-recovery`；历史 B0 树为 `/home/kaiwen/research/dog-and-arm-b0-contact` 与 `/root/autodl-tmp/dog-and-arm-b0-contact`，运行前核实可用位置、进程和材料。主工作树 `/home/kaiwen/research/dog-and-arm` 的其他修改保留。B0 使用独立训练环境，当前执行范围仅在仿真中。
 
 ## H0：相机和机械臂联合运行
 
@@ -120,8 +122,11 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 | AGENTS.md | Codex 项目规则与用户偏好 |
 | PROJECT_STATE.md | 当前完成情况、验证范围及下一步 |
 | DAILY_WORK_LOG.md | 北京时间逐日详细工作、问题处理、实验结果与交接记录 |
-| docs/B0_RECOVERY_PLAN_20261123.md | 当前 B0 观测、学习信号与后端适配的接续计划 |
-| reports/B0_REVIEW_20261123.md | 最新轮成绩、方法归因、证据边界与审查结论 |
+| docs/B0_STANDARD_TRANSFER_PLAN_20261123.md | 当前官方核心机制的标准迁移、必要平台适配与验收计划 |
+| reports/B0_RECOVERY_REVIEW_20261123.md | 最新恢复轮完整成绩、方法归因、证据边界与审查结论 |
+| docs/GOAL_GAP_20261123.md | 距离 B0 与最终多模态/世界模型/实机目标的逐项差距 |
+| results/b0/recovery_review_20261123/audit_summary.json | 最新轮 387 条结果覆盖、继承/遗漏、精确分母与视频审阅范围 |
+| docs/B0_RECOVERY_PLAN_20261123.md、reports/B0_REVIEW_20261123.md | 前一恢复计划与审查，作为历史保留 |
 | docs/B0_CONTACT_EXECUTION_PLAN.md | 已执行轮的历史计划与继续继承的任务/冻结门槛 |
 | prompts/ | 首轮、续接、后续动力学阶段提示词 |
 | docs/HARDWARE_INTEGRATION.md | H0 实机联调步骤、验收依据和接口核查 |

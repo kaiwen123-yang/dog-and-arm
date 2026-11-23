@@ -1,5 +1,7 @@
 # B0 接续实验记录（北京时间 2026-11-23）
 
+> 归档说明（2026-11-23）：本轮登记作业已于 21:11 北京时间完成回收，最后实验提交为 `23c9068`；文中较早的“运行中”是历史快照。最终成绩、索引漏收三条与方法归因见 [最新审查](B0_RECOVERY_REVIEW_20261123.md)。当前继续 [SuperMimic 标准迁移](../docs/B0_STANDARD_TRANSFER_PLAN_20261123.md)；参考前馈/BC/解析补偿成功不代填标准迁移验收。
+
 固定 Warp 参考为 `results/raw_large/b0/full_warp_hold_park_r1`。前拉 60°，背推 25°。主线从 `full_s0_joint_warp_prior_r1/checkpoint_000000.pt` 同一 seed0 开始。该 Actor 曾以 `full_held_warp_r1` 监督训练 3000 次。新实验按固定时钟从零开始完整任务，沿用原物理判据。
 
 ## 输入、覆盖和配对监督

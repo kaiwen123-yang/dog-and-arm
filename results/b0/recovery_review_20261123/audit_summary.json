@@ -1,0 +1,2261 @@
+{
+  "schema_version": 1,
+  "audit_type": "read_only_repository_evidence_review",
+  "source_commit": "23c90684522a030e2625bf0e44118fa86884ebf4",
+  "comparison_base_commit": "b9a11293a6930b1c95e335c090641bbdae649c62",
+  "scope": {
+    "directories": [
+      "results/b0",
+      "data/b0",
+      "config/b0"
+    ],
+    "selection": "existing changed files in git diff base..source",
+    "experiments_launched": false,
+    "remote_host_inspection": false,
+    "original_indexes_modified": false
+  },
+  "source_file_sha256": {
+    "results/b0/recovery_round_20261123/case_index.csv": "e97831eb1040c553cfeb88f55b5e9d8a2595d1b7ed804c8a1624894a7e9bef1e",
+    "results/b0/recovery_round_20261123/scores.csv": "b6f577c840a02a0b418549159e3f0f19c778693272b84e7f1778847d8943ee61",
+    "results/b0/recovery_tmux_20261123/outcome.json": "ef89687020906dad300aadfab69111300251d3d7550d2c18761213c83a411e13"
+  },
+  "parse_coverage": {
+    "files": 926,
+    "counts": {
+      ".json": 678,
+      ".csv": 129,
+      ".mp4": 102,
+      ".jsonl": 17
+    },
+    "rows": {
+      "bytes": 101749329,
+      "csv_rows": 117522,
+      "jsonl_rows": 191
+    },
+    "errors": []
+  },
+  "record_coverage": {
+    "index_path": "results/b0/recovery_round_20261123/case_index.csv",
+    "score_path": "results/b0/recovery_round_20261123/scores.csv",
+    "indexed_records": 384,
+    "indexed_nominal_records": 98,
+    "indexed_C_records": 286,
+    "indexed_runs": 50,
+    "actual_changed_full_task_result_records": 387,
+    "actual_nominal_records": 100,
+    "actual_C_records": 287,
+    "missing_from_index_records": 3,
+    "missing_from_index_details": [
+      {
+        "result": "results/b0/recovery_endpoint_hinge_tail_warp_r2/pull/full/nominal/result.json",
+        "policy_source": "results/b0/recovery_endpoint_hinge_tail_warp_r2/pull/full/nominal/policy_source.json",
+        "run": "recovery_endpoint_hinge_tail_warp_r2",
+        "side": "pull",
+        "case": "nominal",
+        "segment": "full",
+        "checkpoint": "results/b0/recovery_endpoint_hinge_bc_tail_r2/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "passed": true,
+        "physics_steps": 37374,
+        "final_door_deg": 59.95095408122225,
+        "first_failure": null,
+        "start_substep": 0,
+        "prefix_physics_steps": 0,
+        "stage_events": 13,
+        "hold_ticks": {
+          "grasp": 100,
+          "hold": 250,
+          "post_release_hold": 1500,
+          "final": 1500
+        },
+        "raw_directory": "results/raw_large/b0/recovery_endpoint_hinge_tail_warp_r2/pull/full/nominal"
+      },
+      {
+        "result": "results/b0/recovery_endpoint_hinge_tail_warp_r2/push/full/C08/result.json",
+        "policy_source": "results/b0/recovery_endpoint_hinge_tail_warp_r2/push/full/C08/policy_source.json",
+        "run": "recovery_endpoint_hinge_tail_warp_r2",
+        "side": "push",
+        "case": "C08",
+        "segment": "full",
+        "checkpoint": "results/b0/recovery_endpoint_hinge_bc_tail_r2/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "passed": true,
+        "physics_steps": 27512,
+        "final_door_deg": 24.958551123527727,
+        "first_failure": null,
+        "start_substep": 0,
+        "prefix_physics_steps": 0,
+        "stage_events": 13,
+        "hold_ticks": {
+          "grasp": 100,
+          "hold": 250,
+          "post_release_hold": 1500,
+          "final": 1500
+        },
+        "raw_directory": "results/raw_large/b0/recovery_endpoint_hinge_tail_warp_r2/push/full/C08"
+      },
+      {
+        "result": "results/b0/recovery_endpoint_hinge_tail_warp_r2/push/full/nominal/result.json",
+        "policy_source": "results/b0/recovery_endpoint_hinge_tail_warp_r2/push/full/nominal/policy_source.json",
+        "run": "recovery_endpoint_hinge_tail_warp_r2",
+        "side": "push",
+        "case": "nominal",
+        "segment": "full",
+        "checkpoint": "results/b0/recovery_endpoint_hinge_bc_tail_r2/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "passed": true,
+        "physics_steps": 27512,
+        "final_door_deg": 25.02635270387115,
+        "first_failure": null,
+        "start_substep": 0,
+        "prefix_physics_steps": 0,
+        "stage_events": 13,
+        "hold_ticks": {
+          "grasp": 100,
+          "hold": 250,
+          "post_release_hold": 1500,
+          "final": 1500
+        },
+        "raw_directory": "results/raw_large/b0/recovery_endpoint_hinge_tail_warp_r2/push/full/nominal"
+      }
+    ],
+    "index_to_raw_checks": [
+      "passed",
+      "physics_steps",
+      "final_door_deg",
+      "first_failure reason"
+    ],
+    "index_to_raw_issues": [],
+    "score_rows_recomputed_from_index": 98,
+    "score_reconstruction_issues": [],
+    "inherited_nominal_records": 6,
+    "inheritance": [
+      {
+        "destination": "results/b0/recovery_b_stance_u1_full_c_r1/pull/full/nominal/result.json",
+        "source": "results/b0/recovery_b_stance_u1_nominal_r1/pull/full/nominal/result.json",
+        "byte_identical_result": true,
+        "same_raw_directory": true
+      },
+      {
+        "destination": "results/b0/recovery_b_stance_u1_full_c_r1/push/full/nominal/result.json",
+        "source": "results/b0/recovery_b_stance_u1_nominal_r1/push/full/nominal/result.json",
+        "byte_identical_result": true,
+        "same_raw_directory": true
+      },
+      {
+        "destination": "results/b0/recovery_b_stance_u1_native_full_c_r1/pull/full/nominal/result.json",
+        "source": "results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/result.json",
+        "byte_identical_result": true,
+        "same_raw_directory": true
+      },
+      {
+        "destination": "results/b0/recovery_b_stance_u1_native_full_c_r1/push/full/nominal/result.json",
+        "source": "results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/result.json",
+        "byte_identical_result": true,
+        "same_raw_directory": true
+      },
+      {
+        "destination": "results/b0/recovery_c_integrated_native33_full_c_r1/pull/full/nominal/result.json",
+        "source": "results/b0/recovery_c_integrated_native33_r1/pull/full/nominal/result.json",
+        "byte_identical_result": true,
+        "same_raw_directory": true
+      },
+      {
+        "destination": "results/b0/recovery_c_integrated_native33_full_c_r1/push/full/nominal/result.json",
+        "source": "results/b0/recovery_c_integrated_native33_r1/push/full/nominal/result.json",
+        "byte_identical_result": true,
+        "same_raw_directory": true
+      }
+    ],
+    "indexed_distinct_raw_directory_strings": 378,
+    "actual_distinct_raw_directory_strings": 381,
+    "interpretation": "Records include deliberately repeated conditions and 6 copied nominal records. Distinct raw directory identities are not independent random trials. No pooled success rate is inferred.",
+    "hold_event_validation": {
+      "successful_result_records_checked": 165,
+      "all_have_13_events": true,
+      "all_have_grasp_ticks": 100,
+      "all_have_hold_ticks": 250,
+      "all_have_post_release_hold_ticks": 1500,
+      "all_have_final_ticks": 1500
+    },
+    "continuous_start_validation": {
+      "records_checked": 387,
+      "all_segment_full": true,
+      "all_start_substep_zero": true,
+      "all_prefix_physics_steps_zero": true
+    },
+    "actual_changed_full_task_runs": 51
+  },
+  "complete_C_denominators": {
+    "rows": [
+      {
+        "run": "recovery_b_stance_u1_full_c_r1",
+        "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 7,
+          "timeout:approach_base": 2,
+          "timeout:grasp": 1,
+          "unexpected_contact:gripper_base_handle": 1
+        }
+      },
+      {
+        "run": "recovery_b_stance_u1_full_c_r1",
+        "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 7,
+          "timeout:grasp": 2,
+          "timeout:settle": 1,
+          "unexpected_contact:robot_panel": 1
+        }
+      },
+      {
+        "run": "recovery_b_stance_u1_native_full_c_r1",
+        "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+        "backend": "native",
+        "mujoco": "3.3.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 8,
+          "timeout:approach_base": 1,
+          "timeout:grasp": 1,
+          "unexpected_contact:gripper_base_handle": 1
+        }
+      },
+      {
+        "run": "recovery_b_stance_u1_native_full_c_r1",
+        "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+        "backend": "native",
+        "mujoco": "3.3.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 10,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C08",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 7,
+          "timeout:grasp": 1,
+          "timeout:settle": 1,
+          "unexpected_contact:robot_panel": 1
+        }
+      },
+      {
+        "run": "recovery_b_tracking_u1_full_c_r1",
+        "checkpoint": "results/b0/recovery_b_tracking_u1_r1/checkpoint_000001.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 5,
+          "timeout:approach_base": 4,
+          "timeout:grasp": 1,
+          "unexpected_contact:gripper_base_handle": 1
+        }
+      },
+      {
+        "run": "recovery_b_tracking_u1_full_c_r1",
+        "checkpoint": "results/b0/recovery_b_tracking_u1_r1/checkpoint_000001.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 4,
+          "timeout:grasp": 2,
+          "unexpected_contact:finger_non_grasp_handle": 2,
+          "unexpected_contact:robot_panel": 3
+        }
+      },
+      {
+        "run": "recovery_c_integrated_native33_full_c_r1",
+        "checkpoint": "results/b0/recovery_c_s0_stance_integrated_r1/checkpoint_000000.pt",
+        "backend": "native",
+        "mujoco": "3.3.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 8,
+          "timeout:approach_base": 1,
+          "timeout:grasp": 1,
+          "unexpected_contact:gripper_base_handle": 1
+        }
+      },
+      {
+        "run": "recovery_c_integrated_native33_full_c_r1",
+        "checkpoint": "results/b0/recovery_c_s0_stance_integrated_r1/checkpoint_000000.pt",
+        "backend": "native",
+        "mujoco": "3.3.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 7,
+          "timeout:grasp": 2,
+          "timeout:settle": 1,
+          "unexpected_contact:robot_panel": 1
+        }
+      },
+      {
+        "run": "recovery_c_integrated_warp316_r1",
+        "checkpoint": "results/b0/recovery_c_s0_stance_integrated_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 7,
+          "timeout:approach_base": 2,
+          "timeout:grasp": 1,
+          "unexpected_contact:gripper_base_handle": 1
+        }
+      },
+      {
+        "run": "recovery_c_integrated_warp316_r1",
+        "checkpoint": "results/b0/recovery_c_s0_stance_integrated_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "full",
+        "passed": 9,
+        "tested": 20,
+        "case_ids": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17",
+          "C18",
+          "C19",
+          "C20"
+        ],
+        "passed_case_ids": [
+          "C01",
+          "C10",
+          "C11",
+          "C12",
+          "C13",
+          "C14",
+          "C15",
+          "C16",
+          "C17"
+        ],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 7,
+          "timeout:grasp": 2,
+          "timeout:settle": 1,
+          "unexpected_contact:robot_panel": 1
+        }
+      }
+    ],
+    "target_per_side": 18,
+    "denominator_per_side": 20,
+    "best_pull_passed": 9,
+    "best_push_passed": 10,
+    "any_candidate_reaches_target": false,
+    "cross_backend_note": "546d H32-u1 has Warp 9/20 pull and 9/20 push; native 3.3 has 9/20 pull and 10/20 push. The one additional native push pass is C08."
+  },
+  "targeted_subsets": {
+    "rows": [
+      {
+        "run": "recovery_approach_leg_wheel_phase_screen_r2",
+        "checkpoint": "results/b0/recovery_approach_leg_wheel_phase_r2/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 1,
+          "timeout:approach_base": 1,
+          "wheel_support_or_tilt": 2
+        }
+      },
+      {
+        "run": "recovery_approach_leg_wheel_phase_screen_r2",
+        "checkpoint": "results/b0/recovery_approach_leg_wheel_phase_r2/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "timeout:settle": 1,
+          "unexpected_contact:robot_panel": 1,
+          "wheel_support_or_tilt": 2
+        }
+      },
+      {
+        "run": "recovery_approach_leg_wheel_screen_r1",
+        "checkpoint": "results/b0/recovery_approach_leg_wheel_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": false,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "timeout:approach_base": 4
+        }
+      },
+      {
+        "run": "recovery_approach_leg_wheel_screen_r1",
+        "checkpoint": "results/b0/recovery_approach_leg_wheel_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": false,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "timeout:settle": 1,
+          "unexpected_contact:other_robot_handle": 1,
+          "unexpected_contact:robot_panel": 2
+        }
+      },
+      {
+        "run": "recovery_approach_wheel_screen_laptop_r1",
+        "checkpoint": "results/b0/recovery_approach_wheel_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "timeout:approach_base": 4
+        }
+      },
+      {
+        "run": "recovery_approach_wheel_screen_laptop_r1",
+        "checkpoint": "results/b0/recovery_approach_wheel_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "timeout:settle": 2,
+          "unexpected_contact:robot_panel": 2
+        }
+      },
+      {
+        "run": "recovery_bc_A0_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A0_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 2,
+          "timeout:approach_base": 1,
+          "unexpected_contact:gripper_base_handle": 1
+        }
+      },
+      {
+        "run": "recovery_bc_A0_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A0_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 1,
+          "unexpected_contact:finger_non_grasp_handle": 2,
+          "unexpected_contact:robot_panel": 1
+        }
+      },
+      {
+        "run": "recovery_bc_A1_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A1_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 2,
+          "timeout:approach_base": 1,
+          "unexpected_contact:gripper_base_handle": 1
+        }
+      },
+      {
+        "run": "recovery_bc_A1_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A1_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 1,
+          "unexpected_contact:finger_non_grasp_handle": 2,
+          "unexpected_contact:robot_panel": 1
+        }
+      },
+      {
+        "run": "recovery_bc_A2_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A2_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": false,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 3,
+          "timeout:approach_base": 1
+        }
+      },
+      {
+        "run": "recovery_bc_A2_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A2_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": false,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 2,
+          "unexpected_contact:finger_non_grasp_handle": 2
+        }
+      },
+      {
+        "run": "recovery_bc_A3_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A3_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": false,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 6,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C08",
+          "C09"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 5,
+          "timeout:approach_base": 1
+        }
+      },
+      {
+        "run": "recovery_bc_A3_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A3_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": false,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 6,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C08",
+          "C09"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 4,
+          "unexpected_contact:finger_non_grasp_handle": 2
+        }
+      },
+      {
+        "run": "recovery_bc_A4_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A4_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": false,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 2,
+        "case_ids": [
+          "C08",
+          "C09"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 2
+        }
+      },
+      {
+        "run": "recovery_bc_A4_warp_r1",
+        "checkpoint": "results/b0/recovery_bc_A4_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": false,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 2,
+        "case_ids": [
+          "C08",
+          "C09"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "door_contact_outside_manipulation": 2
+        }
+      },
+      {
+        "run": "recovery_endpoint_hinge_push_warp_r1",
+        "checkpoint": "results/b0/recovery_endpoint_hinge_bc_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 2,
+        "case_ids": [
+          "C08",
+          "C09"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "lost_grip": 1,
+          "timeout:grasp": 1
+        }
+      },
+      {
+        "run": "recovery_planar_arm_screen_warp_r1",
+        "checkpoint": "results/b0/recovery_planar_arm_s0_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 2,
+        "tested": 6,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07"
+        ],
+        "passed_case_ids": [
+          "C06",
+          "C07"
+        ],
+        "failure_counts": {
+          "grip_base_or_handle_error": 1,
+          "timeout:pregrasp": 2,
+          "timeout:retreat_arm": 1
+        }
+      },
+      {
+        "run": "recovery_planar_arm_screen_warp_r1",
+        "checkpoint": "results/b0/recovery_planar_arm_s0_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 3,
+        "tested": 6,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07"
+        ],
+        "passed_case_ids": [
+          "C04",
+          "C05",
+          "C06"
+        ],
+        "failure_counts": {
+          "grip_base_or_handle_error": 2,
+          "timeout:pregrasp": 1
+        }
+      },
+      {
+        "run": "recovery_planar_screen_warp_r1",
+        "checkpoint": "results/b0/recovery_planar_s0_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "pull",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 0,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [],
+        "failure_counts": {
+          "timeout:approach_arm": 1,
+          "timeout:pregrasp": 2,
+          "timeout:retreat_arm": 1
+        }
+      },
+      {
+        "run": "recovery_planar_screen_warp_r1",
+        "checkpoint": "results/b0/recovery_planar_s0_r1/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 1,
+        "tested": 4,
+        "case_ids": [
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "passed_case_ids": [
+          "C04"
+        ],
+        "failure_counts": {
+          "timeout:pregrasp": 3
+        }
+      },
+      {
+        "run": "recovery_endpoint_hinge_tail_warp_r2",
+        "checkpoint": "results/b0/recovery_endpoint_hinge_bc_tail_r2/checkpoint_000000.pt",
+        "backend": "warp",
+        "mujoco": "3.16.0",
+        "physical_condition": "original",
+        "side": "push",
+        "nominal_pass": true,
+        "scope": "subset",
+        "passed": 1,
+        "tested": 1,
+        "case_ids": [
+          "C08"
+        ],
+        "passed_case_ids": [
+          "C08"
+        ],
+        "failure_counts": {},
+        "origin": "supplement_from_unindexed_raw_result"
+      }
+    ],
+    "interpretation": "Subset denominators are the tested cases only. Tail C08 1/1 and planar arm 2/6,3/6 do not establish a full 20-case C result."
+  },
+  "key_nominal_results": [
+    {
+      "result": "results/b0/recovery_b_stance_u1_nominal_r1/pull/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_stance_u1_nominal_r1/pull/full/nominal/policy_source.json",
+      "run": "recovery_b_stance_u1_nominal_r1",
+      "side": "pull",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": true,
+      "physics_steps": 37490,
+      "final_door_deg": 59.96002457244003,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_stance_u1_nominal_r1/pull/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_stance_u1_nominal_r1/push/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_stance_u1_nominal_r1/push/full/nominal/policy_source.json",
+      "run": "recovery_b_stance_u1_nominal_r1",
+      "side": "push",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": true,
+      "physics_steps": 27601,
+      "final_door_deg": 25.028640817243105,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_stance_u1_nominal_r1/push/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_stance_u1_cpu316_r1/pull/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_stance_u1_cpu316_r1/pull/full/nominal/policy_source.json",
+      "run": "recovery_b_stance_u1_cpu316_r1",
+      "side": "pull",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+      "backend": "native",
+      "mujoco": "3.16.0",
+      "passed": true,
+      "physics_steps": 37489,
+      "final_door_deg": 59.959721749774,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_cpu316_r1/pull/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_stance_u1_cpu316_r1/push/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_stance_u1_cpu316_r1/push/full/nominal/policy_source.json",
+      "run": "recovery_b_stance_u1_cpu316_r1",
+      "side": "push",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+      "backend": "native",
+      "mujoco": "3.16.0",
+      "passed": true,
+      "physics_steps": 27600,
+      "final_door_deg": 25.037005191766184,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_cpu316_r1/push/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/policy_source.json",
+      "run": "recovery_b_stance_u1_native_r1",
+      "side": "pull",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+      "backend": "native",
+      "mujoco": "3.3.0",
+      "passed": true,
+      "physics_steps": 37110,
+      "final_door_deg": 59.97301644079496,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_r1/pull/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/policy_source.json",
+      "run": "recovery_b_stance_u1_native_r1",
+      "side": "push",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+      "backend": "native",
+      "mujoco": "3.3.0",
+      "passed": true,
+      "physics_steps": 27192,
+      "final_door_deg": 24.990747946768835,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_r1/push/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_stance_u5_nominal_r1/pull/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_stance_u5_nominal_r1/pull/full/nominal/policy_source.json",
+      "run": "recovery_b_stance_u5_nominal_r1",
+      "side": "pull",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_stance_u5_r1/checkpoint_000005.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": false,
+      "physics_steps": 37868,
+      "final_door_deg": 59.95442381732062,
+      "first_failure": {
+        "reason": "reference_exhausted",
+        "phase": "retreat_base",
+        "physics_steps": 37868,
+        "readiness": {
+          "current": 0,
+          "required": 30,
+          "best": 0,
+          "last_not_ready": {
+            "reference_substep": 37867,
+            "ramp": true,
+            "within_position_zone": true,
+            "stable": true,
+            "wheels_loaded": true,
+            "reached": true,
+            "both_fingers": false,
+            "gripped": false,
+            "detached": true,
+            "door_speed_rad_s": -3.7317979403434203e-41,
+            "planar_speed_m_s": 0.00040731839763661807,
+            "yaw_rate_deg_s": 0.013540494453533366,
+            "tcp_handle_error_m": 0.6153737485167176,
+            "width_m": 0.04002298414707184
+          }
+        }
+      },
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 11,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": null
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_stance_u5_nominal_r1/pull/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_stance_u5_nominal_r1/push/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_stance_u5_nominal_r1/push/full/nominal/policy_source.json",
+      "run": "recovery_b_stance_u5_nominal_r1",
+      "side": "push",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_stance_u5_r1/checkpoint_000005.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": true,
+      "physics_steps": 27550,
+      "final_door_deg": 25.054691158737533,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_stance_u5_nominal_r1/push/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_matched_u10_nominal_r1/pull/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_matched_u10_nominal_r1/pull/full/nominal/policy_source.json",
+      "run": "recovery_b_matched_u10_nominal_r1",
+      "side": "pull",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_matched_u10_r1/checkpoint_000010.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": false,
+      "physics_steps": 8074,
+      "final_door_deg": 0.0,
+      "first_failure": {
+        "reason": "timeout:pregrasp",
+        "phase": "pregrasp",
+        "first_failure_substep": 8074,
+        "interval_start_s": 16.146,
+        "interval_end_s": 16.148,
+        "door_deg": 0.0,
+        "finger_load_n": [
+          0.0,
+          0.0
+        ],
+        "wheel_load_n": [
+          125.48489952087402,
+          105.03551292419434,
+          108.93353080749512,
+          87.53031730651855
+        ],
+        "door_net_force_n": 0.0,
+        "door_contact_sum_n": 0.0,
+        "tcp_handle_error_m": 0.009990940449023055,
+        "min_arm_margin_rad": 0.56137118543396
+      },
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 2,
+      "hold_ticks": {
+        "grasp": null,
+        "hold": null,
+        "post_release_hold": null,
+        "final": null
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_matched_u10_nominal_r1/pull/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_matched_u10_nominal_r1/push/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_matched_u10_nominal_r1/push/full/nominal/policy_source.json",
+      "run": "recovery_b_matched_u10_nominal_r1",
+      "side": "push",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_matched_u10_r1/checkpoint_000010.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": true,
+      "physics_steps": 27484,
+      "final_door_deg": 25.11213987984651,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_matched_u10_nominal_r1/push/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_td_terminal_u10_nominal_r1/pull/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_td_terminal_u10_nominal_r1/pull/full/nominal/policy_source.json",
+      "run": "recovery_b_td_terminal_u10_nominal_r1",
+      "side": "pull",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_td_terminal_u10_r1/checkpoint_000010.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": false,
+      "physics_steps": 7883,
+      "final_door_deg": 0.0,
+      "first_failure": {
+        "reason": "timeout:pregrasp",
+        "phase": "pregrasp",
+        "first_failure_substep": 7883,
+        "interval_start_s": 15.764000000000001,
+        "interval_end_s": 15.766,
+        "door_deg": 0.0,
+        "finger_load_n": [
+          0.0,
+          0.0
+        ],
+        "wheel_load_n": [
+          126.18997097015381,
+          104.75625610351562,
+          108.28611087799072,
+          87.87210273742676
+        ],
+        "door_net_force_n": 0.0,
+        "door_contact_sum_n": 0.0,
+        "tcp_handle_error_m": 0.0022632758130198497,
+        "min_arm_margin_rad": 0.5636394997955323
+      },
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 2,
+      "hold_ticks": {
+        "grasp": null,
+        "hold": null,
+        "post_release_hold": null,
+        "final": null
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_td_terminal_u10_nominal_r1/pull/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_td_terminal_u10_nominal_r1/push/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_td_terminal_u10_nominal_r1/push/full/nominal/policy_source.json",
+      "run": "recovery_b_td_terminal_u10_nominal_r1",
+      "side": "push",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_td_terminal_u10_r1/checkpoint_000010.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": false,
+      "physics_steps": 7882,
+      "final_door_deg": 0.0,
+      "first_failure": {
+        "reason": "timeout:pregrasp",
+        "phase": "pregrasp",
+        "first_failure_substep": 7882,
+        "interval_start_s": 15.762,
+        "interval_end_s": 15.764000000000001,
+        "door_deg": 0.0,
+        "finger_load_n": [
+          0.0,
+          0.0
+        ],
+        "wheel_load_n": [
+          107.00704002380371,
+          115.12320327758789,
+          97.11242055892944,
+          107.3247880935669
+        ],
+        "door_net_force_n": 0.0,
+        "door_contact_sum_n": 0.0,
+        "tcp_handle_error_m": 0.0065364341728920165,
+        "min_arm_margin_rad": 0.7510735392570496
+      },
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 2,
+      "hold_ticks": {
+        "grasp": null,
+        "hold": null,
+        "post_release_hold": null,
+        "final": null
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_td_terminal_u10_nominal_r1/push/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_phase_td_u10_nominal_r1/pull/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_phase_td_u10_nominal_r1/pull/full/nominal/policy_source.json",
+      "run": "recovery_b_phase_td_u10_nominal_r1",
+      "side": "pull",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_phase_td_u10_r1/checkpoint_000010.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": false,
+      "physics_steps": 31310,
+      "final_door_deg": 59.542822957557306,
+      "first_failure": {
+        "reason": "timeout:retreat_arm",
+        "phase": "retreat_arm",
+        "first_failure_substep": 31310,
+        "interval_start_s": 62.618,
+        "interval_end_s": 62.620000000000005,
+        "door_deg": 59.542822957557306,
+        "finger_load_n": [
+          0.0,
+          0.0
+        ],
+        "wheel_load_n": [
+          109.12759971618652,
+          113.44462394714355,
+          101.6620569229126,
+          103.91366767883301
+        ],
+        "door_net_force_n": 0.0,
+        "door_contact_sum_n": 0.0,
+        "tcp_handle_error_m": 0.46562613801519737,
+        "min_arm_margin_rad": 0.08461233790283185
+      },
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 8,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": null,
+        "final": null
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_phase_td_u10_nominal_r1/pull/full/nominal"
+    },
+    {
+      "result": "results/b0/recovery_b_phase_td_u10_nominal_r1/push/full/nominal/result.json",
+      "policy_source": "results/b0/recovery_b_phase_td_u10_nominal_r1/push/full/nominal/policy_source.json",
+      "run": "recovery_b_phase_td_u10_nominal_r1",
+      "side": "push",
+      "case": "nominal",
+      "segment": "full",
+      "checkpoint": "results/b0/recovery_b_phase_td_u10_r1/checkpoint_000010.pt",
+      "backend": "warp",
+      "mujoco": "3.16.0",
+      "passed": true,
+      "physics_steps": 27929,
+      "final_door_deg": 25.247155644264737,
+      "first_failure": null,
+      "start_substep": 0,
+      "prefix_physics_steps": 0,
+      "stage_events": 13,
+      "hold_ticks": {
+        "grasp": 100,
+        "hold": 250,
+        "post_release_hold": 1500,
+        "final": 1500
+      },
+      "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_b_phase_td_u10_nominal_r1/push/full/nominal"
+    }
+  ],
+  "final_546d_H32_contact_regression": {
+    "new_contact_segment_result_count": 0,
+    "complete_ten_contact_tasks_evidence_found": false,
+    "basis": "Every changed result.json has segment=full; no new final 546d H32 ten-contact-task result set was found. This does not invalidate older anchors, but they cannot be relabeled as the new checkpoint.",
+    "required_final_candidate_gate": {
+      "nominal_tasks": 10,
+      "development_cases_per_task": 20,
+      "minimum_passes_per_task": 18,
+      "primary_training_backend": "warp",
+      "native_results": "report separately, including not executed"
+    },
+    "gate_source": "docs/B0_RECOVERY_PLAN_20261123.md section 7.3"
+  },
+  "tmux_final_recovery": {
+    "source": "results/b0/recovery_tmux_20261123/outcome.json",
+    "registration": "results/b0/recovery_tmux_20261123/jobs.json",
+    "snapshot": "results/b0/recovery_tmux_20261123/stable_snapshot.json",
+    "time_beijing": "2026-11-23T21:11:04+08:00",
+    "finished": true,
+    "registered_job_count": 8,
+    "completed_job_count": 8,
+    "all_pid_lists_empty": true,
+    "jobs": [
+      {
+        "job": "recovery_b_tracking_u1_full_c_r1",
+        "status": "completed",
+        "pids": [],
+        "completed_cases": {
+          "pull": 21,
+          "push": 21
+        },
+        "log": "/tmp/dog_b_u1_dev.log",
+        "attempts": 0
+      },
+      {
+        "job": "recovery_c_integrated_warp316_r1",
+        "status": "completed",
+        "pids": [],
+        "completed_cases": {
+          "pull": 21,
+          "push": 21
+        },
+        "log": "/tmp/b0_c_integrated_warp316_r1.log",
+        "attempts": 0
+      },
+      {
+        "job": "recovery_b_stance_u1_full_c_r1",
+        "status": "completed",
+        "pids": [],
+        "completed_cases": {
+          "pull": 21,
+          "push": 21
+        },
+        "log": "/tmp/dog_b_stance_u1_dev.log",
+        "attempts": 0
+      },
+      {
+        "job": "recovery_b_stance_u5_nominal_r1",
+        "status": "completed",
+        "pids": [],
+        "completed_cases": {
+          "pull": 1,
+          "push": 1
+        },
+        "log": "/tmp/dog_b_stance_u5_nominal.log",
+        "attempts": 0
+      },
+      {
+        "job": "recovery_endpoint_hinge_tail_warp_r2/pull/full/nominal",
+        "status": "completed",
+        "pids": [],
+        "completed_cases": {
+          "pull": 1,
+          "push": 2
+        },
+        "log": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_endpoint_release_teacher_r2/tail_pull_1.log",
+        "attempts": 0
+      },
+      {
+        "job": "recovery_planar_screen_warp_r1",
+        "status": "completed",
+        "pids": [],
+        "completed_cases": {
+          "pull": 5,
+          "push": 5
+        },
+        "log": "/tmp/dogarm_planar_screen.log",
+        "attempts": 0
+      },
+      {
+        "job": "recovery_b_phase_td_u10_nominal_r1",
+        "status": "completed",
+        "pids": [],
+        "completed_cases": {
+          "pull": 1,
+          "push": 1
+        },
+        "log": "/tmp/dog_b_phase_u10_nominal.log",
+        "attempts": 0
+      },
+      {
+        "job": "recovery_planar_arm_native_tmux_r1",
+        "status": "completed",
+        "pids": [],
+        "completed_cases": {
+          "pull": 1,
+          "push": 1
+        },
+        "log": "/root/autodl-tmp/dog-and-arm-b0-recovery/results/raw_large/b0/recovery_tmux_20261123/recovery_planar_arm_native_tmux_r1.log",
+        "attempts": 1
+      }
+    ],
+    "interpretation": "This is the final committed 21:11:04 Beijing snapshot, not a fresh remote process inspection; it supersedes the earlier running descriptions."
+  },
+  "video_review": {
+    "new_mp4_count": 102,
+    "decode_success_count": 102,
+    "decoded_frames": 135066,
+    "decode_errors": [],
+    "decode_method": "ffmpeg full decode to null output; all 102 complete; no stream error reported",
+    "visually_reviewed_video_count": 30,
+    "visually_reviewed_frame_count": 90,
+    "sampling": "first, middle, last frame per video; all 5 contact sheets actually viewed",
+    "sampled_videos": [
+      {
+        "path": "results/b0/recovery_b_stance_u1_nominal_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          938,
+          1875
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_stance_u1_nominal_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          691,
+          1381
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_stance_u1_cpu316_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          938,
+          1875
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_stance_u1_cpu316_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          690,
+          1380
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          928,
+          1856
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          680,
+          1360
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_stance_u5_nominal_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          947,
+          1894
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_stance_u5_nominal_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          689,
+          1378
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_matched_u10_nominal_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          202,
+          404
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_matched_u10_nominal_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          688,
+          1375
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_td_terminal_u10_nominal_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          198,
+          395
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_td_terminal_u10_nominal_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          198,
+          395
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_phase_td_u10_nominal_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          783,
+          1566
+        ]
+      },
+      {
+        "path": "results/b0/recovery_b_phase_td_u10_nominal_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          699,
+          1397
+        ]
+      },
+      {
+        "path": "results/b0/recovery_planar_arm_screen_warp_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          935,
+          1869
+        ]
+      },
+      {
+        "path": "results/b0/recovery_planar_arm_screen_warp_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          688,
+          1376
+        ]
+      },
+      {
+        "path": "results/b0/recovery_planar_arm_native_tmux_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          934,
+          1868
+        ]
+      },
+      {
+        "path": "results/b0/recovery_planar_arm_native_tmux_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          691,
+          1381
+        ]
+      },
+      {
+        "path": "results/b0/recovery_endpoint_hinge_tail_warp_r2/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          935,
+          1869
+        ]
+      },
+      {
+        "path": "results/b0/recovery_endpoint_hinge_tail_warp_r2/push/full/C08/episode.mp4",
+        "frame_indices": [
+          0,
+          688,
+          1376
+        ]
+      },
+      {
+        "path": "results/b0/recovery_endpoint_hinge_tail_warp_r2/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          688,
+          1376
+        ]
+      },
+      {
+        "path": "results/b0/recovery_endpoint_release_teacher_r2/endpoint_aug_push_06_train_door.mp4",
+        "frame_indices": [
+          0,
+          701,
+          1402
+        ]
+      },
+      {
+        "path": "results/b0/recovery_endpoint_teacher_r1/endpoint_aug_pull_06_train_door.mp4",
+        "frame_indices": [
+          0,
+          179,
+          357
+        ]
+      },
+      {
+        "path": "results/b0/recovery_endpoint_teacher_r1/endpoint_aug_push_06_train_door.mp4",
+        "frame_indices": [
+          0,
+          683,
+          1365
+        ]
+      },
+      {
+        "path": "results/b0/recovery_c_anchor_cpu316_wheel_deepest_and_multiccd_off_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          783,
+          1566
+        ]
+      },
+      {
+        "path": "results/b0/recovery_c_anchor_cpu316_wheel_deepest_and_multiccd_off_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          266,
+          531
+        ]
+      },
+      {
+        "path": "results/b0/recovery_c_anchor_native33_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          783,
+          1566
+        ]
+      },
+      {
+        "path": "results/b0/recovery_c_anchor_native33_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          266,
+          531
+        ]
+      },
+      {
+        "path": "results/b0/recovery_bc_A3_warp_r1/pull/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          205,
+          409
+        ]
+      },
+      {
+        "path": "results/b0/recovery_bc_A3_warp_r1/push/full/nominal/episode.mp4",
+        "frame_indices": [
+          0,
+          205,
+          410
+        ]
+      }
+    ],
+    "contact_sheets": {
+      "status": "not_committed_review_workspace_artifacts",
+      "basenames": [
+        "visual_01.jpg",
+        "visual_02.jpg",
+        "visual_03.jpg",
+        "visual_04.jpg",
+        "visual_05.jpg"
+      ],
+      "note": "Temporary derived contact sheets are excluded from the repository. The original committed video paths and sampled frame indices below are the persistent evidence references."
+    },
+    "observations": [
+      "Same 546d H32-u1 nominal pull/push clips across Warp, CPU 3.16 and native 3.3 show opening and arm return in sampled frames.",
+      "Several u10 failures visibly stop with a closed door or before arm return; phase-TD u10 pull has opened but stops during retreat_arm.",
+      "Stance-u5 pull visually opens and stows; its 11.59 mm terminal station miss is established by raw numerical readiness, not by low-resolution frames.",
+      "Tail push C08 and its nominal pair visually agree with opening/return; their quantitative continuous success evidence remains the raw result events."
+    ],
+    "limitations": [
+      "Full decode is not frame-by-frame visual review.",
+      "Three-frame sampling cannot certify absence of transient force violations, all timing conditions, or full contact history.",
+      "No claim is made that unrecorded targeted C subsets were visually reviewed.",
+      "The 102 files include copied nominal videos; file count is not independent trial count."
+    ]
+  },
+  "remaining_gates": [
+    "A single frozen candidate does not yet achieve at least 18/20 on both full C directions.",
+    "Final 546d H32 checkpoint still needs its own ten contact-task regression evidence.",
+    "Further H32 updates regress nominal behavior; u5/u10 stability and independent multi-seed evidence remain open.",
+    "Learned terminal/contact prediction fails its held-out diagnostic criteria and is not accepted.",
+    "Held-out H and independent final acceptance should remain untouched until development gates are met."
+  ],
+  "model_and_teacher_cautions": {
+    "failure_model": {
+      "source": "results/b0/recovery_b_event_r1/confusion.csv",
+      "validation_terminal": 79,
+      "validation_nonterminal": 5045,
+      "threshold": 0.98,
+      "tp": 17,
+      "fp": 94,
+      "tn": 4951,
+      "fn": 62,
+      "precision": 0.15315315315315314,
+      "recall": 0.21518987341772153,
+      "false_positive_rate": 0.018632309217046582,
+      "original_softdone_true_successor_root": {
+        "threshold": 0.5,
+        "tp": 0,
+        "fp": 0,
+        "tn": 5045,
+        "fn": 79
+      },
+      "interpretation": "Calibration FPR met 1%, validation FPR did not; the event head was not accepted for deployment."
+    },
+    "perturbation_teacher": {
+      "source": "results/b0/recovery_a_teacher_r1/episode_index.csv",
+      "frozen_judge_source": "results/b0/recovery_a_teacher_r1/judge",
+      "episodes": 16,
+      "train_episodes": 12,
+      "validation_episodes": 4,
+      "real_20ms_transitions": 50776,
+      "positive_same_phase_transitions": 39229,
+      "phase_mismatch_or_outside_transitions": 11531,
+      "p6_judge_passes": 14,
+      "unchanged_full_judge_passes": 3,
+      "unchanged_full_judge_pull_passes": 1,
+      "unchanged_full_judge_push_passes": 2,
+      "interpretation": "P6 completion and same-phase labels do not imply task-valid trajectories under the unchanged full reference/event judge."
+    },
+    "fixed_endpoint_geometry": {
+      "source": "results/b0/recovery_round_20261123/fixed_endpoint_geometry_C.json",
+      "pull_C09_fixed_door_angle_deg": 5,
+      "reference_approach_endpoint_handle_penetration_mm": 24.71,
+      "tolerance_boundary_samples": 512,
+      "all_samples_intersect": true,
+      "interpretation": "This is a local frozen-angle endpoint collision check. It does not prove global task infeasibility and did not search for a legal path that first moves the passive door."
+    }
+  },
+  "review_provenance": {
+    "reviewed_source_commit": "23c90684522a030e2625bf0e44118fa86884ebf4",
+    "comparison_base_commit": "b9a11293a6930b1c95e335c090641bbdae649c62",
+    "new_experiments_during_review": false,
+    "remote_host_inspection_during_review": false,
+    "original_result_indexes_modified": false,
+    "visual_review_attribution": "Team review: recovery_evidence_audit agent inspected 30 unique video files at first, middle and last frames, for 90 inspected frames in total.",
+    "derived_review_images_committed": false,
+    "original_video_paths_recorded_in": "video_review.sampled_videos"
+  },
+  "method_identity_audit": {
+    "standard_transfer": {
+      "actor_class": "EffortScaledActor",
+      "main_network": "fixed-source MultiEncoderAE",
+      "necessary_wrapper": "fixed home/effort/gain servo-unit mapping and consistent clipping",
+      "direct_reference_arm_jaw_feedforward": false,
+      "jacobian_feedback": false,
+      "additional_contact_action_bc": false,
+      "actor_anchor": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+      "door_wm_anchor": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+      "contact_negative_endpoint": "results/b0/contact_s0_tracking_r3/checkpoint_001000.pt",
+      "actual_contact_counts": {
+        "actor_updates": 1000,
+        "wm_minibatches": 10000,
+        "critic_minibatches": 20000,
+        "valid_online_transitions": 572118,
+        "simulated_lane_intervals": 1981312
+      },
+      "original_v1_contact_nominal": {
+        "warp": {
+          "passed": 0,
+          "total": 10
+        },
+        "native33": {
+          "passed": 0,
+          "total": 10
+        }
+      },
+      "best_established_stage": "B0-03 free motion; standard contact and full-task transfer not passed"
+    },
+    "reference_residual_540": {
+      "actor_class": "ReferenceResidualActor",
+      "direct_reference_arm_jaw_feedforward": true,
+      "bc_inheritance_chain": [
+        {
+          "run": "contact_s0_bc_reference_residual_r1",
+          "config": "results/b0/contact_s0_bc_reference_residual_r1/actual_config.json",
+          "updates": "results/b0/contact_s0_bc_reference_residual_r1/updates.jsonl",
+          "initial_actor": null,
+          "source": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+          "actual_final_bc_update": 3000
+        },
+        {
+          "run": "full_s0_pull_supervised_r1",
+          "config": "results/b0/full_s0_pull_supervised_r1/actual_config.json",
+          "updates": "results/b0/full_s0_pull_supervised_r1/updates.jsonl",
+          "initial_actor": "results/b0/contact_s0_bc_reference_residual_r1/actor_003000.pt",
+          "source": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+          "actual_final_bc_update": 3000
+        },
+        {
+          "run": "full_s0_push_supervised_r1",
+          "config": "results/b0/full_s0_push_supervised_r1/actual_config.json",
+          "updates": "results/b0/full_s0_push_supervised_r1/updates.jsonl",
+          "initial_actor": "results/b0/full_s0_pull_supervised_r1/actor_003000.pt",
+          "source": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+          "actual_final_bc_update": 3000
+        },
+        {
+          "run": "full_s0_joint_supervised_r1",
+          "config": "results/b0/full_s0_joint_supervised_r1/actual_config.json",
+          "updates": "results/b0/full_s0_joint_supervised_r1/updates.jsonl",
+          "initial_actor": "results/b0/full_s0_push_supervised_r1/actor_003000.pt",
+          "source": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+          "actual_final_bc_update": 3000
+        },
+        {
+          "run": "full_s0_joint_warp_supervised_r1",
+          "config": "results/b0/full_s0_joint_warp_supervised_r1/actual_config.json",
+          "updates": "results/b0/full_s0_joint_warp_supervised_r1/updates.jsonl",
+          "initial_actor": "results/b0/full_s0_joint_supervised_r1/actor_003000.pt",
+          "source": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+          "actual_final_bc_update": 3000
+        }
+      ],
+      "inherited_action_bc_updates_total": 15000,
+      "interpretation": "Five sequential training stages with different data/purposes, not one matched 15000-step experiment; official latent encoder bc_loss is not this action-supervision training.",
+      "latest_tracking_h32_checkpoint": "results/b0/recovery_b_tracking_u1_r1/checkpoint_000001.pt",
+      "full_nominal": {
+        "warp": {
+          "passed": 2,
+          "total": 2
+        },
+        "native33": {
+          "passed": 0,
+          "total": 2
+        }
+      },
+      "full_C_warp": {
+        "pull": {
+          "passed": 9,
+          "total": 20
+        },
+        "push": {
+          "passed": 9,
+          "total": 20
+        }
+      }
+    },
+    "analytic_stance_546": {
+      "actor_class": "StanceArmActor",
+      "inherits_reference_residual_540": true,
+      "inherited_action_bc_updates_total": 15000,
+      "fitted_gain_teacher_frames": 886,
+      "direct_jacobian_feedback_gain": 1.0,
+      "new_network_bc_updates_at_integrated_u0": 0,
+      "new_h32_updates_at_integrated_u0": 0,
+      "new_h32_updates_at_stance_u1": 1,
+      "interpretation": "Same-checkpoint three-backend nominal success is mixed-policy evidence and does not fill standard-transfer acceptance."
+    },
+    "provenance_limit": "Repository configs, update logs, code and case results were inspected; remote large checkpoints were not reloaded during this review."
+  }
+}
