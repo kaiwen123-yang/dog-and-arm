@@ -1,0 +1,29 @@
+{
+  "u0_actor_critic": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "exact_post_wm_and_replay": "results/b0/recovery_b_tracking_u1_r1/cohort_state.pt",
+  "recipe": "Two single-variable offline critic fits before a hypothetical next Actor step. Same eight balanced 64-sample batches, optimizers and seed. Same 64 replay starts and imagined sensor RNG when probing subsequent H32 gradients. No new Actor update or physical task claimed.",
+  "fits": [
+    {
+      "mask": false,
+      "actual_td_minibatches": 8,
+      "eligible_hard_terminals": 30,
+      "eligible_nonterminal": 1528,
+      "real_td_samples": 512,
+      "terminal_sample_fraction": 0.5,
+      "real_td_mse": 0.0013816592181683518,
+      "mean_predicted_v_terminal": 6.545659720897675,
+      "mean_predicted_v_nonterminal": 6.622955322265625
+    },
+    {
+      "mask": true,
+      "actual_td_minibatches": 8,
+      "eligible_hard_terminals": 30,
+      "eligible_nonterminal": 1528,
+      "real_td_samples": 512,
+      "terminal_sample_fraction": 0.5,
+      "real_td_mse": 1.4419556260108948,
+      "mean_predicted_v_terminal": 0.645355436950922,
+      "mean_predicted_v_nonterminal": 1.2779558738693595
+    }
+  ]
+}

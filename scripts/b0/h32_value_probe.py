@@ -9,7 +9,7 @@ import torch
 from supermimic.models import build_mlp
 from supermimic.tasks.task_spec import build_actor_obs_td
 from learning.b0.contact_model import ContactRepresentation
-from learning.b0.contact_policy import DoorMotions,build_actor
+from learning.b0.contact_policy import DoorMotions,actor_goal_schema,build_actor
 from learning.b0.physics import ActionMap,make_model
 from scripts.b0.h32_fit_recovery_wm import csv_out,load_cohorts
 from scripts.b0.h32_recovery import write
@@ -41,8 +41,7 @@ def main(a):
     chunk, indices=co["replay"][0]
     ij=indices[1]
     sample=chunk[ij[:,0],ij[:,1]]
-    _,ag=bank.goals(rep,sample["motion_time"],sample["state"][:,:7])
-    act_obs=build_actor_obs_td({"motion":ag},sample["history"].unflatten(-1,(10,77)))
+    banks={"proprio_motion":bank}
     anchor_action=None
     results=[]
     for checkpoint,states in zip(a.checkpoints,weights):
@@ -55,6 +54,11 @@ def main(a):
             matched=(phase==phase[i]) & (sides==sides[i]) & ~label
             if matched.any():
                 paired.append(np.mean(pred[i]<pred[matched]))
+        schema=actor_goal_schema(states["cfg"])
+        if schema not in banks:
+            banks[schema]=DoorMotions(paths,rep,device,actor_schema=schema)
+        _,ag=banks[schema].goals(rep,sample["motion_time"],sample["state"][:,:7],sample["state"][:,61])
+        act_obs=build_actor_obs_td({"motion":ag},sample["history"].unflatten(-1,(10,77)))
         actor,_=build_actor(rep,states["cfg"],model,device)
         actor.load_state_dict(states["actor"])
         actor.eval()

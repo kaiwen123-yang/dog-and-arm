@@ -39,7 +39,6 @@ def load_cohorts(rows,paths,bank,model,device):
         valid=arr("valid")
         starts,ends=arr("frame")[0],bank.motion_ends.cpu().numpy()
         side_idx=np.searchsorted(ends,starts,side="right")
-        fg=arr("sub_finger_load_N") > .01
         # ContactMeter and ContactPlant use the registered force threshold.
         from learning.b0.physics import settings
         fg=arr("sub_finger_load_N") > settings("mobile",1)["contact_threshold_n"]
@@ -54,7 +53,10 @@ def load_cohorts(rows,paths,bank,model,device):
         modes[releasing.any(-1)]="release"
         touched=fg.any(axis=(-2,-1))
         # A measured onset requires a preceding non-contact interval in this branch.
-        modes[1:][touched[1:] & ~touched[:-1]]="first_contact"
+        onset=touched[1:] & ~touched[:-1]
+        prior=np.logical_or.accumulate(touched,axis=0)[:-1]
+        modes[1:][onset & ~prior & ~gripping[1:].any(-1)]="first_contact"
+        modes[1:][onset & (prior | gripping[1:].any(-1))]="recontact"
         q,v,a,q1,v1=[arr(k) for k in ("qpos","qvel","clipped","next_qpos","next_qvel")]
         reason=arr("reason")
         for lane in range(valid.shape[1]):
@@ -99,7 +101,7 @@ def validate(rep,dyn,model,episodes,out,window_cap=512):
             states=torch.cat([e.state for e in source])
             actions=torch.cat([torch.cat((e.action,e.action[-1:])) for e in source])
             context=torch.cat([e.context.expand(len(e.state),-1) for e in source])
-            for mode in MODES:
+            for mode in (*MODES,"recontact"):
                 idx=np.concatenate([i+e.starts(h)[e.modes[e.starts(h)]==mode] for i,e in zip(offset,source)])
                 size=len(idx)
                 if size>window_cap:

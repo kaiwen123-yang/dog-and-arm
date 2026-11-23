@@ -3,7 +3,34 @@ import torch
 from supermimic.learners.learner_utils import _optimize_step
 
 
-def fit_real_critic(run, terminal_mask, batches=8):
+def add_measured_grip_target(run, raw):
+    """Extra real critic target in open/hold. No force/occupancy from the future enters imagination."""
+    import numpy as np
+    from learning.b0.contact_warp import PHASE_ID
+    data,starts=run.replay.chunks[-1]
+    frames=data["motion_time"]
+    def measured(name):
+        return torch.as_tensor(np.load(raw/(name+".npy")),device=run.device).transpose(0,1)
+    grip=torch.isin(run.phases[frames],torch.tensor([PHASE_ID["open"],PHASE_ID["hold"]],device=run.device)).all(-1)
+    fg=measured("sub_finger_load_N")
+    both=(fg>run.plant.cfg["contact_threshold_n"]).all(-1)
+    legal=measured("sub_unexpected_contact_N")<=run.plant.cfg["contact_threshold_n"]
+    occ=(both & legal).float().mean(-1)
+    distance=measured("sub_grip_error_m").amax(-1)
+    peak=measured("sub_door_robot_force_N").norm(dim=-1).amax(-1)
+    dtheta=data["next_state"][...,61]-run.bank.qpos[frames+1,31]
+    geom=(1+(distance/run.plant.cfg["grasp_error_m"]).square()).reciprocal()
+    force=(1+torch.relu(peak/run.plant.cfg["grip_net_force_limit_n"]-1).square()).reciprocal()
+    progress=(1+(dtheta/np.deg2rad(2.)).square()).reciprocal()
+    quality=occ*geom*force*progress
+    data["measured_task_reward"]=torch.where(grip,data["reward"]*quality,data["reward"])
+    iv=starts[1]
+    selected=grip[iv[:,0],iv[:,1]]
+    q=quality[iv[:,0],iv[:,1]][selected]
+    return dict(measured_grip_intervals=int(selected.sum()),mean_grip_successor_quality=float(q.mean()) if len(q) else None)
+
+
+def fit_real_critic(run, terminal_mask, batches=8, task_reward=False):
     """Matched sampling; only terminal_mask differs between the two real-TD variants."""
     env=run.policy.wm_env
     pool=[]
@@ -29,7 +56,7 @@ def fit_real_critic(run, terminal_mask, batches=8):
         row=records[idx]
         def inputs(s,t):
             rep=run.rep.represent(s)
-            goal,_=run.bank.goals(run.rep,t,s[:,:7])
+            goal,_=run.bank.goals(run.rep,t,s[:,:7],s[:,61])
             return torch.cat((rep,goal,row["sim_ctx"]),-1)
         with torch.no_grad():
             before=inputs(row["state"],row["motion_time"])
@@ -37,7 +64,8 @@ def fit_real_critic(run, terminal_mask, batches=8):
             next_value=run.critic(after).squeeze(-1)
             continuation=(~row["terminated"]).float() if terminal_mask else torch.ones_like(next_value)
             # At a collection horizon a valid measured successor is available; its value bootstraps normally.
-            target=(row["reward"]+run.policy.cfg.gamma*continuation*next_value).clamp(max=run.policy._v_max)
+            reward=row["measured_task_reward"] if task_reward else row["reward"]
+            target=(reward+run.policy.cfg.gamma*continuation*next_value).clamp(max=run.policy._v_max)
         predicted=run.critic(before).squeeze(-1)
         loss=(target-predicted).square().mean()
         _optimize_step(run.policy.critic_optimizers,loss,run.critic.parameters(),max_norm=1.)

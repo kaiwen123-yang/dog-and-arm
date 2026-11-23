@@ -12,7 +12,7 @@ from supermimic.models import Dynamics
 from supermimic.tasks.task_spec import build_actor_obs_td
 
 from learning.b0.contact_model import ContactRepresentation, contact_context, contact_state
-from learning.b0.contact_policy import DoorMotions, build_actor, sensor
+from learning.b0.contact_policy import DoorMotions, actor_goal_schema, build_actor, sensor
 from learning.b0.contact_replay import ContactEpisode, MODES
 from learning.b0.contact_warp import ContactPlant, PHASE_ID, REASONS
 from learning.b0.model import RobotRepresentation, full_state, tensor
@@ -40,7 +40,7 @@ def main(a):
     model=make_model()
     rep=ContactRepresentation(model,device)
     robot=RobotRepresentation(model,device)
-    bank=DoorMotions(paths,rep,device)
+    bank=DoorMotions(paths,rep,device,actor_schema=actor_goal_schema(weights["cfg"]))
     actor,_=build_actor(rep,weights["cfg"],model,device)
     actor.load_state_dict(weights["actor"])
     actor.eval()
@@ -58,8 +58,14 @@ def main(a):
         phase_arrays.append(np.concatenate([phases,phases[-1:]]))
         actions=np.load(path/"action_clipped.npy")[:n]
         all_actions.append(np.concatenate([actions,actions[-1:]]))
-        for label in ("pregrasp","grasp","open","hold","release","retreat_arm"):
-            seq=np.flatnonzero((phases==PHASE_ID[label]).all(-1))
+        labels=("first_touch_early","first_touch_mid","first_touch_late") if a.first_touch else ("pregrasp","grasp","open","hold","release","retreat_arm")
+        fg=np.load(path/"substeps/finger_load_N.npy",mmap_mode="r")
+        from learning.b0.physics import settings
+        first_touch=int(np.flatnonzero((fg>settings("mobile",1)["contact_threshold_n"]).any(axis=1))[0]//10)
+        for label in labels:
+            seq=np.flatnonzero((phases==PHASE_ID[label]).all(-1)) if label in PHASE_ID else np.array([first_touch-{"first_touch_early":12,"first_touch_mid":7,"first_touch_late":3}[label]])
+            if seq[0]<11:
+                raise ValueError("No valid ten-control prefix")
             # Pregrasp/release/retreat entry, first grasp approach, and the middle of sustained opening/hold.
             tick=int(seq[len(seq)//2] if label in ("open","hold") else seq[0])
             for bias in (0., -a.jaw_mm,a.jaw_mm):
@@ -88,6 +94,30 @@ def main(a):
         legal &= e["valid_full_interval"] & (e["first_fail_substep"]==0)
     prev=action[frames-1]
     hist=torch.stack(history[1:]+[sense(prev)],1)
+    if a.save_fork or a.load_fork:
+        # RSI diagnostic only. Reinitialize the physical solver once at the fork.
+        # Every intervention in a phase uses the same zero-warmstart convention,
+        # measured 200ms history and event counters, and never resets after this.
+        if a.save_fork:
+            base=torch.arange(0,N,3,device=device).repeat_interleave(3)
+            snapshot=dict(frames=frames.cpu(),q=plant.data.qpos[:][base].cpu(),v=plant.data.qvel[:][base].cpu(),
+                          history=hist[base].cpu(),previous=prev[base].cpu(),legal=legal[base].cpu(),
+                          previous_contact=e["substeps"]["finger_load_N"][base].cpu(),
+                          counters={n:getattr(plant,n)[base].cpu() for n in ("load_ticks","lost_ticks","slip_ticks","sat_ticks")})
+            if a.save_fork.exists():
+                raise FileExistsError(a.save_fork)
+            torch.save(snapshot,a.save_fork)
+        else:
+            snapshot=torch.load(a.load_fork,weights_only=True,map_location="cpu")
+        if not torch.equal(snapshot["frames"],frames.cpu()):
+            raise ValueError("fork reference mismatch")
+        plant.reset(snapshot["q"].to(device),snapshot["v"].to(device))
+        for n,values in snapshot["counters"].items():
+            getattr(plant,n).copy_(values.to(device))
+        hist=snapshot["history"].to(device)
+        prev=snapshot["previous"].to(device)
+        legal=snapshot["legal"].to(device)
+        e["substeps"]["finger_load_N"]=snapshot["previous_contact"].to(device)
     alive=legal.clone()
     first=[]
     events=[]
@@ -99,7 +129,7 @@ def main(a):
     previously_contact=(e["substeps"]["finger_load_N"]>plant.cfg["contact_threshold_n"]).any(dim=(1,2)).cpu().numpy()
     for step in range(a.steps):
         s=states[-1]
-        _,goal=bank.goals(rep,frames,s[:,:7])
+        _,goal=bank.goals(rep,frames,s[:,:7],s[:,61])
         obs=build_actor_obs_td({"motion":goal},hist)
         cmd=actor.raw(obs).clone()
         if step==0:
@@ -175,6 +205,7 @@ def main(a):
     table(out/"mode_validation.csv",score(rep,dyn,episodes,model))
     write(out/"branches.json",dict(checkpoint=str(a.checkpoint), references=str(a.references),
           design="Independent validation RSI branches, never sampled for fitting. Ten real held prefix commands; optional +/- jaw total width perturbation only at first 20ms; subsequent feedback from each lane. Training physical audit stops validity at first terminal and keeps its measured successor. No reset-crossing windows.",
+          frozen_fork=str(a.save_fork or a.load_fork) if (a.save_fork or a.load_fork) else None,
           raw=str(raw), lanes=[dict(id=name, initial_reference_frame=starts[i],prefix_valid=bool(legal[i]),
           valid_transitions=int(V[i].sum()),first_physical_target=first[i]) for i,name in enumerate(names)]))
     print(f"{len(episodes)} valid branches, {len(events)} measured physical intervals",flush=True)
@@ -187,6 +218,10 @@ if __name__=="__main__":
     p.add_argument("--checkpoint",type=Path,required=True)
     p.add_argument("--jaw-mm",type=float,default=.5)
     p.add_argument("--steps",type=int,default=40)
+    p.add_argument("--first-touch",action="store_true",help="Independent starts 12/7/3 policy frames before the reference's first measured finger contact; identify the real Actor's first contact from loads")
+    fork=p.add_mutually_exclusive_group()
+    fork.add_argument("--save-fork",type=Path,help="Store shared measured RSI physical and history states then zero-warmstart physical branches")
+    fork.add_argument("--load-fork",type=Path,help="Start from exactly the same saved physical and history state")
     args=p.parse_args()
     if Path(args.run).name!=args.run or args.run in ("", ".", "..") or args.steps<32:
         p.error("Fresh run name and >=32 contiguous steps required")

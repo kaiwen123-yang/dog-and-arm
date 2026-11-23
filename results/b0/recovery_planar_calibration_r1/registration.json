@@ -1,0 +1,15 @@
+{
+  "rates": [
+    0.0,
+    1.0,
+    2.0,
+    4.0
+  ],
+  "anchor": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "reference": "results/raw_large/b0/full_warp_hold_park_r1",
+  "starts": "all 16 registered independent training/validation starts plus both nominal; no C/H",
+  "target": "max planar error <10mm and max heading error <1 degree for last 600ms of frozen settle; no collector hard failure",
+  "selection": "largest number passing across 12 training episodes; ties lower max planar error, then smaller gain",
+  "scope": "local real-physics station diagnostic through fixed reference settle only, not official full scoring",
+  "per_action_bounds": "wheel correction +/-1.5 rad/s, leg correction +/-0.245 rad; native physical judge unchanged"
+}

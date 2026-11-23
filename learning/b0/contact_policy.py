@@ -28,7 +28,7 @@ ARM_MAP_BASES = {STANCE_ARM: "proprio_motion", TRANSLATION_STANCE_ARM: PRIVILEGE
 
 def actor_goal_schema(cfg):
     schema = cfg.get("actor_goal_schema", "proprio_motion")
-    if schema == endpoint_policy.SCHEMA:
+    if schema in endpoint_policy.SCHEMAS:
         return schema
     if ARM_MAP_BASES.get(schema, schema) not in ("proprio_motion", PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL, APPROACH_LEG_WHEEL):
         raise ValueError(f"Unsupported actor goal schema {schema!r}")
@@ -61,8 +61,8 @@ class DoorMotions:
             ends.append(start+n+1)
             q.append(np.load(path/'qpos.npy',mmap_mode='r')[:n+1])
             v.append(np.load(path/'qvel.npy',mmap_mode='r')[:n+1])
-            if self.actor_schema == endpoint_policy.SCHEMA:
-                endpoint_clock.append(endpoint_policy.reference_clock(path,meta,n))
+            if self.actor_schema in endpoint_policy.SCHEMAS:
+                endpoint_clock.append(endpoint_policy.reference_clock(path,meta,n,self.actor_schema))
             if self.actor_schema in (APPROACH_WHEEL, APPROACH_LEG_WHEEL):
                 phase = np.load(path / 'phase.npy')[:n]
                 eligible = np.asarray(meta['phases'])[phase] == 'approach_base'
@@ -120,7 +120,7 @@ class DoorMotions:
             shift = self.root_pos_w[frames] - aux[..., :3]
             delta = torch.matmul(self.reference_arm_map[frames], shift.unsqueeze(-1)).squeeze(-1)
             actor = torch.cat((actor, delta.clamp(-.05, .05)), dim=-1)
-        if self.actor_schema == endpoint_policy.SCHEMA:
+        if self.actor_schema in endpoint_policy.SCHEMAS:
             if door_angle is None or door_angle.shape != frames.shape:
                 raise ValueError("Current hinge required for endpoint residual")
             error=(door_angle-self.qpos[frames,31]).unsqueeze(-1)
@@ -145,7 +145,12 @@ class ReferenceResidualActor(EffortScaledActor):
         pose = torch.cat((goal[...,16:22],goal[...,22:23]-goal[...,23:24]),-1)
         base = torch.cat((self.home_action[:16].expand_as(goal[...,:16]),
                           (pose-self.reference_offset)/self.reference_scale),-1)
-        return base + self.standard_action * RobotActor.raw(self,obs_td)
+        baseline = base + self.standard_action * RobotActor.raw(self,obs_td)
+        if hasattr(self, "planar_feedback"):
+            yaw = torch.atan2(goal[:, 482], goal[:, 480])
+            baseline = self.planar_feedback(baseline, obs_td["history"][:, -1, -23:],
+                                            goal[:, 540:542], yaw, self.planar_rate)
+        return baseline
 
 
     def forward(self, obs_td):
@@ -166,6 +171,20 @@ class ReferenceResidualActor(EffortScaledActor):
         if getattr(self, 'training_action_prior', None) is not None:
             stats['physical_action_prior'] = self._physical_prior_cost.detach().mean()
         return stats
+
+
+class HingeFeedbackActor(ReferenceResidualActor):
+    def set_servo_units(self,model,mapping,device):
+        super().set_servo_units(model,mapping,device)
+        self.hinge_coefficients=torch.nn.Parameter(torch.zeros(2*endpoint_policy.KNOTS,7,device=device))
+
+    def raw(self, obs_td):
+        base=super().raw(obs_td)
+        pa,pj=endpoint_policy.features(obs_td["goal_motion"])
+        arm=pa@self.hinge_coefficients[:,:6]
+        jaw=pj@self.hinge_coefficients[:,6:7]
+        correction=torch.cat((arm,jaw),dim=1)/self.reference_scale
+        return torch.cat((base[:,:16],base[:,16:]+correction),dim=1)
 
 
 class StanceArmActor(ReferenceResidualActor):
@@ -233,6 +252,8 @@ class ApproachLegWheelActor(ApproachWheelActor):
         desired = (previous + active * .02 * rate).clamp(-.27925, .27925)
         # The physical approach teacher retains its final stance after parking.
         carry = (previous.abs() / .002 - 1).clamp(0, 1)
+        if self.approach_only:
+            carry = carry * active
         enabled = torch.maximum(gate, carry)
         residual = enabled * (desired - (baseline[:, :12] @ self.leg_trim_projection)[:, None])
         return torch.cat((baseline[:, :12] + residual * self.leg_trim_gain, baseline[:, 12:]), dim=-1)
@@ -248,8 +269,8 @@ def build_actor(rep, cfg, model, device):
         dim = {"proprio_motion": 540, PRIVILEGED_TRANSLATION: 570, PRIVILEGED_DOOR_ANGLE: 571}[ARM_MAP_BASES[schema]]
         task = replace(task, goal_dim=dim+6,
                        extract_training_goal=lambda motion, t, aux: motion.goals(rep, t, aux)[1])
-    if schema == endpoint_policy.SCHEMA:
-        task = replace(task, goal_dim=544, extract_training_goal=lambda motion,t,aux: motion.goals(rep,t,aux)[1])
+    if schema in endpoint_policy.SCHEMAS:
+        task = replace(task, goal_dim=545 if schema==endpoint_policy.TERMINAL else 544, extract_training_goal=lambda motion,t,aux: motion.goals(rep,t,aux)[1])
     velocity = make_velocity_task((-1.5,1.5),(-.5,.5),(-3.14,3.14),25,(.5,.5,.785),device)
     actor_type = {None:EffortScaledActor,REFERENCE_RESIDUAL:ReferenceResidualActor}[cfg.get("actor_parameterization")]
     if schema in (APPROACH_WHEEL, APPROACH_LEG_WHEEL):
@@ -260,13 +281,21 @@ def build_actor(rep, cfg, model, device):
         if actor_type is not ReferenceResidualActor:
             raise ValueError("Arm map requires the reference residual base")
         actor_type = StanceArmActor
-    if schema == endpoint_policy.SCHEMA:
+    if schema in endpoint_policy.SCHEMAS:
         if actor_type is not ReferenceResidualActor:
             raise ValueError("Hinge feedback requires the reference residual Actor")
-        actor_type=endpoint_policy.actor_class()
+        actor_type=HingeFeedbackActor
     actor = actor_type(77,23,[task,velocity],{'motion':1.,'velocity':0.},
                               32,tuple(cfg['actor_hidden']),.1,10).to(device)
     actor.set_servo_units(model,ActionMap(model),device)
+    if "planar_stance_rate" in cfg:
+        if schema not in (PRIVILEGED_TRANSLATION, TRANSLATION_STANCE_ARM):
+            raise ValueError("Planar feedback needs the ten privileged XYZ slots")
+        from .stance_base import PlanarStanceFeedback
+        actor.planar_feedback = PlanarStanceFeedback(model).to(device)
+        actor.planar_rate = float(cfg["planar_stance_rate"])
+    if schema == APPROACH_LEG_WHEEL:
+        actor.approach_only = cfg.get("trim_only_in_supervised_phase", False)
     if schema in ARM_MAP_BASES:
         actor.stance_arm_gain = float(cfg["stance_arm_gain"])
     return actor, task

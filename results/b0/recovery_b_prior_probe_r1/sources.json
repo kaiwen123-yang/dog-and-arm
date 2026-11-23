@@ -1,0 +1,19 @@
+{
+  "anchors": [
+    "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+    "results/b0/recovery_b_tracking_u1_r1/checkpoint_000001.pt",
+    "results/b0/recovery_b_matched_r1/checkpoint_000005.pt"
+  ],
+  "prior": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "replay": "results/b0/recovery_b_tracking_u1_r1/cohort_state.pt",
+  "weight": {
+    "physical_units": [
+      0.005,
+      0.1,
+      0.001,
+      0.0001
+    ],
+    "weight": 0.02
+  },
+  "probe": "Same real batch and sensor RNG for every package. Evaluate its own WM and terminal critic, and its gradient under the historical 0.02 physical action prior anchored to u0, without optimizing."
+}

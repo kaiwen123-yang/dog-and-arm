@@ -28,7 +28,12 @@ def main():
             raise ValueError(f"Missing completed evaluation manifest for {run}")
         evaluation = read(run / "evaluation.json")
         records = sorted(run.glob("*/full/*/result.json"))
-        if len(records) != evaluation["evaluated"]:
+        if "evaluated" in evaluation:
+            expected = evaluation["evaluated"]
+        else:
+            expected = len(evaluation["results"])
+        condition = evaluation.get("variant", "original")
+        if len(records) != expected:
             raise ValueError(f"Incomplete completed-case table in {run}")
         for path in records:
             side, _, case = path.relative_to(run).parts[:3]
@@ -42,7 +47,7 @@ def main():
                     raise ValueError(f"Missing full-task requirements in {path}")
             failure = d["first_failure"] or {}
             cases.append(dict(run=run.name, checkpoint=evaluation["checkpoint"], backend=d["backend"],
-                mujoco=d["mujoco"], side=side, case=case, passed=int(d["passed"]), steps=d["physics_steps"],
+                mujoco=d["mujoco"], physical_condition=condition, side=side, case=case, passed=int(d["passed"]), steps=d["physics_steps"],
                 last_angle_deg=d["final_door_deg"], reached_phases=len(events), first_failure=failure.get("reason",""),
                 failure_phase=failure.get("phase",""), post_release_ticks=events.get("post_release_hold",{}).get("ticks",""),
                 final_ticks=events.get("final",{}).get("ticks",""), result=str(path), raw=d.get("raw_directory","")))
@@ -58,7 +63,7 @@ def main():
             reasons = Counter(row["first_failure"] for row in dev if not row["passed"])
             base = nominal[0]
             variants.append(dict(run=run.name, checkpoint=base["checkpoint"],backend=base["backend"],
-                    mujoco=base["mujoco"],side=side,nominal=base["passed"],nominal_steps=base["steps"],
+                    mujoco=base["mujoco"],physical_condition=condition,side=side,nominal=base["passed"],nominal_steps=base["steps"],
                     nominal_degrees=base["last_angle_deg"],nominal_failure=base["first_failure"],
                     development_scope="full" if len(ids)==20 else ("subset" if ids else "unmeasured"),
                     C_pass=sum(row["passed"] for row in dev) if ids else "",C_tested=len(dev),

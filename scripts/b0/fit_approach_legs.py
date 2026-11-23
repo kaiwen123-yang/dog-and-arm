@@ -16,11 +16,21 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--run", required=True)
     ap.add_argument("--wheel", type=Path, default=Path("results/b0/recovery_approach_wheel_r1/checkpoint_000000.pt"))
+    ap.add_argument("--restrict-existing", type=Path, help="Use unchanged fitted weights and remove carry outside the supervised approach")
     args = ap.parse_args()
     if Path(args.run).name != args.run:
         ap.error("Expected a fresh run name")
     out=Path("results/b0")/args.run
     out.mkdir(exist_ok=False)
+    if args.restrict_existing:
+        source=torch.load(args.restrict_existing,map_location="cpu",weights_only=False)
+        if source["cfg"]["actor_goal_schema"]!=APPROACH_LEG_WHEEL:
+            raise ValueError("Expected a learned leg/wheel feedback policy")
+        source["cfg"]=dict(source["cfg"],trim_only_in_supervised_phase=True)
+        dump(out/"actual_config.json",dict(source=str(args.restrict_existing),changes="remove stance carry outside the fitted approach only; all parameters identical",
+              additional_optimization=0,source_leg_bc=source["additional_leg_bc_updates"],h32_updates=0))
+        torch.save(source,out/"checkpoint_000000.pt")
+        return
     device="cuda:0"
     torch.manual_seed(231123)
     torch.set_float32_matmul_precision("highest")

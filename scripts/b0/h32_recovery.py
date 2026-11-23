@@ -64,7 +64,8 @@ def gradient_audit(run, batch, output):
         item.pop("flat", None)
     def values(x):
         return x.detach().cpu().tolist()
-    write(output, dict(horizon=cfg.horizon, gamma=cfg.gamma, observed_replay_frames=values(batch["motion_time"]),
+    write(output, dict(bootstrap_gradient_enabled_for_actor=run.cfg.get("recovery_variant") not in ("detached_bootstrap","matched_detached_bootstrap"),
+                       horizon=cfg.horizon, gamma=cfg.gamma, observed_replay_frames=values(batch["motion_time"]),
                        measured_start_interval_terminal=values(batch["terminated"]), phases=values(run.phases[batch["motion_time"],0]),
                        cumulative_discounted_immediate=values(returns), raw_terminal_critic=values(raw_value),
                        clipped_discounted_bootstrap=values(boot), final_survival=values(survival),
@@ -91,7 +92,7 @@ def main():
     p.add_argument("--updates", type=int, default=1)
     p.add_argument("--worlds", type=int, default=64)
     p.add_argument("--batch", type=int, default=64)
-    p.add_argument("--variant", choices=("tracking", "detached_bootstrap", "physical_prior", "real_td_terminal", "real_td_continue"), required=True)
+    p.add_argument("--variant", choices=("tracking", "detached_bootstrap", "matched_detached_bootstrap", "physical_prior", "real_td_terminal", "real_td_continue", "real_td_grip_target"), required=True)
     p.add_argument("--full-wm", type=Path, help="Separate single-variable WM initialization experiment")
     p.add_argument("--resume", type=Path)
     p.add_argument("--matched-detached", action="store_true", help="Fork the first actual post-WM batch and RNG for an auxiliary detached-bootstrap Actor/Critic update")
@@ -103,6 +104,10 @@ def main():
     np.random.seed(0)
     torch.set_float32_matmul_precision("high")
     frozen = torch.load(a.anchor, weights_only=False, map_location="cpu")
+    if frozen["schema"]!=SCHEMA or frozen["seed"]!=0 or frozen["updates"]!=0:
+        raise ValueError("Use the full seed0 contact u0 package as anchor; continue positive update counts via --resume")
+    if a.variant=="matched_detached_bootstrap" and not a.resume:
+        raise ValueError("The matched detached branch starts from its saved cohort boundary")
     cfg = dict(frozen["cfg"], reference_directory=str(a.references), cohort_steps=40,
                worlds=a.worlds, wm_batch=a.batch, actor_batch=a.batch, recovery_variant=a.variant)
     if a.variant != "physical_prior":
@@ -126,6 +131,12 @@ def main():
           resume=str(a.resume) if a.resume else None, training="Pinned O1 H32; 10 WM and 20 Critic minibatches per update, first update Actor before Critic. 40 physical intervals per cohort."))
     start=0
     if a.resume:
+        source_meta=a.resume.parent/"actual_config.json"
+        if a.resume.parent.name=="matched_detached":
+            source_meta=a.resume.parent.parent/"actual_config.json"
+        meta=json.loads(source_meta.read_text())
+        if Path(meta["anchor"]).resolve()!=a.anchor.resolve():
+            raise ValueError("A recovery resume must use the originally recorded anchor")
         st=torch.load(a.resume,weights_only=False,map_location=device)
         if st["cfg"]!=cfg or st["schema"]!=SCHEMA:
             raise ValueError("Resume requires exact recovery config")
@@ -144,25 +155,28 @@ def main():
         raise ValueError("Specify an update beyond the resume boundary")
     checkpoint(run,start,out)
     original = run.policy._bootstrap
-    if a.variant == "detached_bootstrap":
+    if a.variant in ("detached_bootstrap","matched_detached_bootstrap"):
         def detached(self, obs, survival, term):
             return original(obs,survival,term).detach()
         run.policy._bootstrap = MethodType(detached,run.policy)
     td_stats={}
-    if a.variant in ("real_td_terminal","real_td_continue"):
+    if a.variant in ("real_td_terminal","real_td_continue","real_td_grip_target"):
         from scripts.b0.h32_real_critic import fit_real_critic
         original_update=run.policy.update
         def real_td_then_policy():
             td_stats.clear()
-            td_stats.update(fit_real_critic(run,a.variant=="real_td_terminal"))
+            td_stats.update(fit_real_critic(run,a.variant!="real_td_continue",task_reward=a.variant=="real_td_grip_target"))
             return original_update()
         run.policy.update=real_td_then_policy
     with (out/"updates.jsonl").open("x",buffering=1) as log:
         for count in range(start+1,a.updates+1):
             capture = count in (1,5,10,50)
-            raw_cohort = raw/f"cohort_{count:06d}" if capture else None
+            raw_cohort = raw/f"cohort_{count:06d}" if capture or a.variant=="real_td_grip_target" else None
             metrics=run.collect(raw_cohort)
-            if count==1 and a.variant not in ("real_td_terminal","real_td_continue"):
+            if a.variant=="real_td_grip_target":
+                from scripts.b0.h32_real_critic import add_measured_grip_target
+                metrics.update(add_measured_grip_target(run,raw_cohort))
+            if count==1 and a.variant not in ("real_td_terminal","real_td_continue","real_td_grip_target"):
                 # Audit the exact starts of the first actual Actor update, after that update's WM fit.
                 # Restore RNG so the official learner reuses the same start selection and sensor noise.
                 default=run.policy.update
@@ -202,7 +216,7 @@ def main():
             if capture:
                 before={name:p.detach().clone() for name,p in (("wm",run.dyn.mlp[-1].weight),("critic",run.critic[-1].weight))}
             update=run.update()
-            if count==1 and a.variant not in ("real_td_terminal","real_td_continue"):
+            if count==1 and a.variant not in ("real_td_terminal","real_td_continue","real_td_grip_target"):
                 run.policy.update=default
             if capture:
                 update["wm_output_max_delta"]=(run.dyn.mlp[-1].weight.detach()-before["wm"]).abs().max().item()

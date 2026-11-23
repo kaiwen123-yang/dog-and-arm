@@ -54,7 +54,7 @@ def collect(run,folder,seed):
     for k in range(40):
         q=plant.data.qpos[:].clone()
         v=plant.data.qvel[:].clone()
-        _,goal=run.bank.goals(run.rep,frames,q[:,:7])
+        _,goal=run.bank.goals(run.rep,frames,q[:,:7],q[:,31])
         obs=build_actor_obs_td({"motion":goal},hist)
         cmd=(run.actor.raw(obs)+impulse*(k<length[:,None])).clamp(-1,1)
         e=plant.step_contact(cmd,side,run.phases[frames],record=True)

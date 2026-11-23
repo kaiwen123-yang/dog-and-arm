@@ -1,0 +1,16 @@
+{
+  "initial": "results/b0/recovery_b_branch_u0_exact_r1",
+  "updated": "results/b0/recovery_b_branch_u1_exact_r1",
+  "horizons": [
+    1,
+    7,
+    32
+  ],
+  "numerical_bands": {
+    "tcp_rod_mm": 0.01,
+    "door_deg": 0.001,
+    "jaw_width_mm": 0.01
+  },
+  "metric": "For each branch integrate its actual, clipped, held physical action sequence from its own measured start, without reinjecting measured future states. Subtract the endpoint change of the zero-offset branch (or the initial Actor's zero-offset branch) from the compared endpoint change. Report both signed values; separate real/model near-zero effects. No predicted force.",
+  "pairing": "Same registered reference frame and teacher prefix. Actual state differences between separately integrated Warp lanes are explicitly measured and reported; change from each lane's physical start is used for differencing. Results near that scale require caution."
+}
