@@ -14,7 +14,7 @@ from supermimic.learners.wm_learner import WorldModelLearner
 from .contact_model import ContactRepresentation, ContactTcpLoss, ContactWorldModelCfg, contact_context, contact_state
 from .contact_policy import DoorMotions, actor_goal_schema, build_actor, sensor
 from .contact_replay import ContactEpisode, ContactWindows
-from .model import RobotRepresentation, full_state, tensor
+from .model import EffortScaledActor, RobotRepresentation, full_state, tensor
 from .physics import ActionMap, make_model
 from .training import MotionCommand
 from supermimic.tasks.task_spec import build_actor_obs_td
@@ -132,8 +132,19 @@ class DoorImagination(MultiTaskWorldModelEnv):
         self._build_task_goals()
 
 
+@torch.no_grad()
+def rescale_standard_arm_jaw(actor, gain):
+    """Change decoder update units while preserving pretrained physical commands."""
+    if type(actor) is not EffortScaledActor or not np.isfinite(gain) or gain <= 0:
+        raise ValueError("Expected a standard EffortScaledActor and a finite positive gain")
+    final = actor.decoder[-1]
+    actor.standard_action[16:].mul_(gain)
+    final.weight[16:].div_(gain)
+    final.bias[16:].div_(gain)
+
+
 class ContactRun:
-    def __init__(self,cfg,refs,teachers,actor_checkpoint,wm_checkpoint,device):
+    def __init__(self,cfg,refs,teachers,actor_checkpoint,wm_checkpoint,device,*,from_free_anchor=False):
         from .contact_warp import ContactPlant, PHASE_ID
         self.device,self.cfg = device,cfg
         self.model = model = make_model()
@@ -149,6 +160,10 @@ class ContactRun:
         # arm/jaw decoder uses a larger unit to represent nominal poses.
         self.exploration_scale=self.actor.standard_action.clone()
         self.actor.load_state_dict(actor_checkpoint['actor'])
+        if from_free_anchor and 'arm_jaw_output_gain' in cfg:
+            if cfg.get('calibrated_actor') or actor_checkpoint.get('schema') is not None:
+                raise ValueError("Arm/jaw unit change requires a fresh B0-03 standard initialization")
+            rescale_standard_arm_jaw(self.actor, cfg['arm_jaw_output_gain'])
         if 'physical_action_prior' in cfg:
             if cfg.get('actor_parameterization') != 'motion_reference_arm_jaw_residual':
                 raise ValueError('The contact action prior requires the calibrated reference-residual actor')
@@ -237,7 +252,7 @@ class ContactRun:
         return [*self.learners[7].optimizers,*self.policy.actor_optimizers,*self.policy.critic_optimizers]
 
     @torch.no_grad()
-    def collect(self,raw_path=None):
+    def collect(self,raw_path=None,*,training=True):
         bank,plant=self.bank,self.plant
         frames=torch.cat([x[torch.randint(len(x),((self.n+j)//len(self.eligible),),device=self.device)]
                           for j,x in enumerate(self.eligible)])
@@ -272,7 +287,7 @@ class ContactRun:
             q1,v1=plant.data.qpos[:].clone(),plant.data.qvel[:].clone()
             ns=contact_state(q1,v1)
             valid=alive & evidence['valid_full_interval']
-            if valid.any() and not self.cfg.get('freeze_actor_statistics',False):
+            if training and valid.any() and not self.cfg.get('freeze_actor_statistics',False):
                 self.actor.train()
                 self.actor.update_normalization(obs[valid])
                 self.actor.eval()
@@ -306,12 +321,13 @@ class ContactRun:
             for n in records[0]:
                 np.save(raw_path/(n+'.npy'),np.stack([r[n] for r in records]))
         valid_count=sum(int(r['valid'].sum()) for r in rows)
-        if valid_count:
+        if training and valid_count:
             for r in rows:
                 ix=r['valid']
                 if ix.any():
                     self.learners[7].update_normalization(r['state'][ix],r['action'][ix])
-        self.replay.append(rows)
+        if training:
+            self.replay.append(rows)
         self.total+=valid_count
         self.simulated+=self.n*len(rows)
         return dict(valid_transitions=valid_count,cumulative_valid_transitions=self.total,

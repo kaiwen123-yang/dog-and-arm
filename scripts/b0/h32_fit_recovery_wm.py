@@ -65,7 +65,7 @@ def load_cohorts(rows,paths,bank,model,device):
                 continue
             if not valid[:n,lane].all() or valid[n:,lane].any() or (terminal[:n-1,lane]>0).any():
                 raise ValueError(f"Noncontiguous real lane in {folder}")
-            side=("pull","push")[side_idx[lane]]
+            side=bank.metas[paths[side_idx[lane]].name]["task"]
             qs=np.concatenate([q[:n,lane],q1[n-1:n,lane]])
             vs=np.concatenate([v[:n,lane],v1[n-1:n,lane]])
             if not np.array_equal(qs[1:],q1[:n,lane]) or not np.array_equal(vs[1:],v1[:n,lane]):
@@ -90,7 +90,7 @@ def csv_out(path,rows):
 
 
 @torch.no_grad()
-def validate(rep,dyn,model,episodes,out,window_cap=512):
+def validate(rep,dyn,model,episodes,out,window_cap=512,*,window_details=False):
     device=episodes[0].state.device
     wheel=torch.tensor([31+model.joint(n).dofadr.item() for n in WHEELS],device=device)
     rows=[]
@@ -107,7 +107,10 @@ def validate(rep,dyn,model,episodes,out,window_cap=512):
                 if size>window_cap:
                     idx=np.random.default_rng(301).choice(idx,window_cap,replace=False)
                 if not len(idx):
-                    rows.append(dict(side=side,h=h,mode=mode,predictor="none",metric="none",available=0,scored=0,nonfinite=0,rmse=None,p95=None))
+                    row=dict(side=side,h=h,mode=mode,predictor="none",metric="none",available=0,scored=0,nonfinite=0,rmse=None,p95=None)
+                    if window_details:
+                        row.update(scored_lanes=0,maximum=None)
+                    rows.append(row)
                     continue
                 values={}
                 for ix_np in np.array_split(idx,max(1,int(np.ceil(len(idx)/96)))):
@@ -126,8 +129,12 @@ def validate(rep,dyn,model,episodes,out,window_cap=512):
                 for (label,metric),slices in values.items():
                     x=np.concatenate(slices)
                     finite=x[np.isfinite(x)].astype(float)
-                    rows.append(dict(side=side,h=h,mode=mode,predictor=label,metric=metric,available=size,scored=len(x),nonfinite=int(len(x)-len(finite)),
-                        rmse=np.sqrt(np.mean(finite**2)) if len(finite) else None,p95=np.percentile(finite,95) if len(finite) else None))
+                    row=dict(side=side,h=h,mode=mode,predictor=label,metric=metric,available=size,scored=len(x),nonfinite=int(len(x)-len(finite)),
+                        rmse=np.sqrt(np.mean(finite**2)) if len(finite) else None,p95=np.percentile(finite,95) if len(finite) else None)
+                    if window_details:
+                        row.update(scored_lanes=len(np.unique(np.searchsorted(offset,idx,side="right")-1)),
+                                   maximum=finite.max() if len(finite) else None)
+                    rows.append(row)
     csv_out(out,rows)
 
 

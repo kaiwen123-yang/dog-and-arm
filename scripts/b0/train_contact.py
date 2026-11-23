@@ -52,7 +52,7 @@ def main():
     for p in teachers:
         if not (p/'metadata.json').is_file():
             raise FileNotFoundError(p)
-    run=ContactRun(cfg,refs,teachers,source,wm,'cuda:0')
+    run=ContactRun(cfg,refs,teachers,source,wm,'cuda:0',from_free_anchor=args.resume is None)
     out=Path('results/b0')/args.run
     raw=Path('results/raw_large/b0')/args.run
     out.mkdir(exist_ok=False)

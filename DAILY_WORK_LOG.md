@@ -803,3 +803,13 @@ f0812006 已普通推送并通过 GitHub main 回读。原生 3.3 的同包完�
 ### 验证与交付状态
 
 本次只进行文档/证据一致性检查：逐案分母、S/R/J配置/继承计数、链接路径、当前/历史入口区分、JSON解析和git diff空白检查；不新增与当前改动无关的测试。最终推送前核对远端HEAD，普通提交仅包含本次明确文件，回读GitHub及同步本地后核对内容。本文与本次审查/计划随同一个文档提交保存；当前提交自己的SHA不预填，最终实际提交号在聊天交付，下一日志节点可补记。失败记录、大资产位置、旧协议和用户其他修改保留，不强推、不压缩归档。
+
+### 22:21–22:29 标准迁移开工与 40 步原尺度配对组（北京时间）
+
+核查 GitHub main 为 5e6db44。第二平台主工作树 fe6cc85 有 PROJECT_STATE、H0 和 P5 的在地改动，在同仓库另设 /home/kaiwen/research/dog-and-arm-standard。经第二平台 SSH autodl-dog-arm 管理云端独立工作树 /root/autodl-tmp/dog-and-arm-b0-standard，已核实原始 SuperMimic abc124c / mjlab_research dd51a9f；隔离 .conda、.venv、vendor、网格及两项权重复用已有路径。原云端 recovery 树含未提交改动。现场有其他项目占用同一 RTX PRO 6000，未干预。只运行仿真。原 5e6db44 审查已从 origin/main 读回。
+
+从 B0-03 free_s0_cloud_servo_r2/checkpoint_001000.pt 恢复 Actor 全部参数和统计，接触 WM 用 contact_s0_wm_held_r2/wm_002000.pt（已有 2000 教师 minibatch）。门 Critic 第一层重新初始化，兼容的后续层沿用，无接触优化器、RNG 与 replay 全新起步。种子 0、128 世界、WM/Actor batch 256、40 个真实 20 ms 间隔；正常 joint 每轮 8 个 H7 和 2 个 H1 minibatch、1 次 H32、20 次 Critic。沿用原 6 条参考和另 4 条教师训练轨迹、官方 tracking 与 soft termination。
+
+云端命令 `bash scripts/b0/env.sh python -u scripts/b0/train_contact.py --config config/b0/standard_contact_40.yaml --run standard_s0_control40_r1 --updates 10`。u0/1/5/10 保存，实得 17,736 / 51,200 个 lane 间隔有效，10/100/200 次 Actor/WM/Critic 更新；u0 Warp 原 v1 为 0/10，额外五个已登记 hold-margin 为 0/5。首个前拉 open_5 控制间隔在第 1 个 2 ms 触发 51.07 N 合力。逐节点物理结果正在按实际完成状态收集。
+
+从同一对锚点独立启动 standard_s0_gain32_r1，针对有实测依据的六臂/夹口尺度做初始化等价的单因素比较。夹口发送全宽、单电机乘 0.5，两真实指从反馈计算宽度。机械与动作映射细节、预训练分布和等价复测见 results/b0/standard_transfer_action_audit/action_units.json。两个尺度的规定扭矩/速度/物理限幅、探索和前动作定义相同。十项接触 D、完整任务 C、native 完整名义与多 seed/H 尚未执行。
