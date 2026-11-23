@@ -1,0 +1,92 @@
+{
+  "checkpoint": "results/b0/recovery_bc_A0_r1/checkpoint_000000.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "/root/autodl-tmp/dog-and-arm-b0-recovery/scripts/p6_scene.py",
+  "requested_dev": true,
+  "source": "results/raw_large/b0/full_warp_hold_park_r1",
+  "passed": 2,
+  "evaluated": 10,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "full",
+      "case": "C02",
+      "passed": false,
+      "physics_steps": 7064,
+      "policy_calls": 707,
+      "final_door_deg": -0.00039692931598105433,
+      "failure": "unexpected_contact:gripper_base_handle"
+    },
+    {
+      "side": "pull",
+      "segment": "full",
+      "case": "C03",
+      "passed": false,
+      "physics_steps": 16001,
+      "policy_calls": 1601,
+      "final_door_deg": 0.0,
+      "failure": "timeout:approach_base"
+    },
+    {
+      "side": "pull",
+      "segment": "full",
+      "case": "C04",
+      "passed": false,
+      "physics_steps": 6794,
+      "policy_calls": 680,
+      "final_door_deg": -0.0001115958601325824,
+      "failure": "door_contact_outside_manipulation"
+    },
+    {
+      "side": "pull",
+      "segment": "full",
+      "case": "C05",
+      "passed": false,
+      "physics_steps": 6795,
+      "policy_calls": 680,
+      "final_door_deg": -0.00012452996547753832,
+      "failure": "door_contact_outside_manipulation"
+    },
+    {
+      "side": "push",
+      "segment": "full",
+      "case": "C02",
+      "passed": false,
+      "physics_steps": 7164,
+      "policy_calls": 717,
+      "final_door_deg": 5.915049240181626e-05,
+      "failure": "door_contact_outside_manipulation"
+    },
+    {
+      "side": "push",
+      "segment": "full",
+      "case": "C03",
+      "passed": false,
+      "physics_steps": 5177,
+      "policy_calls": 518,
+      "final_door_deg": -3.022150071485758e-05,
+      "failure": "unexpected_contact:finger_non_grasp_handle"
+    },
+    {
+      "side": "push",
+      "segment": "full",
+      "case": "C04",
+      "passed": false,
+      "physics_steps": 5256,
+      "policy_calls": 526,
+      "final_door_deg": -1.9864427790783e-07,
+      "failure": "unexpected_contact:finger_non_grasp_handle"
+    },
+    {
+      "side": "push",
+      "segment": "full",
+      "case": "C05",
+      "passed": false,
+      "physics_steps": 9709,
+      "policy_calls": 971,
+      "final_door_deg": 0.00017863057487962694,
+      "failure": "unexpected_contact:robot_panel"
+    }
+  ]
+}
