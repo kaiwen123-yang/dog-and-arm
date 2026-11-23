@@ -1,5 +1,11 @@
 # 项目状态：SuperMimic 标准迁移与独立论文指标基线
 
+## 11 月 24 日执行状态
+
+现场为 AutoDL `/root/autodl-tmp/dog-and-arm-b0-pair-v1`。配对控制/固定 effort 与 ReturnSampler、Ratio、末帧夹取的三个具名配置均完成 u50，五者各 0/10。正在执行配对 u200、ReturnSampler 续训和握持数据/固定统计。所有模型仍为 seed0。[当前实测](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [逐日记录](DAILY_WORK_LOG.md)
+
+## 11 月 23 日启动前审查
+
 更新：2026-11-23，北京时间。最新已结束实验端点为 [638fddc](https://github.com/kaiwen123-yang/dog-and-arm/commit/638fddcb2f025006595f79f27a977a8fba41cbc2)，22:50:39 回收；本次仅核读论文/官方源码、审查结果并发布下一计划，没有新训练、物理评测或硬件动作。
 
 ## 当前目标与结果入口

@@ -57,7 +57,8 @@ class FrozenDoorReference:
 
 
 class ContactEvents:
-    def __init__(self, model, cfg, side, reference, phases=None, hold_seconds=None, start_step=None):
+    def __init__(self, model, cfg, side, reference, phases=None, hold_seconds=None, start_step=None,
+                 score_until_step=None):
         if side not in ('pull', 'push'):
             raise ValueError('side must be pull or push')
         self.cfg, self.reference = cfg, reference
@@ -90,6 +91,8 @@ class ContactEvents:
         self.parking = self.nominal_xy - cfg['travel_m'] * np.array([np.cos(yaw), np.sin(yaw)])
         self.phase_start = self.i = self.step = self.good = self.lost = self.sliding = self.unloaded = 0
         self.events, self.failure = [], None
+        self.score_until_step = score_until_step
+        self.terminal_event_step = None
         self.last_not_ready = {}
         self.peak_ready_steps, self.latest = {}, None
 
@@ -222,11 +225,21 @@ class ContactEvents:
                            tcp_handle_error_m=float(error), station_error_m=float(drift),
                            tilt_deg=float(tilt), speed_m_s=float(speed), yaw_rate_deg_s=float(yaw_rate),
                            continuous_ready_steps=self.good, required_ready_steps=self.ticks(seconds))
-        if not reason and self.good >= self.ticks(seconds):
+        if self.terminal_event_step is not None:
+            # The original physical gate already passed. Keep enforcing its terminal
+            # conditions on the actual policy through the requested score horizon.
+            if not reason and not ready:
+                reason = 'terminal_hold_lost_during_scoring'
+            if not reason and self.step >= self.score_until_step:
+                self.i += 1
+        elif not reason and self.good >= self.ticks(seconds):
             self.events.append(dict(phase=phase, end_step=self.step, ref_end_step=k+1, ticks=self.good,
                                     door_deg=float(angle), width_m=float(jaw), net_force_n=float(net)))
-            self.i += 1
-            self.phase_start, self.good = self.step, 0
+            if self.i == len(self.phases)-1:
+                self.terminal_event_step = self.step
+            if self.terminal_event_step is None or self.score_until_step is None or self.step >= self.score_until_step:
+                self.i += 1
+                self.phase_start, self.good = self.step, 0
         elif not reason and elapsed >= self.ticks(cfg['phase_timeout_s'][phase]):
             reason = 'timeout:' + phase
         if reason:

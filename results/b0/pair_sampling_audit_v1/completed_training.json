@@ -1,0 +1,275 @@
+{
+  "runs": [
+    {
+      "run": "return_s0_v1",
+      "config": "config/b0/pair_effort_return.yaml",
+      "requested_endpoint": 50,
+      "exit_code": 0,
+      "receipt": ".local-pair/return_s0_v1.exit",
+      "restart_file": "results/b0/return_s0_v1/cohort_state.pt",
+      "command": "bash scripts/b0/env.sh python scripts/b0/train_contact.py --config config/b0/pair_effort_return.yaml --updates 50 --run return_s0_v1",
+      "contact_reset_sampling": "official_return",
+      "schedule": "one_per_cohort",
+      "reference_tail": "zero",
+      "valid_insertions": 42757,
+      "attempted_intervals": 256000,
+      "physical_cohorts": 50,
+      "offline_online_and_imagination": {
+        "online_positions": 665600,
+        "offline_positions": 204800,
+        "online_targets": 563200,
+        "offline_targets": 179200,
+        "imagined_policy_steps": 409600,
+        "stored_positions_per_valid_insertion": 20.356900624459154
+      },
+      "ratio_checkpoint": null,
+      "due_counts_per_cohort": {
+        "1": 50
+      },
+      "physical_prefix_substeps_executed": 640000,
+      "sampler_bins_measured": 580,
+      "sampler_bins_total": 977,
+      "sampler_updates_buffered_steps": 0,
+      "references": [
+        "pull_0_train_grip",
+        "push_0_train_grip",
+        "pull_5_train",
+        "push_5_train",
+        "pull_15_train",
+        "push_15_train"
+      ],
+      "starts_per_reference": [
+        346,
+        3841,
+        416,
+        577,
+        513,
+        707
+      ],
+      "final_replay_tail_exposure": {
+        "retained_valid_rows": 27805,
+        "observed_frame_with_tail": 41,
+        "rows_with_tail_reachable_within_H32": 852,
+        "latter_count": "potential given a start row, not a count of actually sampled imagined starts"
+      },
+      "actor_updates": 50,
+      "wm_minibatches": 500,
+      "critic_minibatches": 1000,
+      "elapsed_process_s": 371.0282331947237,
+      "started_unix": 1795449434.8717656,
+      "finished_unix": 1795449805.9,
+      "source_receipts": {
+        "scripts/b0/train_contact.py": {
+          "runtime_sha256": "2f6c14af301ab1bbff2e42f42d93d37261183b034594db3140a46fa8891f09c1",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_policy.py": {
+          "runtime_sha256": "251a8ee8aebb80050efe52ed7adecc4c57d1450725976f1ef21a9c36c043a4e5",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_sampling.py": {
+          "runtime_sha256": "5c42f286972bada1351c1064966760adaa687058616fdd3893dfe3177471a014",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_training.py": {
+          "runtime_sha256": "c489b692cfd27e3bf68de5bcae2aabaa4767fe36556be1389a9a2366a0c5644a",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_warp.py": {
+          "runtime_sha256": "f96c0044247deaff042d11dc22147ed5b5057f639e0e4e249434f2991774d3f1",
+          "matches_audit_checkout": true
+        },
+        "config/b0/pair_effort_return.yaml": {
+          "runtime_sha256": "a40e35663397ba3a6aa8f86fa8a806cfbc1477ea277cdf987652730818ca1ed2",
+          "matches_audit_checkout": true
+        }
+      }
+    },
+    {
+      "run": "ratio_s0_v1",
+      "config": "config/b0/pair_effort_return_ratio.yaml",
+      "requested_endpoint": 50,
+      "exit_code": 0,
+      "receipt": ".local-pair/ratio_s0_v1.exit",
+      "restart_file": "results/b0/ratio_s0_v1/cohort_state.pt",
+      "command": "bash scripts/b0/env.sh python scripts/b0/train_contact.py --config config/b0/pair_effort_return_ratio.yaml --updates 50 --run ratio_s0_v1",
+      "contact_reset_sampling": "official_return",
+      "schedule": "official_ratio_valid",
+      "reference_tail": "zero",
+      "valid_insertions": 54306,
+      "attempted_intervals": 337920,
+      "physical_cohorts": 66,
+      "offline_online_and_imagination": {
+        "online_positions": 665600,
+        "offline_positions": 204800,
+        "online_targets": 563200,
+        "offline_targets": 179200,
+        "imagined_policy_steps": 409600,
+        "stored_positions_per_valid_insertion": 16.027694914005817
+      },
+      "ratio_checkpoint": {
+        "previous_clock": 53312.0,
+        "pending": 0,
+        "cohorts": 66
+      },
+      "due_counts_per_cohort": {
+        "0": 18,
+        "1": 46,
+        "2": 2
+      },
+      "physical_prefix_substeps_executed": 844800,
+      "sampler_bins_measured": 584,
+      "sampler_bins_total": 977,
+      "sampler_updates_buffered_steps": 0,
+      "references": [
+        "pull_0_train_grip",
+        "push_0_train_grip",
+        "pull_5_train",
+        "push_5_train",
+        "pull_15_train",
+        "push_15_train"
+      ],
+      "starts_per_reference": [
+        427,
+        5403,
+        567,
+        610,
+        678,
+        763
+      ],
+      "final_replay_tail_exposure": {
+        "retained_valid_rows": 28921,
+        "observed_frame_with_tail": 61,
+        "rows_with_tail_reachable_within_H32": 1054,
+        "latter_count": "potential given a start row, not a count of actually sampled imagined starts"
+      },
+      "actor_updates": 50,
+      "wm_minibatches": 500,
+      "critic_minibatches": 1000,
+      "elapsed_process_s": 472.0042737927288,
+      "started_unix": 1795449434.7008786,
+      "finished_unix": 1795449906.7051537,
+      "source_receipts": {
+        "scripts/b0/train_contact.py": {
+          "runtime_sha256": "2f6c14af301ab1bbff2e42f42d93d37261183b034594db3140a46fa8891f09c1",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_policy.py": {
+          "runtime_sha256": "251a8ee8aebb80050efe52ed7adecc4c57d1450725976f1ef21a9c36c043a4e5",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_sampling.py": {
+          "runtime_sha256": "5c42f286972bada1351c1064966760adaa687058616fdd3893dfe3177471a014",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_training.py": {
+          "runtime_sha256": "c489b692cfd27e3bf68de5bcae2aabaa4767fe36556be1389a9a2366a0c5644a",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_warp.py": {
+          "runtime_sha256": "f96c0044247deaff042d11dc22147ed5b5057f639e0e4e249434f2991774d3f1",
+          "matches_audit_checkout": true
+        },
+        "config/b0/pair_effort_return_ratio.yaml": {
+          "runtime_sha256": "fdb507d63ddf966d52b6d6ebdbb3752d07005e12c78b31bf1f22f0c2f3909e6c",
+          "matches_audit_checkout": true
+        }
+      }
+    },
+    {
+      "run": "cliplast_s0_v1",
+      "config": "config/b0/pair_effort_return_ratio_cliplast.yaml",
+      "requested_endpoint": 50,
+      "exit_code": 0,
+      "receipt": ".local-pair/cliplast_s0_v1.exit",
+      "restart_file": "results/b0/cliplast_s0_v1/cohort_state.pt",
+      "command": "bash scripts/b0/env.sh python scripts/b0/train_contact.py --config config/b0/pair_effort_return_ratio_cliplast.yaml --updates 50 --run cliplast_s0_v1",
+      "contact_reset_sampling": "official_return",
+      "schedule": "official_ratio_valid",
+      "reference_tail": "official_clip_last",
+      "valid_insertions": 53579,
+      "attempted_intervals": 343040,
+      "physical_cohorts": 67,
+      "offline_online_and_imagination": {
+        "online_positions": 665600,
+        "offline_positions": 204800,
+        "online_targets": 563200,
+        "offline_targets": 179200,
+        "imagined_policy_steps": 409600,
+        "stored_positions_per_valid_insertion": 16.245170682543534
+      },
+      "ratio_checkpoint": {
+        "previous_clock": 53312.0,
+        "pending": 0,
+        "cohorts": 67
+      },
+      "due_counts_per_cohort": {
+        "0": 19,
+        "1": 46,
+        "2": 2
+      },
+      "physical_prefix_substeps_executed": 857600,
+      "sampler_bins_measured": 586,
+      "sampler_bins_total": 977,
+      "sampler_updates_buffered_steps": 0,
+      "references": [
+        "pull_0_train_grip",
+        "push_0_train_grip",
+        "pull_5_train",
+        "push_5_train",
+        "pull_15_train",
+        "push_15_train"
+      ],
+      "starts_per_reference": [
+        435,
+        5479,
+        585,
+        611,
+        683,
+        783
+      ],
+      "final_replay_tail_exposure": {
+        "retained_valid_rows": 27388,
+        "observed_frame_with_tail": 66,
+        "rows_with_tail_reachable_within_H32": 984,
+        "latter_count": "potential given a start row, not a count of actually sampled imagined starts"
+      },
+      "actor_updates": 50,
+      "wm_minibatches": 500,
+      "critic_minibatches": 1000,
+      "elapsed_process_s": 474.3501625303179,
+      "started_unix": 1795449434.746144,
+      "finished_unix": 1795449909.0963078,
+      "source_receipts": {
+        "scripts/b0/train_contact.py": {
+          "runtime_sha256": "2f6c14af301ab1bbff2e42f42d93d37261183b034594db3140a46fa8891f09c1",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_policy.py": {
+          "runtime_sha256": "251a8ee8aebb80050efe52ed7adecc4c57d1450725976f1ef21a9c36c043a4e5",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_sampling.py": {
+          "runtime_sha256": "5c42f286972bada1351c1064966760adaa687058616fdd3893dfe3177471a014",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_training.py": {
+          "runtime_sha256": "c489b692cfd27e3bf68de5bcae2aabaa4767fe36556be1389a9a2366a0c5644a",
+          "matches_audit_checkout": true
+        },
+        "learning/b0/contact_warp.py": {
+          "runtime_sha256": "f96c0044247deaff042d11dc22147ed5b5057f639e0e4e249434f2991774d3f1",
+          "matches_audit_checkout": true
+        },
+        "config/b0/pair_effort_return_ratio_cliplast.yaml": {
+          "runtime_sha256": "3fb50e6565aa1033c227f9cb28a27ca297c9f25b8132009481260018bc50f175",
+          "matches_audit_checkout": true
+        }
+      }
+    }
+  ],
+  "shared_gpu": true,
+  "physical_reference_timing": "20ms with 2ms early terminal for RSI",
+  "wm_ratio_denominator": "full numeric replay-eligible contact lane intervals",
+  "bins": "pinned global 0.2s bins; illegal reset support removed at sampling"
+}

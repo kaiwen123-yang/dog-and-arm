@@ -1,0 +1,458 @@
+{
+  "mujoco": "3.3.0",
+  "evaluation": "results/b0/pair_canonical_s0_v1_u50_warp_hold_margin_v2",
+  "protocol": "native first 20 ms, stop on first hard event; source action versus independently swapped frozen Actor blocks",
+  "trials": [
+    {
+      "side": "pull",
+      "absolute_start_substep": 8750,
+      "reference": "pull_5_train",
+      "rows": [
+        {
+          "intervention": "teacher",
+          "actor_channels": [],
+          "first_net_door_force_n": 1.1731323569411347,
+          "peak_net_door_force_n": 1.2247821581310843,
+          "substeps": 10,
+          "failure": null
+        },
+        {
+          "intervention": "actor_all",
+          "actor_channels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22
+          ],
+          "first_net_door_force_n": 50.64279045387909,
+          "peak_net_door_force_n": 50.64279045387909,
+          "substeps": 1,
+          "failure": {
+            "reason": "door_force_limit",
+            "phase": "open",
+            "first_failure_substep": 1,
+            "interval_start_s": 0.0,
+            "interval_end_s": 0.002,
+            "door_deg": 0.06912624457162501,
+            "finger_load_n": [
+              0.0,
+              35.80986054814725
+            ],
+            "wheel_load_n": [
+              99.37279053436863,
+              45.40736670469736,
+              110.80437338563063,
+              49.00585487289848
+            ],
+            "door_net_force_n": 50.64279045387909,
+            "door_contact_sum_n": 50.64279045387909,
+            "tcp_handle_error_m": 0.0017895944078132728,
+            "min_arm_margin_rad": 0.5532933054263309
+          }
+        },
+        {
+          "intervention": "actor_arm",
+          "actor_channels": [
+            16,
+            17,
+            18,
+            19,
+            20,
+            21
+          ],
+          "first_net_door_force_n": 66.69897076760333,
+          "peak_net_door_force_n": 66.69897076760333,
+          "substeps": 1,
+          "failure": {
+            "reason": "door_force_limit",
+            "phase": "open",
+            "first_failure_substep": 1,
+            "interval_start_s": 0.0,
+            "interval_end_s": 0.002,
+            "door_deg": 0.06912624457162501,
+            "finger_load_n": [
+              0.0,
+              47.16329452793561
+            ],
+            "wheel_load_n": [
+              134.45650613051615,
+              98.24421707698743,
+              112.5542764315335,
+              85.19455364509942
+            ],
+            "door_net_force_n": 66.69897076760333,
+            "door_contact_sum_n": 66.69897076760333,
+            "tcp_handle_error_m": 0.0017895944078132728,
+            "min_arm_margin_rad": 0.5531752765898945
+          }
+        },
+        {
+          "intervention": "actor_jaw",
+          "actor_channels": [
+            22
+          ],
+          "first_net_door_force_n": 0.0,
+          "peak_net_door_force_n": 0.0,
+          "substeps": 10,
+          "failure": null
+        },
+        {
+          "intervention": "actor_legs_wheels",
+          "actor_channels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "first_net_door_force_n": 5.0404198480526885,
+          "peak_net_door_force_n": 5.0404198480526885,
+          "substeps": 10,
+          "failure": null
+        },
+        {
+          "intervention": "actor_except_arm",
+          "actor_channels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            22
+          ],
+          "first_net_door_force_n": 0.0,
+          "peak_net_door_force_n": 0.0,
+          "substeps": 10,
+          "failure": null
+        }
+      ],
+      "first_actor_minus_teacher_physical_target": [
+        -0.003109831333902125,
+        0.0566969496885137,
+        0.020942405668289022,
+        0.007934489674202742,
+        0.010631496388437833,
+        -0.006832863328279393,
+        -0.02656197214060241,
+        -0.007364554073634232,
+        -0.001718238966307206,
+        -0.007018636853587602,
+        -0.022762418045281674,
+        0.007583597868003533,
+        0.702845424413681,
+        0.23261138051748276,
+        0.022836140356957912,
+        0.547946959733963,
+        0.43553610133613613,
+        -1.2372729516183947,
+        1.110059916229438,
+        0.4970696714635958,
+        0.15235354885294733,
+        -0.8332344301487619,
+        0.03607980363070966
+      ],
+      "channel_names": [
+        "m1_FAR_ABAD_JOINT",
+        "m1_FAR_HIP_JOINT",
+        "m1_FAR_KNEE_JOINT",
+        "m1_FBL_ABAD_JOINT",
+        "m1_FBL_HIP_JOINT",
+        "m1_FBL_KNEE_JOINT",
+        "m1_RAR_ABAD_JOINT",
+        "m1_RAR_HIP_JOINT",
+        "m1_RAR_KNEE_JOINT",
+        "m1_RBL_ABAD_JOINT",
+        "m1_RBL_HIP_JOINT",
+        "m1_RBL_KNEE_JOINT",
+        "m1_FAR_FOOT_JOINT",
+        "m1_FBL_FOOT_JOINT",
+        "m1_RAR_FOOT_JOINT",
+        "m1_RBL_FOOT_JOINT",
+        "piper_joint1",
+        "piper_joint2",
+        "piper_joint3",
+        "piper_joint4",
+        "piper_joint5",
+        "piper_joint6",
+        "piper_gripper_joint1"
+      ]
+    },
+    {
+      "side": "push",
+      "absolute_start_substep": 8750,
+      "reference": "push_5_train",
+      "rows": [
+        {
+          "intervention": "teacher",
+          "actor_channels": [],
+          "first_net_door_force_n": 1.120158615964427,
+          "peak_net_door_force_n": 1.3316740997131518,
+          "substeps": 10,
+          "failure": null
+        },
+        {
+          "intervention": "actor_all",
+          "actor_channels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22
+          ],
+          "first_net_door_force_n": 33.12808691912718,
+          "peak_net_door_force_n": 33.12808691912718,
+          "substeps": 1,
+          "failure": {
+            "reason": "door_force_limit",
+            "phase": "open",
+            "first_failure_substep": 1,
+            "interval_start_s": 0.0,
+            "interval_end_s": 0.002,
+            "door_deg": 0.36726108275629377,
+            "finger_load_n": [
+              23.425094908252184,
+              0.0
+            ],
+            "wheel_load_n": [
+              181.71514677403627,
+              124.84955180742949,
+              47.954235298122946,
+              60.06881315563917
+            ],
+            "door_net_force_n": 33.12808691912718,
+            "door_contact_sum_n": 33.12808691912718,
+            "tcp_handle_error_m": 0.0018669037114365963,
+            "min_arm_margin_rad": 0.7667259773521773
+          }
+        },
+        {
+          "intervention": "actor_arm",
+          "actor_channels": [
+            16,
+            17,
+            18,
+            19,
+            20,
+            21
+          ],
+          "first_net_door_force_n": 49.829365349311026,
+          "peak_net_door_force_n": 49.829365349311026,
+          "substeps": 1,
+          "failure": {
+            "reason": "door_force_limit",
+            "phase": "open",
+            "first_failure_substep": 1,
+            "interval_start_s": 0.0,
+            "interval_end_s": 0.002,
+            "door_deg": 0.36726108275629377,
+            "finger_load_n": [
+              35.234682140719805,
+              0.0
+            ],
+            "wheel_load_n": [
+              104.71285703769594,
+              117.44704922687454,
+              99.61169816884848,
+              106.08858101677227
+            ],
+            "door_net_force_n": 49.829365349311026,
+            "door_contact_sum_n": 49.829365349311026,
+            "tcp_handle_error_m": 0.0018669037114365963,
+            "min_arm_margin_rad": 0.7666586549969777
+          }
+        },
+        {
+          "intervention": "actor_jaw",
+          "actor_channels": [
+            22
+          ],
+          "first_net_door_force_n": 0.0,
+          "peak_net_door_force_n": 0.0,
+          "substeps": 10,
+          "failure": null
+        },
+        {
+          "intervention": "actor_legs_wheels",
+          "actor_channels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "first_net_door_force_n": 5.952279784485145,
+          "peak_net_door_force_n": 6.371325981640151,
+          "substeps": 2,
+          "failure": {
+            "reason": "door_force_limit",
+            "phase": "open",
+            "first_failure_substep": 2,
+            "interval_start_s": 0.002,
+            "interval_end_s": 0.004,
+            "door_deg": 0.36838112180946214,
+            "finger_load_n": [
+              3.363810326671954,
+              2.7996404028050295
+            ],
+            "wheel_load_n": [
+              177.49024611604585,
+              113.95785754456482,
+              50.32643425522408,
+              70.62856456185186
+            ],
+            "door_net_force_n": 6.371325981640151,
+            "door_contact_sum_n": 8.716435612644695,
+            "tcp_handle_error_m": 0.0018806979951073546,
+            "min_arm_margin_rad": 0.7666140425350709
+          }
+        },
+        {
+          "intervention": "actor_except_arm",
+          "actor_channels": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            22
+          ],
+          "first_net_door_force_n": 0.0,
+          "peak_net_door_force_n": 0.0,
+          "substeps": 10,
+          "failure": null
+        }
+      ],
+      "first_actor_minus_teacher_physical_target": [
+        0.015339981793615775,
+        0.04195852668376738,
+        0.03836754528918895,
+        0.004285312504775668,
+        0.004536493750261638,
+        0.0012611779423903789,
+        -0.041001213356189274,
+        -0.018174702975871537,
+        0.009567538866074,
+        -0.0016298152386816124,
+        -0.02063717513400269,
+        0.001504095743664413,
+        0.1892354115843773,
+        -0.31819550693035126,
+        -0.7888522446155548,
+        -0.2575598359107971,
+        -1.6923130980370709,
+        -0.027841221239205675,
+        -0.4366536136992487,
+        -1.889259594445803,
+        1.0690758638200084,
+        0.8859370712635465,
+        0.049910673648118985
+      ],
+      "channel_names": [
+        "m1_FAR_ABAD_JOINT",
+        "m1_FAR_HIP_JOINT",
+        "m1_FAR_KNEE_JOINT",
+        "m1_FBL_ABAD_JOINT",
+        "m1_FBL_HIP_JOINT",
+        "m1_FBL_KNEE_JOINT",
+        "m1_RAR_ABAD_JOINT",
+        "m1_RAR_HIP_JOINT",
+        "m1_RAR_KNEE_JOINT",
+        "m1_RBL_ABAD_JOINT",
+        "m1_RBL_HIP_JOINT",
+        "m1_RBL_KNEE_JOINT",
+        "m1_FAR_FOOT_JOINT",
+        "m1_FBL_FOOT_JOINT",
+        "m1_RAR_FOOT_JOINT",
+        "m1_RBL_FOOT_JOINT",
+        "piper_joint1",
+        "piper_joint2",
+        "piper_joint3",
+        "piper_joint4",
+        "piper_joint5",
+        "piper_joint6",
+        "piper_gripper_joint1"
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import shutil
 from pathlib import Path
 import subprocess
 import sys
+from time import perf_counter
 
 import mujoco as mj
 import numpy as np
@@ -97,7 +98,9 @@ def continuous_initial(model, cfg, integrator):
 
 
 def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, output=None, *,
-                     model=None, integrator=None, device='cuda:0', raw_dir=None, video=False, action_source='frozen Actor raw output then clamp'):
+                     model=None, integrator=None, device='cuda:0', raw_dir=None, video=False,
+                     action_source='frozen Actor raw output then clamp', paper_score=False):
+    begun = perf_counter()
     path=Path(episode_path)
     meta=json.loads((path/'metadata.json').read_text())
     side = meta['task']
@@ -122,7 +125,8 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
     # The recorded segment has an exact terminal substep. No extension into
     # later phases or repeated final frame can supply extra holding time.
     max_step=end
-    judge=ContactEvents(model,cfg,side,ref,phases=phases,hold_seconds=.5 if full else 3.,start_step=start)
+    judge=ContactEvents(model,cfg,side,ref,phases=phases,hold_seconds=.5 if full else 3.,start_step=start,
+                        score_until_step=end-start if paper_score else None)
     mapping=ActionMap(model)
     if full:
         if start != 0:
@@ -138,6 +142,10 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
         result['actual_config'] = cfg
     if not full and not valid_initial(metrics,segment,cfg):
         result['first_failure']=dict(reason='initial_contact_reconstruction',phase=phases[0])
+    if paper_score:
+        result['score_initial_previous_action'] = previous.tolist()
+        result['score_initial_previous_action_valid'] = not full
+    peak_net_force = None
     qlog=[d.qpos.copy()]
     vlog=[d.qvel.copy()]
     ticks=[0]
@@ -165,6 +173,8 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
             else:
                 integrator.step(d,servo)
             failure=judge.observe(d,None,q0,v0)
+            net_force = judge.latest['net_door_force_n']
+            peak_net_force = net_force if peak_net_force is None else max(peak_net_force, net_force)
             if full and raw_dir is not None:
                 obs = judge.latest
                 audit.append([judge.step,FULL_DOOR_PHASES.index(obs['phase']),obs['door_deg'],
@@ -187,12 +197,20 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
                   final_door_deg=float(np.rad2deg(d.qpos[judge.hinge_q])),
                   final_partial_substeps=judge.step%10, longest_ready_steps=judge.peak_ready_steps,
                   last_physical_observation=judge.latest)
+    if paper_score:
+        result.update(physical_gate_pass_step=judge.terminal_event_step,
+                      measured_peak_net_force_n=peak_net_force, physical_wall_seconds=perf_counter()-begun,
+                      score_first_failure=result['first_failure'])
+        if judge.terminal_event_step is not None:
+            result.update(passed=True, first_failure=None)
     if integrator is not None:
         result['warp_capacity']=integrator.capacity()
     if raw_dir is not None:
         raw_dir=Path(raw_dir)
         raw_dir.mkdir(parents=True,exist_ok=False)
-        for name,values in dict(qpos=qlog,qvel=vlog,physics_step=ticks,raw_action=raw_log,clipped_action=clipped_log).items():
+        for name,values in dict(qpos=qlog,qvel=vlog,physics_step=ticks,
+                                raw_action=np.asarray(raw_log).reshape(-1,23),
+                                clipped_action=np.asarray(clipped_log).reshape(-1,23)).items():
             np.save(raw_dir/(name+'.npy'),np.asarray(values),allow_pickle=False)
         if full:
             np.save(raw_dir/'physical_events_2ms.npy',np.asarray(audit),allow_pickle=False)
@@ -211,7 +229,9 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
 
 
 def dump(path,value):
-    path.write_text(json.dumps(value,indent=2,allow_nan=False,ensure_ascii=False)+'\n')
+    pending=path.with_name(path.name+'.tmp')
+    pending.write_text(json.dumps(value,indent=2,allow_nan=False,ensure_ascii=False)+'\n')
+    pending.replace(path)
 
 
 def actor_worker(args):
@@ -250,12 +270,12 @@ def check_legacy_actor(output, directory, raw_root, policy):
 def run_warp_cases(job):
     """A single independent Warp worker keeps the frozen joint reference bank across its cases."""
     from learning.b0.contact_policy import load_policy
-    checkpoint, paths, device, episode, cases, output, raw_root, side = job
+    checkpoint, paths, device, episode, cases, output, raw_root, side, paper_score = job
     policy = load_policy(checkpoint, paths, device)
     for case in cases:
         folder = Path(side) / 'full' / case['id']
         result = evaluate_segment(policy, episode, 'full', case['perturbation'], 'warp',
-                                  output / folder, device=device, raw_dir=raw_root / folder)
+                                  output / folder, device=device, raw_dir=raw_root / folder,paper_score=paper_score)
         print(f"{side} {case['id']} passed={result['passed']} steps={result['physics_steps']}", flush=True)
 
 
@@ -273,7 +293,7 @@ def parallel_full_dev(args, paths, group, directory, cases, output, raw_root, si
     workers = min(args.dev_workers, len(pending))
     if workers:
         jobs = [(args.checkpoint, paths, args.device, directory / group['episode'], pending[i::workers],
-                 output, raw_root, side) for i in range(workers)]
+                 output, raw_root, side, args.paper_score) for i in range(workers)]
         with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context('spawn')) as pool:
             list(pool.map(run_warp_cases, jobs))
 
@@ -295,6 +315,8 @@ def reuse_scored_cases(source, output, plan, policy):
     for field in ('checkpoint', 'source', 'backend', 'mujoco', 'manifest', 'groups'):
         if plan[field] != previous[field]:
             raise ValueError(f'Cannot extend {source}: different {field}')
+    if plan.get('score_protocol') != previous.get('score_protocol'):
+        raise ValueError('Cannot extend an evaluation with a different score protocol')
     if not (source / 'evaluation.json').is_file():
         raise ValueError('The source evaluation must be complete')
     if any(not json.loads((source/group/'nominal/result.json').read_text())['passed']
@@ -306,29 +328,41 @@ def reuse_scored_cases(source, output, plan, policy):
         folder = path.parent.relative_to(source)
         if folder.parts[-1] == 'nominal' and plan['video'] and not (path.parent/'episode.mp4').is_file():
             raise ValueError('Missing requested original nominal video')
-        # Replay two recorded, noninitial, measured Actor inputs in every case.
+        # A short failed full case can still reproduce its real policy input:
+        # at reset the collector repeats q[0], v[0], and zero previous commands.
         raw = Path(record['raw_directory'])
         q,v,a,actions = [np.load(raw/(key+'.npy'),mmap_mode='r') for key in
                          ('qpos','qvel','clipped_action','raw_action')]
+        if not len(actions):
+            continue  # No recorded policy call to validate. Measure this case in the extension.
         for k in {min(10,len(actions)-1),len(actions)-1}:
-            if k < 10:
-                raise ValueError(f'Cannot check the policy on a real history for {folder}')
-            predicted=policy(Path(plan['source'])/record['episode'],k,q[k-9:k+1],v[k-9:k+1],a[k-10:k])
+            frames=np.arange(k-9,k+1)
+            hq,hv=q[frames.clip(min=0)],v[frames.clip(min=0)]
+            ha=np.zeros((10,23),dtype=a.dtype)
+            ha[frames>0]=a[frames[frames>0]-1]
+            predicted=policy(Path(plan['source'])/record['episode'],k,hq,hv,ha)
             np.testing.assert_allclose(predicted,actions[k],atol=2e-5,rtol=2e-5)
         target = output / folder
         target.mkdir(parents=True,exist_ok=True)
         if (target/'result.json').exists() and (target/'result.json').read_bytes() != path.read_bytes():
             raise ValueError(f'Existing carried-forward result differs at {folder}')
+        if plan.get('score_protocol'):
+            source_score=path.with_name('return.json')
+            saved=json.loads(source_score.read_text())
+            if saved['protocol'] != plan['score_protocol'] or saved['executed_substeps'] != record['physics_steps']:
+                raise ValueError(f'Incompatible original score at {source_score}')
+            shutil.copy2(source_score,target/'return.json')
         shutil.copy2(path,target/'result.json')
         if (path.parent/'episode.mp4').is_file():
             shutil.copy2(path.parent/'episode.mp4',target/'episode.mp4')
         ids.append(str(folder))
     provenance = dict(source=str(source),cases=ids,
-         identity='same backend, model version, checkpoint, scene, references and groups; two reproduced policy inputs per case',
+         identity='same backend, model version, checkpoint, scene, references and groups; reproduced recorded policy inputs',
          original_raw='raw_directory in each result points to the original measured array')
     manifest = output/'inherited_cases.json'
     if manifest.is_file():
-        if json.loads(manifest.read_text()) != provenance:
+        saved = json.loads(manifest.read_text())
+        if any(saved.get(key) != provenance[key] for key in ('source','cases','original_raw')):
             raise ValueError('Source cases changed since the previous evaluation')
     else:
         dump(manifest, provenance)
@@ -367,6 +401,14 @@ def main(args):
         raise ValueError('no selected cases')
     directory=args.references or Path(manifest['source'])
     paths=list(dict.fromkeys(directory / g['episode'] for _,g in trial_groups))
+    if args.formal_contact:
+        if args.full_task or manifest['version'] not in ('contact_dev_v1','contact_dev_hold_margin_v2'):
+            raise ValueError('--formal-contact requires one registered contact manifest')
+        margin = json.loads((ROOT/'config/b0/contact_dev_hold_margin_v2.json').read_text())['cases']
+        trial_groups = [(key, group) for key, group in trial_groups
+                        if (key in margin) == (manifest['version'] == 'contact_dev_hold_margin_v2')]
+        if not trial_groups:
+            raise ValueError('No formal cases in selected protocol groups')
     output=ROOT/'results/b0'/args.run
     if Path(args.run).name!=args.run:
         raise ValueError('use a new run name')
@@ -375,6 +417,8 @@ def main(args):
               requested_dev=args.dev, video=args.video)
     if extend:
         plan['extended_from'] = str(extend)
+    if args.paper_score:
+        plan['score_protocol'] = 'fixed_effort_successor_2ms_v1'
     if selected:
         plan['diagnostic_cases'] = selected
         plan['score_selected_after_nominal_failure'] = True
@@ -388,6 +432,8 @@ def main(args):
             if json.loads(spec_path.read_text())['plan']!=plan:
                 raise ValueError('Resume requires the same checkpoint, evaluation and output settings')
         else:
+            if args.paper_score:
+                raise ValueError('Paper scoring requires an original prospective run_spec')
             legacy=True
     else:
         output.mkdir(parents=True,exist_ok=False)
@@ -445,7 +491,8 @@ def main(args):
                             preserve_partial(folder, output, raw_root)
                         r=evaluate_segment(policy,directory/group['episode'],segment,case['perturbation'],args.backend,
                                            output/folder,model=model,integrator=integrator,device=args.device,
-                                           raw_dir=raw_root/folder,video=args.video and not development)
+                                           raw_dir=raw_root/folder,video=args.video and not development,
+                                           paper_score=args.paper_score)
                     row=dict(side=side,segment=segment,case=case['id'],passed=r['passed'],physics_steps=r['physics_steps'],
                              policy_calls=r['policy_calls'],final_door_deg=r['final_door_deg'],
                              failure=r['first_failure']['reason'] if r['first_failure'] else None)
@@ -458,10 +505,16 @@ def main(args):
             process.stdin.close()
             if process.wait():
                 raise RuntimeError('isolated policy process failed')
-    with (output/'cases.csv').open('x') as f:
+    if args.paper_score:
+        # Even native 3.3 cases are scored by the pinned tracking implementation.
+        subprocess.run(['bash',str(ROOT/'scripts/b0/env.sh'),'python','-m',
+                        'scripts.b0.score_contact_return',str(output)], cwd=ROOT, check=True)
+    pending=output/'cases.csv.tmp'
+    with pending.open('w') as f:
         writer=csv.DictWriter(f,list(rows[0]),lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
+    pending.replace(output/'cases.csv')
     dump(output/'evaluation.json',dict(checkpoint=str(args.checkpoint),backend=args.backend,mujoco=mj.__version__,
                                       manifest=str(args.manifest),requested_dev=args.dev,source=str(directory),
                                       passed=sum(r['passed'] for r in rows),evaluated=len(rows),
@@ -482,6 +535,8 @@ if __name__=='__main__':
     parser.add_argument('--dev-workers', type=int, default=1, help='parallel independent full-task Warp development cases after a passed nominal')
     parser.add_argument('--dev',action='store_true',help='after passing nominal, evaluate the registered twenty')
     parser.add_argument('--video',action='store_true',help='record every nominal trial from its first input to terminal state')
+    parser.add_argument('--paper-score',action='store_true',help='record fixed-duration real tracking and retain early-passing policy through its registered terminal hold')
+    parser.add_argument('--formal-contact',action='store_true',help='evaluate only the formal v1 or hold-margin groups in this manifest')
     parser.add_argument('--full-task', action='store_true', help='closed loop from original P6 start; nominal, then C01–C20 when requested')
     parser.add_argument('--side',nargs='+',choices=('pull','push'))
     parser.add_argument('--segment',nargs='+',choices=SEGMENTS)

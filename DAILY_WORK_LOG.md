@@ -896,3 +896,14 @@ GitHub main 与新检出均为 `95159f77745d754b41ca135c726e2f2ba55c907e`。相�
 - 两条新命令均为 `bash scripts/b0/env.sh python -u scripts/b0/train_contact.py --config config/b0/pair_<canonical|effort>.yaml --run pair_<canonical|effort>_s0_v1 --updates 50`。独立持久进程、相同 seed0/gain32/物理探索幅度，128×40 采集、batch 256；官方 H32、10 WM/20 Critic 每轮。两条 u0 逐张量比较，Actor 68、含统计的 Dynamics 24、Critic 10 张量全部完全相同。运行时数据由策略产生，u1 后允许轨迹分化。新旧结果均保留。
 - u0 两条都实测 0/10。相同初始权重在 Warp 双测的前拉 release_retreat 有 500 / 504 子步数值差异，解释后续小差异时保留该现象。独立采集/评分与正式接触训练分开，训练、回报和验证大数组均在同一项目的新现场目录。
 - 在 1,636 个真实非终止训练区间测量当前合法 J4 目标。u0 归一化绝对值最大 182.205，而 32 维 motion latent 中绝对值达到 0.99 的比例是 0；u10 两条该比例均低于 0.12%。这些观测支持保留 encoder 架构。
+
+### 23:56–23:59 配对端点及调度核验
+
+首对 u50 已完成。canonical 75,312 有效转移、264.92 s 进程时间，effort 69,610、263.82 s。每支实做 50 H32 / 500 WM / 1,000 Critic、409,600 imagined steps、256,000 attempted lane intervals。u1 官方策略梯度范数 3.3152 / 7.4107。两支 u0/1/5/10/50 的 100 条 Warp 正式接触评分全失败。u50 十片段共同 effort 口径等权均值 −0.03413 / −0.04738。原坐标 u50 的前拉接近走到参考终点、释放走到阶段时限，均未过裁判。effort-u50 背推稳定握持的 J2 首跳从 u0 的 −0.4836 rad 缩至 −0.0400 rad，门力仍为 22.20 N。因局部命令/门力变化，同预算两支从各自 `cohort_state.pt` 续到 u200，命令在上述训练入口加 `--resume results/b0/pair_<mode>_s0_v1/cohort_state.pt --updates 200`，新 run 为 `pair_<mode>_to200_v1`。u50 前缀仅算一次。
+
+固定源码 ReturnSampler 按 9,765 帧全局时间轴形成 977 个 bin。最初适配沿用训练 replay 的 20 ms 后继，但终止可发生在第 1–9 个物理子步；真实记录检出 85 条提前终止，其越限后积分奖励与实际失败时刻计分最大相差 15.619。生产 sampler 改为捕获首次终止的 q/v、同一物理时标的参考和实际 dt。39 条完整 lane 与固定源码逐值一致，注入失效 lane、clip 截止/超时、缓存和 Ratio 断点恢复另有实测。三种对齐训练于 23:57 启动，依次增加 ReturnSampler、有效转移驱动的官方 Ratio、逐 clip 末帧夹取；各组固定 effort、u50 预算。第一 cohort 为 1,734 有效 / 5,120 尝试；Ratio 发出两次更新。正式 hold/截止时间沿用原协议。阶段代码和原配对训练小结果已普通推送并回读 `8232e69d9f7b7fc314497c5d61185094ae4f87b8`。
+
+## 2026-11-24 00:00 起 北京时间｜接触评分、WM 独立覆盖与标准联合学习
+
+- 使用 `bash scripts/project_env.sh python scripts/b0/diagnose_contact_entry.py results/b0/pair_<mode>_s0_v1_u50_warp_hold_margin_v2 --references results/raw_large/b0/contact_held_margin_v2 --output results/b0/pair_units_v1/native_entry_<mode>_u50.json`，在 native 3.3.0 完整重建前缀上做首动作分通道诊断。前拉/背推的原参考首命令为 1.173 / 1.120 N，均通过这 10 个子步；effort-u50 全策略首命令为 50.899 / 22.194 N，仅替换六个臂通道为 66.898 / 38.762 N。动作分块结果只用于解释失效，不参与标准成绩或策略执行。
+- 首批 WM 同窗是 412 个前拉窗/51 lanes、450 个背推窗/56 lanes。held_r2 的 H32 双指 TCP P95 为 50.53 / 40.36 mm，canonical-u50 为 339.56 / 129.02 mm，effort-u50 为 717.10 / 241.81 mm。另用两个冻结 u10 策略各采 16×64 lanes，采集种子相同、绝不进入 normalizer/replay。补背推分层时按发起的全部 lanes 记录失败。按同一门 WM 初始化、真实 grip 的 train split 和 H1/H7 预算安排两条有针对性的联合学习，比较累计统计与固定 held 统计；两支均继续优化 WM 权重。

@@ -1,5 +1,13 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 11 月 24 日标准接触迁移
+
+固定 effort 与 canonical 的 seed0 配对已实际完成 u50。每支训练 50 H32、500 WM 和 1,000 Critic，Warp 正式接触均为 0/10。两个 run 的 u0/1/5/10/50 共 100 个正式片段结果已回收。相同基础 effort 评分下，u50 十片段等权均值为 canonical −0.03413、effort −0.04738。完整双侧任务回报仍为 NA，最终候选为空。
+
+相同物理记录的六个 tracking 分项与限位一致，Piper J2 的同位移罚比为 3947.84。u50 背推稳定握持的首步门力在固定 effort 分支为 22.20 N；仅额外接入官方 ReturnSampler 后为 6.697 N，仍超出 6 N。ReturnSampler、Ratio 和尾帧三组均已实训到 u50，各 0/10。详见[逐案实测](../results/b0/pair_units_v1/nominal_segments.csv)、[奖励复算](../results/b0/pair_units_v1/measured.json)和[采样调度账本](../results/b0/pair_sampling_audit_v1/completed_training.json)。配对 u200、补接触数据和统计处理的实验另行回收。
+
+## 11 月 23 日历史快照
+
 结果快照：`b0-standard-s0-638fddc`。日期：2026-11-23，北京时间。实验截止提交：[638fddc](https://github.com/kaiwen123-yang/dog-and-arm/commit/638fddcb2f025006595f79f27a977a8fba41cbc2)。
 
 **状态：标准迁移进行中，B0-04 接触尚未通过；这是一份独立、可追溯的中间结果，不是已达论文指标的最终基线。** 用户要求先详细研究已开源的 SuperMimic，迁移结果达到或接近论文指标后单独保留，供后续方法比较。本文件是该结果的固定入口；每轮以新提交保留快照，最终冻结三 seed 的唯一候选及协议后再标为正式基线。当前没有合格的最终 checkpoint。
