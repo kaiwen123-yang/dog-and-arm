@@ -1,3 +1,8 @@
+2026-11-23 B0 接续已在执行。最新结果见 reports/B0_RECOVERY_RESULTS_20261123.md、reports/B0_RECOVERY_BACKENDS_20261123.md、DAILY_WORK_LOG.md。当前在线实验位于 AutoDL /root/autodl-tmp/dog-and-arm-b0-recovery，第二平台专用树用于整合。按现有 run 状态续接，避免重复采集或覆盖。
+检查正在写入的物理评分（从第二平台执行）：
+ssh autodl-dog-arm 'cd /root/autodl-tmp/dog-and-arm-b0-recovery && find results/b0/recovery_b_tracking_u1_full_c_r1 -name result.json'
+完整执行约定见 prompts/B0_START.txt。下列保留本轮之前的冻结复核入口。
+
 当前入口：2026-11-23（北京时间），最新B0轮已经结束并完成审查，接续计划已发布。
 
 先读 AGENTS.md、PROJECT_STATE.md、DAILY_WORK_LOG.md 最近日期、reports/B0_REVIEW_20261123.md 和 docs/B0_RECOVERY_PLAN_20261123.md。要授权执行本轮仿真实现/训练/评测，使用 prompts/B0_START.txt。旧接触计划保留原门槛，不再从“接触接口待实现”开始。

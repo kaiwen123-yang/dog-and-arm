@@ -143,7 +143,7 @@ class Recorder:
                        root_velocity="qvel[:3] world linear, qvel[3:6] body angular; explicit world vectors provided",
                        position_unit="hinges rad, slide or translation m",
                        force_units="hinge N m, prismatic N, XML order",
-                       condition="C01", scene_seed=None, training_seed=None, phases=self.phase_names,
+                       condition=self.cfg.get("training_condition", "C01"), scene_seed=None, training_seed=None, phases=self.phase_names,
                        duration_s=self.last_t, physics_steps=n, full_intervals=int(valid.sum()),
                        final_partial_substeps=n%DECIMATION, held_action_replay=self.hold,
                        substep_schema="qpos,qvel length N+1; all remaining arrays length N. index k describes [k,k+1].",

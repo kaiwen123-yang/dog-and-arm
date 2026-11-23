@@ -1,0 +1,226 @@
+{
+  "teacher_episode": "aug_pull_02_train_combined",
+  "fixed_reference": "pull_60_train",
+  "teacher_pass": true,
+  "teacher_hard_failure": null,
+  "source": "raw solved contact/effort, CPU FK at interval start plus recorded post-step q/v; native solver warning vector unavailable",
+  "reference_length_substeps": 37868,
+  "teacher_recorded_substeps": 38036,
+  "recorded_minus_frozen_steps": 168,
+  "scored_substeps": 8810,
+  "scored_margin_to_ref_end_s": 58.116,
+  "frozen_judge_pass": false,
+  "frozen_judge_first_failure": {
+    "reason": "timeout:pregrasp",
+    "phase": "pregrasp",
+    "first_failure_substep": 8810,
+    "interval_start_s": 17.618000000000002,
+    "interval_end_s": 17.62,
+    "door_deg": 4.117227786399932,
+    "finger_load_n": [
+      0.0,
+      0.0
+    ],
+    "wheel_load_n": [
+      112.11315250396729,
+      116.78411865234375,
+      118.20764923095703,
+      79.5242805480957
+    ],
+    "door_net_force_n": 0.0,
+    "door_contact_sum_n": 0.0,
+    "tcp_handle_error_m": 2.8923149529660085e-05,
+    "min_arm_margin_rad": 0.8038159390808106
+  },
+  "events": [
+    {
+      "phase": "approach_base",
+      "end_step": 3396,
+      "ref_end_step": 3396,
+      "ticks": 30,
+      "door_deg": 4.117227786399932,
+      "width_m": 0.04000427760183811,
+      "net_force_n": 0.0
+    },
+    {
+      "phase": "settle",
+      "end_step": 4309,
+      "ref_end_step": 4309,
+      "ticks": 500,
+      "door_deg": 4.117227786399932,
+      "width_m": 0.04000033996999264,
+      "net_force_n": 0.0
+    }
+  ],
+  "last_not_ready": {
+    "approach_base": {
+      "reference_substep": 3365,
+      "ramp": true,
+      "within_position_zone": true,
+      "stable": false,
+      "wheels_loaded": true,
+      "reached": false,
+      "both_fingers": false,
+      "gripped": false,
+      "detached": true,
+      "door_speed_rad_s": 0.0,
+      "planar_speed_m_s": 0.012803082656457415,
+      "yaw_rate_deg_s": 0.9075565046135188,
+      "tcp_handle_error_m": 0.665211277526308,
+      "width_m": 0.04000266641378403
+    },
+    "settle": {
+      "reference_substep": 3808,
+      "ramp": true,
+      "within_position_zone": true,
+      "stable": false,
+      "wheels_loaded": true,
+      "reached": false,
+      "both_fingers": false,
+      "gripped": false,
+      "detached": true,
+      "door_speed_rad_s": 0.0,
+      "planar_speed_m_s": 0.005011260319514547,
+      "yaw_rate_deg_s": -0.01876837687210199,
+      "tcp_handle_error_m": 0.6633842658436072,
+      "width_m": 0.04000013880431652
+    },
+    "pregrasp": {
+      "reference_substep": 8809,
+      "ramp": true,
+      "within_position_zone": true,
+      "stable": true,
+      "wheels_loaded": true,
+      "reached": false,
+      "both_fingers": false,
+      "gripped": false,
+      "detached": true,
+      "door_speed_rad_s": 0.0,
+      "planar_speed_m_s": 0.00014370968991340703,
+      "yaw_rate_deg_s": -0.011509754624459537,
+      "tcp_handle_error_m": 2.8923149529660085e-05,
+      "width_m": 0.07224970683455467,
+      "tcp_goal_distance_m": 0.029578022284756856,
+      "tcp_goal_rotation_error_rad": 0.011997473236919602
+    }
+  },
+  "peak_ready_steps": {
+    "approach_base": 30,
+    "settle": 500,
+    "pregrasp": 0
+  },
+  "tolerance_scope": "3 mm absolute TCP endpoint is tested at pregrasp, approach_arm, retreat_arm; elsewhere comparisons are diagnostic",
+  "phase_geometry": {
+    "pregrasp": {
+      "actual_last_physics_step": 6884,
+      "last_in_measured_phase": true,
+      "tolerance_mm": 3.0,
+      "teacher_goal_to_frozen_endpoint_mm": 52.30626040329174,
+      "actual_tcp_to_teacher_goal_mm": 0.02835650493082109,
+      "actual_tcp_to_frozen_endpoint_mm": 52.321503066316666,
+      "actual_tcp_to_handle_mm": 80.01347172989252,
+      "actual_door_deg": 4.117227786399932,
+      "actual_force_N": 0.0,
+      "active_finger_N": [
+        0.0,
+        0.0
+      ],
+      "same_phase_substeps": 1639,
+      "same_clock_same_phase_goal_delta_mm_quantiles": [
+        359.89692670442946,
+        440.72827293595157,
+        441.6042236360472
+      ],
+      "same_clock_same_phase_goal_delta_above_3mm": 1639
+    },
+    "approach_arm": {
+      "actual_last_physics_step": 8459,
+      "last_in_measured_phase": true,
+      "tolerance_mm": 3.0,
+      "teacher_goal_to_frozen_endpoint_mm": 52.460725853768,
+      "actual_tcp_to_teacher_goal_mm": 0.04133837956490712,
+      "actual_tcp_to_frozen_endpoint_mm": 52.492688070769745,
+      "actual_tcp_to_handle_mm": 0.04133837956490712,
+      "actual_door_deg": 4.117227786399932,
+      "actual_force_N": 0.0,
+      "active_finger_N": [
+        0.0,
+        0.0
+      ],
+      "same_phase_substeps": 639,
+      "same_clock_same_phase_goal_delta_mm_quantiles": [
+        119.25466857999412,
+        124.09437405973435,
+        124.14985573338814
+      ],
+      "same_clock_same_phase_goal_delta_above_3mm": 639
+    },
+    "grasp": {
+      "actual_last_physics_step": 9559,
+      "last_in_measured_phase": true,
+      "tolerance_mm": 3.0,
+      "teacher_goal_to_frozen_endpoint_mm": 52.27853627794205,
+      "actual_tcp_to_teacher_goal_mm": 1.7731754853396244,
+      "actual_tcp_to_frozen_endpoint_mm": 52.69223043015155,
+      "actual_tcp_to_handle_mm": 1.7712885411340125,
+      "actual_door_deg": 4.173609717337917,
+      "actual_force_N": 1.1684749903080986,
+      "active_finger_N": [
+        3.43229341506958,
+        2.320340156555176
+      ],
+      "same_phase_substeps": 164,
+      "same_clock_same_phase_goal_delta_mm_quantiles": [
+        51.81537480749673,
+        52.04045963650024,
+        52.05550535420588
+      ],
+      "same_clock_same_phase_goal_delta_above_3mm": 164
+    },
+    "open": {
+      "actual_last_physics_step": 25798,
+      "last_in_measured_phase": true,
+      "tolerance_mm": 3.0,
+      "teacher_goal_to_frozen_endpoint_mm": 2.288783399261119e-13,
+      "actual_tcp_to_teacher_goal_mm": 0.2905802936140277,
+      "actual_tcp_to_frozen_endpoint_mm": 0.29058029361396037,
+      "actual_tcp_to_handle_mm": 1.9498925865711492,
+      "actual_door_deg": 59.82712275156992,
+      "actual_force_N": 0.8208122644277529,
+      "active_finger_N": [
+        3.205131769180298,
+        2.3843235969543457
+      ],
+      "same_phase_substeps": 16161,
+      "same_clock_same_phase_goal_delta_mm_quantiles": [
+        9.343905602486196,
+        9.34390560249117,
+        26.51770087536527
+      ],
+      "same_clock_same_phase_goal_delta_above_3mm": 14805
+    },
+    "retreat_arm": {
+      "actual_last_physics_step": 28973,
+      "last_in_measured_phase": true,
+      "tolerance_mm": 3.0,
+      "teacher_goal_to_frozen_endpoint_mm": 1.570092458683775e-13,
+      "actual_tcp_to_teacher_goal_mm": 0.012616925686462204,
+      "actual_tcp_to_frozen_endpoint_mm": 0.012616925686479163,
+      "actual_tcp_to_handle_mm": 107.44630767175245,
+      "actual_door_deg": 60.05538084344258,
+      "actual_force_N": 0.0,
+      "active_finger_N": [
+        0.0,
+        0.0
+      ],
+      "same_phase_substeps": 1488,
+      "same_clock_same_phase_goal_delta_mm_quantiles": [
+        6.762305821493991,
+        11.756527858315357,
+        11.813728917252751
+      ],
+      "same_clock_same_phase_goal_delta_above_3mm": 1060
+    }
+  },
+  "metrics_are_policy_evaluation": false
+}

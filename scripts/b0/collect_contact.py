@@ -17,8 +17,10 @@ from p6_single_door import run
 
 class HeldTeacher:
     """Sample one pre-bias target; every intervening servo uses that exact target."""
-    def __init__(self, release_during_hold=False):
+    def __init__(self, release_during_hold=False, hold_open_policy_ticks=0):
         self.release_during_hold = release_during_hold
+        self.hold_ticks = 0
+        self.hold_open_policy_ticks = hold_open_policy_ticks
         self.mapping = None
         self.target = None
 
@@ -27,7 +29,10 @@ class HeldTeacher:
             self.mapping = ActionMap(model)
         if step % DECIMATION == 0:
             a = self.mapping
-            if self.release_during_hold and arm.phase == "hold":
+            if arm.phase == "hold":
+                self.hold_ticks += 1
+            if arm.phase == "hold" and (self.release_during_hold or
+                                        self.hold_ticks <= self.hold_open_policy_ticks):
                 # A documented negative-control trajectory. The opening request
                 # goes through the same finite servo as every other action.
                 candidate = candidate.copy()
@@ -42,12 +47,15 @@ class HeldTeacher:
         return self.target
 
 
-def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False, hold_seconds=3, full_task=False, backend="native", extra_final_park=False):
+def collect(side, goal, split, output, evidence, release_during_hold=False, hold_grasp_pose=False, complete_terminal=False, hold_seconds=3, full_task=False, backend="native", extra_final_park=False, *,
+            trial=None):
     episode_id = f"{side}_{goal}_{split}" + ("_drop" if release_during_hold else "")
     if hold_grasp_pose:
         episode_id += "_grip"
     if complete_terminal:
         episode_id += "_terminal"
+    if trial is not None:
+        episode_id = trial["episode_id"]
     path = output / episode_id
     if evidence.exists():
         raise FileExistsError(evidence)
@@ -70,7 +78,10 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
     if complete_terminal:
         # Distinct executions, covering physical terminal successors at exactly 20 ms.
         cfg["perturbation"]["dy"] += .0005
-    held = HeldTeacher(release_during_hold)
+    if trial is not None:
+        cfg.update(case=episode_id, perturbation=trial["perturbation"],
+                   training_condition=episode_id, hold_open_policy_ticks=trial["hold_open_policy_ticks"])
+    held = HeldTeacher(release_during_hold, cfg.get("hold_open_policy_ticks", 0))
     recorder = live_data = None
     unexpected_steps = []
     raw = []
@@ -104,7 +115,8 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
         raise RuntimeError("Teacher and Warp step counts disagree")
     failure = summary["failure"]
     extension = 0
-    if complete_terminal and failure == "lost_grip":
+    if ((complete_terminal and failure == "lost_grip") or
+            (trial is not None and failure and failure != "nonfinite_or_solver_warning")):
         # Keep the very same MjData, solver state and already-issued physical
         # command. Score no more task events after the first hard failure.
         model = recorder.m
@@ -161,7 +173,7 @@ def collect(side, goal, split, output, evidence, release_during_hold=False, hold
                   teacher_final_park_seconds=cfg.get("final_reference_hold_s", cfg["post_hold_s"]),
                   failure=failure, first_failure_interval=first_failure,
                   post_failure_completed_physics_steps=extension,
-                  reference_eligible=bool(passed and split == "train"), policy_success_measured=False,
+                  reference_eligible=bool(trial is None and passed and split == "train"), policy_success_measured=False,
                   target_deg=goal, final_deg=meta["final_door_deg"], physics_steps=steps,
                   fixed_dt_transitions=int(valid.sum()), partial_terminal_substeps=steps%DECIMATION,
                   both_finger_intervals=int((loads > cfg["contact_threshold_n"]).all(1).sum()),
