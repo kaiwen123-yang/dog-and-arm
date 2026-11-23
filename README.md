@@ -2,9 +2,9 @@
 
 本仓库基于智身铜锤 M1 四轮轮足、松灵 Piper H、官方夹爪及 DaBai DC1 腕部相机，开展 MuJoCo 腿臂协同与后续实机研究。最终目标是融合腕部 RGB-D、语言、本体历史的多模态/VLA 模型，与世界模型、可微动力学和 SuperMimic 式策略训练联合。
 
-**B0-03 已通过并冻结，B0-04～06 的下一步计划已形成，待按启动提示词执行。** seed0 同一冻结策略在支撑伸收臂、移动变臂姿和停车三类 Warp 物理任务上分别达到 20/20。本次文档更新没有启动新实验。完整原生 MuJoCo 对照、模型误差和视频见 [B0-03 报告](reports/B0_FREE_MOTION.md) 和 [项目状态](PROJECT_STATE.md)。
+**最新 B0 轮已结束并完成审查：局部接触监督基线通过，完整单门四组开发均为 9/20，尚未达到每侧 18/20。** 两套后端专用的双侧监督包分别完成 nominal；同一包跨后端失败，H32 双侧更新尚未保持既有能力。下一轮继续 B0 的观测、接触学习信号与后端适配。P6 和 B0-03 冻结结果保留。本次更新只审查与发布计划，没有启动新实验。详见 [2026-11-23 审查](reports/B0_REVIEW_20261123.md) 和 [项目状态](PROJECT_STATE.md)。
 
-下一轮：[接触与完整单门执行计划](docs/B0_CONTACT_EXECUTION_PLAN.md) · [Codex 启动提示词](prompts/B0_START.txt) · [每日详细工作记录](DAILY_WORK_LOG.md)。每日记录按北京时间持续追加，包含实际工作、问题证据、修复与复测、失败、未完成项和下一步。
+下一轮：[B0 接续执行计划](docs/B0_RECOVERY_PLAN_20261123.md) · [Codex 启动提示词](prompts/B0_START.txt) · [每日详细工作记录](DAILY_WORK_LOG.md)。每日记录按北京时间持续追加，包含实际工作、问题证据、修复与复测、失败、未完成项和下一步。
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
@@ -30,7 +30,7 @@
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前单门移动操作进度见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前学习策略进度见 **reports/B0_REVIEW_20261123.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -40,9 +40,9 @@
 
 ## 用户现在需要做什么
 
-在已有工作区先检查 git status，再正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给 Codex，从 B0-04 接续执行。现有 `scripts/b0/train.py` 服务无接触训练，接触版须按计划实现并确认真实 CLI 后启动，不能直接改 run 名冒充新阶段。冻结策略的复核命令见[当前入口](prompts/NEXT_RUN.txt) · [环境与教师数据](reports/B0_DATA_READINESS.md)。
+在已有工作区先检查 git status，再正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给 Codex，从已冻结的 seed0 限制基线接续。接触训练与评测入口已经实现；本轮先做有对照的观测/数据适配和 H32 诊断，再继续训练，不重建已完成接口、不提前打开 H 测试。新变体选项由执行轮实现并核对真实 CLI。冻结结果与必要复核命令见[当前入口](prompts/NEXT_RUN.txt)。
 
-本机路径为 `/home/kaiwen/research/dog-and-arm`。B0 使用独立训练环境，当前实验仅在仿真中执行。
+上轮 B0 专用工作树为 `/home/kaiwen/research/dog-and-arm-b0-contact`，AutoDL 为 `/root/autodl-tmp/dog-and-arm-b0-contact`；先核实实际可用位置。主工作树 `/home/kaiwen/research/dog-and-arm` 的其他修改保留。B0 使用独立训练环境，当前任务仅在仿真中执行。
 
 ## H0：相机和机械臂联合运行
 
@@ -120,7 +120,9 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 | AGENTS.md | Codex 项目规则与用户偏好 |
 | PROJECT_STATE.md | 当前完成情况、验证范围及下一步 |
 | DAILY_WORK_LOG.md | 北京时间逐日详细工作、问题处理、实验结果与交接记录 |
-| docs/B0_CONTACT_EXECUTION_PLAN.md | 从 B0-03 冻结结果接续 B0-04～06 的具体执行计划 |
+| docs/B0_RECOVERY_PLAN_20261123.md | 当前 B0 观测、学习信号与后端适配的接续计划 |
+| reports/B0_REVIEW_20261123.md | 最新轮成绩、方法归因、证据边界与审查结论 |
+| docs/B0_CONTACT_EXECUTION_PLAN.md | 已执行轮的历史计划与继续继承的任务/冻结门槛 |
 | prompts/ | 首轮、续接、后续动力学阶段提示词 |
 | docs/HARDWARE_INTEGRATION.md | H0 实机联调步骤、验收依据和接口核查 |
 | config/hardware_session.yaml | H0 实测设备/驱动/流/时间域配置 |

@@ -1,8 +1,8 @@
 # B0：SuperMimic 在 M1＋Piper H 上的迁移与基线验证
 
-首次规划日期：2026-11-21；接续更新：2026-11-22（Asia/Shanghai）。
+首次规划日期：2026-11-21；接续更新：2026-11-23（Asia/Shanghai）。
 
-**当前状态：P6 工程基线、目标环境与 B0-03 seed0 无接触学习已通过并冻结；B0-04～06 尚待执行。** 本文件保留总阶段和方法约定，当前具体工作按 [B0 接触执行计划](B0_CONTACT_EXECUTION_PLAN.md) 接续，不重复从 R0/B0-01 开始。本次只发布后续计划、每日工作记录与启动提示，不启动新训练或硬件。
+**当前状态：P6 与 B0-03 已冻结；B0 接触/完整单门轮已结束并交付 seed0 限制基线。局部接触监督策略通过、各后端双侧 nominal 可执行，但完整 C 四组各 9/20，同包跨端及统一 H32 能力未达标。** 具体事实见[最新审查](../reports/B0_REVIEW_20261123.md)，当前执行 [B0 接续计划](B0_RECOVERY_PLAN_20261123.md)；[原接触计划](B0_CONTACT_EXECUTION_PLAN.md)保留任务与冻结门槛。本文件下文的初始快照与起步说明为历史，方法来源和阶段定义继续有效。本次只审查与更新文档，没有新训练或硬件动作。
 
 总路线见 [RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md)，状态/动作/数据细节见 [B0_DATA_MODEL_CONTRACT.md](B0_DATA_MODEL_CONTRACT.md)，执行入口见 [B0_START.txt](../prompts/B0_START.txt)。
 
@@ -67,7 +67,7 @@ O1 记录中的 Python/Torch/MuJoCo/Warp 版本仅是重建依据，实际安装
 
 ### 3.2 O1 配方与目标平台适配分开记录
 
-O1 配方来源为 GenCoord、proprio/history10、motion slot=1、velocity slot=0、latent32、官方 normalizer/replay/return sampler；WM 主网络 `[2048,2048,2048]`，Actor `[2048,1024,512,256]`，Critic `[256,128]`，学习率 2e-4，WM 10×2048、8 状态窗口，Actor batch4096/H32，replay_ratio16，collection noise0.1，原 Muon/Adam 参数分组。以上是原始来源说明；已通过的目标平台实际配方见 `config/b0/free_servo_cloud.yaml`，当前为 128 worlds 等实际批量与平台动作尺度。下一轮从该已验证配置另建接触变体，不恢复旧的 4096 环境等数值来追求字面一致。
+O1 配方来源为 GenCoord、proprio/history10、motion slot=1、velocity slot=0、latent32、官方 normalizer/replay/return sampler；WM 主网络 `[2048,2048,2048]`，Actor `[2048,1024,512,256]`，Critic `[256,128]`，学习率 2e-4，WM 10×2048、8 状态窗口，Actor batch4096/H32，replay_ratio16，collection noise0.1，原 Muon/Adam 参数分组。以上是原始来源说明；已通过的目标平台实际配方见 `config/b0/free_servo_cloud.yaml`，当前为 128 worlds 等实际批量与平台动作尺度。现有接触/全程实际配置已在 config/b0/ 和各 run/actual_config.json 登记；当前按接续计划选择最小适配，不恢复旧的 4096 环境等数值来追求字面一致。
 
 O6/O7 的全 Adam、cosine 和删采集噪声属于另外的实验配方。B0 初始不混用；如出现针对性证据，再建立命名变体。
 

@@ -1,13 +1,29 @@
-当前交付：2026-11-22，北京时间，B0-04–06 的 seed0 限制基线已冻结。
-先通过 ssh dev2-ubuntu（或 dev2-ubuntu-lan）读取 /home/kaiwen/research/dog-and-arm-b0-contact 的 AGENTS.md、PROJECT_STATE.md、DAILY_WORK_LOG.md 最近节点和 reports/B0_BASELINE_REPORT.md。主工作树 /home/kaiwen/research/dog-and-arm 中的现场 H0 修改、P5 数据单独保留。AutoDL 训练和全量原始数据在 /root/autodl-tmp/dog-and-arm-b0-contact。
+当前入口：2026-11-23（北京时间），最新B0轮已经结束并完成审查，接续计划已发布。
 
-截至冻结，接触监督包两端十项各 20/20。原生来源共同包与 Warp 来源共同包都在本后端完成前拉 60° 与背推 25° 名义。每侧 C01–C20 在两个后端均为 9/20；同一个包跨端未通过。全程 u50 与 u0、独立单侧训练和多个参考协议分别见 results/b0/full_baseline_seed0/full_scores.csv。seed1/2 未开始，H01–H50 未做策略评测。完整成功/失败与本轮出口见 freeze.json。已完成的 P6、B0-03、接触清单和上述全程 C 均无需例行重跑。
+先读 AGENTS.md、PROJECT_STATE.md、DAILY_WORK_LOG.md 最近日期、reports/B0_REVIEW_20261123.md 和 docs/B0_RECOVERY_PLAN_20261123.md。要授权执行本轮仿真实现/训练/评测，使用 prompts/B0_START.txt。旧接触计划保留原门槛，不再从“接触接口待实现”开始。
 
-在第二平台的专用工作树只读查看已完成结果：
+审查事实截至 main@2c15d35eab4c6c24954ce1d67ae09f0247e1725b：
+- 接触参考残差监督u0（BC3000、WM2000）在两后端十项各20/20；是200个局部条件×2后端，XY±0.5mm/yaw±0.025°，片段有100步真实初始化前缀。
+- native/Warp各有一套共同双侧u0完成本后端全程nominal；完整四组C各9/20，均只通过C01、C10–C17。同包交叉后端失败；未展开的C不是0/20。
+- 纯tracking接触u1000两端各0/10；统一全程u50退化，局部H32与单侧成果单列。两个full H32 run都在Warp在线训练。
+- seed1/2未训练，H01–H50未做任务测试。监督成功不等于H32已跑通。
+
+下一实际工作：固定Warp参考/交互/计分，以full_s0_joint_warp_prior_r1/checkpoint_000000.pt及full_warp_hold_park_r1参考为能力锚点，分别检验A观测/教师覆盖、B真实与想象学习信号/Critic/分模式WM、C三后端差异，然后集成最小有效适配继续训练。具体配对、物理门槛和出口按新计划。最终H32候选保留十项接触门槛、两侧完整C各≥18/20、同包原生两侧nominal及H32机制证据明确后才接续独立seed与封存H验证；seed1/2仍须各自通过B0-03。本次计划发布没有启动这些实验。
+
+工作树和大材料恢复：
+上轮SSH dev2-ubuntu（或dev2-ubuntu-lan）对应 /home/kaiwen/research/dog-and-arm-b0-contact；AutoDL autodl-dog-arm 对应 /root/autodl-tmp/dog-and-arm-b0-contact。先核实实际位置、进程与资源，保留主树H0/P5工作，正常拉取。权重、normalizer和大数组不在Git，按 results/b0/full_baseline_seed0/checkpoint_inventory.json 核实实际可读性，不声称仅clone就已恢复完整训练状态。
+
+只读查看旧冻结结果（工作区确认后）：
 cd /home/kaiwen/research/dog-and-arm-b0-contact
 cat results/b0/full_baseline_seed0/full_scores.csv
+cat results/b0/full_baseline_seed0/checkpoint_inventory.json
 
-仅当需要独立复核原生两侧名义时，新建评测名（运行前确认名字未使用）：
-MUJOCO_GL=egl OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 .venv/bin/python -u -m scripts.b0.eval_contact_segments --full-task --side pull push --backend native --device cpu --checkpoint results/b0/full_s0_joint_prior_r1/checkpoint_000000.pt --references results/raw_large/b0/full_native_margin_r1 --run review_frozen_seed0_native_both_r1 --video
+只有诊断确需复测才执行以下已有入口；运行前确认结果名未占用，必要时换新名，不例行重跑整批旧清单：
 
-后续若继续改善 B0，先在开发条件 C02–C05 单列一种观测适配：在固定参考与本体历史之外提供可用的相对站位/把手平移。用相同起点、计分和完整 C 回归对照现有冻结结果；模拟器真值须单独标明，部署需有实际可测来源。若再满足双侧开发门槛，固定配方后才训练独立 seed1/2，再一起开启注册 H01–H50。双门、实机、视觉语言训练由后续任务另行安排。
+原生两侧冻结nominal：
+MUJOCO_GL=egl OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 .venv/bin/python -u -m scripts.b0.eval_contact_segments --full-task --side pull push --backend native --device cpu --checkpoint results/b0/full_s0_joint_prior_r1/checkpoint_000000.pt --references results/raw_large/b0/full_native_margin_r1 --run review_frozen_seed0_native_both_r2 --video
+
+Warp两侧冻结nominal（在已有GPU隔离环境中先确认脚本CLI和材料）：
+bash scripts/b0/env.sh python -u -m scripts.b0.eval_contact_segments --full-task --side pull push --backend warp --device cuda --checkpoint results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt --references results/raw_large/b0/full_warp_hold_park_r1 --run review_frozen_seed0_warp_both_r2 --video
+
+新观测/短H/梯度诊断参数尚未实现，不能把拟定变体名当成现有CLI。按计划实现后把真实命令、run、计数、问题与复测逐日详细写入DAILY_WORK_LOG，并同步PROJECT_STATE、阶段报告和本入口；普通提交推送后核对远端。P6、B0-03、旧G1、双门、视觉语言、RoboMIND及硬件均不是本轮自动重跑项。
