@@ -1,5 +1,13 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-24｜65c121b审查、官方完整流程与新增视频
+
+B0-04、候选null、完整双侧回报NA。实测30诊断WM＋991预适配、主链H32=0；99块仅+850通过旧四项线，98邻对无双通过，原正式0/10。旧成绩及资格失败保持。[本次审查](B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md) · [机器复算](../results/b0/joint_contact_review_20261124/audit_summary.json)
+
+用户再次明确根本目标仍是完整按照固定官方SuperMimic迁移，达到或接近0.90参照/0.88接近带，冻结独立标准基线。V0完整任务视频只是新增交付，不用一部视频替代完整双侧、独立seed和冻结H结果。
+
+下一轮按[官方流程对齐](../docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md)和[执行计划](../docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md)，校正采集/统计/Ratio/10批H7 WM/H32 Actor一次与Critic二十批主环；H1混合、teacher固定配额、冻结统计、gain32逐项处置，必要物理/单位/lane映射保持。25%双块与50mm仅作诊断，不再充当Actor前置；撤销尚未执行的独立参考覆盖预训练分支。标准Actor真实完整完成任务时按[视频协议](../docs/B0_FULL_TASK_VIDEO_PROTOCOL.md)交连续全程视频。本次无新增训练或成功视频。[启动词](../prompts/B0_START.txt)
+
 ## 2026-11-24｜联合 WM 与纯 Actor 接触
 
 B0-04，标准候选为 null，完整双侧回报为 NA。新增 30 个诊断 WM 批和 991 个预适配批（990 个留存、1 个计费中断步）。99 个十批块仅 +850 单点通过，+860 即有三项长窗重新越线；连续两块通过为 0/98。共同 u0 原 2 ms Warp 十项 0/10，六项首微步超 6 N。新 seed0 H32 更新为 0。

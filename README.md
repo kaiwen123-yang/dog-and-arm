@@ -4,9 +4,9 @@
 
 本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先完成开源SuperMimic标准迁移，以达到或接近论文指标为目标，独立保存结果；迁移成功并冻结基线后才开发算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
-**已审查870796a：B0-04、最终候选null、完整双侧物理回报NA。原正式50案全失败，30案首2ms超力；48个反复开发起点组合的纯Actor闭环均未在停止前建立双指。下一轮执行首十批WM定位、真实伺服饱和辨识、原联合分布预适配和单条seed0主链，首段目标u50，有物理收益继续并当轮接后续验收。** [本轮审查](reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md) · [下一集中计划](docs/B0_JOINT_CONTACT_PLAN_20261124.md) · [实验清单](results/b0/standard_dynamics_20261124/baseline_manifest.json)
+**根本目标保持：完整按照固定官方SuperMimic迁移，达到或接近0.90参照/0.88接近带，冻结独立标准基线。完整任务视频V0只是新增交付。** 65c121b仍B0-04、候选null、完整双侧回报NA，原正式0/10、新H32=0。下一轮校正官方采集→统计更新→Ratio→10批H7 WM→H32 Actor/Critic主环，处理历史项目配方偏离，不再用自设25%双块/50mm诊断阻断Actor。[官方流程对齐](docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md) · [当前计划](docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md) · [最新审查](reports/B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md) · [视频与比例](docs/B0_FULL_TASK_VIDEO_PROTOCOL.md)
 
-P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000动作BC和解析补偿的有效成绩单列保留，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
+P1–P6工程继续继承，旧B0-03及后续迁移实验保留为历史对比。新official-flow seed0采用+850的WM-only warm-start，官方fresh Actor/Critic、优化器和online replay，不继承旧Actor或gain32；warm-start成本完整披露。540/546参考前馈、15,000动作BC和解析补偿的成绩单列，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
@@ -32,7 +32,7 @@ P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000�
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -42,9 +42,9 @@ P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000�
 
 ## 用户现在需要做什么
 
-在已有工作区检查git status并正常拉取，将[B0_START.txt](prompts/B0_START.txt)交给Codex。从870796a及其后本次审查提交执行[联合WM与接触闭环计划](docs/B0_JOINT_CONTACT_PLAN_20261124.md)：并行定位首十批WM和真实伺服饱和，原联合分布预适配，经过真实联合更新后再验证，随后一条主链目标u50，有物理收益持续推进；通过门槛同轮接后续验收。先迁移成功冻结，再开发算法。
+正常fetch main并将[B0_START.txt](prompts/B0_START.txt)交给执行端，按[官方流程对齐](docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md)和[当前执行计划](docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md)连续推进。真实采集、统计更新、Ratio及10批H7 WM/H32 Actor/Critic构成同一官方主线；H1混合、teacher配额、冻结统计、gain32逐项登记处置，不再另开独立参考覆盖预训练分支。完整任务成功时立即交连续仿真视频，同轮继续另一侧；原论文参照、物理验收和最终独立结果目标不变。
 
-现场AutoDL `/root/autodl-tmp/dog-and-arm-b0-temporal-v1`，本轮资产在 `results/raw_large/b0/dynamics_20261124/`。两支u10各pending=2留诊断，不机械续训；先核工作树、进程和必要资产，保留已有修改。继承B0-03 seed0/P6，独立seed按原协议启动，H在三seed全部冻结后开启。具体见[NEXT_RUN](prompts/NEXT_RUN.txt)。
+现场/root/autodl-tmp/dog-and-arm-b0-temporal-v1；原资产results/raw_large/b0/joint_contact_20261124/，+850/+990和旧u10按历史身份保留。新链初始化/学习率/统计/动作参数化以官方对齐清单为准。旧25%双块及50mm仅保留诊断，不再充当Actor前置；已解决的单位/solver/lane映射继承。[NEXT_RUN](prompts/NEXT_RUN.txt)
 
 ## H0：相机和机械臂联合运行
 

@@ -1,7 +1,17 @@
-继续 dog-and-arm 的 SuperMimic-M1Piper-standard-v1。正常 fetch main 并保留工作树。读 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_JOINT_CONTACT_RESULTS_20261124.md、results/b0/standard_joint_contact_20261124/baseline_manifest.json 和 DAILY_WORK_LOG.md 最新记录。
+继续 dog-and-arm 的 SuperMimic-M1Piper-standard-v1。根本目标不变：先完整按固定官方 SuperMimic 主流程迁移，达到或接近论文参照并冻结独立标准结果，再开发算法。加快速度不降低目标；完整任务视频只是新增交付，不替代0.90参照／0.88接近带、双侧物理任务和最终资格。
 
-B0-04，标准候选为 null，完整双侧回报为 NA。新增 30 个诊断 WM 批和 991 个预适配批（990 个留存、1 个计费中断步）。99 个十批块仅 +850 单点通过，+860 即有三项长窗重新越线；连续两块通过为 0/98。共同 u0 原 2 ms Warp 十项 0/10，六项首微步超 6 N。新 seed0 H32 更新为 0。 原训练数值身份 0.25 ms / 外部 servo 2 ms / Actor 20 ms / c=.50625、原 2 ms Warp 与 native3.3 正式协议和 6 N 保持。共同 u0 两身份共 24 个独立执行的开发组合，分别 8/12 有第二动作、0/12 见双指、0 事件。旧两支 pending=2 保留。
+正常fetch main，保留原工作树；必要时独立工作树。先读AGENTS.md、PROJECT_STATE.md顶部、docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md、docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md、docs/B0_FULL_TASK_VIDEO_PROTOCOL.md、reports/B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md、最新DAILY_WORK_LOG.md，交叉核对65c121b报告与manifest。当前B0-04、candidate=null、完整双侧回报NA；最新正式0/10，六案首2ms超6N；30诊断WM批＋991预适配批，99块只有+850单点合格，连续两块0/98，新H32=0。历史数字不追改。
 
-D57 现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1；本轮大资产 results/raw_large/b0/joint_contact_20261124/。末点 adapt/wm_000990.pt 和 train 采集的 solver、lane、replay、Sampler、Ratio 与共同 u0 包分别定位于 manifest.actual_package_recovery。复核关键末点运行 bash scripts/b0/env.sh python -u -m scripts.b0.joint_verify。只读评分不消耗 WM 优化预算。
+固定SuperMimic abc124c1bd5976341034668af3d12c087f2f1f55、mjlab dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd。新独立official_flow_s0_v1恢复官方真实采集→replay/历史/ReturnSampler→更新WM和Actor统计→Ratio→10个H7 WM批→H32 Actor1＋Critic20。horizon=8是七个监督后继。25%双块和50mm只诊断，不再阻Actor；不伪造旧qualified.json。撤销独立B覆盖预训练，不加课程、BC、参考动作直通、解析补偿、新奖励或网络。
 
-本轮990个连续步加1个未留存实步，+490后唯一调整为两个现有 WM 优化器学习率降低四倍。旧额度尚有9批，不足另一个完整十批资格块。+850前后的窗口、逐源梯度、真实边界原数组、全节点分层误差及逐案闭环可直接复用。下一轮新增更新须独立登记预算和可区分的原因；先取得单链连续真实块资格，再从第二末点连同 optimizer/RNG 进入 H32。保留所有历史原数、任务与完整回报规则。标准迁移成功冻结后再开发算法。
+采用官方允许的WM-only warm-start：适配读取results/raw_large/b0/joint_contact_20261124/adapt/wm_000850.pt的dyn及normalizers；该包没有sim_context，由已有task/环境映射补齐核验，不能称已兼容官方完整bundle。新seed0 Actor/Critic及全部优化器按官方构造，默认2e-4，新online replay/Ratio/ReturnSampler；不继承旧Actor/Critic、旧optimizer、5e-5、RNG或gain32。保留+850所有历史成本，不称旧训练连续恢复或论文同机器人从零复现。该接口尚待实施，不只检查shape。
+
+恢复在线WM来源、10H7和动态统计；关闭额外H1、teacher配额、函数重标补偿。优先官方WM batch2048、Actor4096、H32、gamma .99、lambda .95、noise .1、ratio16、原Muon＋Adam与裁剪；确有显存阻塞才预登记batch/并行数和对应Ratio的数值差异，不静默换机制。官方decoder原输出不是基础effort±1截断；核对动作scale/offset/边界/噪声/WM.proc及固定effort奖励，gain32=1不能错误限制完整姿态范围。
+
+保留已修逐lane、真实前缀、solver、动作率/prev-action、合法窗口和参考末帧。训练0.25ms／servo2ms／Actor20ms／80微步／c=.50625，原2ms Warp/native3.3正式身份和6N保持。覆盖检查只核对完整参考及六臂/jaw输入，不增独立学习阶段；旧112边界和步长研究直接复用。旧joint_main.py带旧资格/混合配方，不得直接冒充新入口。
+
+集中完成必要实现与真实首更新回执，随后连续推进，首段u200＝200 H32／2000联合WM／4000Critic，实际Ratio记账。存u0/1/10/50/100/200；有限大误差或u10仍0/10不构成自加WM门。非有限或真实接口/恢复错误保存现场修复后继续。u200有物理收益登记延长u500/1000；无收益保留具体负结果，不无限堆预算。
+
+同一Actor每20ms根据真实后继闭环。按计划评接触及full_from_start，主要节点可做完整nominal开发尝试；首次完整成功立即交真实原速连续视频，同轮继续另一侧。无reset、教师尾段、解析接管、直接摆qpos或拼接。原十项/D、双侧Warp/C/native、独立seed和冻结H标准保持；新Actor不能冒用旧B003通过记录；完整结果尚缺仍NA。
+
+现场/root/autodl-tmp/dog-and-arm-b0-temporal-v1，旧资产保持；新小结果results/b0/standard_official_flow_20261124/，大资产对应official_flow_20261124/。保存继承和新增成本、原单位/比例、官方来源、实际调用/优化器计数及完整恢复包。更新北京时间唯一DAILY_WORK_LOG、PROJECT_STATE、独立报告/manifest和提示词，普通推送并回读GitHub。不要只改计划或重复诊断就结束执行轮，不预先宣称迁移成功。

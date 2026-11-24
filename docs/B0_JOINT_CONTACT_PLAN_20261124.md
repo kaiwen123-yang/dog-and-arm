@@ -1,5 +1,7 @@
 # B0 下一集中轮：联合 WM 保留与真实接触闭环
 
+> 本计划已按65c121b执行，旧四项25%连续双块资格未通过。原条件、预算与结果保留。用户再次明确完整按官方SuperMimic迁移、原论文参照和独立基线目标不变，V0视频只是新增交付。下一轮按[官方完整流程对齐](B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md)及[执行计划](B0_FULL_TASK_TRANSFER_PLAN_20261124.md)校正采集/统计/Ratio/10批H7/H32主环；25%双块与50mm作为历史自设诊断，不再充当Actor前置。尚未执行的独立参考覆盖预训练分支取消；本页下文为已封存的历史预登记。
+
 本计划原始登记保留如下。执行结果见[本轮报告](../reports/B0_JOINT_CONTACT_RESULTS_20261124.md)，991 批预算已计费，未取得连续两个通过块。
 
 日期：2026-11-24，北京时间。接续实验 [870796a](https://github.com/kaiwen123-yang/dog-and-arm/commit/870796a52aaab5cef307d5c2d455377094e5d056)，审查见 [B0_DYNAMICS_ROUND_REVIEW_20261124.md](../reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md)。**本文件为前瞻计划，下列新实验尚未执行。**
