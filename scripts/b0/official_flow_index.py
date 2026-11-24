@@ -19,7 +19,7 @@ NOMINAL = dict(root_position_rmse_m=.01,root_orientation_rmse_deg=np.rad2deg(.02
 
 def csv_file(name,rows):
     with (OUT/name).open('w',newline='') as f:
-        writer=csv.DictWriter(f,fieldnames=list(rows[0]))
+        writer=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
 

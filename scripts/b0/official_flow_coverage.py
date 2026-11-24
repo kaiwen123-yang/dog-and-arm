@@ -45,7 +45,8 @@ def coverage(u):
     # When extending beyond a ring's capacity, never count the overlap twice.
     ranges=[]
     right=clock
-    files={int(p.name.split('_')[1]):p/'state.pt' for p in RAW.glob('resume_*')}
+    files={int(p.name.removeprefix('resume_')):p/'state.pt' for p in RAW.glob('resume_*')
+           if p.is_dir() and p.name.removeprefix('resume_').isdigit()}
     files.update({int(p.stem.split('_')[1]):p for p in RAW.glob('counting_*.pt')})
     parent=io.read(OUT/'parent.json') if CONTINUATION else None
     first_tick=parent['clock'] if parent else 0

@@ -1,0 +1,308 @@
+{
+  "method": "SuperMimic-M1Piper-standard-v1",
+  "execution_recipe": "official_flow_s0_v1",
+  "source_main": "bdb72d8f7019688b6e51ba0cd2d083a5bef90532",
+  "parent_run_commit": "51a0133802983b65602949000099e7d18fa8e835",
+  "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+  "mjlab": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd",
+  "seed": 0,
+  "parent": {
+    "update": 1000,
+    "checkpoint": "results/raw_large/b0/official_flow_20261124/checkpoint_001000.pt",
+    "state": "results/raw_large/b0/official_flow_20261124/resume_001000",
+    "clock": 2772,
+    "simulated": 11354112,
+    "valid": 10255490,
+    "steps": {
+      "wm": 10000,
+      "actor": 1000,
+      "critic": 20000
+    },
+    "stats": {
+      "wm_state": 10305969,
+      "wm_proc": 10305969,
+      "proprio": 10255490,
+      "goal": 10255490
+    },
+    "ratio": {
+      "previous_clock": 10250240.0,
+      "pending": 0,
+      "cohorts": 2772
+    }
+  },
+  "inherited_wm_ancestor_minibatches": 14850,
+  "parent_steps": {
+    "wm": 10000,
+    "actor": 1000,
+    "critic": 20000
+  },
+  "cumulative_steps": {
+    "wm": 15000,
+    "actor": 1500,
+    "critic": 30000
+  },
+  "retained_new_steps": {
+    "wm": 5000,
+    "actor": 500,
+    "critic": 10000
+  },
+  "charged_new_steps": {
+    "wm": 5090,
+    "actor": 506,
+    "critic": 10120
+  },
+  "discarded_attempts": [
+    {
+      "failure": "failure_at_002775_u001000.json",
+      "recovery_update": 1000,
+      "steps": {
+        "wm": 10,
+        "actor": 0,
+        "critic": 0
+      },
+      "valid": 11047,
+      "lane_intervals": 12288,
+      "interrupted_partial_tick_excluded": true
+    },
+    {
+      "failure": "failure_at_002775_u001001.json",
+      "recovery_update": 1000,
+      "steps": {
+        "wm": 10,
+        "actor": 1,
+        "critic": 20
+      },
+      "valid": 11047,
+      "lane_intervals": 12288,
+      "interrupted_partial_tick_excluded": true
+    },
+    {
+      "failure": "failure_at_002783_u001003.json",
+      "recovery_update": 1001,
+      "steps": {
+        "wm": 30,
+        "actor": 2,
+        "critic": 40
+      },
+      "valid": 29443,
+      "lane_intervals": 32768,
+      "interrupted_partial_tick_excluded": true
+    },
+    {
+      "failure": "failure_at_002786_u001004.json",
+      "recovery_update": 1001,
+      "steps": {
+        "wm": 40,
+        "actor": 3,
+        "critic": 60
+      },
+      "valid": 40491,
+      "lane_intervals": 45056,
+      "interrupted_partial_tick_excluded": true
+    }
+  ],
+  "new_valid": 5120466,
+  "cumulative_valid": 15375956,
+  "new_lane_intervals": 5648384,
+  "new_microsteps": 451870720,
+  "new_prefix_lane_intervals": 527918,
+  "new_valid_terminal": 48579,
+  "retained_training_wall_s": 987.331525079906,
+  "wall_by_process_through_retained_update_s": {
+    "durable_u1001": 40.95530388131738,
+    "1795540571.1211922": 946.3762211985886
+  },
+  "wall_scope": "monotonic time after restore to last retained update in each process, includes internal checkpoints except its own final write; evaluation and discarded attempts excluded",
+  "aggregate_new_simulated_seconds": 112967.68000000001,
+  "new_ratio_stored_positions_per_valid": 15.998543882529441,
+  "new_wm_windows": 10240000,
+  "new_wm_scored_successors": 71680000,
+  "new_imagined_steps": 65536000,
+  "nodes": [
+    1500
+  ],
+  "physics": [
+    {
+      "node": 1500,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "full_cases": 2,
+      "full_success": 0,
+      "full": [
+        {
+          "side": "pull",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "timeout:settle",
+          "xy_m": 0.008591781124604715,
+          "heading_deg": 2.5016796951582916
+        },
+        {
+          "side": "push",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "unexpected_contact:robot_frame",
+          "xy_m": 0.0484764673690919,
+          "heading_deg": 0.3187969351176965
+        }
+      ]
+    },
+    {
+      "node": 1500,
+      "backend": "native",
+      "contact_cases": 0,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "full_cases": 2,
+      "full_success": 0,
+      "full": [
+        {
+          "side": "pull",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "timeout:settle",
+          "xy_m": 0.01186998296219288,
+          "heading_deg": 2.325944482771612
+        },
+        {
+          "side": "push",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "unexpected_contact:robot_frame",
+          "xy_m": 0.0482022677943988,
+          "heading_deg": 0.6280451469564262
+        }
+      ]
+    }
+  ],
+  "free": [
+    {
+      "node": 1500,
+      "task": "support",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 1500,
+      "task": "moving_arm",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 1500,
+      "task": "park",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    }
+  ],
+  "pure_actor": [
+    {
+      "node": 1500,
+      "start": "pull_0_validation_grip_grasp",
+      "phase": "grasp",
+      "actor_queries": 12,
+      "scored_ticks": 117,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 1500,
+      "start": "pull_0_validation_grip_hold",
+      "phase": "hold",
+      "actor_queries": 1,
+      "scored_ticks": 1,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 1500,
+      "start": "pull_0_validation_grip_release",
+      "phase": "release",
+      "actor_queries": 13,
+      "scored_ticks": 121,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 1500,
+      "start": "push_0_validation_grip_grasp",
+      "phase": "grasp",
+      "actor_queries": 3,
+      "scored_ticks": 26,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 1500,
+      "start": "push_0_validation_grip_hold",
+      "phase": "hold",
+      "actor_queries": 1,
+      "scored_ticks": 1,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 1500,
+      "start": "push_0_validation_grip_release",
+      "phase": "release",
+      "actor_queries": 3,
+      "scored_ticks": 28,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    }
+  ],
+  "video_manifests": [],
+  "recovery": {
+    "host": "autodl-d57",
+    "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8",
+    "update": 1500,
+    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_001500.pt",
+    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_001500",
+    "clock": 4151,
+    "simulated": 17002496,
+    "valid": 15375956,
+    "steps": {
+      "wm": 15000,
+      "actor": 1500,
+      "critic": 30000
+    },
+    "stats": {
+      "wm_state": 15426435,
+      "wm_proc": 15426435,
+      "proprio": 15375956,
+      "goal": 15375956
+    },
+    "ratio": {
+      "previous_clock": 15370240.0,
+      "pending": 0,
+      "cohorts": 4151
+    }
+  },
+  "V0": 0,
+  "stage": "B0-04",
+  "candidate": null,
+  "qualified_bilateral_return": null,
+  "paper": {
+    "sonic_reference": 0.9,
+    "registered_near_band": 0.88
+  },
+  "D": null,
+  "C": null,
+  "seeds_1_2": null,
+  "H": null,
+  "scope": "Individual failed full attempts retain their measured-prefix diagnostics; qualified scores require success."
+}
