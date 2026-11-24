@@ -1,5 +1,9 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-24｜新物理身份的标准 seed0 开发对照
+
+**B0-04，候选 null，完整双侧物理归一化回报 NA。** Warp 0.25 ms 训练、原 2 ms Warp 正式评分。两臂离线预热各 1,000 WM 批，六项预登记替代条件通过，唯一实验 WM 为重标 +1000，控制为同身份 C20 +0。独立结果协议原接触门槛保持。两臂各 u10，预算共 20 H32、200 联合 WM、400 Critic；共同 u0、两支 u1/u10 共 50 个新正式案例，0 通过、0 阶段事件。实验 u10 的前拉存续改善同时伴随背推接近从 1.154 s 降至 0.036 s，闭环开发复查 48 案停止前均无双指。原先 response u200 的 60 案及 ff2d1e8 的冻结 u0 另记。[实验报告](B0_DYNAMICS_TRANSFER_RESULTS_20261124.md) · [本轮清单](../results/b0/standard_dynamics_20261124/baseline_manifest.json) · [按案结果](../results/b0/standard_dynamics_20261124/h32/pilot_summary.json)
+
 ## 2026-11-24｜ff2d1e8审查与下一集中轮，原成绩保持
 
 **标准迁移未完成：B0-04、最终候选null、完整双侧回报NA。** C20/T2八节点原WM保留条件未通过，新增Actor=0；冻结u0十案0/10、6案首2ms超力、0事件。预算/抽样/梯度和物理身份已复核。本次仅审查/复算/计划发布，无新增训练、仿真或正式评分。[审查](B0_TEMPORAL_ROUND_REVIEW_20261124.md) · [审查JSON](../results/b0/temporal_review_20261124/audit_summary.json)

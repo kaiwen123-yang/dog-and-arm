@@ -1,6 +1,6 @@
 # dog-and-arm 项目指令
 
-当前标准迁移入口（2026-11-24，ff2d1e8审查后）：读取PROJECT_STATE.md顶部、reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md、docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md与prompts/B0_START.txt/NEXT_RUN.txt。原八节点保留门未过、新Actor=0，候选null、完整回报NA。旧计划的待执行/必须先选WM表述按新计划的有限C20 H32机制实验条款更新；不追认旧结果、不改正式验收。
+当前标准迁移入口为 PROJECT_STATE.md 顶部、reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md、results/b0/standard_dynamics_20261124/baseline_manifest.json 与 prompts/NEXT_RUN.txt。11月24日细步 C20/H32 集中轮已结束，仍在 B0-04。重标 +1000 在六项开发 WM 条件上获选；两支各 u10，正式 50 案全失败，48 案同状态闭环在停止前均无双指。最终候选 null、完整双侧回报 NA。 之前启动计划已执行。
 
 ## 2026-11-24 计划提交 b5831d7 的接续状态（历史）
 
@@ -11,7 +11,7 @@
 - 项目仓库：https://github.com/kaiwen123-yang/dog-and-arm 。用户已授权将本项目代码、配置、阶段结果和下一步计划提交并推送到这里。保留已有修改，普通提交，不强推；不创建本机压缩归档。
 - 硬件：智身铜锤 M1 四轮轮足（ZGWS）＋松灵 Piper H＋官方平行夹爪＋官方腕部支架＋Orbbec DaBai DC1。
 - 保留 MuJoCo 物理体系与原生模型，不安装智身 UE/GENISOM 仿真。B0 允许在独立环境使用官方 mjlab_research／MuJoCo-Warp 训练后端；原 native MuJoCo 3.3.0 工程保留为物理与任务基准。P0–P3 模型回合不操作真实机器人；用户新增授权的 H0 单独进行 Piper H＋DC1 实机联调，允许复用现有 SDK 的状态读取和现场启动的有限低速已验证动作。H0 不运动 M1。
-- 用户明确当前是**根据 SuperMimic 迁移的标准阶段**。先在固定官方核心网络与学习机制下完成 B0，再进入多模态/VLA。世界模型、可微动力学和 H32 Actor/Critic 学习本来就在当前 B0 中实现，不后置到视觉语言阶段。用户新增要求以达到或接近论文指标为目标，单独形成迁移结果供后续比较。当前执行 docs/B0_PAPER_BASELINE_PROTOCOL.md、reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md 与 docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md；11月23日官方源码审查保留为历史依据，其中已完成修复以新审查为准。独立结果入口 reports/B0_STANDARD_TRANSFER_BASELINE.md。总路线和目标差距见 docs/RESEARCH_ROADMAP.md、docs/B0_SUPERMIMIC_PLAN.md、docs/GOAL_GAP_20261124.md。
+- 用户明确当前是**根据 SuperMimic 迁移的标准阶段**。先在固定官方核心网络与学习机制下完成 B0，再进入多模态/VLA。世界模型、可微动力学和 H32 Actor/Critic 学习本来就在当前 B0 中实现，不后置到视觉语言阶段。用户新增要求以达到或接近论文指标为目标，单独形成迁移结果供后续比较。按 docs/B0_PAPER_BASELINE_PROTOCOL.md 评分。物理时间尺度集中计划已执行，当前结果和接续见 reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md、prompts/NEXT_RUN.txt；11月23日官方源码审查保留为历史依据，其中已完成修复以新审查为准。独立结果入口 reports/B0_STANDARD_TRANSFER_BASELINE.md。总路线和目标差距见 docs/RESEARCH_ROADMAP.md、docs/B0_SUPERMIMIC_PLAN.md、docs/GOAL_GAP_20261124.md。
 - P1–P6工程和B0-03 seed0无接触学习已通过。11月23日的历史标准接触轮结束于638fddc：五条seed0配置链，gain32-u200自身345,268有效转移、Warp/native正式十项均0/10，另四组u50 Warp均0/10；415条nominal/55run全部失败，D、完整任务、seed1/2、H本轮未执行。旧r3 u1000两端0/10保留。23c9068恢复轮的540/546包继承15,000动作BC与参考前馈，546另有解析补偿，u1三端双侧nominal及Warp C各9/20属于有效混合对照，不能填入标准成绩。
 - 最终目标仍是腕部 RGB-D＋语言＋本体历史的多模态/VLA 与世界模型、可微动力学联合，实现腿臂协同并上实机验证；先完成当前标准迁移。当前先单扇普通被动铰链门；双门是后续扩展，不是 B0 前置。门无闭门器、初版无锁舌，使用固定 U 形把手。
 - 用户明确将手眼标定、标定板采购、相机/支架净重和惯量测量后置。这些不是当前开工条件，不要因此暂停或反复提问。

@@ -1,0 +1,39 @@
+{
+  "experiment_kind": "development_h32_pilot",
+  "seed": 0,
+  "config": "config/b0/standard_dynamics_v1.yaml",
+  "physics_identity": "warp_250us_servo2ms_continuous_v1",
+  "training_physics_dt": 0.00025,
+  "policy_dt": 0.02,
+  "formal_physics": "original single-world training-version Warp 2 ms / native MuJoCo 3.3.0",
+  "historical_selected_wm": null,
+  "historical_wm_retention_passed": false,
+  "pilot_wm": "results/raw_large/b0/dynamics_20261124/offline_wm/rebase/wm_001000.pt",
+  "checkpoints": {
+    "control": "results/raw_large/b0/dynamics_20261124/offline_wm/C20/wm_000000.pt",
+    "experiment": "results/raw_large/b0/dynamics_20261124/offline_wm/rebase/wm_001000.pt"
+  },
+  "checkpoint_sha256": {
+    "control": "ccd7c92d9b71ec9dd13b3eda7482692b0871ad3aa222f17a031bdbc7a465701a",
+    "experiment": "f4c41000880ff43a6e5b146a3913e832ee506b0ec21bd7b1e61d94b9c1748962"
+  },
+  "preregistration": "results/b0/standard_dynamics_20261124/pilot_registration.json",
+  "preregistration_sha256": "68978d1c876e57d3314b82bbb1e651cdc752fa4bfe2e2656d524ca32782dd4fe",
+  "config_sha256": "36a48eaf35b91fc1cee8428def126226c81563cfe9806c34163d00190c4c73a7",
+  "locked_selection": "results/b0/standard_dynamics_20261124/pilot_wm_locked.json",
+  "selection_sha256": "21e8f8463ad41e037eb7def8d6085371eb199d82d0b73b2c899a709696ee4d22",
+  "recipe": "4.4 C20+1000 default; one terminal alternative only if all six paired measures meet preregistration",
+  "max_pilot_updates": {
+    "H32": 20,
+    "joint_WM": 200,
+    "Critic": 400
+  },
+  "offline_budget_separate": true,
+  "initialization": "B0-03 standard actor and its unit-preserving gain; common compatible Critic and fresh official optimizers",
+  "bootstrap_target": "abc124c bootstrap and GAE use the current Critic; no distinct target module",
+  "common_collection": "one seed0 initial collection at fixed actor parameters and frozen initial normalization; complete Warp Data and lane/counter/replay/sampler/RNG restoration before either branch",
+  "post_u1": "independent live-policy collection with the original normalization update schedule",
+  "timestamps_unix": {
+    "lock_read_and_registration": 1795519018.8771877
+  }
+}

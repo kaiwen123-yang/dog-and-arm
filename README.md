@@ -2,9 +2,7 @@
 
 本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先完成开源SuperMimic标准迁移，以达到或接近论文指标为目标，独立保存结果；迁移成功并冻结基线后才开发算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
-**11月24日最新实验ff2d1e8已审查，仍在B0-04。** solver缓存已修、C20/T2各1000WM批结束，八节点未过原保留条件；新增Actor=0，冻结u0原十项0/10，完整双侧回报NA、候选为空。C20首开度接近原损失折中，首TCP/J2有收益；当前T2配方封存。[本次审查](reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md) · [原实验](reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md) · [独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md)
-
-按用户“一次性多推进”要求，执行[新集中计划](docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md)：有限物理步长核验、一套C20统计适配、预登记两支u1/u10真实H32，再按物理改善持续推进。开发试验资格不追认旧WM通过、不降低原正式门槛；同包十项通过后当轮继续D与完整双侧/native，条件具备继续独立seed与冻结H。本次计划实验均尚未执行。[完整启动词](prompts/B0_START.txt) · [NEXT_RUN](prompts/NEXT_RUN.txt) · [距目标差距](docs/GOAL_GAP_20261124.md)
+**11月24日细步 C20/H32 集中轮已结束，仍在 B0-04。重标 +1000 在六项开发 WM 条件上获选；两支各 u10，正式 50 案全失败，48 案同状态闭环在停止前均无双指。最终候选 null、完整双侧回报 NA。** [集中轮实验报告](reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md) · [真实成绩与恢复](results/b0/standard_dynamics_20261124/baseline_manifest.json)
 
 P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000动作BC和解析补偿的有效成绩单列保留，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
 

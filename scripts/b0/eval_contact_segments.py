@@ -409,7 +409,10 @@ def main(args):
                         if (key in margin) == (manifest['version'] == 'contact_dev_hold_margin_v2')]
         if not trial_groups:
             raise ValueError('No formal cases in selected protocol groups')
-    output=ROOT/'results/b0'/args.run
+    result_part, raw_part = (Path(x) for x in (getattr(args,'round',None) or ('.','.')))
+    if any(part.is_absolute() or '..' in part.parts for part in (result_part,raw_part)):
+        raise ValueError('Round output directories must stay under the existing results roots')
+    output=ROOT/'results/b0'/result_part/args.run
     if Path(args.run).name!=args.run:
         raise ValueError('use a new run name')
     plan=dict(checkpoint=str(args.checkpoint), backend=args.backend, mujoco=mj.__version__,
@@ -423,7 +426,7 @@ def main(args):
         plan['diagnostic_cases'] = selected
         plan['score_selected_after_nominal_failure'] = True
     spec_path=output/'run_spec.json'
-    raw_root=ROOT/'results/raw_large/b0'/args.run
+    raw_root=ROOT/'results/raw_large/b0'/raw_part/args.run
     legacy=False
     if args.resume:
         if not output.is_dir() or (output/'evaluation.json').exists():
@@ -524,6 +527,8 @@ def main(args):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--run')
+    parser.add_argument('--round', nargs=2, metavar=('RESULTS_SUBDIR','RAW_SUBDIR'),
+                        help='Store a new round under the respective normal results roots')
     parser.add_argument('--checkpoint',type=Path,required=True)
     parser.add_argument('--backend',choices=('native','warp'),default='native')
     parser.add_argument('--device',default='cuda:0')

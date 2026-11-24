@@ -1,0 +1,283 @@
+{
+  "method": "SuperMimic-M1Piper-standard-v1",
+  "created_beijing": "2026-11-24T19:31:01+08:00",
+  "reviewed_plan_commit": "781cd1d4e45fa7acb61dad0f76fb13e72fcb68b7",
+  "implementation_start_commit": "20cc9ecc7f5d85f3b55e278f824123cd04b84cd1",
+  "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+  "mjlab_research": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd",
+  "physical_windows": "results/b0/standard_dynamics_20261124/warp_windows/time_step_decision.json",
+  "data_qualification": "results/b0/standard_dynamics_20261124/data_qualification.json",
+  "physics_identity": "warp_250us_servo2ms_continuous_v1",
+  "training_dt_s": 0.00025,
+  "policy_dt_s": 0.02,
+  "servo_dt_s": 0.002,
+  "gencoord_c": 0.50625,
+  "formal_warp_dt_s": 0.002,
+  "formal_native_version": "3.3.0",
+  "force_limit_n": 6,
+  "experiment_kind": "development_h32_pilot",
+  "prior_selected_wm": null,
+  "prior_wm_retention_passed": false,
+  "pilot_wm": "results/raw_large/b0/dynamics_20261124/offline_wm/rebase/wm_001000.pt",
+  "pilot_selection": "results/b0/standard_dynamics_20261124/pilot_wm_locked.json",
+  "actual_pair_lock": "results/b0/standard_dynamics_20261124/pilot_execution_lock.json",
+  "h32_preflight": "results/b0/standard_dynamics_20261124/h32/preflight_pair.json",
+  "common_initial_collection": 2086,
+  "actual_first_pair": {
+    "index_groups": {
+      "preflight_draws.npz": 49,
+      "u1_actual_wm_draws.npz": 48,
+      "draws_u01.npz": 49
+    },
+    "compared_fields": [
+      "episode",
+      "motion_time",
+      "draw_phase",
+      "draw_mode",
+      "terminated",
+      "sim_ctx",
+      "history",
+      "prev_action",
+      "state",
+      "first_command"
+    ],
+    "actual_actor_batch": 256,
+    "unique_episodes": 135,
+    "input_and_first_command_exact": true
+  },
+  "offline_wm": {
+    "C20": {
+      "updates": 1000,
+      "h1": 200,
+      "h7": 800,
+      "windows": 256000,
+      "supervised_successors": 1484800,
+      "source_identity": "results/b0/standard_dynamics_20261124/c20_data_identity.json",
+      "node_stability": {
+        "50": {
+          "disposition": "stable_on_fixed_probes",
+          "interval_gradients": "results/b0/standard_dynamics_20261124/C20_gradients_000050.json",
+          "physical_units": "results/b0/standard_dynamics_20261124/C20_fixed_probe_000050.json"
+        },
+        "200": {
+          "disposition": "stable_on_fixed_probes",
+          "interval_gradients": "results/b0/standard_dynamics_20261124/C20_gradients_000200.json",
+          "physical_units": "results/b0/standard_dynamics_20261124/C20_fixed_probe_000200.json"
+        },
+        "1000": {
+          "disposition": "stable_on_fixed_probes",
+          "interval_gradients": "results/b0/standard_dynamics_20261124/C20_gradients_001000.json",
+          "physical_units": "results/b0/standard_dynamics_20261124/C20_fixed_probe_001000.json"
+        }
+      },
+      "loop_seconds": 19.467896101996303
+    },
+    "rebase": {
+      "updates": 1000,
+      "h1": 200,
+      "h7": 800,
+      "windows": 256000,
+      "supervised_successors": 1484800,
+      "source_identity": "results/b0/standard_dynamics_20261124/c20_data_identity.json",
+      "node_stability": {
+        "50": {
+          "disposition": "stable_on_fixed_probes",
+          "interval_gradients": "results/b0/standard_dynamics_20261124/rebase_gradients_000050.json",
+          "physical_units": "results/b0/standard_dynamics_20261124/rebase_fixed_probe_000050.json"
+        },
+        "200": {
+          "disposition": "stable_on_fixed_probes",
+          "interval_gradients": "results/b0/standard_dynamics_20261124/rebase_gradients_000200.json",
+          "physical_units": "results/b0/standard_dynamics_20261124/rebase_fixed_probe_000200.json"
+        },
+        "1000": {
+          "disposition": "stable_on_fixed_probes",
+          "interval_gradients": "results/b0/standard_dynamics_20261124/rebase_gradients_001000.json",
+          "physical_units": "results/b0/standard_dynamics_20261124/rebase_fixed_probe_001000.json"
+        }
+      },
+      "loop_seconds": 19.180607980117202
+    }
+  },
+  "pilots": {
+    "control": {
+      "h32": 10,
+      "joint_wm": 100,
+      "critic": 200,
+      "valid": 13044,
+      "simulated_policy_intervals": 20480,
+      "training_physics_steps": 1638400,
+      "process_loop_wall_s": 71.43398980610073,
+      "ratio": {
+        "previous_clock": 11968.0,
+        "pending": 2,
+        "cohorts": 4
+      },
+      "online_physics": "results/b0/standard_dynamics_20261124/h32/control/online_physics.json",
+      "recovery": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32/control/cohort_state.pt",
+      "last_checkpoint": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32/control/checkpoint_000010.pt",
+      "original_target_pre_u1": "results/b0/standard_dynamics_20261124/h32/control/preflight.json"
+    },
+    "experiment": {
+      "h32": 10,
+      "joint_wm": 100,
+      "critic": 200,
+      "valid": 12963,
+      "simulated_policy_intervals": 20480,
+      "training_physics_steps": 1638400,
+      "process_loop_wall_s": 71.32458405196667,
+      "ratio": {
+        "previous_clock": 11968.0,
+        "pending": 2,
+        "cohorts": 4
+      },
+      "online_physics": "results/b0/standard_dynamics_20261124/h32/experiment/online_physics.json",
+      "recovery": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32/experiment/cohort_state.pt",
+      "last_checkpoint": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32/experiment/checkpoint_000010.pt",
+      "original_target_pre_u1": "results/b0/standard_dynamics_20261124/h32/experiment/preflight.json"
+    }
+  },
+  "pilot_totals": {
+    "h32": 20,
+    "wm": 200,
+    "critic": 400,
+    "unique_online_valid_intervals": 23921,
+    "unique_online_simulated_intervals": 35840,
+    "unique_online_world_steps": 2867200
+  },
+  "formal_nominal": {
+    "shared_u0": {
+      "cases": 10,
+      "passes": 0,
+      "first_2ms_overforce": 6,
+      "events": 0,
+      "hold_first_force_n": {
+        "pull": 51.06700911837773,
+        "push": 33.1508751513966
+      },
+      "contact_policy_world_steps": 1629,
+      "prefix_world_steps": 1000,
+      "source": "results/b0/standard_dynamics_20261124/h32/shared_u0_formal.json"
+    },
+    "control_u1": {
+      "cases": 10,
+      "passes": 0,
+      "first_2ms_overforce": 6,
+      "events": 0,
+      "hold_first_force_n": {
+        "pull": 51.06729288760929,
+        "push": 33.14774083466942
+      },
+      "contact_policy_world_steps": 1948,
+      "prefix_world_steps": 1000,
+      "source": "results/b0/standard_dynamics_20261124/h32/control_u1_formal.json"
+    },
+    "control_u10": {
+      "cases": 10,
+      "passes": 0,
+      "first_2ms_overforce": 6,
+      "events": 0,
+      "hold_first_force_n": {
+        "pull": 51.04010252346665,
+        "push": 33.14224912217369
+      },
+      "contact_policy_world_steps": 126,
+      "prefix_world_steps": 1000,
+      "source": "results/b0/standard_dynamics_20261124/h32/control_u10_formal.json"
+    },
+    "experiment_u1": {
+      "cases": 10,
+      "passes": 0,
+      "first_2ms_overforce": 6,
+      "events": 0,
+      "hold_first_force_n": {
+        "pull": 51.06354481286072,
+        "push": 33.14898861239508
+      },
+      "contact_policy_world_steps": 2182,
+      "prefix_world_steps": 1000,
+      "source": "results/b0/standard_dynamics_20261124/h32/experiment_u1_formal.json"
+    },
+    "experiment_u10": {
+      "cases": 10,
+      "passes": 0,
+      "first_2ms_overforce": 6,
+      "events": 0,
+      "hold_first_force_n": {
+        "pull": 51.03862317303574,
+        "push": 33.178911982764674
+      },
+      "contact_policy_world_steps": 3437,
+      "prefix_world_steps": 1000,
+      "source": "results/b0/standard_dynamics_20261124/h32/experiment_u10_formal.json"
+    }
+  },
+  "unique_pilot_formal_cases": 50,
+  "unique_pilot_formal_passes": 0,
+  "prior_response_formal_cases_excluded": 60,
+  "prior_temporal_u0_cases_excluded": 10,
+  "new_T2_batches": 0,
+  "raw_root": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124",
+  "current_stage": "B0-04",
+  "round_status": "completed_bounded_comparison",
+  "standard_transfer_complete": false,
+  "selected_wm": null,
+  "selected_wm_scope": "Original WM retention gate; independent development-only pilot_wm is separately identified.",
+  "final_candidate": null,
+  "complete_bilateral_normalized_return": null,
+  "complete_bilateral_normalized_return_status": "NA, complete original bilateral physical task was not scored.",
+  "single_chain_selected": null,
+  "continuation_eligible": false,
+  "physical_decision": "Both u10 policies failed all ten original cases, with six immediate force failures. Experiment delayed pull approach/release but push approach failed at 36 ms at 139.91 N. Control lost pull approach/release by 80/84 ms. Neither arm established bilateral sustained contact.",
+  "same_state_reference_tail": "A changed first action followed by 31 common reference commands improved push/grasp; this was checked with independent closed-loop feedback.",
+  "closed_loop_confirmation": {
+    "development_only": true,
+    "registered_entries": 4,
+    "policies": 3,
+    "physics_dt_s": [
+      0.002,
+      0.00025
+    ],
+    "independent_repeats": 2,
+    "total_cases": 48,
+    "events": 0,
+    "any_two_fingers_before_stop_cases": 0,
+    "receipts": [
+      "results/b0/standard_dynamics_20261124/h32/closedloop_formal_2ms_r0.json",
+      "results/b0/standard_dynamics_20261124/h32/closedloop_formal_2ms_r1.json",
+      "results/b0/standard_dynamics_20261124/h32/closedloop_training_r0.json",
+      "results/b0/standard_dynamics_20261124/h32/closedloop_training_r1.json"
+    ]
+  },
+  "source_gradient_diagnostics": "results/b0/standard_dynamics_20261124/h32/matched_joint_source_losses.json",
+  "online_actor_initial_coverage": "results/b0/standard_dynamics_20261124/h32/actor_state_and_starts.json",
+  "not_reached": [
+    "u50/100/200 extension",
+    "formal contact D01-D20",
+    "continuous bilateral Warp nominal and C",
+    "continuous original native 3.3 nominal",
+    "independent seed1/2",
+    "frozen H"
+  ],
+  "later_algorithm_development_started": false,
+  "field_root": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1",
+  "recovery_assets": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124",
+  "report": "reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md",
+  "physical_extension_evidence": "results/b0/standard_dynamics_20261124/h32/physical_extension_evidence.json",
+  "normalization_audit": {
+    "control": "results/b0/standard_dynamics_20261124/h32/control/normalization_replay.json",
+    "experiment": "results/b0/standard_dynamics_20261124/h32/experiment/normalization_replay.json"
+  },
+  "normalizer_finding": "All ten ordered actual draws and final CUDA RNG replayed per arm. Counts, units and normalization statistics match the persisted model within the measured floating-point error.",
+  "recovery_check": "results/b0/standard_dynamics_20261124/recovery_verified.json",
+  "actual_new_actor_start_counts": {
+    "control": 2560,
+    "experiment": 2560,
+    "control_open_hold": 161,
+    "experiment_open_hold": 160,
+    "first_interval_terminal_in_these_draws": 321
+  },
+  "seed0_only": true,
+  "other_stages_opened": false,
+  "reference_tail_diagnostics_count": 240
+}

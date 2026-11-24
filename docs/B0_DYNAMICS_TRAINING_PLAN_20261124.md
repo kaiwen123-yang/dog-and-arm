@@ -1,5 +1,7 @@
 # B0 下一集中轮：物理时间尺度、C20 训练适配与真实 H32
 
+**执行回执已归档。** 本页保存 781cd1d 的预登记计划。[实际实验、原成绩和延长决定](../reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md) · [接续入口](../prompts/NEXT_RUN.txt)
+
 日期：2026-11-24，北京时间。接续实验提交 [ff2d1e8](https://github.com/kaiwen123-yang/dog-and-arm/commit/ff2d1e8af6a287cbad106fb88c557a080d7ade0a)，审查见 [B0_TEMPORAL_ROUND_REVIEW_20261124.md](../reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md)。本文件是**下一轮执行计划，以下实验尚未执行**。
 
 **目标和顺序保持：先完成 SuperMimic 标准迁移，冻结独立结果，再开发算法。** 当前 B0-04、最终候选为空、完整双侧物理回报 NA。ff2d1e8 的 C20/T2 八节点未通过原 WM 保留条件，`selected_wm=null` 保持；不追认旧轮成功。当前 T2 配方封存，新增预算为零。

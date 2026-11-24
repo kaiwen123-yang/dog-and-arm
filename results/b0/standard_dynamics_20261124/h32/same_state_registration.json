@@ -1,0 +1,32 @@
+{
+  "kind": "matched_development_first_command",
+  "entries": [
+    "pull_0_validation_grip_grasp",
+    "pull_0_validation_grip_hold",
+    "pull_0_validation_grip_release",
+    "push_0_validation_grip_grasp",
+    "push_0_validation_grip_hold",
+    "push_0_validation_grip_release"
+  ],
+  "policy_seed": 0,
+  "clocks": {
+    "formal_2ms": 0.002,
+    "training": 0.00025,
+    "external_servo": 0.002,
+    "actor": 0.02,
+    "real_prefix": 0.2
+  },
+  "histories": "For each physics identity all arms receive exactly the registered measured 10-frame history, previous command, reference observation, clock, post-prefix q/v and continuous solver cache.",
+  "arms": [
+    "shared_u0",
+    "control_u1",
+    "experiment_u1",
+    "control_u10",
+    "experiment_u10"
+  ],
+  "timing": "Evaluate the Actor once after registration. Apply its complete clipped command during the first 20ms, then the previously stored 31 common reference actions for a diagnostic effect of that first action. Mark every physical step after original failure.",
+  "repeat": "Two lanes per checkpoint/command per registered start. If a possible extension emerges, independently rerun fixed entries before extending.",
+  "metrics": "Complete 20ms physical effort-coordinate reward and its signed components, separately first-failure-absorbed diagnostic reward. Common D/C/H-free registered development sources, per-microstep door force, finger loads, stage and observation/decision times.",
+  "reference_for_interval_reward": "Use the same measured reference-frame key as the Actor goal; recorded 2ms grid. Only a fine early stop needs between-grid free-base/joint interpolation.",
+  "interpretation": "First-command development evidence; no H32 imagination, training input, formal-ten denominator or whole-door bilateral return."
+}

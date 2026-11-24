@@ -1,0 +1,366 @@
+{
+  "experiment_kind": "development_h32_pilot",
+  "seed": 0,
+  "locked": "results/raw_large/b0/dynamics_20261124/offline_wm/rebase/wm_001000.pt",
+  "formal_u0": "One shared fresh 10-case protocol evaluation, exact Actor and normalization match",
+  "historical_response_u200_accounted": false,
+  "previous_selected_wm": null,
+  "total": {
+    "H32": 20,
+    "WM": 200,
+    "Critic": 400,
+    "unique_formal_cases": 50,
+    "unique_simulated": 35840,
+    "unique_valid": 23921,
+    "unique_prefix_intervals": 11919,
+    "unique_formal_passes": 0,
+    "unique_formal_events": 0
+  },
+  "branches": {
+    "control": {
+      "training": {
+        "arm": "control",
+        "seed": 0,
+        "H32": 10,
+        "WM": 100,
+        "Critic": 200,
+        "actual_steps": {
+          "wm": 100,
+          "actor": 10,
+          "critic": 200
+        },
+        "valid": 13044,
+        "simulated": 20480,
+        "elapsed_s": 71.43398980610073,
+        "common_interaction_counted_once": 2086,
+        "ratio": {
+          "previous_clock": 11968.0,
+          "pending": 2,
+          "cohorts": 4
+        },
+        "source": "same seed0, distinct WM development mechanisms"
+      },
+      "recovery": {
+        "update": 10,
+        "complete_state": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32/control/cohort_state.pt",
+        "policy_checkpoint": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32/control/checkpoint_000010.pt",
+        "ratio": {
+          "previous_clock": 11968.0,
+          "pending": 2,
+          "cohorts": 4
+        },
+        "live_lanes_on_working_process": 128,
+        "resume": "standard train_contact administrative restart with real per-lane 200ms prefixes",
+        "optimizer_minibatches": {
+          "wm": 100,
+          "actor": 10,
+          "critic": 200
+        }
+      },
+      "physical_intervals": {
+        "complete_valid": 13044,
+        "simulated": 20480,
+        "prefix_intervals": 7436,
+        "prefix_rejected": 0,
+        "post_failure_substeps": 22822
+      },
+      "by_side": {
+        "pull": {
+          "valid": 11410,
+          "open_or_hold": 82,
+          "entire_dual": 0,
+          "open_or_hold_entire_dual": 0
+        },
+        "push": {
+          "valid": 1634,
+          "open_or_hold": 70,
+          "entire_dual": 0,
+          "open_or_hold_entire_dual": 0
+        }
+      },
+      "u1": {
+        "preflight": {
+          "objective_mean": -0.12101627886295319,
+          "actor_preclip_grad_l2": 25.162211307763094,
+          "unchanged_rng": true,
+          "unchanged_params_and_buffers": true,
+          "finite": true,
+          "raw": "results/raw_large/b0/dynamics_20261124/h32/control/preflight_objective.npz"
+        },
+        "u1_after_wm_objective": {
+          "objective_mean": -0.7216248512268066,
+          "actor_preclip_grad_l2": 24.99902113041563,
+          "unchanged_rng": true,
+          "unchanged_params_and_buffers": true,
+          "finite": true,
+          "raw": "results/raw_large/b0/dynamics_20261124/h32/control/u1_after_wm_objective.npz"
+        },
+        "real_contribution_after_joint_wm": -0.7216248512268066
+      },
+      "formal": {
+        "0": {
+          "cases": 10,
+          "passed": 0,
+          "events": 0,
+          "at_first_2ms_overforce": 6
+        },
+        "1": {
+          "cases": 10,
+          "passed": 0,
+          "events": 0,
+          "at_first_2ms_overforce": 6
+        },
+        "10": {
+          "cases": 10,
+          "passed": 0,
+          "events": 0,
+          "at_first_2ms_overforce": 6
+        }
+      },
+      "h32_two_finger_tcp_p95_mm": {
+        "0": {
+          "grip_pull": {
+            "P95": 16.640488147735596,
+            "scored": 386,
+            "nonfinite": 0
+          },
+          "grip_push": {
+            "P95": 16.512001037597656,
+            "scored": 446,
+            "nonfinite": 0
+          },
+          "multimode_pull": {
+            "P95": 20.75267276763916,
+            "scored": 199,
+            "nonfinite": 0
+          },
+          "multimode_push": {
+            "P95": 15.436987781524659,
+            "scored": 199,
+            "nonfinite": 0
+          }
+        },
+        "1": {
+          "grip_pull": {
+            "P95": 546.8625640869141,
+            "scored": 386,
+            "nonfinite": 0
+          },
+          "grip_push": {
+            "P95": 541.4323425292969,
+            "scored": 446,
+            "nonfinite": 0
+          },
+          "multimode_pull": {
+            "P95": 577.2434997558594,
+            "scored": 199,
+            "nonfinite": 0
+          },
+          "multimode_push": {
+            "P95": 539.5434265136719,
+            "scored": 199,
+            "nonfinite": 0
+          }
+        },
+        "10": {
+          "grip_pull": {
+            "P95": 68.68099594116211,
+            "scored": 386,
+            "nonfinite": 0
+          },
+          "grip_push": {
+            "P95": 91.42062377929688,
+            "scored": 446,
+            "nonfinite": 0
+          },
+          "multimode_pull": {
+            "P95": 115.45739974975585,
+            "scored": 199,
+            "nonfinite": 0
+          },
+          "multimode_push": {
+            "P95": 94.5466178894043,
+            "scored": 199,
+            "nonfinite": 0
+          }
+        }
+      }
+    },
+    "experiment": {
+      "training": {
+        "arm": "experiment",
+        "seed": 0,
+        "H32": 10,
+        "WM": 100,
+        "Critic": 200,
+        "actual_steps": {
+          "wm": 100,
+          "actor": 10,
+          "critic": 200
+        },
+        "valid": 12963,
+        "simulated": 20480,
+        "elapsed_s": 71.32458405196667,
+        "common_interaction_counted_once": 2086,
+        "ratio": {
+          "previous_clock": 11968.0,
+          "pending": 2,
+          "cohorts": 4
+        },
+        "source": "same seed0, distinct WM development mechanisms"
+      },
+      "recovery": {
+        "update": 10,
+        "complete_state": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32/experiment/cohort_state.pt",
+        "policy_checkpoint": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32/experiment/checkpoint_000010.pt",
+        "ratio": {
+          "previous_clock": 11968.0,
+          "pending": 2,
+          "cohorts": 4
+        },
+        "live_lanes_on_working_process": 128,
+        "resume": "standard train_contact administrative restart with real per-lane 200ms prefixes",
+        "optimizer_minibatches": {
+          "wm": 100,
+          "actor": 10,
+          "critic": 200
+        }
+      },
+      "physical_intervals": {
+        "complete_valid": 12963,
+        "simulated": 20480,
+        "prefix_intervals": 7517,
+        "prefix_rejected": 0,
+        "post_failure_substeps": 21764
+      },
+      "by_side": {
+        "pull": {
+          "valid": 11332,
+          "open_or_hold": 81,
+          "entire_dual": 0,
+          "open_or_hold_entire_dual": 0
+        },
+        "push": {
+          "valid": 1631,
+          "open_or_hold": 68,
+          "entire_dual": 0,
+          "open_or_hold_entire_dual": 0
+        }
+      },
+      "u1": {
+        "preflight": {
+          "objective_mean": 1.1051411628723145,
+          "actor_preclip_grad_l2": 72.11765695594322,
+          "unchanged_rng": true,
+          "unchanged_params_and_buffers": true,
+          "finite": true,
+          "raw": "results/raw_large/b0/dynamics_20261124/h32/experiment/preflight_objective.npz"
+        },
+        "u1_after_wm_objective": {
+          "objective_mean": 0.6504640579223633,
+          "actor_preclip_grad_l2": 25.35671008492712,
+          "unchanged_rng": true,
+          "unchanged_params_and_buffers": true,
+          "finite": true,
+          "raw": "results/raw_large/b0/dynamics_20261124/h32/experiment/u1_after_wm_objective.npz"
+        },
+        "real_contribution_after_joint_wm": 0.6504640579223633
+      },
+      "formal": {
+        "0": {
+          "cases": 10,
+          "passed": 0,
+          "events": 0,
+          "at_first_2ms_overforce": 6
+        },
+        "1": {
+          "cases": 10,
+          "passed": 0,
+          "events": 0,
+          "at_first_2ms_overforce": 6
+        },
+        "10": {
+          "cases": 10,
+          "passed": 0,
+          "events": 0,
+          "at_first_2ms_overforce": 6
+        }
+      },
+      "h32_two_finger_tcp_p95_mm": {
+        "0": {
+          "grip_pull": {
+            "P95": 17.85285186767578,
+            "scored": 386,
+            "nonfinite": 0
+          },
+          "grip_push": {
+            "P95": 14.690392017364502,
+            "scored": 446,
+            "nonfinite": 0
+          },
+          "multimode_pull": {
+            "P95": 17.573172760009765,
+            "scored": 199,
+            "nonfinite": 0
+          },
+          "multimode_push": {
+            "P95": 18.647431564331054,
+            "scored": 199,
+            "nonfinite": 0
+          }
+        },
+        "1": {
+          "grip_pull": {
+            "P95": 888.9537353515625,
+            "scored": 386,
+            "nonfinite": 0
+          },
+          "grip_push": {
+            "P95": 734.4554138183594,
+            "scored": 446,
+            "nonfinite": 0
+          },
+          "multimode_pull": {
+            "P95": 927.3864501953125,
+            "scored": 199,
+            "nonfinite": 0
+          },
+          "multimode_push": {
+            "P95": 735.5941101074219,
+            "scored": 199,
+            "nonfinite": 0
+          }
+        },
+        "10": {
+          "grip_pull": {
+            "P95": 88.60872268676758,
+            "scored": 386,
+            "nonfinite": 0
+          },
+          "grip_push": {
+            "P95": 55.248148918151855,
+            "scored": 446,
+            "nonfinite": 0
+          },
+          "multimode_pull": {
+            "P95": 97.33594970703125,
+            "scored": 199,
+            "nonfinite": 0
+          },
+          "multimode_push": {
+            "P95": 55.23718185424804,
+            "scored": 199,
+            "nonfinite": 0
+          }
+        }
+      }
+    }
+  },
+  "source_losses": "results/b0/standard_dynamics_20261124/h32/matched_joint_source_losses.csv",
+  "shared_replay": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32_shared/first.pt",
+  "initial_control_state": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/dynamics_20261124/h32_shared/solver.npz",
+  "actual_first_batch": "results/b0/standard_dynamics_20261124/h32/actual_u1_pair.json",
+  "training_dt": 0.00025,
+  "formal_dt": 0.002,
+  "policy_dt": 0.02
+}

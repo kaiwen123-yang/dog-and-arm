@@ -1,5 +1,9 @@
 # B0：SuperMimic 在 M1＋Piper H 上的迁移与基线验证
 
+当前阶段记录。11月24日细步 C20/H32 集中轮已结束，仍在 B0-04。重标 +1000 在六项开发 WM 条件上获选；两支各 u10，正式 50 案全失败，48 案同状态闭环在停止前均无双指。最终候选 null、完整双侧回报 NA。 [本轮结果](../reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md) · [接续入口](../prompts/NEXT_RUN.txt)
+
+### 之前的审查与路线
+
 > 当前更新（2026-11-24）：最新ff2d1e8已审查，C20/T2八节点未过原WM保留条件，新增Actor=0、冻结u0十项0/10；B0-04、候选为空、完整回报NA。先迁移成功、冻结独立结果，再开发算法。执行[物理时间尺度、C20适配与H32集中计划](B0_DYNAMICS_TRAINING_PLAN_20261124.md)，见[审查](../reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md)、[指标协议](B0_PAPER_BASELINE_PROTOCOL.md)、[独立结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md)和[目标差距](GOAL_GAP_20261124.md)。
 
 solver连续bias已解决，当前T2配方封存。下一轮先有限核验实际训练Warp高速响应的步长依赖，再复用首层函数保持重标做一套C20原损失配对。另登记两支各u10的有限H32机制实验，检验首TCP/J2改善的物理用途；这不追认旧WM保留条件通过，也不降低原6N/十项/D/C/native/seed/H。原2msWarp和native3.3正式成绩保持，必要细步训练身份单列。

@@ -1,15 +1,9 @@
-继续 dog-and-arm 标准迁移。先正常 fetch main、保留已有修改。最新结束实验ff2d1e8；读取AGENTS.md、PROJECT_STATE顶部、唯一DAILY_WORK_LOG最近记录、reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md、docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md和prompts/B0_START.txt，按新集中计划执行；原时间配对计划已封存。
+继续 SuperMimic-M1Piper-standard-v1 标准迁移。先读取 PROJECT_STATE.md 顶部、reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md、results/b0/standard_dynamics_20261124/baseline_manifest.json 和 DAILY_WORK_LOG.md 最近记录。先正常 fetch main，保留工作树及旧实验。
 
-当前B0-04、selected_wm=null、策略候选null、完整双侧回报NA。已修连续bias、重采18起点、C20/T2各1000批、八节点未过旧WM保留条件；新Actor更新0，冻结u0十项0/10、6案首2ms超力、0事件。T2追加800批属于事后诊断，当前配方本轮不再追加。原response u200与60案另记。
+已完成 11 窗步长核验、0.25 ms Warp 三源重采、一套 train-only C20 函数保持重标及两臂原 H32 u10。物理身份 warp_250us_servo2ms_continuous_v1，N=80、c=.50625，Actor 20 ms，servo 2 ms 并保留上一周期起点 bias。六项替代条件均满足，pilot 实验 WM 为重标+1000，控制为C20+0。旧轮 selected_wm=null。两支实际新增合计20 H32、200联合WM、400 Critic，离线预热另计2000。新原正式名义五组共50案全部失败；48个同状态闭环复测停止前零次双指同时接触、零事件。两臂u10均伴随显著的另一侧退化。B0-04、最终候选null、完整双侧回报NA，T2配方继续封存。
 
-本轮目标：有限物理步长核验＋一套C20训练统计适配＋真实u1/u10配对＋有改善的单链持续迁移。11已有窗在实际训练Warp内做2/1/0.5ms同归档23ctrl、原2ms外部缓存采样/延迟比较，引擎内部量正常更新，力起点与q/v端点分开，必要关键窗才.25/.125。保持每细步力峰和原判定；若需数值适配，当轮统一时间/schema/GenCoord系数并重采受影响数据，两臂同身份继续。原2msWarp/native3.3正式成绩不被细步代替。
+恢复现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1。大资产 results/raw_large/b0/dynamics_20261124/；h32/control 和 h32/experiment 内各有 checkpoint_000010.pt 和 cohort_state.pt，各 pending=2。只读复核可执行 bash scripts/b0/env.sh python -m scripts.b0.index_dynamics_h32、bash scripts/b0/env.sh python -m scripts.b0.index_dynamics_actor_state，以及 bash scripts/b0/env.sh python scripts/b0/index_dynamics_round.py --decision results/b0/standard_dynamics_20261124/round_decision.json。
 
-复用现有首层函数保持重标，合法train-only输入各一次统计，原loss/索引/配方、新原优化器，step0前向和物理导数等价；跨重标参数梯度L2不可直接判稳。C20首开度已有原q/v分量损失折中，不能靠无限预热等待消失。原物理身份成立时新重标最多1000WM批、旧C20控制复用；新物理身份则至多同身份两臂各1000。不重跑T2，不开超参数网格。整段梯度而非末批、固定验证和原单位敏感度均检查。
+下一次从物理缺口出发。现有两侧已有的合法 open/hold Actor 抽样全部来自首区间即终止的状态，10 个联合 WM 批后独立双指 H32 TCP P95 一度达到 0.54–0.93 m。先以冻结的真实训练四源、在线首批、开发入口和 u0/u1/u10 的实际命令核对两件事：哪些接触前状态能在标准策略闭环下跨过首个20ms并进入第二个合法区间；能否将实际首批的关节后继误差定位到具体状态、源和原优化环节。登记任何新一轮的单一修复假设、单位、对照和有物理意义的出口后再训练。本轮 u10 的待执行 Ratio 留作诊断恢复；u50 的延长条件已检查并未达到。原门力6N、网络/GenCoord/损失/tracking/softdone、双源abc124c/dd51a9f和原正式后端按协议继承。算法开发、VLA和硬件保持后置。
 
-按新计划4.4在H32之前锁一个实验WM：默认C20+1000，仅重标+1000满足六项替代条件才替代；控制为同身份C20+0。新登记development_h32_pilot明确允许有限机制实验，不追认旧WM通过。先核原H32前/反向；同B0-03 Actor/Critic/target Critic/初始replay/实际首批/RNG/Ratio，两支各至u10，合计20H32/200联合WM/400Critic，预热另计。u0/1/10原十项与同状态物理诊断；u1后轨迹可自然分化。除数值/完整性故障外，不在u1仍0/10就取消u10；无物理收益不越预算。u10后有可重复物理进展，选单链继续50/100/200及必要后续，不因检查点收工。
-
-保持固定abc124c/dd51a9f、原网络/GenCoord/损失/tracking/softdone/H32/20ms与6N；继承preserve_continuous_bias=true、逐lane真200ms前缀和数据贯通。Actor为标准B0-03，不用540/546、BC、参考直通、解析补偿、新奖励/风险头、新网络、微步监督、截断反传或VLA。先迁移成功并冻结独立结果，再开发算法。
-
-同一候选十项10/10后同轮D每项≥18/20、连续双侧Warp名义/C各≥18/20、同包原native3.3完整双侧名义及持续H32；再独立seed1/2各过B0-03与后续，三seed冻结后H每seed/侧≥40/50。D/C/H不进训练，H不选模。完整回报按原整段分母/失败吸收/实际dt/固定effort，未执行仍NA。
-
-现场/root/autodl-tmp/dog-and-arm-b0-temporal-v1；已有大WM在results/raw_large/b0/temporal_pair_v1/，旧response u200恢复另存且Ratio pending=1，不机械续长。新轮独立结果目录，保留他人工作树。北京时间唯一DAILY_WORK_LOG记录命令、问题、修复/复测、预算、候选与未执行，普通提交推送并回读GitHub。整轮交付为实际可验收进展或完成必要对照/可执行H32后仍在的具体阻塞，不以一张诊断表或一个bug结束。
+原十项同包10/10后，依次进入每项D≥18/20、连续双侧Warp名义和每侧C≥18/20、同包原native3.3双侧名义及持续H32，再推进独立seed1/2；三seed冻结后才开H，每seed/侧≥40/50。D/C/H个案独立于训练，H不用来选模。历史response u200的60案另记。

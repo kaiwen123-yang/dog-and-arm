@@ -1,5 +1,9 @@
 # 腿臂协同研究主线与阶段依赖
 
+当前阶段记录。11月24日细步 C20/H32 集中轮已结束，仍在 B0-04。重标 +1000 在六项开发 WM 条件上获选；两支各 u10，正式 50 案全失败，48 案同状态闭环在停止前均无双指。最终候选 null、完整双侧回报 NA。 [本轮结果](../reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md) · [接续入口](../prompts/NEXT_RUN.txt)
+
+### 之前的审查与路线
+
 更新：2026-11-24（Asia/Shanghai），ff2d1e8时间配对轮已审查。**先完成SuperMimic标准迁移并冻结独立基线，再做算法开发。** 当前B0-04、候选为空、完整回报NA；C20/T2八节点未过原WM保留条件、新Actor=0，冻结u0十项0/10。
 
 执行[新集中计划](B0_DYNAMICS_TRAINING_PLAN_20261124.md)：实际训练Warp内有限步长核验、一次C20统计适配、前瞻登记的两支u1/u10原H32机制实验；原selected_wm=null不变，正式门槛不变。取得可重复物理改善后持续单链，满足十项即同轮D、完整Warp/C/native，条件具备继续seed/H。[审查](../reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md) · [独立结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md) · [目标差距](GOAL_GAP_20261124.md)。P1–P6/B0-03 seed0继承，R/J混合结果单列；本次审查没有新训练/仿真。
