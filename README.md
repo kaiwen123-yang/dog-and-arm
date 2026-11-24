@@ -1,6 +1,8 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-2026-11-24 最新标准迁移实测见[联合接触实验](reports/B0_JOINT_CONTACT_RESULTS_20261124.md)和[恢复清单](results/b0/standard_joint_contact_20261124/baseline_manifest.json)。实际预适配 991 批，仅 +850 单点达到开发保留线，完整双侧回报 NA。
+2026-11-24 22:00 北京时间的 [official_flow_s0_v1 独立实测](reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md) 已发布。独立 official_flow_s0_v1 已从 +850 WM-only 完成 u1000，实做 1,000 次 H32、10,000 个 H7 WM 批及 20,000 个 Critic 批。u1000 原 2 ms Warp 接触 0/10，完整名义 Warp 0/2、native 3.3.0 0/2。当前 B0-04，最终候选 null，合格完整双侧归一化回报 NA。 [当前入口](prompts/NEXT_RUN.txt)
+
+2026-11-24 本轮之前的标准迁移实测见[联合接触实验](reports/B0_JOINT_CONTACT_RESULTS_20261124.md)和[恢复清单](results/b0/standard_joint_contact_20261124/baseline_manifest.json)。实际预适配 991 批，仅 +850 单点达到开发保留线，完整双侧回报 NA。
 
 本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先完成开源SuperMimic标准迁移，以达到或接近论文指标为目标，独立保存结果；迁移成功并冻结基线后才开发算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 

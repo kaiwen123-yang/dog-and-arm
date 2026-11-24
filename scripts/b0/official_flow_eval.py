@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 from types import SimpleNamespace
 
 os.environ.setdefault("TORCH_COMPILE_DISABLE", "1")
@@ -41,16 +42,25 @@ def evaluate(u, backend, kind):
             cmd += ['--manifest',f'config/b0/contact_dev_{protocol}.json','--formal-contact']
         if dest.exists():
             cmd += ['--resume']
-        subprocess.run(cmd, check=True)
-        if protocol=='full':
-            export_complete_videos(dest,checkpoint,backend)
+        if protocol!='full':
+            subprocess.run(cmd,check=True)
+            continue
+        # A successful side has a complete raw trace as soon as its case receipt
+        # appears. Export it while the independent evaluator continues its next side.
+        with subprocess.Popen(cmd) as scoring:
+            while scoring.poll() is None:
+                export_complete_videos(dest,checkpoint,backend)
+                time.sleep(2)
+            if scoring.returncode:
+                raise subprocess.CalledProcessError(scoring.returncode,cmd)
+        export_complete_videos(dest,checkpoint,backend)
 
 
 def export_complete_videos(dest,checkpoint,backend):
     from scripts.b0.eval_contact_segments import FULL_DOOR_PHASES, save_video, build
     for record in dest.glob('*/full/nominal/result.json'):
         case=io.read(record)
-        if not case['passed']:
+        if not case['passed'] or (record.parent/'video_manifest.json').is_file():
             continue
         raw=Path(case['raw_directory'])
         q,steps=(np.load(raw/(k+'.npy')) for k in ('qpos','physics_step'))

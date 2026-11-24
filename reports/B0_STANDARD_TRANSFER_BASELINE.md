@@ -1,5 +1,9 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-24 22:00 北京时间｜official_flow_s0_v1
+
+独立 official_flow_s0_v1 已从 +850 WM-only 完成 u1000，实做 1,000 次 H32、10,000 个 H7 WM 批及 20,000 个 Critic 批。u1000 原 2 ms Warp 接触 0/10，完整名义 Warp 0/2、native 3.3.0 0/2。当前 B0-04，最终候选 null，合格完整双侧归一化回报 NA。 [独立实验与全部物理分母](B0_OFFICIAL_FLOW_RESULTS_20261124.md) · [manifest](../results/b0/standard_official_flow_20261124/baseline_manifest.json)
+
 ## 2026-11-24｜65c121b审查、官方完整流程与新增视频
 
 B0-04、候选null、完整双侧回报NA。实测30诊断WM＋991预适配、主链H32=0；99块仅+850通过旧四项线，98邻对无双通过，原正式0/10。旧成绩及资格失败保持。[本次审查](B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md) · [机器复算](../results/b0/joint_contact_review_20261124/audit_summary.json)

@@ -7,6 +7,22 @@ import torch
 from scripts.b0.official_flow import OUT, RAW, io
 
 
+def save_counting_fields(run,u):
+    # Retain just the fields required to count visits and measure arm/jaw support
+    # in the part of a long continuation that will roll out of the final ring.
+    ring=run.replay
+    pages={}
+    for page,arrays in ring.pages.items():
+        part={k:arrays[k].cpu() for k in ('valid','terminated','truncated','episode','motion_time')}
+        part['state']=arrays['state'][...,23:31].contiguous().cpu()
+        part['action']=arrays['action'][...,16:].contiguous().cpu()
+        pages[page]=part
+    small=dict(clock=ring.clock,capacity=ring.capacity,page_size=ring.page_size,lanes=ring.lanes,
+               arm_only=True,pages=pages)
+    dest=RAW/f'counting_{u:06}.pt'
+    io.atomic_torch(dict(replay=small),dest)
+
+
 def coverage(u):
     info=io.read(OUT/'interface.json')
     cfg=info['config']
@@ -27,11 +43,11 @@ def coverage(u):
     # When extending beyond a ring's capacity, never count the overlap twice.
     ranges=[]
     right=clock
-    for directory in sorted(RAW.glob('resume_*'), reverse=True):
-        node=int(directory.name.split('_')[1])
+    files={int(p.name.split('_')[1]):p/'state.pt' for p in RAW.glob('resume_*')}
+    files.update({int(p.stem.split('_')[1]):p for p in RAW.glob('counting_*.pt')})
+    for node,state_file in sorted(files.items(),reverse=True):
         if node>u or right==0:
             continue
-        state_file=directory/'state.pt'
         if not state_file.is_file():
             continue
         candidate=torch.load(state_file,map_location='cpu',weights_only=False,mmap=True)['replay']
@@ -44,7 +60,7 @@ def coverage(u):
     counts=Counter()
     starts=Counter()
     previous=None
-    amin=np.full(23,np.inf)
+    amin=np.full(7,np.inf)
     amax=-amin.copy()
     qmin=np.full(7,np.inf)
     qmax=-qmin.copy()
@@ -77,11 +93,12 @@ def coverage(u):
         if not ix.any():
             continue
         states=row['state'][ix]
-        armjaw=np.column_stack((states[:,23:29],states[:,29]-states[:,30]))
+        pos=states if ring.get('arm_only') else states[:,23:31]
+        armjaw=np.column_stack((pos[:,:6],pos[:,6]-pos[:,7]))
         qmin=np.minimum(qmin,armjaw.min(0))
         qmax=np.maximum(qmax,armjaw.max(0))
-        amin=np.minimum(amin,row['action'][ix].min(0))
-        amax=np.maximum(amax,row['action'][ix].max(0))
+        amin=np.minimum(amin,row['action'][ix,-7:].min(0))
+        amax=np.maximum(amax,row['action'][ix,-7:].max(0))
         for m in np.unique(motion[ix]):
             name=cfg['reference_paths'][m].split('/')[-1]
             ph,ns=np.unique(labels[frames[ix & (motion==m)]],return_counts=True)
@@ -90,17 +107,17 @@ def coverage(u):
         assert valid==dump['total'] and clock*replay['lanes']==dump['simulated']
     sc=np.array([x['scale'] for x in info['actions']])
     offset=np.array([x['offset'] for x in info['actions']])
-    lo,hi=offset+sc*amin,offset+sc*amax
+    lo,hi=offset[-7:]+sc[-7:]*amin,offset[-7:]+sc[-7:]*amax
     ref_lo=np.min([r['physical_min'] for r in info['references']],axis=0)
     ref_hi=np.max([r['physical_max'] for r in info['references']],axis=0)
     bounds=[]
     for i in range(7):
         span=float(ref_hi[i]-ref_lo[i])
-        low=max(lo[16+i]-ref_lo[i],0)
-        high=max(ref_hi[i]-hi[16+i],0)
+        low=max(lo[i]-ref_lo[i],0)
+        high=max(ref_hi[i]-hi[i],0)
         bounds.append(dict(channel=16+i,unit='m_full_opening' if i==6 else 'rad',
             reference_min=float(ref_lo[i]),reference_max=float(ref_hi[i]),
-            online_min=float(lo[16+i]),online_max=float(hi[16+i]),state_min=float(qmin[i]),state_max=float(qmax[i]),
+            online_min=float(lo[i]),online_max=float(hi[i]),state_min=float(qmin[i]),state_max=float(qmax[i]),
             lower_gap=float(low),upper_gap=float(high),reference_span=span,
             lower_gap_over_span=float(low/span) if span else None,upper_gap_over_span=float(high/span) if span else None))
     io.write(OUT/f'coverage_u{u:06}.json',dict(first_tick_zero_based=left,clock=clock,

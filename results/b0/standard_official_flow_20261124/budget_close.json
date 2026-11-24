@@ -1,0 +1,131 @@
+{
+  "closed": "2026-11-24T21:59:07.933264+08:00",
+  "final_update": 1000,
+  "next_training_allocation": null,
+  "complete_nominal_cases_at_final_node": [
+    {
+      "backend": "warp",
+      "side": "pull",
+      "phases_completed": [
+        "approach_base"
+      ],
+      "failure": {
+        "reason": "timeout:settle",
+        "phase": "settle",
+        "first_failure_substep": 5872,
+        "interval_start_s": 11.742,
+        "interval_end_s": 11.744,
+        "door_deg": 0.0,
+        "finger_load_n": [
+          0.0,
+          0.0
+        ],
+        "wheel_load_n": [
+          179.27699279785156,
+          43.77915382385254,
+          47.83725333213806,
+          155.89861488342285
+        ],
+        "door_net_force_n": 0.0,
+        "door_contact_sum_n": 0.0,
+        "tcp_handle_error_m": 0.30193954694163466,
+        "min_arm_margin_rad": 1.2986239194869995
+      },
+      "physical_duration_s": 11.744
+    },
+    {
+      "backend": "warp",
+      "side": "push",
+      "phases_completed": [
+        "approach_base"
+      ],
+      "failure": {
+        "reason": "unexpected_contact:finger_non_grasp_handle",
+        "phase": "settle",
+        "first_failure_substep": 5612,
+        "interval_start_s": 11.222,
+        "interval_end_s": 11.224,
+        "door_deg": 0.0,
+        "finger_load_n": [
+          0.0,
+          0.46589624881744385
+        ],
+        "wheel_load_n": [
+          73.97295570373535,
+          154.80974197387695,
+          141.98383331298828,
+          56.573607444763184
+        ],
+        "door_net_force_n": 1.31777477143242,
+        "door_contact_sum_n": 1.3177747893189786,
+        "tcp_handle_error_m": 0.11777753336789322,
+        "min_arm_margin_rad": 1.0202826261520386
+      },
+      "physical_duration_s": 11.224
+    },
+    {
+      "backend": "native",
+      "side": "pull",
+      "phases_completed": [
+        "approach_base",
+        "settle"
+      ],
+      "failure": {
+        "reason": "operation_station_drift",
+        "phase": "pregrasp",
+        "first_failure_substep": 4798,
+        "interval_start_s": 9.594,
+        "interval_end_s": 9.596,
+        "door_deg": 0.0,
+        "finger_load_n": [
+          0.0,
+          0.0
+        ],
+        "wheel_load_n": [
+          161.6319886252588,
+          64.90842842011395,
+          64.63009866759123,
+          132.37902865538118
+        ],
+        "door_net_force_n": 0.0,
+        "door_contact_sum_n": 0.0,
+        "tcp_handle_error_m": 0.37467299460053016,
+        "min_arm_margin_rad": 1.2772136789085584
+      },
+      "physical_duration_s": 9.596
+    },
+    {
+      "backend": "native",
+      "side": "push",
+      "phases_completed": [
+        "approach_base",
+        "settle"
+      ],
+      "failure": {
+        "reason": "operation_station_drift",
+        "phase": "pregrasp",
+        "first_failure_substep": 4587,
+        "interval_start_s": 9.172,
+        "interval_end_s": 9.174,
+        "door_deg": 0.0,
+        "finger_load_n": [
+          0.0,
+          0.0
+        ],
+        "wheel_load_n": [
+          65.63654288702593,
+          163.54869655190794,
+          150.7187706653504,
+          53.84056435000364
+        ],
+        "door_net_force_n": 0.0,
+        "door_contact_sum_n": 0.0,
+        "tcp_handle_error_m": 0.34587697210007473,
+        "min_arm_margin_rad": 0.9754953702329273
+      },
+      "physical_duration_s": 9.174
+    }
+  ],
+  "reason_zh": "u1000 用尽本轮登记预算。原 Warp 前拉在停车阶段超时，背推在停车阶段出现夹指与非抓取部位的把手接触；native 双侧均在预抓取阶段失去工位约束。两端原接触十项各 0/10，末节点六个闭环接触验证入口均无双指持续，完整任务仍无成功。",
+  "next_zh": "下一轮继续标准迁移。先用末包原 Warp/native 同侧轨迹定位驻车分歧出现的第一拍，将真实底座位姿、航向、四轮目标和轮速与同一参考时刻配对；再沿已有首解记录核对 J2 / 夹口命令覆盖和实际饱和力。用同包、同起点复核具体的场景、时钟或伺服映射差异。确认可修接口后登记下一段预算，执行同一官方主环及原双侧物理复测。当前节点按独立负结果封存，保留原成功标准和 V0 交付条件。"
+}

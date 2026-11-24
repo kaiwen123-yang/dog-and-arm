@@ -1345,3 +1345,11 @@ AutoDL 命令以 bash scripts/b0/env.sh 为前缀。python -u -m scripts.b0.join
 首批在第 19 拍取得，之前两个额度因合法 H7 尚未就绪而跳过。实得 22,678 转移。WM 统计从 50,479 到 73,157，Actor 统计从 0 到 22,678。首批十个 WM 原损失/裁剪前梯度、一个 Actor 及二十个 Critic 的实测损失/梯度、每个抽样索引均写入 results/b0/standard_official_flow_20261124。重读 u1 保存包，20,480 个 H7 窗口中的实测后继及上一动作在相邻时刻相等，4,096 个 Actor 起点均来自该 replay。u1、u200 重载时逐数组比较 136 个求解器字段；两次 4096 路直接状态字段和命令完全匹配。初次核验把四元数旋转重算的世界角速度也要求逐位相同，最大差 5.96e-8 rad/s。改为分别核验存储量和浮点派生量，再次通过。
 
 约 21:28 完成 u200，实际 2,062,412 有效转移、2,000 WM／200 H32／4,000 Critic。u0 原 Warp 完整双侧在驶近超时。u200 原生 3.3.0 同包双侧均通过驶近及停车，随后预抓取驻车漂移失败。21:30 据此登记新增至 u500，使用已保存在线 replay、优化器、RNG、ReturnSampler、Ratio 和求解器状态续训。旧各轮资格与结果继续保留。
+
+### 2026-11-24 22:00 北京时间｜收束官方在线联训、旧物理双端和完整任务
+
+21:30 从 u200 原包延长，首个增量步为 u201→WM 2010、Actor 201、Critic 4020。首实现及 u1/u200 回执普通推送 f109bbe，GitHub main 已回读核对。独立 official_flow_s0_v1 已从 +850 WM-only 完成 u1000，实做 1,000 次 H32、10,000 个 H7 WM 批及 20,000 个 Critic 批。u1000 原 2 ms Warp 接触 0/10，完整名义 Warp 0/2、native 3.3.0 0/2。当前 B0-04，最终候选 null，合格完整双侧归一化回报 NA。 u1000 用尽本轮登记预算。原 Warp 前拉在停车阶段超时，背推在停车阶段出现夹指与非抓取部位的把手接触；native 双侧均在预抓取阶段失去工位约束。两端原接触十项各 0/10，末节点六个闭环接触验证入口均无双指持续，完整任务仍无成功。
+
+实际执行 python -m scripts.b0.official_flow --resume --stop 500，以及各节点的 official_flow_eval formal/full/wm、末节点 native 3.3 复测、official_flow_free 原 3×20、official_flow_servo 六个验证入口，及 official_flow_restore_check、official_flow_coverage。完整任务每 20 ms 重查 Actor，原 judge 保留失败时刻与阶段，详细行见 results/b0/standard_official_flow_20261124/physical_cases.csv。本轮正式片段 0/110，完整任务 0/24。u1000 原 Warp 前拉 approach_base，settle / timeout:settle，背推 approach_base，settle / unexpected_contact:finger_non_grasp_handle。新增 10,255,490 个有效转移、908,328,960 个物理微步。高 WM 长窗误差贯穿实际联训；未设置误差放行门。u500 配对跟踪改善后于 21:41 北京时间登记并执行 python -m scripts.b0.official_flow --resume --stop 1000。u750 仅保存回放覆盖统计所需字段，接续 u500/u1000 环形回放的重叠区间按绝对时钟去重。覆盖统计脚本初版使用 NumPy r_ 拼接字符串标签触发异常，改为 concatenate 后对保存的回放重算；训练未受影响。恢复包另经全字段回读，状态直接字段一致，世界角速度重算最大差 1.2e-07 rad/s。全部旧成绩、旧失败和旧权重保持原身份。
+
+冻结节点的现场北京时间和对应恢复位置见 results/b0/standard_official_flow_20261124/milestones.json。独立报告 reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md 和 manifest results/b0/standard_official_flow_20261124/baseline_manifest.json。下一轮继续标准迁移。先用末包原 Warp/native 同侧轨迹定位驻车分歧出现的第一拍，将真实底座位姿、航向、四轮目标和轮速与同一参考时刻配对；再沿已有首解记录核对 J2 / 夹口命令覆盖和实际饱和力。用同包、同起点复核具体的场景、时钟或伺服映射差异。确认可修接口后登记下一段预算，执行同一官方主环及原双侧物理复测。当前节点按独立负结果封存，保留原成功标准和 V0 交付条件。 本轮末次提交和 GitHub 文件回读在会话交付。

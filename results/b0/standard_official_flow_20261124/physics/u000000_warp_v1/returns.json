@@ -1,0 +1,68 @@
+{
+  "protocol": "fixed_effort_successor_2ms_v1",
+  "checkpoint": "results/raw_large/b0/official_flow_20261124/checkpoint_000000.pt",
+  "primary_coordinates": "fixed_effort",
+  "manifest": "config/b0/contact_dev_v1.json",
+  "rows": [
+    {
+      "group": "pull/approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "measured_substeps": 2683,
+      "planned_substeps": 2683,
+      "normalized_fixed_effort": 0.22990388814747256,
+      "normalized_canonical": 0.6208805659096521,
+      "net_force_peak_n": 0.0,
+      "first_piper_j2_jump_rad": -1.4156914581220927,
+      "failure": "reference_exhausted"
+    },
+    {
+      "group": "pull/release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "measured_substeps": 3001,
+      "planned_substeps": 3905,
+      "normalized_fixed_effort": 0.20265789634471457,
+      "normalized_canonical": 0.4863950020856422,
+      "net_force_peak_n": 34.65821717211671,
+      "first_piper_j2_jump_rad": -1.4799240683806203,
+      "failure": "timeout:release"
+    },
+    {
+      "group": "pull/stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "measured_substeps": 1,
+      "planned_substeps": 1503,
+      "normalized_fixed_effort": -0.11410673892849539,
+      "normalized_canonical": 0.0003890126629274633,
+      "net_force_peak_n": 50.98188258265849,
+      "first_piper_j2_jump_rad": -1.7780362575605195,
+      "failure": "door_force_limit"
+    },
+    {
+      "group": "push/approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "measured_substeps": 38,
+      "planned_substeps": 2683,
+      "normalized_fixed_effort": -0.6961109429400908,
+      "normalized_canonical": 0.006030354460193859,
+      "net_force_peak_n": 0.0,
+      "first_piper_j2_jump_rad": -0.3261410682243189,
+      "failure": "unexpected_contact:robot_self"
+    },
+    {
+      "group": "push/release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "measured_substeps": 20,
+      "planned_substeps": 3911,
+      "normalized_fixed_effort": -0.3216266344578362,
+      "normalized_canonical": 0.0028394630322121903,
+      "net_force_peak_n": 209.01723302218127,
+      "first_piper_j2_jump_rad": -0.761583901596809,
+      "failure": "unexpected_contact:finger_non_grasp_handle,gripper_base_handle"
+    }
+  ]
+}

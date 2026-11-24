@@ -1,0 +1,62 @@
+{
+  "checkpoint": "results/raw_large/b0/official_flow_20261124/checkpoint_000100.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "config/b0/contact_dev_v1.json",
+  "requested_dev": false,
+  "source": "results/raw_large/b0/contact_held_r1",
+  "passed": 0,
+  "evaluated": 5,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 134,
+      "policy_calls": 14,
+      "final_door_deg": 0.0,
+      "failure": "wheel_support_or_tilt"
+    },
+    {
+      "side": "pull",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06939685640144518,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 134,
+      "policy_calls": 14,
+      "final_door_deg": 4.786465089203413,
+      "failure": "wheel_support_or_tilt"
+    },
+    {
+      "side": "push",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 44,
+      "policy_calls": 5,
+      "final_door_deg": 0.0,
+      "failure": "unexpected_contact:robot_self"
+    },
+    {
+      "side": "push",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 13,
+      "policy_calls": 2,
+      "final_door_deg": 5.223452481451189,
+      "failure": "unexpected_contact:robot_panel"
+    }
+  ]
+}

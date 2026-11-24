@@ -1,0 +1,677 @@
+{
+  "method": "SuperMimic-M1Piper-standard-v1",
+  "execution_recipe": "official_flow_s0_v1",
+  "seed": 0,
+  "base": "695f3d7b41a1b1774e8955c31ae02d98733e28eb",
+  "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+  "mjlab": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd",
+  "created_beijing": "2026-11-24T21:59:42.271962+08:00",
+  "stage": "B0-04",
+  "initialization": "WM only: +850 dyn and bound normalizers. Fresh Actor, Critic, Muon/Adam, replay, sampler and Ratio.",
+  "direct_weight_lineage": [
+    {
+      "source": "free_s0_cloud_servo_r2 u1000 (subset of WM layers)",
+      "wm": 10000,
+      "ancestor_H32": 1000,
+      "ancestor_physical_transitions": 1088000
+    },
+    {
+      "source": "contact_s0_wm_held_r1 +200 then held_r2 to cumulative 2000",
+      "wm": 2000
+    },
+    {
+      "source": "lanes_wm_v1 +1000 to response_wm_v1 +0",
+      "wm": 1000
+    },
+    {
+      "source": "fine C20 rebased +1000 with 50479 normalization inputs",
+      "wm": 1000
+    },
+    {
+      "source": "joint_contact actual retained +850 of +990",
+      "wm": 850
+    }
+  ],
+  "ancestral_wm_minibatches": 14850,
+  "previous_round_accounting": "30 diagnostic + 991 charged adaptation (990 retained, 1 discarded); only 850 retained steps on the selected parent, no new qualified H32 in that round.",
+  "prior_manifest": "results/b0/standard_joint_contact_20261124/baseline_manifest.json",
+  "counters": {
+    "wm": 10000,
+    "actor": 1000,
+    "critic": 20000
+  },
+  "new_cost": {
+    "valid_transitions": 10255490,
+    "physics_lane_intervals": 11354112,
+    "microsteps": 908328960,
+    "aggregate_simulated_seconds": 227082.24,
+    "wall_seconds_training_segments": 1800.9393721986562,
+    "wall_scope": "sum of live training segment timers through each endpoint; excludes initialization, endpoint checkpoint writes, separate scoring, and time between segments",
+    "wm_samples": 20480000,
+    "wm_scored_successors": 143360000,
+    "imagined_steps": 131072000,
+    "actual_stored_positions_per_valid_transition": 15.975833431654655,
+    "ratio_charged_positions_per_update": 163840,
+    "ratio_target": 16,
+    "valid_per_steady_update": 10240,
+    "skipped_before_legal_h7": 2,
+    "final_ratio": {
+      "previous_clock": 10250240.0,
+      "pending": 0,
+      "cohorts": 2772
+    }
+  },
+  "environment": {
+    "python": "3.13.13",
+    "torch": "2.14.0+cu130",
+    "torch_cuda": "13.0",
+    "training_mujoco": "3.16.0",
+    "mujoco_warp": "3.16.0",
+    "warp_lang": "1.18.0",
+    "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "native_scoring_mujoco": "3.3.0",
+    "tensor_math": "float32 high",
+    "torch_compile_disable": true
+  },
+  "budget_decisions": [
+    "budget_close.json",
+    "budget_u1000.json",
+    "budget_u500.json"
+  ],
+  "torch_peak_allocated_bytes": 38005847552,
+  "source_implementation_commit": "f109bbea6e5abfb1dd0a0e80dacdd76d8d9d8473",
+  "nodes": [
+    0,
+    1,
+    10,
+    50,
+    100,
+    200,
+    500,
+    1000
+  ],
+  "physical": [
+    {
+      "update": 0,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.3022429789115067,
+          "station_error_m": 0.128508128679146
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.41559408982470664,
+          "station_error_m": 0.12105672437177638
+        }
+      ]
+    },
+    {
+      "update": 0,
+      "backend": "native",
+      "contact_cases": 0,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 0,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.3010331811161447,
+          "station_error_m": 0.16435611664611258
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.41409678199719846,
+          "station_error_m": 0.15621375526111325
+        }
+      ]
+    },
+    {
+      "update": 1,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.28790280096067034,
+          "station_error_m": 0.34139988513781216
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.39509688197789505,
+          "station_error_m": 0.35681252828043786
+        }
+      ]
+    },
+    {
+      "update": 10,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "approach_base",
+          "failed_phase": "settle",
+          "failure": "timeout:settle",
+          "measured_s": 19.618000000000002,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.20440987265904037,
+          "station_error_m": 0.22406049646526846
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "approach_base",
+          "failed_phase": "settle",
+          "failure": "timeout:settle",
+          "measured_s": 19.55,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.28233708941434055,
+          "station_error_m": 0.22456432481840433
+        }
+      ]
+    },
+    {
+      "update": 50,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.3120846940410461,
+          "station_error_m": 0.010595596903272013
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.4279946537406836,
+          "station_error_m": 0.011063307154176147
+        }
+      ]
+    },
+    {
+      "update": 100,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "",
+          "failed_phase": "approach_base",
+          "failure": "timeout:approach_base",
+          "measured_s": 32.002,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.3097702221895405,
+          "station_error_m": 0.22538897318162415
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 14.76,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.22959795247157588,
+          "station_error_m": 0.020003475552091508
+        }
+      ]
+    },
+    {
+      "update": 200,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 9.114,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.11967983839252323,
+          "station_error_m": 0.020020930984685714
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 8.146,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.14491918585625976,
+          "station_error_m": 0.020023568799943575
+        }
+      ]
+    },
+    {
+      "update": 200,
+      "backend": "native",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 8.902000000000001,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.11703947500398307,
+          "station_error_m": 0.020013843735615322
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 7.958,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.14158460129796963,
+          "station_error_m": 0.020050182204634184
+        }
+      ]
+    },
+    {
+      "update": 500,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 8.72,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.11490489333478417,
+          "station_error_m": 0.02000693021578685
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 9.222,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.1635585038704292,
+          "station_error_m": 0.020005287187934928
+        }
+      ]
+    },
+    {
+      "update": 500,
+      "backend": "native",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 6,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 8.776,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.115620896785019,
+          "station_error_m": 0.020097883084562698
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 9.366,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.1658049774996272,
+          "station_error_m": 0.020003335336235495
+        }
+      ]
+    },
+    {
+      "update": 1000,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 3,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "approach_base",
+          "failed_phase": "settle",
+          "failure": "timeout:settle",
+          "measured_s": 11.744,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.15287240917443984,
+          "station_error_m": 0.0352907508188814
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "approach_base",
+          "failed_phase": "settle",
+          "failure": "unexpected_contact:finger_non_grasp_handle",
+          "measured_s": 11.224,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 4.1663778743580896e-05,
+          "physical_score_with_absorbing_failure": 0.19561893126998267,
+          "station_error_m": 0.02007451741463201
+        }
+      ]
+    },
+    {
+      "update": 1000,
+      "backend": "native",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "first_2ms_over6": 3,
+      "full_cases": 2,
+      "full_pass": 0,
+      "sides": [
+        {
+          "side": "pull",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 9.596,
+          "planned_s": 75.736,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.12636591384236395,
+          "station_error_m": 0.018803151674439522
+        },
+        {
+          "side": "push",
+          "passed": false,
+          "completed": "approach_base,settle",
+          "failed_phase": "pregrasp",
+          "failure": "operation_station_drift",
+          "measured_s": 9.174,
+          "planned_s": 56.056000000000004,
+          "final_door_deg": 0.0,
+          "physical_score_with_absorbing_failure": 0.16331499968455715,
+          "station_error_m": 0.02000871858637471
+        }
+      ]
+    }
+  ],
+  "free_warp": {
+    "0": {
+      "support": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      },
+      "moving_arm": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      },
+      "park": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      }
+    },
+    "200": {
+      "support": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      },
+      "moving_arm": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      },
+      "park": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      }
+    },
+    "500": {
+      "support": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      },
+      "moving_arm": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      },
+      "park": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      }
+    },
+    "1000": {
+      "support": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      },
+      "moving_arm": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      },
+      "park": {
+        "passed": 0,
+        "attempted": 20,
+        "complete_manifest": true,
+        "gate_passed": false
+      }
+    }
+  },
+  "wm_long_denominators": {
+    "pull_grip": 386,
+    "push_grip": 446,
+    "pull_multimode": 199,
+    "push_multimode": 199
+  },
+  "error_denominators": {
+    "root_position_rmse_m": 0.01,
+    "root_orientation_rmse_deg": 1.1459155902616465,
+    "arm_position_rmse_rad": 0.1,
+    "finite_joint_velocity_rmse_rad_s": 3.14,
+    "door_angle_rmse_deg": 2.0,
+    "door_rate_rmse_rad_s": 0.1
+  },
+  "final_candidate": null,
+  "full_bilateral_return": null,
+  "paper_comparison": {
+    "SONIC_reference": 0.9,
+    "near_band": 0.88,
+    "full_successes": 0,
+    "note": "Failed full-start trials retain their measured-prefix score with absorbing suffix separately. Qualifying completed bilateral return is NA."
+  },
+  "qualifications": {
+    "D": null,
+    "C": null,
+    "seed1": null,
+    "seed2": null,
+    "H": null
+  },
+  "video_manifests": [],
+  "recovery": {
+    "host": "autodl-d57",
+    "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-flow-695f3d7",
+    "update": 1000,
+    "checkpoint": "results/raw_large/b0/official_flow_20261124/checkpoint_001000.pt",
+    "state": "results/raw_large/b0/official_flow_20261124/resume_001000",
+    "clock": 2772,
+    "simulated": 11354112,
+    "valid": 10255490,
+    "steps": {
+      "wm": 10000,
+      "actor": 1000,
+      "critic": 20000
+    },
+    "stats": {
+      "wm_state": 10305969,
+      "wm_proc": 10305969,
+      "proprio": 10255490,
+      "goal": 10255490
+    },
+    "ratio": {
+      "previous_clock": 10250240.0,
+      "pending": 0,
+      "cohorts": 2772
+    }
+  },
+  "files": {
+    "video": "video_manifest.json",
+    "milestones": "milestones.json",
+    "first": "first_update.json",
+    "rechecked_draws": "first_draw_recheck.json",
+    "config": "interface.json",
+    "full_clocks": "full_clocks.csv",
+    "action_units": "action_units.csv",
+    "optimizer_log": "updates.jsonl",
+    "case_rows": "physical_cases.csv",
+    "wm_nodes": "wm_nodes.csv"
+  }
+}

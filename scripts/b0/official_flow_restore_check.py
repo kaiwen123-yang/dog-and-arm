@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import yaml
 from learning.b0.contact_model import contact_state
-from scripts.b0.official_flow import CONFIG, OUT, RAW, build, io, restore, stats
+from scripts.b0.official_flow import CONFIG, OUT, RAW, build, io, restore, stats, rng_state
 
 
 def check(u):
@@ -34,8 +34,32 @@ def check(u):
         fields=list(io.records(run.plant.sim.wp_data))
         for name,buf in fields:
             np.testing.assert_array_equal(z[name],buf.numpy())
+    saved=torch.load(directory/'state.pt',weights_only=False,map_location='cpu',mmap=True)
+    tensors=0
+    for opt,prior in zip(run.optimizer_list(),saved['optimizer'],strict=True):
+        actual=opt.state_dict()
+        assert actual['state'].keys()==prior['state'].keys()
+        for key,st in actual['state'].items():
+            for name,t in st.items():
+                if torch.is_tensor(t):
+                    assert torch.equal(t.cpu(),prior['state'][key][name]), (key,name)
+                    tensors+=1
+                else:
+                    assert t==prior['state'][key][name]
+    for k,v in run.sampler.state_dict().items():
+        original=saved['sampler'][k]
+        if torch.is_tensor(v):
+            assert torch.equal(v.cpu(),original), k
+        else:
+            assert v==original
+    rnd=rng_state()
+    for key in ('cpu','gpu'):
+        assert torch.equal(rnd[key].cpu(),saved['rng'][key])
+    for actual,original in zip(rnd['numpy'],saved['rng']['numpy'],strict=True):
+        np.testing.assert_equal(actual,original)
     io.write(OUT/f'restored_u{u:06}.json',dict(update=u,steps=io.optimizer_steps(run),
         valid=run.total,stats=stats(run),ratio=run.schedule.state_dict(),solver_arrays_exact=len(fields),
+        optimizer_state_tensors_exact=tensors,sampler_and_all_rng_exact=True,
         all_lanes=run.n,direct_state_and_action_exact=True,world_angular_recompute_max_rad_s=angular_max,additional_optimizer_steps=0))
 
 

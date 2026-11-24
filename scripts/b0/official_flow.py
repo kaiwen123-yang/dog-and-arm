@@ -1,5 +1,6 @@
 """Pinned SuperMimic online seed-zero run with the M1/Piper physical interfaces."""
 import argparse
+import fcntl
 from contextlib import ExitStack
 import json
 import os
@@ -136,6 +137,29 @@ def observer(original, norms):
     return step
 
 
+def retain_interrupted_rows(update, tick):
+    # Keep post-checkpoint work inspectable when restarting from an older saved node.
+    archive=OUT/'interrupted'/f'{time.time_ns()}_after_u{update:06}'
+    for filename,field,limit in (('updates.jsonl','update',update),('collection.jsonl','tick',tick),
+                                 ('readiness.jsonl','tick',tick)):
+        path=OUT/filename
+        if not path.exists():
+            continue
+        kept,extra=[],[]
+        for line in path.read_text().splitlines(keepends=True):
+            try:
+                durable=json.loads(line)[field]<=limit
+            except json.JSONDecodeError:
+                durable=False
+            (kept if durable else extra).append(line)
+        if extra:
+            archive.mkdir(parents=True,exist_ok=True)
+            (archive/filename).write_text(''.join(extra))
+            temp=path.with_suffix('.tmp')
+            temp.write_text(''.join(kept))
+            temp.replace(path)
+
+
 def train(stop, resume):
     cfg = yaml.safe_load(CONFIG.read_text())
     run, info = build(cfg)
@@ -143,6 +167,7 @@ def train(stop, resume):
     RAW.mkdir(parents=True,exist_ok=True)
     if resume:
         u=restore(run)
+        retain_interrupted_rows(u,run.replay.clock)
     else:
         if (OUT/'recovery.json').exists():
             raise FileExistsError('Use the recorded recovery boundary')
@@ -196,6 +221,9 @@ def train(stop, resume):
                         draw_columns=['lane','absolute_first_tick_zero_based'], online_only=True))
                 io.append(OUT/'updates.jsonl',row)
                 print(f"u{u} valid={run.total} actual_steps={steps}",flush=True)
+                if u==750:
+                    from scripts.b0.official_flow_coverage import save_counting_fields
+                    save_counting_fields(run,u)
                 if u in NODES or u==stop:
                     save(run,u)
         except Exception as exc:
@@ -210,4 +238,7 @@ if __name__ == '__main__':
     parser.add_argument('--stop',type=int,default=200)
     parser.add_argument('--resume',action='store_true')
     args=parser.parse_args()
-    train(args.stop,args.resume)
+    RAW.mkdir(parents=True,exist_ok=True)
+    with (RAW/'.training.lock').open('a') as stream:
+        fcntl.flock(stream,fcntl.LOCK_EX | fcntl.LOCK_NB)
+        train(args.stop,args.resume)

@@ -1,6 +1,8 @@
 # dog-and-arm 项目指令
 
-当前入口：docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md、docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md、reports/B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md、PROJECT_STATE.md顶部和prompts/NEXT_RUN.txt。用户再次明确根本目标不变：完整按照固定官方SuperMimic进行迁移，达到或接近既定论文参照并形成独立标准结果。V0完整任务视频仅为新增交付，不能替代0.90参照/0.88接近带和B0正式资格。65c121b仍B0-04、候选null、完整双侧回报NA、原十项0/10、新H32=0。下一轮对齐官方采集→统计更新→Ratio→10批H7 WM→H32 Actor一次/Critic二十批主环；旧25%双块及50mm是项目自设诊断，不再充当Actor前置。H1混合、教师固定配额、冻结统计和gain32须逐项对照官方并登记处置，不能静默继承。以下历史计划不覆盖本段。
+当前接续入口为[reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md](reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md)、[最新 manifest](results/b0/standard_official_flow_20261124/baseline_manifest.json)、PROJECT_STATE.md 顶部和 prompts/NEXT_RUN.txt。独立 official_flow_s0_v1 已从 +850 WM-only 完成 u1000，实做 1,000 次 H32、10,000 个 H7 WM 批及 20,000 个 Critic 批。u1000 原 2 ms Warp 接触 0/10，完整名义 Warp 0/2、native 3.3.0 0/2。当前 B0-04，最终候选 null，合格完整双侧归一化回报 NA。 历史计划与历史门槛按原时间阅读。
+
+695f3d7 的历史入口：docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md、docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md、reports/B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md、PROJECT_STATE.md顶部和prompts/NEXT_RUN.txt。用户再次明确根本目标不变：完整按照固定官方SuperMimic进行迁移，达到或接近既定论文参照并形成独立标准结果。V0完整任务视频仅为新增交付，不能替代0.90参照/0.88接近带和B0正式资格。65c121b仍B0-04、候选null、完整双侧回报NA、原十项0/10、新H32=0。下一轮对齐官方采集→统计更新→Ratio→10批H7 WM→H32 Actor一次/Critic二十批主环；旧25%双块及50mm是项目自设诊断，不再充当Actor前置。H1混合、教师固定配额、冻结统计和gain32须逐项对照官方并登记处置，不能静默继承。以下历史计划不覆盖本段。
 
 ## 2026-11-24 计划提交 b5831d7 的接续状态（历史）
 
@@ -73,7 +75,7 @@
 
 ## 论文指标与独立标准结果
 
-- 方法ID为SuperMimic-M1Piper-standard-v1；最新实验manifest为results/b0/standard_joint_contact_20261124/baseline_manifest.json，审查为results/b0/joint_contact_review_20261124/audit_summary.json。当前仍B0-04、候选null、完整回报NA。V0完整视频只是新增可见交付，0.90参照/0.88接近带和独立标准基线要求不变，不以一侧视频替代完整双侧及多seed证据。
+- 方法ID为SuperMimic-M1Piper-standard-v1；本轮之前的实验manifest为results/b0/standard_joint_contact_20261124/baseline_manifest.json，审查为results/b0/joint_contact_review_20261124/audit_summary.json。当前仍B0-04、候选null、完整回报NA。V0完整视频只是新增可见交付，0.90参照/0.88接近带和独立标准基线要求不变，不以一侧视频替代完整双侧及多seed证据。
 - 对照论文v3与固定官方源，分别记原论文G1 benchmark、迁移场景的完整归一化tracking/WM误差/训练成本、原物理成功门槛。回报目标0.90、接近数值带0.88（本项目预登记0.02容差），每最终seed/侧/split分别报告且须过物理门槛；0.90是论文SONIC参照线，不是SuperMimic最佳值。缺完整轨迹记NA，不用Policy/reward、单步tracking或失败后诊断积分冒充。
 - 已完成并实训：固定基础effort动作率/reset哨兵、ReturnSampler、实际Ratio、逐clip夹末帧和逐样本lane/age。gain32的优化参数化不改变固定正则单位；固定统计、H1/H7混合和离线WM数据是登记平台配方，不是官方默认。standard_lanes_v1 已在终止后按 lane 复位，运行真实 200ms 前缀，跨记录块保留独立 history/clock 和 episode。进程恢复显式截断未完成物理片段并重建前缀。旧同步 collector 保留作冻结采集对照。首次物理失败的完整数值有效20ms已可进入H1/Actor，不预设Actor初态池过滤错误。
 - 数据贯通、solver连续bias、细步和伺服力映射已有实证。接触训练.25ms/servo2ms/policy20ms/c=.50625及原2msWarp/native3.3正式评分按必要物理映射保留。动作单位、参考时间、lane资格属于必须落实的平台接口；H1混合/teacher配额/冻结统计/gain32属于项目训练配方，需按官方流程逐项处理。T2封存，不重复已关闭的J2/jaw边界扫描，不增加独立覆盖预训练阶段、BC、参考直通、解析Actor、新loss或网络。
