@@ -88,6 +88,8 @@ def build(cfg):
 
 
 def save(run, u):
+    if CONTINUATION and (OUT/f'node_{u:06}.json').exists():
+        raise FileExistsError(f'Committed node u{u} is immutable')
     directory = RAW / f"resume_{u:06}"
     directory.mkdir(exist_ok=True)
     package = io.package(run,u)
@@ -227,7 +229,14 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
     OUT.mkdir(parents=True,exist_ok=True)
     RAW.mkdir(parents=True,exist_ok=True)
     if resume or parent:
-        receipt = io.read(parent or OUT/'recovery.json')
+        if resume and CONTINUATION:
+            # node_N is the publication point for all three files. A process
+            # can stop after publishing it but before refreshing the latest pointer.
+            nodes=sorted(OUT.glob('node_*.json'))
+            receipt=io.read(nodes[-1] if nodes else OUT/'recovery.json')
+            io.write(OUT/'recovery.json',receipt)
+        else:
+            receipt = io.read(parent or OUT/'recovery.json')
         if parent and (receipt != io.read(PARENT_OUT/'recovery.json') or receipt['update'] != 1000):
             raise ValueError('Expected the registered u1000 parent')
         u=restore(run, receipt)
@@ -250,6 +259,12 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
     # The captured CUDA graph reuses these pinned addresses on every replay.
     activation_buffers=[]
     started=time.monotonic()
+    start_wall=time.time()
+    start_update=u
+    if CONTINUATION:
+        io.append(OUT/'sessions.jsonl',dict(started_unix=start_wall,from_update=u,from_clock=run.replay.clock,
+            stop=stop,host_history=bool(host_history),host_activation_gib=host_activation_gib,
+            start_steps=io.optimizer_steps(run),cfg_matches_checkpoint=bool(resume or parent)))
     while u < stop:
         try:
             cohort = run.collect()
@@ -288,6 +303,8 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
                 row=dict(update=u,tick=run.replay.clock,valid=run.total,simulated=run.simulated,
                     steps=steps,metrics=metrics,ratio=run.schedule.state_dict(),statistics=stats(run),
                     gpu_peak_bytes=torch.cuda.max_memory_allocated(),wall_s=time.monotonic()-started)
+                if CONTINUATION:
+                    row.update(segment_from_update=start_update,segment_started_unix=start_wall)
                 if first:
                     assert len(norms)==10 and len(policy_norms)==21 and len(run.replay.receipt)==11
                     arrays=torch.stack(norms+policy_norms).tolist()
@@ -312,7 +329,10 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
                         save_counting_fields(run, u)
                     save(run,u)
         except BaseException as exc:
-            io.write(OUT/f'failure_at_{run.replay.clock:06}_u{u:06}.json',
+            failure=OUT/f'failure_at_{run.replay.clock:06}_u{u:06}.json'
+            if failure.exists():
+                failure=failure.with_stem(failure.stem+f'_{time.time_ns()}')
+            io.write(failure,
                 dict(error=repr(exc), completed=u,steps=io.optimizer_steps(run),tick=run.replay.clock,
                      valid=run.total,gpu_free_total=torch.cuda.mem_get_info(), peak=torch.cuda.max_memory_allocated()))
             if CONTINUATION:

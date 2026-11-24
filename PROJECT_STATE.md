@@ -1,5 +1,9 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-24 23:40 北京时间｜同链续训已保留 u1001
+
+现场 u1001 完整快照已在独立进程恢复。父 u1000 的四组统计、replay、RNG、在线 Ratio 以及三网络和优化器均已继承。四次中断的额外训练成本另列。两项冻结诊断和 u1000 的 256×64 独立策略开发块已经完成。目前处于 B0-04，u1500 以后物理验收待跑；续训状态、命令和预算见[本轮报告](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md)。大包和工作进程位于 AutoDL 的 `.official-continuation-bdb72d8`，以新目录的 `recovery.json` 和 `node_*.json` 为恢复入口。
+
 ## 2026-11-24 北京时间｜51a0133 已审查，同链从 u1000 接续
 
 **官方在线主环已实际完成1000次H32；任务仍B0-04、候选null、合格完整双侧回报NA，完整成功视频0。** 本轮110个接触名义案0通过/0接触事件；24次frame0完整尝试0成功，但有15个驶近、11个停车完成事件，最远尚未完成预抓取。新Actor原free评测0/240，全部完成7s，失败是TCP精度（81案还失根位置精度），不能说全部摔倒。[审查](reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md) · [逐案复算](results/b0/official_flow_review_20261124/evidence_audit.json)

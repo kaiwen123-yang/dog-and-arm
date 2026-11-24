@@ -61,6 +61,11 @@ def index(stop):
         for task,block in io.read(OUT/'free'/tag/'summary.json').items():
             assert block['attempted']==20
             free.append(dict(node=u,task=task,**block))
+    from scripts.b0.official_flow_solved_cases import summaries
+    last,joints=summaries(cases)
+    keys=dict.fromkeys(k for r in last for k in r)
+    csv_file('last_physical_intervals.csv',[keys|r for r in last])
+    csv_file('wheel_arm_jaw.csv',joints)
     csv_file('physical_cases.csv',cases)
     csv_file('full_clocks.csv',clocks)
     csv_file('pure_actor_entries.csv',servo)
@@ -85,6 +90,11 @@ def index(stop):
             valid=fail['valid']-start['valid'],lane_intervals=(fail['tick']-start['clock'])*4096,
             interrupted_partial_tick_excluded=True))
     charged={k:delta[k]+sum(x['steps'][k] for x in discarded) for k in delta}
+    # The first durable u1001 was saved before per-process IDs were introduced.
+    wall={}
+    for row in updates:
+        segment=str(row.get('segment_started_unix','durable_u1001'))
+        wall[segment]=max(wall.get(segment,0.),row['wall_s'])
     result=dict(method=inherited['method'],execution_recipe=inherited['execution_recipe'],
         source_main='bdb72d8f7019688b6e51ba0cd2d083a5bef90532',parent_run_commit='51a0133802983b65602949000099e7d18fa8e835',
         supermimic=inherited['supermimic'],mjlab=inherited['mjlab'],seed=0,parent=parent,
@@ -92,6 +102,10 @@ def index(stop):
         retained_new_steps=delta,charged_new_steps=charged,discarded_attempts=discarded,
         new_valid=val,cumulative_valid=latest['valid'],new_lane_intervals=physical,new_microsteps=physical*80,
         new_prefix_lane_intervals=coverage['prefix_lane_intervals'],new_valid_terminal=coverage['complete_terminal_rows'],
+        retained_training_wall_s=sum(wall.values()),wall_by_process_through_retained_update_s=wall,
+        wall_scope='monotonic time after restore to last retained update in each process, includes internal checkpoints except its own final write; evaluation and discarded attempts excluded',
+        aggregate_new_simulated_seconds=physical*.02,
+        new_ratio_stored_positions_per_valid=delta['wm']*2048*8/val,
         new_wm_windows=delta['wm']*2048,new_wm_scored_successors=delta['wm']*2048*7,
         new_imagined_steps=delta['actor']*4096*32,
         nodes=nodes,physics=summary,free=free,pure_actor=servo,video_manifests=videos,
