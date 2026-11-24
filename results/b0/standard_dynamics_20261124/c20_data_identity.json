@@ -1,0 +1,137 @@
+{
+  "physics_dt": 0.00025,
+  "policy_dt": 0.02,
+  "substep_coeff": 0.50625,
+  "physics_identity": "warp_250us_servo2ms_continuous_v1",
+  "original_2ms": false,
+  "data_recipe": "config/b0/standard_dynamics_v1.yaml",
+  "recipe_sha256": "36a48eaf35b91fc1cee8428def126226c81563cfe9806c34163d00190c4c73a7",
+  "init": "results/b0/response_wm_v1/wm_000000.pt",
+  "init_sha256": "83c938316af72ef974153698da2bf09d2a6850eceda08376528739a39f1aa96c",
+  "source_order": "results/b0/standard_dynamics_20261124/offline_draws/paired_sources.json",
+  "indices": "results/b0/standard_dynamics_20261124/offline_draws/paired_indices.npz",
+  "indices_sha256": "bd3e1769c1af4f6359a8e82b039491b27da4f4c9296b4c4a7a513d119211fdc7",
+  "node_schedule": [
+    0,
+    50,
+    200,
+    1000
+  ],
+  "source_counts": {
+    "native": {
+      "episodes": 10,
+      "horizons": {
+        "1": 13640,
+        "7": 13580
+      }
+    },
+    "grip": {
+      "episodes": 512,
+      "horizons": {
+        "1": 13873,
+        "7": 11170
+      }
+    },
+    "multimode": {
+      "episodes": 512,
+      "horizons": {
+        "1": 18479,
+        "7": 15495
+      }
+    },
+    "response": {
+      "episodes": 300,
+      "horizons": {
+        "1": 4487,
+        "7": 3510
+      }
+    }
+  },
+  "source_clocks": {
+    "grip": {
+      "clock": {
+        "physics_dt": 0.00025,
+        "servo_dt": 0.002,
+        "policy_dt": 0.02,
+        "physics_steps_per_policy": 80,
+        "physical_prefix_steps": 800,
+        "substep_coeff": 0.50625,
+        "servo_bias_delay_s": 0.002,
+        "servo_bias_sample": "interval-start bias from preceding 2 ms solve",
+        "contact_site_time": "solve start",
+        "qpos_qvel_time": "integrated end",
+        "judge_time": "after solve at interval end"
+      },
+      "configuration": "results/b0/standard_dynamics_20261124/grip/registration.json",
+      "cohorts": 13
+    },
+    "multimode": {
+      "clock": {
+        "physics_dt": 0.00025,
+        "servo_dt": 0.002,
+        "policy_dt": 0.02,
+        "physics_steps_per_policy": 80,
+        "physical_prefix_steps": 800,
+        "substep_coeff": 0.50625,
+        "servo_bias_delay_s": 0.002,
+        "servo_bias_sample": "interval-start bias from preceding 2 ms solve",
+        "contact_site_time": "solve start",
+        "qpos_qvel_time": "integrated end",
+        "judge_time": "after solve at interval end"
+      },
+      "configuration": "results/b0/standard_dynamics_20261124/multimode/registration.json",
+      "cohorts": 11
+    },
+    "response": {
+      "clock": {
+        "physics_dt": 0.00025,
+        "servo_dt": 0.002,
+        "policy_dt": 0.02,
+        "physics_steps_per_policy": 80,
+        "physical_prefix_steps": 800,
+        "substep_coeff": 0.50625,
+        "servo_bias_delay_s": 0.002,
+        "servo_bias_sample": "interval-start bias from preceding 2 ms solve",
+        "contact_site_time": "solve start",
+        "qpos_qvel_time": "integrated end",
+        "judge_time": "after solve at interval end"
+      },
+      "configuration": "results/b0/standard_dynamics_20261124/response/registration.json",
+      "registered": 18,
+      "accepted": 18
+    }
+  },
+  "source_tensor_hashes": {
+    "native": "4577ad1992efcb79fa5aff5732efc8075edf85cb60b5713e4e172cbe3c2e70b9",
+    "grip": "8fd24816b400efbc5e9fc2704f072da1fd28ee9118893b86ae3ae199da23174a",
+    "multimode": "f16f7747868241be97bd39b64b28df59b970f1f95e7fc8caae6e642dc81036bc",
+    "response": "7c6f9ffc407a823cc1c7ff2a2a7ebdd72e8e6443b1cd330d27fb3131ac7744bb"
+  },
+  "stats_weight": "One per legal source / episode / physical input index",
+  "optimizer": "Fresh official Muon + Adam; both H1/H7 learners share one optimizer pair",
+  "frozen_stat_recipe": true,
+  "original_selected_wm": null,
+  "older_eligible_gate_pass": false,
+  "predeclared_h32_experiment": "C20+1000 by default, replace only with same-identity rebased +1000 when both u0/hold first TCP errors and both sides of each grip/multimode two-finger H32 TCP P95 are no worse modulo same-sample repeat error, with no new nonfinite or recurrence instability. Control is same-identity C20+0.",
+  "wm_caps": {
+    "C20": 1000,
+    "rebase": 1000
+  },
+  "development_h32_caps": {
+    "h32": 20,
+    "joint_wm": 200,
+    "critic": 400
+  },
+  "first_actual_batch_digests": {
+    "H1": {
+      "state": "144586209b3520a39d862f25ce5faef1ebf1f92b07b3c977acb139686c8b2210",
+      "action": "dc8ef137d57c5717f2f3ac130657d22b7f12e8120590526e7910afbd317ae48e",
+      "sim_ctx": "67679771e7fd2ed472a8e7f7379feb7593ee86cee3ae9a9cb0334ca55ac0e354"
+    },
+    "H7": {
+      "state": "d165a16ee5a49a970ae5ac9c0330c911b423e5ddb206f3df932c820aca55c591",
+      "action": "30eaef40507938510e2d458efcb2f042796fabfe87d23e2ac58f994f1e64cac6",
+      "sim_ctx": "30ad89e33731b5e2bef088e9a72814a6f7c97509f3b78d4f7f859c607e9b0551"
+    }
+  }
+}

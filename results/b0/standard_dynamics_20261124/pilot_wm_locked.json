@@ -1,0 +1,105 @@
+{
+  "locked_at_bjt": "2026-11-24T19:16:36+08:00",
+  "experiment_kind": "development_h32_pilot",
+  "original_selected_wm": null,
+  "original_gate_passed": false,
+  "final_candidate": null,
+  "physics_identity": "warp_250us_servo2ms_continuous_v1",
+  "physics_dt": 0.00025,
+  "c": 0.50625,
+  "pilot_wm": "results/raw_large/b0/dynamics_20261124/offline_wm/rebase/wm_001000.pt",
+  "pilot_wm_sha256": "f4c41000880ff43a6e5b146a3913e832ee506b0ec21bd7b1e61d94b9c1748962",
+  "control_wm": "results/raw_large/b0/dynamics_20261124/offline_wm/C20/wm_000000.pt",
+  "control_wm_sha256": "ccd7c92d9b71ec9dd13b3eda7482692b0871ad3aa222f17a031bdbc7a465701a",
+  "control_checkpoint": "results/raw_large/b0/dynamics_20261124/offline_wm/C20/wm_000000.pt",
+  "experiment_checkpoint": "results/raw_large/b0/dynamics_20261124/offline_wm/rebase/wm_001000.pt",
+  "selected_arm": "rebase",
+  "selection_rule": "Default C20+1000; substitute rebased +1000 only when all six fixed metrics noninferior within exact same-sample repeat and no new nonfinite or unstable recurrence.",
+  "selection_metrics": {
+    "pull_first_tcp_mm": {
+      "old_stats_mm": 12.079678535461426,
+      "rebase_mm": 11.526853561401367,
+      "repeat_tolerance_mm": 0.0,
+      "noninferior": true
+    },
+    "push_first_tcp_mm": {
+      "old_stats_mm": 12.375513076782227,
+      "rebase_mm": 12.073714256286621,
+      "repeat_tolerance_mm": 0.0,
+      "noninferior": true
+    },
+    "pull_grip_h32_two_finger_tcp_p95_mm": {
+      "old_stats_mm": 19.673920154571533,
+      "rebase_mm": 17.85285186767578,
+      "repeat_tolerance_mm": 0.0,
+      "noninferior": true
+    },
+    "push_grip_h32_two_finger_tcp_p95_mm": {
+      "old_stats_mm": 25.144699096679688,
+      "rebase_mm": 14.690392017364502,
+      "repeat_tolerance_mm": 0.0,
+      "noninferior": true
+    },
+    "pull_multimode_h32_two_finger_tcp_p95_mm": {
+      "old_stats_mm": 18.019281768798827,
+      "rebase_mm": 17.573172760009765,
+      "repeat_tolerance_mm": 0.0,
+      "noninferior": true
+    },
+    "push_multimode_h32_two_finger_tcp_p95_mm": {
+      "old_stats_mm": 22.765811920166016,
+      "rebase_mm": 18.647431564331054,
+      "repeat_tolerance_mm": 0.0,
+      "noninferior": true
+    }
+  },
+  "physical_stability": true,
+  "fixed_probes": [
+    "C20_50",
+    "C20_200",
+    "C20_1000",
+    "rebase_50",
+    "rebase_200",
+    "rebase_1000"
+  ],
+  "rebase_closed_early": false,
+  "new_h32_updates_at_lock": 0,
+  "pilot_Budget": {
+    "h32": 20,
+    "joint_wm": 200,
+    "critic": 400
+  },
+  "offline_warmup": {
+    "C20": {
+      "new_updates": 1000,
+      "h1": 200,
+      "h7": 800,
+      "real_windows": 256000,
+      "supervised_successors": 1484800,
+      "fixed_coordinate_preclip_gt1": 96,
+      "training_loop_seconds": 19.467896101996303,
+      "peak_allocated_bytes": 446847488,
+      "interval_evidence": [
+        "results/b0/standard_dynamics_20261124/C20_train_000000_000050.jsonl",
+        "results/b0/standard_dynamics_20261124/C20_train_000050_000200.jsonl",
+        "results/b0/standard_dynamics_20261124/C20_train_000200_001000.jsonl"
+      ]
+    },
+    "rebase": {
+      "new_updates": 1000,
+      "h1": 200,
+      "h7": 800,
+      "real_windows": 256000,
+      "supervised_successors": 1484800,
+      "fixed_coordinate_preclip_gt1": 71,
+      "training_loop_seconds": 19.180607980117202,
+      "peak_allocated_bytes": 447031808,
+      "interval_evidence": [
+        "results/b0/standard_dynamics_20261124/rebase_train_000000_000050.jsonl",
+        "results/b0/standard_dynamics_20261124/rebase_train_000050_000200.jsonl",
+        "results/b0/standard_dynamics_20261124/rebase_train_000200_001000.jsonl"
+      ]
+    }
+  },
+  "train_data_lock": "results/b0/standard_dynamics_20261124/c20_data_identity.json"
+}
