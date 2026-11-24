@@ -1,5 +1,13 @@
 # official_flow_s0_v1 同链续训
 
+## 11 月 25 日 02:23 北京时间｜u3000 主段结论与延长依据
+
+主段 u3000 实际累计 30,734,859 个有效转移，30,000 WM / 3,000 Actor / 60,000 Critic。相对 u1000 保留新增 20,479,369 个有效转移，20,000 WM / 2,000 Actor / 40,000 Critic。包含回滚的已付新增为 20,090 WM / 2,006 Actor / 40,120 Critic。
+
+u3000 接触 nominal 为 Warp 0/10、native 0/10，双侧完整在 Warp、native 均为 0/2；free 为 0/60，六个纯 Actor 入口双指均为零。四个完整案均完成驶近和停车，恢复到历史最佳两个事件。两端前拉首败均为m1_RAR_ABAD_JOINT 持续饱和（以模型关节名为准），背推均因工位漂移停止。无完整成功视频。
+
+全部固定窗均完整覆盖。前拉 native 的历史首败由航向越线引起，其 101 个原 pregrasp 端点的航向 RMSE 从 0.5024° 到 0.1499°。背推 native 的历史首败由 XY 越线引起，同窗 121 端点的 XY RMSE 从 9.960 到 3.779 mm。Warp 两侧驻车窗的 XY、航向均改善，两侧均恢复停车；前拉 pregrasp XY 在两端反而升高，背推 Warp pregrasp 航向也略升。四案均达到原窗末点，u3000 没有意外接触首败。它比 u1000 更早结束两个 Warp 案，但结束时实际阶段更晚。独立 u3000 开发块有 143 个双指有效区间，未用于正式接触计数。据已登记的双侧物理跟踪条件延长同链，先恢复至 u4000。按已付总上限最多可至 u4991；若执行 u5000，需实际新增总量 40,090 WM / 4,006 Actor / 80,120 Critic。[决定与逐窗数据](../results/b0/standard_official_flow_continuation_20261124/decision_u003000.json) · [正式逐案](../results/b0/standard_official_flow_continuation_20261124/physical_cases.csv)
+
 ## 11 月 25 日 01:53 北京时间｜u1500 和 u2000
 
 u1500、u2000 已冻结，两节点均完成原 Warp 接触十项、Warp/native 双侧完整、原 free 60 案及六个纯 Actor 入口。u2000 累计 20,496,637 个有效转移。本轮保留新增 1,000 Actor / 10,000 WM / 20,000 Critic，另见下文回滚成本。两节点 Warp 接触均 0/10、完整均 0/4、free 均 0/60。u1500 四案均完成驶近；u2000 Warp 背推恢复驶近与停车，随后接触门板。u2000 背推保持入口在 14 ms 的实测前缀中有一个 2 ms 双指 tick，尚未到第二个策略查询；另外五个入口均无双指 tick。主段仍在运行。逐案数据见[独立 manifest](../results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json)和[原物理判定](../results/b0/standard_official_flow_continuation_20261124/physical_cases.csv)。

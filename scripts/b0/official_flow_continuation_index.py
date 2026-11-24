@@ -21,6 +21,8 @@ def index(stop):
         assert r['statistics']['proprio']==r['valid'] and r['statistics']['wm_state']==r['valid']+50479
     assert updates[-1]['valid']==latest['valid']
     nodes=[u for u in (1500,2000,3000,4000,5000) if u<=stop]
+    if stop not in nodes:
+        nodes.append(stop)
     cases,clocks,servo,free,summary,videos=[],[],[],[],[],[]
     for u in nodes:
         tag=f'u{u:06}'

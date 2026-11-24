@@ -10,7 +10,7 @@ for u in "$@"; do
     until test -s "$out/node_$tag.json"; do sleep 10; done
     for backend in warp native; do
         run official_flow_eval "$u" full --backend "$backend"
-        if [[ "$backend" == warp || "$u" == 3000 || "$u" == 5000 ]]; then
+        if [[ "$backend" == warp || "$u" == 3000 || "$u" == 5000 || "$u" == "${B0_FLOW_FINAL_NODE:-0}" ]]; then
             run official_flow_eval "$u" formal --backend "$backend"
         fi
     done
