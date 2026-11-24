@@ -102,10 +102,25 @@ class OnlineContactReplay:
             a = data['action'][i[:,None],ix]
             ctx = data['sim_ctx'][i,t][:,None]
             ns = data['next_state'][i,ix[:,-1]]
-            return TensorDict(dict(state=torch.cat((s,ns[:,None]),1),
+            result = TensorDict(dict(state=torch.cat((s,ns[:,None]),1),
                                    action=torch.cat((a,a[:,-1:]),1),
                                    sim_ctx=ctx.expand(-1,steps+1,-1)),batch_size=(len(t),steps+1))
-        return self.sample(steps,batch,select)
+            if 'draw_mode' in data.keys():
+                for key in ('episode','draw_phase','draw_mode'):
+                    result[key]=data[key][i,t,None].expand(-1,steps+1)
+            return result
+        result=self.sample(steps,batch,select)
+        if result is not None and 'draw_mode' in result.keys():
+            from collections import Counter
+            from .contact_warp import PHASES
+            side=result['sim_ctx'][:,0,0].long().tolist()
+            phase=result.pop('draw_phase')[:,0].tolist()
+            mode=result.pop('draw_mode')[:,0].tolist()
+            episodes=result.pop('episode')[:,0].unique().numel()
+            modes=('free','other_contact','two_finger','loss_or_slip','release')
+            self.last_draw=dict(split='train',samples=len(side),episodes=episodes,
+                side_phase_mode=dict(Counter(f"{('pull','push')[s]}/{PHASES[p]}/{modes[m]}" for s,p,m in zip(side,phase,mode))))
+        return result
 
 
 class DoorImagination(MultiTaskWorldModelEnv):
@@ -434,6 +449,13 @@ class ContactRun:
         for n in (7,1):
             batches=[]
             for _ in range(self.seven_batches if n==7 else 2):
+                if hasattr(self,'registered_wm'):
+                    batch,count=self.registered_wm.draw(n,self.wm_index,self.b,self.replay)
+                    self.wm_index+=1
+                    online_long+=count if n==7 else 0
+                    online_short+=count if n==1 else 0
+                    batches.append(batch)
+                    continue
                 take=(3*self.b//4 if n==7 else self.b)
                 batch=self.replay.windows(n,take)
                 count=take if batch is not None else 0

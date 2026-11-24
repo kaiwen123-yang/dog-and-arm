@@ -86,11 +86,24 @@ def collect_lanes(run, raw_path=None):
         rows.append(TensorDict(dict(state=state,next_state=ns,prev_action=previous.clone(),action=action,
                   sim_ctx=ctx,history=hist.flatten(1),motion_time=frame.clone(),episode=episode,valid=valid,
                   terminated=terminal,truncated=clip_end & ~terminal,reward=reward),batch_size=(n,)))
+        if run.cfg.get('wm_data_recipe'):
+            from .contact_warp import PHASE_ID
+            phase_ids = run.phases[frame]
+            cutoff = plant.cfg['contact_threshold_n']
+            mode = (evidence['finger_max'] > cutoff).long()
+            dual = (evidence['finger_min'] > cutoff).all(1)
+            mode = torch.where(dual,2,mode)
+            grip = ((phase_ids==PHASE_ID['open']) | (phase_ids==PHASE_ID['hold'])).any(1)
+            mode = torch.where(grip & ~dual,3,mode)
+            releasing = ((phase_ids==PHASE_ID['release']) | (phase_ids==PHASE_ID['retreat_arm'])).any(1)
+            rows[-1].update(dict(draw_mode=torch.where(releasing,4,mode),draw_phase=phase_ids[:,0]))
         lane['rejected'] |= ~policy & ((fail>0) | ~evidence['valid_full_interval'])
         bad_prefix = (lane['prefix']==1) & lane['rejected']
         compact.append(dict(episode=episode, frame=frame.clone(), phase=run.phases[frame,0],side=side,
                 prefix=~policy, rejected_prefix=bad_prefix, valid=valid, fail=fail, reason=evidence['reason'],
                 peak_force=evidence['peak_force_n'],finger_min=evidence['finger_min'], clip_end=clip_end))
+        if run.cfg.get('wm_data_recipe'):
+            compact[-1]['dual_prefix'] = evidence['dual_prefix']
         if raw_path is not None:
             fields=dict(qpos=q,qvel=v,next_qpos=q1,next_qvel=v1,raw=raw_cmd,clipped=action,
                         active=policy,valid=valid,prev_action=previous.clone(),frame=frame.clone(),episode=episode,

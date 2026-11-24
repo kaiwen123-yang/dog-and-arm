@@ -1032,3 +1032,11 @@ measure_lane_response借用正式保存的clipped_action，没有在重建traini
 检查相对文件链接/引用路径、JSON解析、git diff --check、最新与历史入口、预算和评分分母。独立复核新审查的数值与下一计划的标准边界。文档修改不新增训练测试或通用防御框架。普通发布仅包含本次明确文档与审查JSON；远端按expected_sha检查后更新，不强推，随后回读main/计划/提示词/报告并同步本地核对内容。27284e2实验提交已确认；本次文档自身提交随本次提交保存，实际提交号在聊天交付，不为写入自己的SHA制造循环提交。
 
 本次发布前实际检查：15个明确变更文件、321个相对文件链接均存在，审查JSON可解析，git diff --check无错误。独立复审未发现数值或阶段边界阻塞；已补预热误差的直接来源链接，并将下一计划对训练起始phase的描述改为逐案记录，避免把单条参考的三个子步推广。
+
+## 2026-11-24 16:43–16:54 北京时间｜B0-04 首动作与数据贯通
+
+- 16:43 第二平台主树 git status、git fetch origin main 取得 0c81d82，保留已有 H0 修改及 P5 目录。从 origin/main 建立 dog-and-arm-b0-response。AutoDL 新现场 /root/autodl-tmp/dog-and-arm-b0-response-v1 复用既有环境与只读输入。原 lanes-v1 的 compare、response、matched response、三段训练和六次评分退出均 0；未发现其训练/评分进程。u200 完整恢复约 840 MiB，含 32 块 replay、6 优化器、2 个未执行 Ratio 更新。本轮从 B0-03 重开。
+- 16:47–16:48 在新现场运行 bash scripts/b0/env.sh python -u scripts/b0/training_entry_response.py。采集前写 registration。12 个训练与 6 个独立验证起点覆盖两侧 grasp 前沿、hold/open 入口、release。现场积分 100 子步，按训练传感噪声查询冻结 u0/u200；每起点 28 分支，共 504 条相关轨迹，之后 31 个共同开环参考动作。完整求解器起点、动作、双 phase、2 ms 力/状态及终止留现场。验证在独立验证物理轨迹重建，目标来自已登记训练 clip。退出 0。诊断不计入正式成绩。
+- 背推训练 hold 的 u0 在原组合、仅换夹口、仅换臂、臂夹都换时，20 ms 实际总开度分别为 70.5、88.2、53.9、21.7 mm。10 mm 指令不能单独保证握持。轮腿始终取该 Actor 命令。未引入 22 mm 裁剪。排除重复、验证和终止后长窗，响应 300 条训练分支，H1/H7=3696/2718；旧 grip=14396/11644，multimode=18223/15242，native=13640/13580。
+- 16:50 warm_response_wm.py 从 lanes_wm_v1/wm_001000.pt 固定统计、新 Muon/Adam 完成新增 200 H1＋800 H7，每 batch 256，每源抽样实数在 samples.jsonl。继承 held_r2 2000＋前轮预热1000。三点分别运行 score_entry_response.py 与 standard_contact_validation.py score，复算同一批响应及两组独立窗，均退出 0。+1000 改善了两侧 u0 握持入口 TCP（36.67→15.67、29.48→13.37 mm），但旧握持集 H32 TCP P95 从 15.65/16.45 升至 39.51/25.37 mm。+200 两侧旧集也退化。按固定验证保留规则选择本轮 +0。真实端点速度代入原积分，验证 hold 四个真实 Actor 分支 20 ms 仍低估 29.95–46.64 mm。保持原积分和状态。
+- 联训登记 standard_response_v1.yaml，H1 为192在线＋64 Warp，H7 为192在线＋32 native＋32 Warp。三 Warp 源合法 lane/age 等份轮转，新代码在原 update 取实际 batch 计数。正常 u1 在同一个官方反传图读原目标有符号梯度，输出留在新运行目录。u0/1/10/50 按原十项评分，由物理结果决定后续。

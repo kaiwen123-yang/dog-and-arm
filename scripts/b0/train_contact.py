@@ -80,6 +80,9 @@ def main():
             raise FileNotFoundError(p)
     run=ContactRun(cfg,refs,teachers,source,wm,'cuda:0',from_free_anchor=args.resume is None)
     grip_data = add_grip_windows(run, Path(cfg['wm_grip_cohorts'])) if cfg.get('wm_grip_cohorts') else None
+    if cfg.get('wm_data_recipe'):
+        from learning.b0.contact_sources import RegisteredWM, native_episodes
+        run.registered_wm=RegisteredWM(cfg,run.model,run.rep,native_episodes(teachers,run.device),run.device)
     out=Path('results/b0')/args.run
     raw=Path('results/raw_large/b0')/args.run
     out.mkdir(exist_ok=False)
@@ -94,6 +97,8 @@ def main():
         metadata.update(cohort_truncation=None, recording_block_ticks=run.steps,
                         resume_boundary='explicit administrative cut for all live lanes on process restart; fresh 200ms prefixes')
         run.compact_directory = raw
+    if hasattr(run,'registered_wm'):
+        metadata['registered_windows']=run.registered_wm.inventory
     metadata['actor_class'] = type(run.actor).__name__
     metadata['started_unix'] = started_unix
     metadata['policy_learner'] = type(run.policy).__name__
@@ -175,7 +180,17 @@ def main():
                             collected.write(json.dumps(dict(cohort=cohort, due=run.schedule.pending, **sampled))+'\n')
                     data = dict(valid_transitions=run.total-before_valid, cumulative_valid_transitions=run.total,
                                 simulated_lane_intervals=run.simulated-before_simulated, cohort=run.schedule.cohorts)
+                if hasattr(run,'registered_wm'):
+                    run.wm_index=(count-1)*10
+                    if count==1:
+                        from learning.b0.contact_gradient import trace_first_update
+                        trace_first_update(run,out,raw)
                 update=run.update()
+                if hasattr(run,'registered_wm'):
+                    with (out/'wm_draws.jsonl').open('a') as audit:
+                        for item in run.registered_wm.rows:
+                            audit.write(json.dumps(dict(update=count,**item))+'\n')
+                    run.registered_wm.rows.clear()
                 if run.schedule is not None:
                     run.schedule.pending -= 1
                     data['remaining_updates_on_cohort'] = run.schedule.pending

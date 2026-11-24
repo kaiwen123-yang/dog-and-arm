@@ -143,6 +143,9 @@ class ContactPlant(ResearchPlant):
         peak_force = torch.zeros(self.count, device=self.device) if measure_peak_force else None
         if measure_grip:
             finger_min = torch.full((self.count,2), torch.inf, device=self.device)
+            finger_max = torch.zeros(self.count,device=self.device)
+            dual_prefix = torch.zeros_like(first)
+            dual_alive = torch.ones_like(finite)
         if capture_first_failure_state:
             stop_q = torch.zeros_like(self.data.qpos[:])
             stop_v = torch.zeros_like(self.data.qvel[:])
@@ -200,6 +203,9 @@ class ContactPlant(ResearchPlant):
                 stop_valid |= stopped & finite
             if measure_grip:
                 finger_min = torch.minimum(finger_min, m[:,4:6])
+                finger_max = torch.maximum(finger_max,m[:,4:6].amax(-1))
+                dual_alive &= (m[:,4:6] > cfg['contact_threshold_n']).all(1) & (first==0)
+                dual_prefix += dual_alive.long()
             if measure_peak_force:
                 peak_force = torch.maximum(peak_force, force_norm)
             if record:
@@ -213,7 +219,7 @@ class ContactPlant(ResearchPlant):
         result = dict(first_fail_substep=first, reason=reason, overflow=overflow,
                       valid_full_interval=finite, physics_steps=torch.full_like(first,10))
         if measure_grip:
-            result['finger_min'] = finger_min
+            result.update(finger_min=finger_min,finger_max=finger_max,dual_prefix=dual_prefix)
         if capture_first_failure_state:
             result.update(stop_qpos=stop_q, stop_qvel=stop_v, stop_valid=stop_valid)
         if measure_peak_force:
