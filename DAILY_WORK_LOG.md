@@ -1266,3 +1266,19 @@ B只做一次train-only重标后固定，原索引/原loss，新原优化器；�
 只读过程少数路径查询不存在，已按实际文件路径重读；大段输出截断后改短段读取/机器汇总；一次工具脚本正则写法解析失败，整块未执行，随后修正并执行。均未影响实验文件。发布采用普通单父提交、expected_sha和force=false，保留其他树。完整交付和链接/数值检查在发布前完成；提交自身SHA和远端回读结果在聊天交付，不自引用反复提交。
 
 发布前检查：16个明确交付文件、431个相对Markdown链接全部存在，审查JSON严格解析通过，50案交叉复算无差异，git diff --check通过。原训练代码/配置与实验manifest/CSV均未修改。末次修订明确新冻结u0采集同时冻结Actor参数与统计，使用h32_shared标准u0完整共同包；旧replay保留实际生成身份，不重新贴标签。发布后本地与远端SHA及关键文件内容另行回读，结果在聊天交付。
+
+## 2026-11-24 北京时间 20:10–20:15 联合接触轮开工与实测
+
+经 dev2-ubuntu-lan 执行 git fetch origin main，取回 528a9d7ac1ddbf399a125a93b9ee21bc1af6fd9b，通过 merge-base 祖先检查。原主树有 PROJECT_STATE 和三项 H0 已改文件及 P5 未跟踪目录；新建 ../dog-and-arm-b0-joint 独立树。D57 的 dog-and-arm-b0-temporal-v1 实验源码为 870796a，与审查之间仅文档和审查结果有改动。原两支 pending=2 保留。新小结果与大数组分别在 standard_joint_contact_20261124 和 joint_contact_20261124。
+
+并行实施首十批重放与原 240 条首动作数组核算。两支 WM/优化器十批末逐张量与原快照完全一致，首一个 H7 已越线，调换顺序十批末仍明显退化。现有 hold 首拍 J2 饱和；边界识别按原设计进行。运行 bash scripts/b0/env.sh python -u -m scripts.b0.joint_collection train 和 development，各 128 lane ×40 tick。新开发采集的实际物理初态来自六份 validation 轨迹，按相同 phase 对应到原参考时钟；保留原物理参考前缀、policy 参考与噪声，训练在共同 u0 的实际连续 lane 上采一块。两块参数和全部统计均逐项对照共同包。现场缺 rg 使用 grep；早先 PowerShell 传输字符串类型错误发生在远端命令前，改 UTF-8 传输。
+
+### 20:14–20:21 精确复演、物理辨识、u0 与联合适配登记
+
+AutoDL 命令以 bash scripts/b0/env.sh 为前缀。python -u -m scripts.b0.joint_replay control / experiment / experiment_h1_first 三个独立进程各跑十批；三次 --signed-only 只读补齐有符号误差。两条原顺序模型与优化器逐张量重放差为零。重标支首 H7 后四长窗 50.867/68.473/51.975/68.975 mm；单独调换顺序仍有 628–759 mm 末误差。真实十批全裁剪，P95=11.07366986。起点 online 与 native/grip/multimode/response 的同参数梯度余弦分别 −.098/−.124/−.217/−.138，随后会变号。详见 replay/summary.json。
+
+依次运行 joint_physics_audit.py、joint_physics_boundary.py register 及两种身份各 --repeat 0/1、joint_physics_derivatives.py。原240行七个执行器复算与真实裁后力最大差 4.53e-5。新增112条20ms分支合计5040物理微步，复用已积分前缀。仅细步训练起点第一遍的14条完整首terminal入response/H1。28-lane与7-lane的派生速度出现5.82e-11舍入差，核对原q/v相同后对派生量用2e-7容差复测。joint_physics_closedloop.py 两身份各两遍，六起点共24次，每次实走200ms前缀。原2ms、细步各8/12达到第二动作，各0/12持续双指、0事件。用原裁判终止时刻生成左右两部视频；另经 python -m scripts.b0.joint_formal 0 新跑原十项，0/10、六项首个2ms超力。
+
+每个新冻结采集块各5120物理策略区间，训练新增3429 H1 /3096 H7，其中156个完整首terminal；独立开发1816 H1 /1149 H7，176个完整首terminal。验证逐个合法起点评分。运行 python -m scripts.b0.joint_adapt register，将原联合比例、原损失/裁剪和双优化器、实际重标+1000四项E0、固定开发分母及每连续两块更新末点的资格检查写入 registration.json。为分别覆盖共同/新增实采，在相邻十批间交替使用两个实采块。资格训练与原Ratio分开记账。启动 train 0 200 时发现导入torch的顺序先于固定环境开关，触发了Inductor，第一次反向编译中断，日志0行、未到优化器step。把TORCH_COMPILE_DISABLE提前到torch导入前，从原零点复测；保留中断日志和新的eager运行记录。
+
+20:21 首次 eager 运行在第一个 WM 更新后的记账遇到重复键 h；优化器已走一步，训练状态未写出。修复记录器并单列 discarded_optimizer_steps=1，合计上限内最多保留490/990批整块末点。未消费 u10 包。正常发布先记录可复算诊断与新采数据身份，后续追加真实跨界成绩。

@@ -1,0 +1,84 @@
+{
+  "method": "SuperMimic-M1Piper-standard-v1",
+  "code_base": "528a9d7",
+  "seed": 0,
+  "physics": "warp_250us_servo2ms_continuous_v1",
+  "dt": 0.00025,
+  "servo": 0.002,
+  "policy": 0.02,
+  "c": 0.50625,
+  "wm": "results/raw_large/b0/dynamics_20261124/offline_wm/rebase/wm_001000.pt",
+  "actor_critic": "results/raw_large/b0/dynamics_20261124/h32_shared/first.pt",
+  "previous_actual_draw_replay": 30,
+  "first_stage_max": 500,
+  "cumulative_max": 1000,
+  "batch_sequence": [
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    1,
+    1
+  ],
+  "batch_size": 256,
+  "joint_H7": {
+    "online": 192,
+    "native": 32,
+    "Warp": 32
+  },
+  "joint_H1": {
+    "online": 192,
+    "native": 0,
+    "Warp": 64
+  },
+  "source_experiment": "Original joint allocation; append only nonduplicate fine training boundary branches to response H1",
+  "boundary_train_registration": "results/b0/standard_joint_contact_20261124/physics/boundary_train_registration.json",
+  "boundary_train_raw": "results/raw_large/b0/joint_contact_20261124/physics/boundary/training/repeat0",
+  "train_chunks": "alternate the two actual u0 training cohorts in successive ten-batch blocks: shared then continuous fresh",
+  "dev": "all eligible H1/H7 of one independent validation-trajectory cohort, frozen actor and buffers, seed 112402",
+  "primary_online": "both horizon losses and terminal J2 position/velocity RMSE on all fixed legal starts strictly lower than step zero",
+  "exact_e0": {
+    "pull_grip": 17.85285186767578,
+    "push_grip": 14.690392017364502,
+    "pull_multimode": 17.573172760009765,
+    "push_multimode": 18.647431564331054
+  },
+  "limits": {
+    "pull_grip": 22.316064834594727,
+    "push_grip": 18.362990021705627,
+    "pull_multimode": 21.966465950012207,
+    "push_multimode": 23.30928945541382
+  },
+  "long_denominators": {
+    "pull_grip": 386,
+    "push_grip": 446,
+    "pull_multimode": 199,
+    "push_multimode": 199
+  },
+  "qualification": "score every 10 actual WM updates, qualify on two consecutive passing post-block endpoints, save the 0/10/20 states and advance at second endpoint",
+  "grad_baseline": [
+    12.406499862670898,
+    6.697035312652588,
+    9.444655418395996,
+    7.481395244598389,
+    6.025684833526611,
+    6.139060974121094,
+    4.064198017120361,
+    4.480027675628662,
+    6.069587230682373,
+    2.4168784618377686
+  ],
+  "grad_p95": 11.07366986274719,
+  "grad_trigger": "two consecutive blocks with p95 above 10x baseline and worsening independent H7 loss",
+  "optim": "original shared Adam and Muon, fresh at start; 2e-4, original 1.0 grad clip, continuous through qualification and H32",
+  "adjustment_limit": 1,
+  "official_physics": "2ms Warp and native MuJoCo 3.3.0, 6N",
+  "frozen_h32_seed_chain_untouched": [
+    "control/u10 pending=2",
+    "experiment/u10 pending=2"
+  ]
+}
