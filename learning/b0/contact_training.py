@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import numpy as np
 import torch
 from tensordict import TensorDict
-from supermimic.models import Dynamics, build_mlp
+from supermimic.models import build_mlp
 from supermimic.envs.multi_task_world_model_env import MultiTaskWorldModelEnv
 from supermimic.learners.policy_learner import ActorCriticPolicyLearner, ActorCriticPolicyLearnerCfg
 from supermimic.learners.wm_learner import WorldModelLearner
@@ -233,8 +233,12 @@ class ContactRun:
                 raise ValueError('The contact action prior requires the calibrated reference-residual actor')
             self.actor.training_action_prior = PhysicalActionPrior(
                 self.actor, mapping, cfg['physical_action_prior'], device)
-        self.dyn = Dynamics(rep,23,5,tensor(mapping.scale,device),tensor(mapping.offset,device),
-                            tuple(cfg['wm_hidden'])).to(device)
+        from .temporal_dynamics import make_dynamics
+        temporal_id = cfg.get('temporal_id', 'C20')
+        loaded_id = wm_checkpoint.get('temporal_id', wm_checkpoint.get('cfg', {}).get('temporal_id', 'C20'))
+        if temporal_id != loaded_id:
+            raise ValueError(f'WM resolution mismatch: {loaded_id} vs configured {temporal_id}')
+        self.dyn = make_dynamics(model, rep, mapping, cfg['wm_hidden'], temporal_id, device)
         self.dyn.load_state_dict(wm_checkpoint['dyn'])
         self.grip_windows = None
         self.b = cfg['wm_batch']
@@ -275,7 +279,8 @@ class ContactRun:
                         group['lr'].fill_(cfg['calibrated_actor_lr'])
                     else:
                         group['lr']=cfg['calibrated_actor_lr']
-        self.plant=ContactPlant(model,self.n,device)
+        self.plant=ContactPlant(model,self.n,device,
+                                preserve_continuous_bias=cfg.get('preserve_continuous_bias', False))
         self.ctx=torch.stack([contact_context(model,side,device) for side in ('pull','push')])
         phase,side,eligible,actions=[],[],[],[]
         for path in refs:

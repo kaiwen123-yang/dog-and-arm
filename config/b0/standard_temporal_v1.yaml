@@ -1,0 +1,15 @@
+base: config/b0/standard_response_v1.yaml
+# Use an explicitly selected checkpoint in the derived Actor run configuration.
+wm_checkpoint: null
+preserve_continuous_bias: true
+wm_data_recipe:
+  sources:
+    grip: {directory: results/b0/recovery_b_grip_challenge_r1}
+    multimode: {directory: results/b0/lanes_modes_v1}
+    response: {registration: results/b0/standard_temporal_20261124/registration.json, raw: results/raw_large/b0/temporal_entries_v1}
+  warm: {h1_native: 32, h1_warp: 224, h7_native: 32, h7_warp: 224}
+  joint: {h1_native: 0, h1_warp: 64, h7_native: 32, h7_warp: 32}
+  split: train
+  allocation: eligible Warp sources equal, remainder rotates by absolute minibatch index
+  offline_order: lane uniformly then legal starting age uniformly, native retains window-uniform sampling
+  selection: earliest bilateral first-action improvement with held-grip and multimode validation retention and physically consistent internal path

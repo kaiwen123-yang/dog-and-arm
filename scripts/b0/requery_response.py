@@ -32,9 +32,10 @@ def main(args):
     plant=ContactPlant(model,n,DEVICE)
     raw=Path("results/raw_large/b0")/args.output
     raw.mkdir(exist_ok=False)
-    for row in json.loads((OUT/"registration.json").read_text())["starts"]:
+    registration=json.loads(args.registration.read_text())
+    for row in registration["starts"]:
         begin=time.monotonic()
-        source=RAW/row["id"]
+        source=args.raw/row["id"]
         rec=json.loads((source/"receipt.json").read_text())
         folder=raw/row["id"]
         folder.mkdir()
@@ -55,6 +56,9 @@ def main(args):
         # Some backends may write derived warmstart during forward. The registered
         # buffer itself is what the original step consumed after its FK refresh.
         wp.to_torch(plant.sim.wp_data.qacc_warmstart).copy_(tensor(solver["qacc_warmstart"],DEVICE).expand(n,-1))
+        if registration.get("solver_schema") == "continuous_bias_v1":
+            bias=wp.to_torch(plant.sim.wp_data.qfrc_bias)
+            bias.copy_(tensor(saved["qfrc_bias"],DEVICE).expand_as(bias))
         obs=build_actor_obs_td({"motion":tensor(saved["goal"],DEVICE)},tensor(saved["history"],DEVICE))
         cmds={k:a.raw(obs)[0] for k,a in actors.items()}
         if "u0" in cmds:
@@ -73,4 +77,6 @@ if __name__=="__main__":
     p.add_argument("--run",required=True)
     p.add_argument("--updates",type=int,nargs="+",required=True)
     p.add_argument("--output",required=True)
+    p.add_argument("--registration",type=Path,default=OUT/"registration.json")
+    p.add_argument("--raw",type=Path,default=RAW)
     main(p.parse_args())

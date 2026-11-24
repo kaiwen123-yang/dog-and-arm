@@ -95,7 +95,7 @@ class SourceWindows(ContactWindows):
         self.mode=np.concatenate([np.r_[e.modes,np.array(["unused"])] for e in episodes])
         self.sides=np.array([e.side for e in episodes])
 
-    def draw(self,count):
+    def sample_indices(self,count):
         device=self.starts.device
         if self.lane_age:
             lane=self.eligible[torch.randint(len(self.eligible),(count,),device=device)]
@@ -104,7 +104,10 @@ class SourceWindows(ContactWindows):
         else:
             picks=torch.randint(len(self.starts),(count,),device=device)
             lane=torch.searchsorted(self.begin+self.counts,picks,right=True)
-        first=self.starts[picks]
+        return self.starts[picks],lane
+
+    def draw(self,count):
+        first,lane=self.sample_indices(count)
         ix=first[:,None]+self.offset
         ep=lane.cpu().numpy()
         step=first.cpu().numpy()

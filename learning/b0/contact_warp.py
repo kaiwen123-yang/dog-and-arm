@@ -67,7 +67,8 @@ def _door_wrenches(nacon: wp.array[int], world: wp.array[int], geoms: wp.array[w
 
 
 class ContactPlant(ResearchPlant):
-    def __init__(self, model, count, device):
+    def __init__(self, model, count, device, preserve_continuous_bias=False):
+        self.preserve_continuous_bias = preserve_continuous_bias
         super().__init__(model, count, device)
         cfg = settings('mobile', 1)
         self.cfg = cfg
@@ -106,7 +107,17 @@ class ContactPlant(ResearchPlant):
         self.force_limit = self.force_limit.float()
 
     def reset(self, qpos, qvel, ids=None):
+        # The controller consumes the preceding solve's bias. Reset refreshes
+        # all worlds, including unrelated continuous lanes; preserve their input.
+        keep = self.indices[~torch.isin(self.indices, ids)] if (
+            self.preserve_continuous_bias and ids is not None and len(ids) < self.count
+        ) else None
+        if keep is not None:
+            bias = wp.to_torch(self.sim.wp_data.qfrc_bias)
+            old_bias = bias[keep]
         super().reset(qpos, qvel, ids)
+        if keep is not None:
+            bias[keep] = old_bias
         chosen = slice(None) if ids is None else ids
         for counter in (self.load_ticks, self.lost_ticks, self.slip_ticks, self.sat_ticks):
             counter[chosen] = 0

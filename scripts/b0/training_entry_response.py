@@ -103,7 +103,13 @@ def register_solver(plant, lane=0):
     fields.update({name:getattr(plant,name) for name in ("load_ticks","lost_ticks","slip_ticks","sat_ticks")})
     for value in fields.values():
         value.copy_(value[lane:lane+1].clone().expand_as(value))
+    if plant.preserve_continuous_bias:
+        bias = wp.to_torch(plant.sim.wp_data.qfrc_bias)
+        previous_bias = bias[lane].clone()
     plant.sim.forward()
+    if plant.preserve_continuous_bias:
+        bias.copy_(previous_bias.expand_as(bias))
+        fields["qfrc_bias"] = bias
     return {name:value[lane].cpu().numpy().copy() for name,value in fields.items()}
 
 
@@ -176,13 +182,18 @@ def collect(args):
     begin=time.monotonic()
     cfg=json.loads((U0.parent/"actual_config.json").read_text())["cfg"]
     root=Path(cfg["reference_directory"])
-    OUT.mkdir(exist_ok=True)
-    RAW.mkdir(exist_ok=True)
+    out, raw_root = args.output, args.raw
+    out.mkdir(exist_ok=True)
+    raw_root.mkdir(exist_ok=True)
     rows=register(cfg)
     spec=dict(starts=rows,actors=[str(U0),str(U200)],common_tail="31 recorded reference targets",
               query="frozen actor, common seeded noisy measured proprio, no added action exploration",
               tail=cfg["reference_tail"],prefix_ticks=100, retries="only after a rejected physical prefix; first valid registered offset")
-    reg=OUT/"registration.json"
+    if args.preserve_continuous_bias:
+        spec["solver_schema"] = "continuous_bias_v1"
+        if out == OUT or raw_root == RAW:
+            raise ValueError("A new solver identity requires independent output directories")
+    reg=out/"registration.json"
     if reg.exists() and json.loads(reg.read_text())!=spec:
         raise ValueError("Changed registered matrix")
     dump(reg,spec)
@@ -199,9 +210,9 @@ def collect(args):
         actor.load_state_dict(torch.load(file,map_location="cpu",weights_only=False)["actor"])
         actors[tag]=actor.eval()
     n=28
-    plant=ContactPlant(model,n,DEVICE)
+    plant=ContactPlant(model,n,DEVICE,preserve_continuous_bias=args.preserve_continuous_bias)
     for row in rows:
-        folder=RAW/row["id"]
+        folder=raw_root/row["id"]
         folder.mkdir(exist_ok=True)
         if (folder/"receipt.json").exists():
             continue
@@ -250,10 +261,13 @@ def collect(args):
             reference=ref.cpu().numpy(),**{name:value.cpu().numpy() for name,value in raw.items()})
         count=integrate_branches(folder,row,off,t,g,plant,side,solver,first,ref,labels,labs,rep,mapping,attempts,start_time)
         print(row["id"],off,count,flush=True)
-    dump(OUT/"collection.json",dict(wall_s=time.monotonic()-begin,entries=[json.loads((RAW/r["id"]/"receipt.json").read_text()) for r in rows]))
+    dump(out/"collection.json",dict(wall_s=time.monotonic()-begin,entries=[json.loads((raw_root/r["id"]/"receipt.json").read_text()) for r in rows]))
 
 
 if __name__=="__main__":
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--register-only",action="store_true")
+    p.add_argument("--output",type=Path,default=OUT)
+    p.add_argument("--raw",type=Path,default=RAW)
+    p.add_argument("--preserve-continuous-bias",action="store_true")
     collect(p.parse_args())
