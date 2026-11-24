@@ -1353,3 +1353,49 @@ AutoDL 命令以 bash scripts/b0/env.sh 为前缀。python -u -m scripts.b0.join
 实际执行 python -m scripts.b0.official_flow --resume --stop 500，以及各节点的 official_flow_eval formal/full/wm、末节点 native 3.3 复测、official_flow_free 原 3×20、official_flow_servo 六个验证入口，及 official_flow_restore_check、official_flow_coverage。完整任务每 20 ms 重查 Actor，原 judge 保留失败时刻与阶段，详细行见 results/b0/standard_official_flow_20261124/physical_cases.csv。本轮正式片段 0/110，完整任务 0/24。u1000 原 Warp 前拉 approach_base，settle / timeout:settle，背推 approach_base，settle / unexpected_contact:finger_non_grasp_handle。新增 10,255,490 个有效转移、908,328,960 个物理微步。高 WM 长窗误差贯穿实际联训；未设置误差放行门。u500 配对跟踪改善后于 21:41 北京时间登记并执行 python -m scripts.b0.official_flow --resume --stop 1000。u750 仅保存回放覆盖统计所需字段，接续 u500/u1000 环形回放的重叠区间按绝对时钟去重。覆盖统计脚本初版使用 NumPy r_ 拼接字符串标签触发异常，改为 concatenate 后对保存的回放重算；训练未受影响。恢复包另经全字段回读，状态直接字段一致，世界角速度重算最大差 1.2e-07 rad/s。全部旧成绩、旧失败和旧权重保持原身份。
 
 冻结节点的现场北京时间和对应恢复位置见 results/b0/standard_official_flow_20261124/milestones.json。独立报告 reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md 和 manifest results/b0/standard_official_flow_20261124/baseline_manifest.json。下一轮继续标准迁移。先用末包原 Warp/native 同侧轨迹定位驻车分歧出现的第一拍，将真实底座位姿、航向、四轮目标和轮速与同一参考时刻配对；再沿已有首解记录核对 J2 / 夹口命令覆盖和实际饱和力。用同包、同起点复核具体的场景、时钟或伺服映射差异。确认可修接口后登记下一段预算，执行同一官方主环及原双侧物理复测。当前节点按独立负结果封存，保留原成功标准和 V0 交付条件。 本轮末次提交和 GitHub 文件回读在会话交付。
+
+## 2026-11-24 北京时间 22:26起｜51a0133审查、同链续训计划与发布准备
+
+### 任务、范围与读取
+
+延续用户授权的完成轮审查、下一计划/启动提示词、目标差距和普通GitHub发布。用户根本目标仍是完整按照固定官方SuperMimic迁移，先冻结标准结果再开发算法；加快速度和新增完整任务视频不改变该目标。本次仅审查和文档/审查JSON发布，新增训练、仿真、模型推理、现场权重重载与硬件动作均为零。
+
+开始工作树干净，从695f3d7正常fetch/fast-forward至51a0133802983b65602949000099e7d18fa8e835；GitHub main回读相同，原实验提交北京时间22:01:16。三路只读审查分别核对逐案/预算、物理/时钟/观测、官方代码/WM/恢复；主任务复核当前实现和固定官方runner、representations、task_spec及固定mjlab的G1资产。读取的事实来源是已提交结果与代码，AutoDL大数组/权重未再次运行或读取，不声称读取了其他不可访问对话及所有远端字节。
+
+### 逐案、分母和预算复算
+
+134个原result及return与CSV对账一致：接触110案（Warp80/native30）0通过、0接触事件、60案首2ms超6N；完整24案0成功，却有15个驶近、11个停车事件，最远2事件，尚未完成pregrasp。全轮最大末门角约0.0000417°。u1000两端接触首2ms超力从各6降到3，改变的前拉三案变为10ms Warp/16ms native握持几何失败，不能当成接触建立。
+
+新Actor原free四节点各60，共0/240；240案全跑完7s且solver_first_failure为空，全部TCP精度失败，81案另失败根位置门。u1000三类TCP RMSE中位数77.17/72.31/82.04mm。该结果不是全部摔倒，也不能借用旧B003通过资格。完整回报依然用前拉75.736s/背推56.056s的原完整分母和失败吸收尾段；存活前缀接近1的局部分数不是任务完成度。
+
+1000条连续更新计数逐行一致：新增1000H32/10000WM/20000Critic，10255490有效转移+1098622前缀=11354112物理区间、908328960微步。WM20480000窗/143360000后继，Actor131072000想象步。collection.jsonl1192行是抽样日志，实际2772采集tick；不能求稀疏行和当预算。99507条完整terminal保留，首批Actor1483/4096为terminal起点。WM祖先14850批单列。Ratio末pending0、previous_clock10250240，越过5250、还差4990到下一10240额度。
+
+### 官方配置、已排除解释与物理限制
+
+新链官方采集/统计/Ratio/10H7/H32/20Critic已真实运行，不能继续写成尚待接入。核实首次物理失败与数值区间有效性分开，完整80微步terminal未全部过滤；四轮实际range为±99999，不是[0,0]；基础effort decoder不先夹±1，动作目标物理边界映射正确。源码审查没有核实出新的goal/action/proc错列或可直接解释全部失败的单一接口bug。
+
+直接固定源码核实默认rep_state/history1、可选proprio；本项目proprio/history10为O1配置选择。rep_state也只给Actor540目标，30列相对平移仍属WM/Critic的570；不能把添加570或含门75维当恢复官方默认。G1 .9软限位因子与本项目编译range罚项边界是需明示的资产映射差异，未证失败因果，本段不改。官方max_iterations百万计外层collect，不是1000Actor收敛上限。完整恢复为项目运行保障扩展，原WM-only warm-start身份/成本不抹去。
+
+u200/u500双后端双侧full都完成驶近+停车且实际/参考均pregrasp后越界；u1000 Warp落在settle是事件落后，不能移动参考时钟。native前拉XY18.803mm小于20mm，按judge分支推断航向>2°；没有原heading数值，不能写伪精确角度。现存完整q/v/raw_action20ms，2ms事件无完整q/v/heading，下一轮只补有意义区间。float32/64初始非零差不等于接口错误。overflow出处仍未知；134轨迹有限、96Warp capacity0仅排除所存字段/容量问题，不能追认全程无害。
+
+两条完整参考已贡献3621747有效记录，十三phase都有数据；open/hold17887=0.1744%是参考标签不是实际接触成功。J2实际命令上端u200/500/1000为1.00795/1.19302/1.52572rad，参考2.59618；同hold入口前拉.80839→1.00041→1.17914→1.49640，背推.81404→.89030→.96770→1.14450，背推脱饱和距194.91σ→62.73σ。当前仍饱和/无接触，但有实际渐进学习，不将这条主链写成完全停滞。
+
+### 下一轮决定、未采用方案与最小运行改动
+
+曾只读核查官方rep_state58/history1所需完整适配和冷WM可能性，未执行新实验/修改学习代码。主任务综合信息边界、现有正向动作进展及完整任务退步，决定不混入观测/初始化变化：完整恢复u1000，先累计u3000，有原物理收益再u5000。主段新增2000Actor/20000WM/40000Critic，含延长最高新增4000/40000/80000，预算节点不算官方学习阶段。原两种WM误差门不恢复；没有确认bug也可继续。
+
+代码入口NODES仅至1000、OUT/RAW固定、counting fields仅u750留存；下一执行轮必须最小配套扩展节点、显式父恢复/独立结果和≤500物理tick留档，防1000tick环覆盖造成漏账。原子快照先一致再序列化，不异步读仍在修改的GPU张量。新增metadata放CLI/独立登记，恢复cfg逐项相等保持。首次恢复新更新应u1001/WM10010/Critic20020；历史0–1000结果保持封存。
+
+并行有限诊断为：既存u1000双后端首分歧，必要最多四原full+两训练细步full，warning额外最多四案；u0/u1权重×两组完整WMnormalizer四格冻结前向，新增优化0。stats1是首19tick后的73157count，不是首collect；混配是含交互的条件敏感性，不是独立可加因果或可直接上线候选。为判断当前分布，u1000/3000/已执行5000各最多256lane×64tick独立开发块，RNG独立、不回灌训练、空长窗报NA；均非Actor准入门。
+
+固定节点评原十项、Warp/native双侧full、新Actor原free、六个纯Actor接触入口；u3000/末点补native十项。延长优先新接触/新阶段/可重复纯Actor持续双指；只有tracking则在预登记同钟停车/预抓取窗双侧比较并查整段退化，不能只看命令/饱和前力/更长失败时间/更高诊断分。首次真实完整成功立即交连续视频，同轮继续另一侧及原D/C/native/seed/H。0.90/0.88和正式物理门槛保持。
+
+### 文件与发布准备
+
+新增官方u1000审查、同链连续计划、三路审查JSON和机器预算登记；更新AGENTS、README、PROJECT_STATE、总计划/路线/论文协议/数据约定/官方映射/目标差距/标准结果顶部，原首轮计划增加历史导航，两个启动词保持逐字节一致。没有修改训练代码、学习cfg、51a0133原report/manifest/逐案分数或大型恢复资产。工作过程中一次rg查询了错误文件名docs/SUPERMIMIC_OFFICIAL_FLOW_ALIGNMENT.md，按实际B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md继续读取；未影响内容或实验。
+
+发布前将验证JSON严格解析、计划与提示词预算一致、相对链接、源码/原结果未改及git diff --check。发布按expected parent和force=false普通更新main，固定提交逐文件回读内容；实际SHA和回读结果在聊天交付，避免将文件内自引用发布回执循环提交。本次只读审查的训练/仿真预算保持零。
+
+22:50 已完成发布前检查：20个明确交付文件、464个相对Markdown链接全部存在，4份审查/登记JSON严格解析通过，两份启动词逐字节一致。根任务独立复核134案分组/事件及1000条连续优化计数，结果与审查一致；git diff --check通过。原学习代码、cfg和standard_official_flow_20261124原始结果/报告无改动。技术复核确认新增/累计预算、恢复状态、原子保存、环覆盖留档与统计四格解释相互一致，无需额外重复实验。
+
+发布前物理入口复核补充两项执行约束：新OUT/RAW必须贯通eval/free/servo/coverage/恢复与索引，不能只改训练CLI后让评测回写旧轮；训练0.25ms完整诊断须映射80微步Actor、8微步servo、原参考起止步×8和实际秒/原训练bias行为，不能只改eval的model.dt（旧路径每动作10步/frame除10/每步servo会改变身份）。已同步计划、两份启动词和机器登记；没有实际修改或运行这些训练/仿真入口。

@@ -1,0 +1,229 @@
+{
+  "status": "planned_not_executed",
+  "date_beijing": "2026-11-24",
+  "method_id": "SuperMimic-M1Piper-standard-v1",
+  "execution_recipe": "official_flow_s0_v1",
+  "segment_id": "official_flow_continuation_20261124",
+  "parent_commit": "51a0133802983b65602949000099e7d18fa8e835",
+  "parent_actor_update": 1000,
+  "parent_valid_transitions": 10255490,
+  "parent_cumulative_steps": {
+    "actor": 1000,
+    "wm": 10000,
+    "critic": 20000
+  },
+  "direct_wm_ancestor_minibatches_excluding_parent_chain": 14850,
+  "initialization": "exact full resume; no network, optimizer, normalizer, replay, RNG, Ratio, sampler or live-lane reinitialization",
+  "parent_recovery": "results/b0/standard_official_flow_20261124/recovery.json",
+  "parent_checkpoint": "results/raw_large/b0/official_flow_20261124/checkpoint_001000.pt",
+  "parent_state": "results/raw_large/b0/official_flow_20261124/resume_001000",
+  "parent_ratio": {
+    "pending": 0,
+    "previous_clock": 10250240,
+    "valid_since_previous_clock": 5250,
+    "valid_until_next_threshold": 4990
+  },
+  "training_cfg": "config/b0/official_flow_s0_v1.yaml",
+  "cfg_equality_required": true,
+  "main_block": {
+    "cumulative_actor_stop": 3000,
+    "new_actor_updates": 2000,
+    "new_wm_minibatches": 20000,
+    "new_critic_minibatches": 40000
+  },
+  "conditional_extension": {
+    "cumulative_actor_cap": 5000,
+    "max_new_actor_updates_this_segment": 4000,
+    "max_new_wm_minibatches_this_segment": 40000,
+    "max_new_critic_minibatches_this_segment": 80000
+  },
+  "training_nodes": [
+    1500,
+    2000,
+    3000,
+    4000,
+    5000
+  ],
+  "not_official_algorithm_stages": "These are project budget/checkpoint decisions; no WM performance gate is introduced.",
+  "actual_new_work_in_this_review": {
+    "training_updates": 0,
+    "physics_intervals": 0,
+    "model_inference": 0,
+    "remote_weight_reload": 0
+  },
+  "runtime_only_adaptations": [
+    "Add saved nodes after u1000 and consistent atomic snapshots.",
+    "Explicit parent recovery and separate output paths without altering learning cfg.",
+    "Save counting fields at intervals <=500 physical ticks plus end/interruption; ring capacity 1000 ticks; deduplicate absolute tick/lane/episode.",
+    "Record first resumed update u1001 with cumulative wm10010/actor1001/critic20020.",
+    "Propagate independent OUT/RAW and checkpoint paths through eval/free/servo/coverage/restore/index tools; no old-result overwrites through imported constants."
+  ],
+  "new_small_results": "results/b0/standard_official_flow_continuation_20261124/",
+  "new_large_results": "results/raw_large/b0/official_flow_continuation_20261124/",
+  "retained": {
+    "actor_observation": "proprio/history10/goal540",
+    "wm_representation_dim": 75,
+    "wm_critic_goal_dim": 570,
+    "num_worlds": 4096,
+    "wm_batch": 2048,
+    "actor_batch": 4096,
+    "learning_rate": 0.0002,
+    "replay_ratio": 16,
+    "noise": 0.1,
+    "actor_horizon": 32,
+    "wm_stored_frames": 8,
+    "wm_scored_successors": 7,
+    "wm_batches_per_actor": 10,
+    "critic_batches_per_actor": 20,
+    "physics_dt_s": 0.00025,
+    "servo_dt_s": 0.002,
+    "policy_dt_s": 0.02,
+    "substeps": 80,
+    "gencoord_coefficient": 0.50625,
+    "action_gain": 1
+  },
+  "formal_evaluation": {
+    "physics_dt_s": 0.002,
+    "backends": [
+      "Warp",
+      "native MuJoCo3.3.0"
+    ],
+    "contact_force_threshold_where_applicable_N": 6,
+    "station_xy_threshold_m": 0.02,
+    "station_heading_threshold_deg": 2,
+    "original_task_and_reference_clock": true
+  },
+  "regular_node_checks": [
+    "Warp original ten contact nominal",
+    "Warp bilateral frame0 full development",
+    "native3.3 bilateral frame0 full development",
+    "original free 3x20",
+    "six pure-Actor contact development entries"
+  ],
+  "native_contact_nodes": [
+    3000,
+    "last_executed_or_candidate"
+  ],
+  "extension_evidence": [
+    "A new original contact pass/event, a full episode beyond the historical first two events, or repeated pure-Actor sustained bilateral finger contact before original judge failure.",
+    "Alternatively bilateral improvement in failure-relevant physical tracking on preregistered common settle/pregrasp clock windows, with full-case regression review and no shorter-window cherry-picking."
+  ],
+  "insufficient_extension_evidence_alone": [
+    "lower WM loss",
+    "higher imagined reward or absorbing failure score",
+    "longer failure time",
+    "J2 command closer while actual force stays identically saturated",
+    "Actor first action followed by reference actions"
+  ],
+  "diagnostics": {
+    "backend": {
+      "reuse_existing_first": true,
+      "max_original_2ms_full_reruns": 4,
+      "max_training_025ms_full_cases": 2,
+      "additional_warning_cases_if_needed_max": 4,
+      "stored_full_state_resolution_s": 0.02,
+      "targeted_finer_logging_if_needed_s": 0.002,
+      "float32_float64_bitwise_equality_not_required": true,
+      "fine_clock": {
+        "actor_microsteps": 80,
+        "servo_microsteps": 8,
+        "reference_start_end_step_scale_from_2ms": 8,
+        "events_and_timeouts": "actual seconds",
+        "servo_bias": "same as training identity",
+        "do_not": "change only model.dt in the original ten-step evaluator",
+        "original_2ms_evaluator_unchanged": true
+      }
+    },
+    "wm_stats_weights": {
+      "nodes": [
+        0,
+        1
+      ],
+      "cells": [
+        [
+          "weights0",
+          "stats0"
+        ],
+        [
+          "weights0",
+          "stats1"
+        ],
+        [
+          "weights1",
+          "stats0"
+        ],
+        [
+          "weights1",
+          "stats1"
+        ]
+      ],
+      "new_optimizer_steps": 0,
+      "swap_only": [
+        "dyn.state_normalizer complete buffers",
+        "dyn.action_normalizer complete buffers"
+      ],
+      "keep": [
+        "action_scale",
+        "action_offset",
+        "Actor normalizers",
+        "75-dim representation",
+        "context",
+        "FK",
+        "integrator"
+      ],
+      "stats1_count": 73157,
+      "stats1_new_real_rows": 22678,
+      "interpretation": "conditional sensitivity with interaction, not additive independent causal attribution or trained mixed-pair candidate"
+    },
+    "current_policy_development": {
+      "nodes": [
+        1000,
+        3000,
+        5000
+      ],
+      "only_if_reached": true,
+      "lanes": 256,
+      "policy_ticks": 64,
+      "max_physics_intervals_per_node": 16384,
+      "max_physics_intervals_total": 49152,
+      "rng": "independent preregistered development seeds, separate from training RNG",
+      "feed_to_training": false,
+      "independent_training_seed1_or_2": false,
+      "heldout_H": false,
+      "empty_window_handling": "zero denominator/NA; never cross reset or synthesize long windows"
+    }
+  },
+  "prohibited_new_branches": [
+    "rep_state change",
+    "cold-WM reinitialization",
+    "H1 mixture",
+    "teacher quota",
+    "frozen normalization",
+    "per-step function reparameterization",
+    "gain32",
+    "BC",
+    "reference action passthrough",
+    "analytic actor",
+    "new reward/risk head/network/curriculum"
+  ],
+  "qualification": {
+    "candidate": null,
+    "qualified_bilateral_return": "NA",
+    "V0_success_video_count": 0,
+    "contact_nominal": "same package 10/10",
+    "D": "each >=18/20",
+    "full_Warp": "both sides from frame0",
+    "C": "each side >=18/20",
+    "full_native": "same package both sides native3.3 nominal",
+    "free": "new Actor must qualify independently",
+    "independent_training_seeds": [
+      1,
+      2
+    ],
+    "H": "freeze all three seeds, then each seed/side >=40/50",
+    "reference_return": 0.9,
+    "near_band": 0.88
+  },
+  "video": "first genuine full successful side -> immediate original-speed continuous video of same episode/package; continue other side and original qualification",
+  "publication": "unique Beijing daily log; ordinary GitHub commit and fixed-commit readback; no force push or local compressed archive"
+}

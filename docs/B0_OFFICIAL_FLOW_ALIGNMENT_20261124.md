@@ -1,5 +1,23 @@
 # 固定官方 SuperMimic 主循环与 M1＋Piper 迁移实现对照
 
+## 2026-11-24｜51a0133 的执行核验与剩余配置边界
+
+本轮已经实际运行本表要求的采集→统计→Ratio→十H7 WM→H32 Actor一次/二十Critic，共1000轮更新，首批与累计计数、terminal纳入和恢复均有提交回执。下方695f3d7登记中的“待实现”不再表示主环尚未接通。[首更新](../results/b0/standard_official_flow_20261124/first_update.json) · [当前审查](../reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md) · [下一段完整恢复计划](B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)
+
+| 源码与配置事实 | 项目实值及声明 |
+| --- | --- |
+| 固定runner默认actor_obs=rep_state、history_length=1；官方也支持proprio/history | 本项目沿O1选proprio/history10。属于官方支持配置的选择，不等于逐项采用默认；下一段保持 |
+| make_motion_task始终取compute_wm_goal第二项；actor_goal_dim=num_goals−30 | Actor goal540，WM/Critic goal570；切rep_state也不会多出参考平移。门几何不透传Actor |
+| G1资产soft_joint_pos_limit_factor=.9；Representation.bind读取soft_joint_pos_limits | M1/Piper当前罚项直接用编译jnt_range；四轮±99999。资产映射差异如实登记，尚未证为失败原因，本段不更改 |
+| 固定runner max_iterations=1000000 | 它计外层采集，不计Actor update；本轮u1000为项目预算，不是官方收敛上限 |
+| 官方warm-start先装WM/context后建学习器 | 本轮首次加载+850 dyn含统计、环境重建context，新建Actor/Critic/优化器/replay已实际完成；祖先WM14850批披露 |
+| 项目完整恢复额外保存优化器/replay/RNG/solver/lane | 下一段恢复u1000全部状态，不再重做WM-only warm-start，不称为官方原生恢复特性 |
+| 官方核心支持目标环境终止映射 | 训练逐lane按参考phase/物理失败，正式另有station XY/heading与独立事件；差异明示，不据此添加新训练目标 |
+
+固定来源：[runner](https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/runners/supermimic_runner.py)、[representation](https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/representations.py)、[task](https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/tasks/task_spec.py)、[G1资产](https://github.com/HybridRobotics/mjlab_research/blob/dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd/src/mjlab/asset_zoo/robots/unitree_g1/g1_constants.py)。项目实现见 learning/b0/model.py、contact_model.py、contact_lanes.py、official_replay.py、scripts/b0/official_flow.py。
+
+当前已核主环和接口不能被表述为论文结果复现成功，仍B0-04/候选null/完整回报NA。也不能把合法的proprio配置、完整terminal行或连续轮范围误报为新bug。以下保留原固定源码与首轮处置登记；新预算/保存入口以连续计划为准。
+
 2026-11-24，北京时间。核对固定官方 SuperMimic `abc124c1bd5976341034668af3d12c087f2f1f55` 与项目实验端点 [65c121b0d7a2519b9c503589024f075e7b7889ba](https://github.com/kaiwen123-yang/dog-and-arm/commit/65c121b0d7a2519b9c503589024f075e7b7889ba)。本次为源码审查与后续实施约定，没有新增训练、仿真或成功视频。
 
 **根本目标不变：按固定官方机制完成 SuperMimic 在 M1＋Piper 场景的标准迁移，以达到或接近已登记论文参照为目标，独立保存结果，再开发新算法。完整任务视频是新增交付，不替代0.90／0.88指标、物理门槛或独立B0结果。**

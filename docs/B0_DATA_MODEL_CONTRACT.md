@@ -1,5 +1,11 @@
 # B0 数据、动作、观测与模型约定
 
+## 2026-11-24 当前接口与接续说明
+
+51a0133 已实际实现并运行 official_flow_s0_v1。当前 Actor 是 proprio/history10/goal540；WM 接触表示75、WM/Critic目标570、context5；训练0.25ms/servo2ms/策略20ms/c=.50625，正式评测保留原2ms身份。新主链使用在线统计、原H7/Ratio，恢复以完整u1000为准。[接口实值](../results/b0/standard_official_flow_20261124/interface.json) · [官方映射对照](B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md) · [当前续训计划](B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)
+
+下文2ms训练/c=.55等是早期默认及单位说明，实际训练以已登记细步身份为准。官方还支持rep_state/history1，但本段不切换；该模式也仍是540维Actor目标，不给参考平移或门几何。训练参考phase终止与正式独立station/events判定的差异保留披露，不在续训中自动增新奖励/门槛。下面的Actor信息边界、动作单位、episode连续性和完整任务frame0约束继续有效。
+
 更新：2026-11-22。状态：无接触接口与 B0-03 已实现并有冻结结果；动态门和接触相关条款仍需在 B0-04 落实。文中协议要求不能直接视为代码已经全部具备。来源见 [B0 总计划](B0_SUPERMIMIC_PLAN.md)，当前顺序与具体差距见 [接触执行计划](B0_CONTACT_EXECUTION_PLAN.md)，实际进度见 [PROJECT_STATE](../PROJECT_STATE.md)。
 
 ## 1. 三种数据不能混用

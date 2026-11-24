@@ -1,14 +1,12 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-2026-11-24 22:00 北京时间的 [official_flow_s0_v1 独立实测](reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md) 已发布。独立 official_flow_s0_v1 已从 +850 WM-only 完成 u1000，实做 1,000 次 H32、10,000 个 H7 WM 批及 20,000 个 Critic 批。u1000 原 2 ms Warp 接触 0/10，完整名义 Warp 0/2、native 3.3.0 0/2。当前 B0-04，最终候选 null，合格完整双侧归一化回报 NA。 [当前入口](prompts/NEXT_RUN.txt)
+**当前先完成固定官方 SuperMimic 在 M1＋Piper 的标准迁移，达到或接近既定论文参照并冻结独立结果，随后才开发算法、多模态/VLA 和实机联合系统。** WM、可微动力学和 H32 Actor/Critic 属于当前 B0；V0 完整成功仿真视频是新增交付。
 
-2026-11-24 本轮之前的标准迁移实测见[联合接触实验](reports/B0_JOINT_CONTACT_RESULTS_20261124.md)和[恢复清单](results/b0/standard_joint_contact_20261124/baseline_manifest.json)。实际预适配 991 批，仅 +850 单点达到开发保留线，完整双侧回报 NA。
+2026-11-24 已审查 [51a0133 的官方在线实训](reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md)：official_flow_s0_v1 实际完成1000 H32/10000 WM/20000 Critic、10255490有效转移。**仍B0-04、候选null、合格完整双侧回报NA。** 110接触案0通过；24完整尝试0成功，但已有驶近15次、停车11次完成事件，最远未完成预抓取。新Actor free0/240均运行7s，精度未通过。[最新审查](reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md) · [目标差距](docs/GOAL_GAP_20261124.md)
 
-本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先完成开源SuperMimic标准迁移，以达到或接近论文指标为目标，独立保存结果；迁移成功并冻结基线后才开发算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
+下一轮按[连续迁移计划](docs/B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)完整恢复同一u1000，先累计u3000，有真实物理依据延长至u5000。保留proprio/history10和官方采集→在线统计→Ratio→10H7 WM→H32 Actor/20Critic主环，有限诊断并行；不重开Actor或恢复WM误差放行门。首次真实完整成功立即交连续全程视频，同轮继续另一侧与原验收。[启动词](prompts/B0_START.txt) · [预算登记](results/b0/official_flow_review_20261124/continuation_registration.json)
 
-**根本目标保持：完整按照固定官方SuperMimic迁移，达到或接近0.90参照/0.88接近带，冻结独立标准基线。完整任务视频V0只是新增交付。** 65c121b仍B0-04、候选null、完整双侧回报NA，原正式0/10、新H32=0。下一轮校正官方采集→统计更新→Ratio→10批H7 WM→H32 Actor/Critic主环，处理历史项目配方偏离，不再用自设25%双块/50mm诊断阻断Actor。[官方流程对齐](docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md) · [当前计划](docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md) · [最新审查](reports/B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md) · [视频与比例](docs/B0_FULL_TASK_VIDEO_PROTOCOL.md)
-
-P1–P6工程继续继承，旧B0-03及后续迁移实验保留为历史对比。新official-flow seed0采用+850的WM-only warm-start，官方fresh Actor/Critic、优化器和online replay，不继承旧Actor或gain32；warm-start成本完整披露。540/546参考前馈、15,000动作BC和解析补偿的成绩单列，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
+P1–P6工程、旧B0-03与此前迁移结果按原身份保留。+850只在这条新链的首次初始化作WM-only warm-start；下一轮从u1000完整恢复，祖先成本和新增预算分列。540/546的参考前馈、15000动作BC和解析补偿属于独立混合对照，不替代标准成绩。当前状态以[PROJECT_STATE](PROJECT_STATE.md)顶部为准。
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
@@ -34,7 +32,7 @@ P1–P6工程继续继承，旧B0-03及后续迁移实验保留为历史对比�
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_JOINT_CONTACT_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -44,9 +42,9 @@ P1–P6工程继续继承，旧B0-03及后续迁移实验保留为历史对比�
 
 ## 用户现在需要做什么
 
-正常fetch main并将[B0_START.txt](prompts/B0_START.txt)交给执行端，按[官方流程对齐](docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md)和[当前执行计划](docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md)连续推进。真实采集、统计更新、Ratio及10批H7 WM/H32 Actor/Critic构成同一官方主线；H1混合、teacher配额、冻结统计、gain32逐项登记处置，不再另开独立参考覆盖预训练分支。完整任务成功时立即交连续仿真视频，同轮继续另一侧；原论文参照、物理验收和最终独立结果目标不变。
+正常 fetch main，读取工作树状态并保留现有修改，将 [B0_START.txt](prompts/B0_START.txt) 交给执行端。按[续训计划](docs/B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)从u1000完整恢复，集中完成预算内实际训练、有限诊断、固定物理评测、可用完整视频与发布；不只再交一份审计。
 
-现场/root/autodl-tmp/dog-and-arm-b0-temporal-v1；原资产results/raw_large/b0/joint_contact_20261124/，+850/+990和旧u10按历史身份保留。新链初始化/学习率/统计/动作参数化以官方对齐清单为准。旧25%双块及50mm仅保留诊断，不再充当Actor前置；已解决的单位/solver/lane映射继承。[NEXT_RUN](prompts/NEXT_RUN.txt)
+现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-flow-695f3d7，父包 results/raw_large/b0/official_flow_20261124/resume_001000。官方来源和映射见[对齐清单](docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md)，正式成绩和视频定义见[协议](docs/B0_PAPER_BASELINE_PROTOCOL.md)与[视频/比例协议](docs/B0_FULL_TASK_VIDEO_PROTOCOL.md)。[NEXT_RUN](prompts/NEXT_RUN.txt)与完整启动词一致。
 
 ## H0：相机和机械臂联合运行
 
@@ -171,4 +169,3 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 本仓库是项目代码与阶段记录的保存位置。按有意义的可见调试节点提交并及时推送代码、配置、报告及必要小规模结果。无需另外制作本机压缩归档。vendor/、assets/converted/ 和 .venv 可按脚本重建，默认不提交；新拉取模型后先执行 fetch_sources.py 和 build_assembly.py，才能解析所引用的本地网格。四张实物照片已在仓库，无需重新下载或补拍。
 
 源码引用和第三方资产许可见 THIRD_PARTY_NOTICES.md。
-

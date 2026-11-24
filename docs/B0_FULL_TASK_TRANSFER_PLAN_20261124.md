@@ -1,5 +1,9 @@
 # B0 下一轮：按固定官方主流程校正迁移并完成真实策略任务
 
+## 当前接续：原计划已执行，下一段从 u1000 完整恢复
+
+本文件对应695f3d7的首轮官方流程纠偏计划，已在51a0133完成到u1000。最新审查见[审查报告](../reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md)，**当前执行入口改为[官方主链连续计划](B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)**：完整恢复u1000先到u3000，有据到u5000。不能再次按下文首次初始化条款重建Actor/Critic/replay，也不把“确认可修接口”当继续训练前置。原实验成绩和本文件训练前登记保持。
+
 ## 2026-11-24 22:00 北京时间｜登记计划对应的实际执行
 
 独立 official_flow_s0_v1 已从 +850 WM-only 完成 u1000，实做 1,000 次 H32、10,000 个 H7 WM 批及 20,000 个 Critic 批。u1000 原 2 ms Warp 接触 0/10，完整名义 Warp 0/2、native 3.3.0 0/2。当前 B0-04，最终候选 null，合格完整双侧归一化回报 NA。 [本轮物理结果](../reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md) · [接续入口](../prompts/NEXT_RUN.txt)

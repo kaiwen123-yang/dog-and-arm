@@ -1,5 +1,19 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-24 北京时间｜51a0133 已审查，同链从 u1000 接续
+
+**官方在线主环已实际完成1000次H32；任务仍B0-04、候选null、合格完整双侧回报NA，完整成功视频0。** 本轮110个接触名义案0通过/0接触事件；24次frame0完整尝试0成功，但有15个驶近、11个停车完成事件，最远尚未完成预抓取。新Actor原free评测0/240，全部完成7s，失败是TCP精度（81案还失根位置精度），不能说全部摔倒。[审查](reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md) · [逐案复算](results/b0/official_flow_review_20261124/evidence_audit.json)
+
+同一握持起点J2首命令持续趋近参考：u0→u1000前拉.80839→1.49640rad、背推.81404→1.14450rad；u1000仍饱和，原十项仍0/10。u200/u500两后端均完成双侧驶近和停车，u1000 Warp退回停车失败。新阶段/接触仍无突破，不能只用命令改善声称迁移成功。
+
+下一轮执行[官方主链续训计划](docs/B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)：**完整恢复u1000，先累计u3000（新增2000H32/20000WM/40000Critic），有物理依据延长到u5000（本轮增量上限4000/40000/80000）**。保留proprio/history10、原官方在线统计/Ratio/10H7/H32与原物理门槛；不重启Actor，不切换rep_state/冷WM，不恢复WM误差放行门。checkpoint扩展、独立输出/父恢复和≤500tick覆盖留档是必要运行配套；cfg相等及完整恢复语义保持。
+
+并行有限核对同包后端首分歧/overflow，以及u0/u1权重×统计四格前向；当前策略独立开发块按计划上限采集，不回灌训练、不作新门。主节点实评原十项、Warp/native双侧full、新Actor free和纯Actor接触；真完整成功立即交连续视频，同轮继续另一侧和已满足的原验收。没有确认bug也照常推进可运行的主链。
+
+现场仍 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-flow-695f3d7；父包 results/raw_large/b0/official_flow_20261124/resume_001000 与 checkpoint_001000.pt，pending=0，剩4990有效转移到下一Ratio阈值。现场以真实包复核。新段输出/增量单列，旧结果与祖先成本保留。[预算登记](results/b0/official_flow_review_20261124/continuation_registration.json) · [启动词](prompts/B0_START.txt) · [目标差距](docs/GOAL_GAP_20261124.md)
+
+本次是审查与计划发布，未运行新增训练/仿真/现场权重重载。以下原实验与历史计划保留当时语境，不覆盖本节。
+
 ## 2026-11-24 22:00 北京时间｜固定官方流程实训与完整任务尝试
 
 独立 official_flow_s0_v1 已从 +850 WM-only 完成 u1000，实做 1,000 次 H32、10,000 个 H7 WM 批及 20,000 个 Critic 批。u1000 原 2 ms Warp 接触 0/10，完整名义 Warp 0/2、native 3.3.0 0/2。当前 B0-04，最终候选 null，合格完整双侧归一化回报 NA。 u1000 用尽本轮登记预算。原 Warp 前拉在停车阶段超时，背推在停车阶段出现夹指与非抓取部位的把手接触；native 双侧均在预抓取阶段失去工位约束。两端原接触十项各 0/10，末节点六个闭环接触验证入口均无双指持续，完整任务仍无成功。 原失败轨迹和恢复包均已留存。[独立报告](reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md) · [manifest](results/b0/standard_official_flow_20261124/baseline_manifest.json) · [下一入口](prompts/NEXT_RUN.txt)

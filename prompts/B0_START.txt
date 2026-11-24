@@ -1,6 +1,19 @@
-继续 dog-and-arm，从最新 main 接续。先读 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md、results/b0/standard_official_flow_20261124/baseline_manifest.json、docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md、docs/B0_FULL_TASK_TRANSFER_PLAN_20261124.md 和 DAILY_WORK_LOG.md 最新段。
+继续 dog-and-arm 的 SuperMimic 标准迁移，从最新 main 接续。先读 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md、docs/B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md、results/b0/official_flow_review_20261124/continuation_registration.json、原 standard_official_flow_20261124/baseline_manifest.json 和 DAILY_WORK_LOG.md 最新段。
 
-独立 official_flow_s0_v1 已从 +850 WM-only 完成 u1000，实做 1,000 次 H32、10,000 个 H7 WM 批及 20,000 个 Critic 批。u1000 原 2 ms Warp 接触 0/10，完整名义 Warp 0/2、native 3.3.0 0/2。当前 B0-04，最终候选 null，合格完整双侧归一化回报 NA。 u1000 用尽本轮登记预算。原 Warp 前拉在停车阶段超时，背推在停车阶段出现夹指与非抓取部位的把手接触；native 双侧均在预抓取阶段失去工位约束。两端原接触十项各 0/10，末节点六个闭环接触验证入口均无双指持续，完整任务仍无成功。
-下一轮继续标准迁移。先用末包原 Warp/native 同侧轨迹定位驻车分歧出现的第一拍，将真实底座位姿、航向、四轮目标和轮速与同一参考时刻配对；再沿已有首解记录核对 J2 / 夹口命令覆盖和实际饱和力。用同包、同起点复核具体的场景、时钟或伺服映射差异。确认可修接口后登记下一段预算，执行同一官方主环及原双侧物理复测。当前节点按独立负结果封存，保留原成功标准和 V0 交付条件。
+根本目标不变：先按固定官方 SuperMimic 完成 M1＋Piper 标准迁移，达到或接近既定论文参照并冻结独立结果，再开发算法。V0 完整成功仿真视频是新增交付，不替代双侧物理、D/C/native、独立 seed/H 和完整回报。51a0133 的 official_flow_s0_v1 已完成 u1000；B0-04，候选 null，合格完整双侧回报 NA。110 接触案 0 通过/0 接触事件；24 full 案 0 成功但有15个驶近、11个停车事件；新 Actor free 0/240 均跑完7s但精度不达标。保留旧结果，不能称整个历史零事件或继承旧 B0-03 资格。
 
-使用 AutoDL 现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-flow-695f3d7。检查恢复包、提交及运行状态；最近完整恢复点是 results/raw_large/b0/official_flow_20261124/resume_001000。保持训练 .25 ms、servo 2 ms、Actor 20 ms，原评测 2 ms Warp/native3.3 与适用 6 N 阈值。继承与新增成本分列，原十项/D、双侧 Warp/C/native、三 seed 与冻结 H 全部沿用。固定官方在线采集、归一化、Ratio、10 个 H7 和 H32 Actor/Critic；误差用于诊断。完整成功首次出现时交付同包一侧的原速连续视频，再继续另一侧。更新唯一北京时间日志和独立结果并普通推送、回读。
+本轮必须集中推进真实学习：从 u1000 完整恢复同一主链，先累计到 u3000；按计划的真实物理依据，当轮自主延长至 u5000 或继续已满足的原验收。主段新增2000 H32/20000 WM/40000 Critic；含延长本轮最多新增4000/40000/80000。u1500/2000/3000及实际执行的4000/5000是保存评测点，不是WM误差放行门。没有确认bug也可以照常续训，不先重开另一条链或一千批WM预适配。
+
+现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-flow-695f3d7。先核进程、工作树、原 recovery.json 和实际资产；父完整包 results/raw_large/b0/official_flow_20261124/resume_001000 + checkpoint_001000.pt。恢复三网络、全部优化器、统计、RNG、ReturnSampler、Ratio、replay、live lanes、history/prev_action、solver/servo。保持学习cfg严格相等，不清空重建。父pending=0、距下一Ratio阈值4990有效转移以现场回执再核；首个新更新累计应为u1001/WM10010/Critic20020。
+
+执行前只补必要运行配套：扩展NODES，原子冻结一致包后继续；显式父recovery和本轮独立OUT/RAW，并贯通eval/free/servo/coverage/恢复及索引工具，避免其直接导入旧常量后误读或回写旧轮；不改学习cfg、不覆盖旧0–1000；按≤500物理tick保存轻量counting fields，按绝对tick/lane/episode去重，防1000tick环覆盖造成漏账。新小结果 standard_official_flow_continuation_20261124，大资产 official_flow_continuation_20261124；保留父成本和新段增量。不要异步写仍被优化器修改的张量。
+
+官方核心仍abc124c/dd51a9f；proprio/history10/goal540，4096环境、WM2048、Actor4096、2e-4、H32、Ratio16、noise.1。真实采集→在线统计→Ratio→10批H7 WM→1次Actor/20批Critic。训练.25ms、外部servo2ms、Actor20ms、c=.50625，原正式2ms Warp/native3.3及适用6N/20mm/2°保持。不改观测模式/Actor目标、不冷启动WM、不加H1混合、teacher配额、冻结统计、gain32、BC、参考直通、解析反馈、新loss/课程/网络。
+
+并行有限诊断：复用u1000轨迹定位有意义的20ms后端首分歧，必要区间补2ms的q/v/heading/轮与servo原值；最多4案原后端full+2案训练细步full，warning捕获出处与traceback必要最多4案。细步诊断须使用ContactClock的80微步Actor/8微步servo、原参考起止步×8、实际秒事件和原训练bias行为，不能只改model.dt导致原每动作10步/frame除10路径变成2.5ms策略；原正式2ms评测保持。float32/64非零差不是bug，不平移参考时钟。用既存u0/u1做WM权重×两组完整normalizer四格冻结前向，保持action映射/Actor统计/FK/context，新增优化0；stats1是首19tick后的73157计数。结果是含交互的条件敏感性，不把混配包直接变训练配方。需要当前分布验证时按计划在u1000/u3000/已到的u5000各最多256lanes×64tick独立开发采集，不回灌训练，合法长窗为空报NA。以上都不阻断正常Actor更新。
+
+每主要节点实评原Warp十项、同包Warp/native双侧frame0 full、原free3×20和六个纯Actor接触入口；u3000/末点另评native十项，候选可提前。保存XY/heading、同钟参考/实际phase、命令/实测/饱和与真实双指连续时长。u3000之后优先按新通过/新事件/纯Actor持续双指延长；只改善tracking则按预登记共同停车/预抓取时窗做双侧物理比较并检查整段是否倒退。命令更近而仍饱和、更长失败时间、较低WM误差或较高失败诊断分不能单独支持延长。
+
+第一侧从frame0真实完整成功立即导出原速连续视频，保留同episode原判定/trace/完整回报，同轮继续另一侧及满足条件的十项→D→双侧Warp/C/native→独立seed→冻结H。不能用教师、参考尾段、reset、摆qpos、驱动门或拼接制造成功；.90参照/.88接近带定义不改。实际遇非有限/接口/恢复错误先保存现场、最小修复后继续；尚未成功如实报告。
+
+同轮完成实际预算内训练、诊断、物理评测、可用视频、独立报告/manifest、唯一北京时间DAILY_WORK_LOG和下一入口。普通推送GitHub并回读固定提交的报告、manifest、逐案、日志、提示词与实际视频。保护其他工作树，无强推、无本机压缩归档。不要只交另一份审计，把可运行的训练继续留到下轮。

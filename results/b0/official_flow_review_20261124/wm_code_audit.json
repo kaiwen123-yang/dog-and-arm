@@ -1,0 +1,191 @@
+{
+  "audited_revision": "51a0133802983b65602949000099e7d18fa8e835",
+  "official_revision": "abc124c1bd5976341034668af3d12c087f2f1f55",
+  "read_only": true,
+  "execution": "Source and archived JSON/CSV reads only. No training, simulation, or repository edits.",
+  "conclusion": "No verified wrong goal/action/normalizer/replay column mapping was found. Do not describe the completed official online loop as unimplemented. Further same-recipe continuation has measured support from monotonically improving fixed-state J2 commands, although full-task results regress at u1000 and long WM contact predictions remain poor.",
+  "ruled_out": [
+    {
+      "allegation": "Physical failures are excluded from Actor initial states and normalization",
+      "verdict": "False for this run",
+      "evidence": [
+        "learning/b0/contact_warp.py step_contact runs all 80 microsteps and returns valid_full_interval=finite; first_fail_substep is recorded independently.",
+        "contact_lanes valid=policy & valid_full_interval; numerical full terminal rows are eligible.",
+        "coverage_u001000.json: simulated 11354112 minus prefix 1098622 equals valid 10255490 exactly; complete_terminal_rows=99507.",
+        "first_draw_recheck.json: first Actor batch includes 1483 terminal rows out of 4096; H7 also includes terminal final transitions."
+      ]
+    },
+    {
+      "allegation": "Four continuous wheel joints have [0,0] limits and are penalized for rotation",
+      "verdict": "False",
+      "evidence": [
+        "sim/scenes/assembly_preview.xml lines 59,82,105,128: wheel ranges [-99999,99999].",
+        "scripts/p6_scene.py build changes actuators and contact material but does not zero those ranges."
+      ]
+    },
+    {
+      "allegation": "Base-effort decoder is clipped to [-1,1] before mapping, making J2 reference unreachable",
+      "verdict": "False",
+      "evidence": [
+        "learning/b0/model.py EffortScaledActor.raw returns home_action + standard_action * unconstrained MultiEncoderAE decoder.",
+        "RobotActor.forward clips canonical after affine mapping.",
+        "Contact collection adds sigma .1 in base-effort then clips canonical physical limits.",
+        "Measured J2 online upper command expands 1.0079467943510712 to 1.1930241620322273 to 1.525724470614774 rad at u200/u500/u1000."
+      ]
+    }
+  ],
+  "mapping_checks": [
+    {
+      "item": "Motion goals",
+      "project": "DoorMotions uses pinned compute_wm_goal with per-clip official_clip_last. Goal content is 10 strided frames of [q24,v24], actor 540 and WM/Critic 570 including reference-root translation.",
+      "official": "representations.py goal_window_indices/motion_goal_window/_assemble_goal; tasks/task_spec.py make_motion_task."
+    },
+    {
+      "item": "Actions and rewards",
+      "project": "Dynamics.proc maps 23 canonical channels to physical targets; action normalizer sees proc. Fixed-effort reward converts canonical using same base servo home/unit. No added task_reward_scales, force head, reference-residual Actor, or gain32 is active.",
+      "limitation": "This preserves intended robot mapping, but simulator targets and physical thresholds differ from G1. Cannot claim entire experiment is identical to paper."
+    },
+    {
+      "item": "WM initializer and clocks",
+      "project": "Strict +850 dyn including action_scale/action_offset and normalization; count50479. C20/physics_dt .00025/c .50625 are checked. Context reconstructed from the model and exactly matched historical five-column data. Stats continue online.",
+      "evidence": "scripts/b0/official_flow.py build; results/.../interface.json; first_draw_recheck.json"
+    },
+    {
+      "item": "WM supervision and actor starts",
+      "project": "H7 uses seven measured consecutive same-episode complete transitions and appends measured final successor. No cross-reset window; Actor draws current state independently at h1 with the recorded clean 10-frame causal sensor history. Finished physical terminal row is valid if numerically complete."
+    }
+  ],
+  "official_configuration_difference": {
+    "official": "BaseRunnerCfg actor_obs=rep_state, history_length=1",
+    "current": "RobotRepresentation.actor_obs_mode='proprio'; build_actor obs_dim77/history10; DoorImagination.initial unflattens10x77.",
+    "optional_official_profile": "Robot gencoord58 x1, keeping door17/5context privileged to WM/Critic.",
+    "adds": [
+      "direct body linear velocity",
+      "root height",
+      "full robot gencoord state"
+    ],
+    "does_not_add": [
+      "base XY",
+      "570-dimensional goal",
+      "relative target-root translation"
+    ],
+    "warning": "Pinned official make_motion_task always uses actor_goal_dim(num_goals)=num_goals-30, even in rep_state mode. A 570 goal would be a separate privileged-input extension, not restoring an official default.",
+    "code_touches_if_selected": [
+      "Parameterize Actor obs/history construction instead of only changing YAML.",
+      "Real collection and WM synthesized sensor must both use robot58 slice without passive-door channels.",
+      "Replay and initial-state packing must use configured history dimensions.",
+      "Frozen native/Warp evaluator must build exactly the same input mode.",
+      "A changed input architecture requires a separately identified initialization; never call it exact resume of u1000."
+    ],
+    "status": "Source comparison only. No rep_state/profile change in the active next round."
+  },
+  "measured_action_progress": [
+    {
+      "node": 0,
+      "pull_hold_j2_command": 0.8083908681696623,
+      "push_hold_j2_command": 0.8140418046231717,
+      "push_distance_over_sigma": 194.90948312908995
+    },
+    {
+      "node": 200,
+      "pull_hold_j2_command": 1.0004096064683647,
+      "push_hold_j2_command": 0.8902991584901512,
+      "push_distance_over_sigma": 164.40648734067653
+    },
+    {
+      "node": 500,
+      "pull_hold_j2_command": 1.179138354520893,
+      "push_hold_j2_command": 0.9676972139324724,
+      "push_distance_over_sigma": 133.4472893682399
+    },
+    {
+      "node": 1000,
+      "pull_hold_j2_command": 1.4964023526338817,
+      "push_hold_j2_command": 1.1444997319312156,
+      "push_distance_over_sigma": 62.726283418188
+    }
+  ],
+  "best_next_diagnostic": {
+    "kind": "Frozen forward-only 2x2 decomposition, not a training recipe and not a WM pass gate",
+    "question": "Why did u0-to-u1 long WM errors increase: normalization update or ten H7 parameter updates?",
+    "models": [
+      "weights0+stats0",
+      "weights0+stats1",
+      "weights1+stats0",
+      "weights1+stats1"
+    ],
+    "data": "Exactly the same already frozen independent windows; use the archived u0/u1 bundles.",
+    "caution": "Keep action_scale/offset/context/representation fixed. Swap only the two normalizer state_dict subsets, not affine action mapping. The counterfactual combinations are diagnostic, not selected checkpoints.",
+    "reason": "By first update WM empirical count changes 50479 to73157 (+22678 fresh states) before the ten H7 weight updates. Present result conflates these two causes.",
+    "exact_buffer_prefixes": [
+      "dyn.state_normalizer._mean",
+      "dyn.state_normalizer._var",
+      "dyn.state_normalizer._std",
+      "dyn.state_normalizer.count",
+      "dyn.action_normalizer._mean",
+      "dyn.action_normalizer._var",
+      "dyn.action_normalizer._std",
+      "dyn.action_normalizer.count"
+    ],
+    "metadata": [
+      "record module eps and until; eps=.01 in prior verified runtime, recheck actual instance",
+      "do not change action_scale/action_offset, actor normalizers, representation, ctx, time step or FK"
+    ],
+    "statistics_boundary": "stats1 is accumulated from all22678 new eligible rows through physical tick19 before the first10H7+AC update, not only the first collection tick. First-collection-only stats can locate earliest shift but do not reconstruct u1. Rebuild in original per-tick/lane order to check FP32 identity; pooled FP64 is supplemental independent arithmetic, not necessarily bit-identical.",
+    "interpretation": "The mixed cells evaluate frozen conditional sensitivity with an interaction. Weights1 were learned under stats1; do not present the two factors as additive independent causal effects or use mixed models as candidate repairs.",
+    "retained_input_probe": "On the exact retained first_draws.npz H7 windows, compare actual real representation75 and Dynamics.proc(action23) before/after normalization, per-channel mean/std/epsilon, abs-z p50/p95/max and first-layer preactivation. Distinguish actual observed states from autoregressively imagined states, which change with each mixed model. Use identical fixed held-out windows for H1/H7/H32 and retain per-side/metric results."
+  },
+  "next_budget_judgment": {
+    "recommended": "Do not automatically discard u1000. A bounded same-recipe continuation is justified by fixed-state monotonic arm command progress and shrinking saturation distance; retain full-task/native/nominal evaluation at scheduled nodes and state failure honestly.",
+    "alternatives": "If running official rep_state1 profile or cold-WM default, register each as a separate comparison. Changing both together is a combined reinitialization, not a causal single-variable test.",
+    "not_justified": [
+      "Unbounded training promise",
+      "Claim that u1000 proves convergence or algorithm failure",
+      "New reward weights, teacher quotas, BC, gain increase, or WM validation gate without user-directed methodology change"
+    ],
+    "source_note": "Official SuperMimicRunnerCfg.max_iterations=1000000 is collection-loop default, not 1000 Actor updates and not evidence for the paper's actual training budget.",
+    "alternatives_status": "Not selected for this round; retained only to prevent mislabeling official options as bugs."
+  },
+  "sources": {
+    "project_prefix": "https://github.com/kaiwen123-yang/dog-and-arm/blob/51a0133802983b65602949000099e7d18fa8e835/",
+    "official_prefix": "https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/",
+    "official_files": [
+      "runners/supermimic_runner.py",
+      "representations.py",
+      "models.py",
+      "tasks/task_spec.py",
+      "replay_buffer.py",
+      "learners/wm_learner.py",
+      "envs/world_model_env.py",
+      "envs/multi_task_world_model_env.py",
+      "utils/tracking_reward.py"
+    ]
+  },
+  "approved_next_direction_review": {
+    "direction": "Keep proprio/history10 and warm-WM lineage; exact resume u1000 to cumulative u3000, evidence-based extension to cumulative u5000 with newly added cap4000Actor/40000WM/80000Critic. No WM quality pass gate.",
+    "review": "Supported, with concrete scheduling/accounting modifications below; no repository modifications performed by this audit.",
+    "necessary_execution_adjustments": [
+      "NODES constant currently ends at1000: add1500/2000/3000/4000/5000 checkpoints explicitly.",
+      "save_counting_fields is only hardcoded at u750: add immutable lightweight counting snapshots by physical clock at intervals <=500 ticks so capacity1000 ring never creates coverage gaps between500-update checkpoints.",
+      "Keep original cfg dict byte-for-byte semantically identical for restore equality; separate new budget metadata and checkpoint schedule from training cfg.",
+      "Restore pending Ratio credits and all optimizers, normalizers, replay, RNG, lanes and solver; account cumulative vs incremental update counts separately.",
+      "Atomic checkpoint snapshot requires a consistent state; do not asynchronously serialize live GPU tensors while optimization mutates them. Brief snapshot pauses do not turn checkpoints into learning gates."
+    ]
+  },
+  "active_decision": "EXACT SAME-CHAIN CONTINUATION FROM U1000. Preserve proprio/history10, original WM lineage, online normalization, rewards, action units and official learner flow. Cumulative u3000 first, evidence-supported cumulative u5000 maximum. rep_state and cold-WM are not active next-round actions.",
+  "asset_boundary_source_note": {
+    "official": "HybridRobotics/mjlab_research dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd src/mjlab/asset_zoo/robots/unitree_g1/g1_constants.py:262 soft_joint_pos_limit_factor=.9; official representation.bind uses data.soft_joint_pos_limits",
+    "project": "learning/b0/model.py RobotRepresentation uses compiled model.jnt_range directly",
+    "interpretation": "An existing robot-asset reward-boundary mapping difference, not evidence of current failed training cause. Do not change task thresholds or current chain in this round on this basis. Wheel hard ranges verified +-99999."
+  },
+  "integration_decision": {
+    "authoritative_plan": "docs/B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md",
+    "active_route": "Exact resume official_flow_s0_v1 u1000 to cumulative u3000; evidence-based extension up to u5000.",
+    "not_selected": [
+      "rep_state/history1 branch",
+      "cold-WM branch",
+      "WM-error Actor gate"
+    ],
+    "background_recommendations": "Any earlier alternative proposed in this independent audit is source-analysis background, not an authorized second training route."
+  }
+}
