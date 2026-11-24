@@ -30,6 +30,76 @@
       "cohorts": 2772
     }
   },
+  "parent_manifest": "results/b0/standard_official_flow_20261124/baseline_manifest.json",
+  "direct_wm_lineage": [
+    {
+      "source": "free_s0_cloud_servo_r2 u1000 (subset of WM layers)",
+      "wm": 10000,
+      "ancestor_H32": 1000,
+      "ancestor_physical_transitions": 1088000
+    },
+    {
+      "source": "contact_s0_wm_held_r1 +200 then held_r2 to cumulative 2000",
+      "wm": 2000
+    },
+    {
+      "source": "lanes_wm_v1 +1000 to response_wm_v1 +0",
+      "wm": 1000
+    },
+    {
+      "source": "fine C20 rebased +1000 with 50479 normalization inputs",
+      "wm": 1000
+    },
+    {
+      "source": "joint_contact actual retained +850 of +990",
+      "wm": 850
+    }
+  ],
+  "retained_cfg": "config/b0/official_flow_s0_v1.yaml",
+  "cfg_equality_checked_at_load": true,
+  "parent_restore_checks": "restored_u001000.json",
+  "durable_u1001_reload": "restored_u001001.json",
+  "first_new_update": "first_resumed_update.json",
+  "training_processes": "sessions.jsonl",
+  "u1001_implementation_commit": "88448d10566eef38f96df9be4433875454ec2739",
+  "optimizer_core": {
+    "python": "3.13.13",
+    "torch": "2.14.0+cu130",
+    "torch_cuda": "13.0",
+    "training_mujoco": "3.16.0",
+    "mujoco_warp": "3.16.0",
+    "warp_lang": "1.18.0",
+    "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "native_scoring_mujoco": "3.3.0",
+    "tensor_math": "float32 high",
+    "torch_compile_disable": true
+  },
+  "settings": {
+    "worlds": 4096,
+    "wm_batch": 2048,
+    "actor_batch": 4096,
+    "actor_horizon": 32,
+    "wm_stored_frames": 8,
+    "wm_scored_transitions": 7,
+    "wm_batches_per_actor": 10,
+    "critic_batches_per_actor": 20,
+    "ratio": 16,
+    "online_statistics": true,
+    "actor_input": "proprio/history10/goal540",
+    "training_dt": 0.00025,
+    "servo_dt": 0.002,
+    "policy_dt": 0.02,
+    "formal_dt": 0.002,
+    "coefficient": 0.50625
+  },
+  "diagnostics": {
+    "factorial": "wm_factorial/factorial.json",
+    "backend": "backend/comparison.json",
+    "fixed_tracking_windows": "tracking_windows.json",
+    "current_policy": [
+      "current_policy/u001000/scores.json"
+    ]
+  },
   "inherited_wm_ancestor_minibatches": 14850,
   "parent_steps": {
     "wm": 10000,
@@ -37,19 +107,19 @@
     "critic": 20000
   },
   "cumulative_steps": {
-    "wm": 15000,
-    "actor": 1500,
-    "critic": 30000
+    "wm": 20000,
+    "actor": 2000,
+    "critic": 40000
   },
   "retained_new_steps": {
-    "wm": 5000,
-    "actor": 500,
-    "critic": 10000
+    "wm": 10000,
+    "actor": 1000,
+    "critic": 20000
   },
   "charged_new_steps": {
-    "wm": 5090,
-    "actor": 506,
-    "critic": 10120
+    "wm": 10090,
+    "actor": 1006,
+    "critic": 20120
   },
   "discarded_attempts": [
     {
@@ -101,25 +171,26 @@
       "interrupted_partial_tick_excluded": true
     }
   ],
-  "new_valid": 5120466,
-  "cumulative_valid": 15375956,
-  "new_lane_intervals": 5648384,
-  "new_microsteps": 451870720,
-  "new_prefix_lane_intervals": 527918,
-  "new_valid_terminal": 48579,
-  "retained_training_wall_s": 987.331525079906,
+  "new_valid": 10241147,
+  "cumulative_valid": 20496637,
+  "new_lane_intervals": 11399168,
+  "new_microsteps": 911933440,
+  "new_prefix_lane_intervals": 1158021,
+  "new_valid_terminal": 106643,
+  "retained_training_wall_s": 1878.0600460730493,
   "wall_by_process_through_retained_update_s": {
     "durable_u1001": 40.95530388131738,
-    "1795540571.1211922": 946.3762211985886
+    "1795540571.1211922": 1837.104742191732
   },
   "wall_scope": "monotonic time after restore to last retained update in each process, includes internal checkpoints except its own final write; evaluation and discarded attempts excluded",
-  "aggregate_new_simulated_seconds": 112967.68000000001,
-  "new_ratio_stored_positions_per_valid": 15.998543882529441,
-  "new_wm_windows": 10240000,
-  "new_wm_scored_successors": 71680000,
-  "new_imagined_steps": 65536000,
+  "aggregate_new_simulated_seconds": 227983.36000000002,
+  "new_ratio_stored_positions_per_valid": 15.998208013223518,
+  "new_wm_windows": 20480000,
+  "new_wm_scored_successors": 143360000,
+  "new_imagined_steps": 131072000,
   "nodes": [
-    1500
+    1500,
+    2000
   ],
   "physics": [
     {
@@ -175,6 +246,60 @@
           "heading_deg": 0.6280451469564262
         }
       ]
+    },
+    {
+      "node": 2000,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "full_cases": 2,
+      "full_success": 0,
+      "full": [
+        {
+          "side": "pull",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "timeout:settle",
+          "xy_m": 0.01809792911684696,
+          "heading_deg": 0.580941164091783
+        },
+        {
+          "side": "push",
+          "completed": "approach_base,settle",
+          "phase": "pregrasp",
+          "failure": "unexpected_contact:robot_panel",
+          "xy_m": 0.010480447899904443,
+          "heading_deg": 0.9192095522715742
+        }
+      ]
+    },
+    {
+      "node": 2000,
+      "backend": "native",
+      "contact_cases": 0,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "full_cases": 2,
+      "full_success": 0,
+      "full": [
+        {
+          "side": "pull",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "timeout:settle",
+          "xy_m": 0.025809642600555495,
+          "heading_deg": 0.2755763784665443
+        },
+        {
+          "side": "push",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "unexpected_contact:robot_panel",
+          "xy_m": 0.010119061435935127,
+          "heading_deg": 1.0331807431092268
+        }
+      ]
     }
   ],
   "free": [
@@ -196,6 +321,30 @@
     },
     {
       "node": 1500,
+      "task": "park",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 2000,
+      "task": "support",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 2000,
+      "task": "moving_arm",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 2000,
       "task": "park",
       "passed": 0,
       "attempted": 20,
@@ -263,33 +412,93 @@
       "both_ticks": 0,
       "longest_dual_ticks": 0,
       "dual_seconds": 0.0
+    },
+    {
+      "node": 2000,
+      "start": "pull_0_validation_grip_grasp",
+      "phase": "grasp",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 2000,
+      "start": "pull_0_validation_grip_hold",
+      "phase": "hold",
+      "actor_queries": 1,
+      "scored_ticks": 1,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 2000,
+      "start": "pull_0_validation_grip_release",
+      "phase": "release",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 2000,
+      "start": "push_0_validation_grip_grasp",
+      "phase": "grasp",
+      "actor_queries": 6,
+      "scored_ticks": 52,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 2000,
+      "start": "push_0_validation_grip_hold",
+      "phase": "hold",
+      "actor_queries": 1,
+      "scored_ticks": 7,
+      "both_ticks": 1,
+      "longest_dual_ticks": 1,
+      "dual_seconds": 0.002
+    },
+    {
+      "node": 2000,
+      "start": "push_0_validation_grip_release",
+      "phase": "release",
+      "actor_queries": 8,
+      "scored_ticks": 71,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
     }
   ],
   "video_manifests": [],
   "recovery": {
     "host": "autodl-d57",
     "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8",
-    "update": 1500,
-    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_001500.pt",
-    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_001500",
-    "clock": 4151,
-    "simulated": 17002496,
-    "valid": 15375956,
+    "update": 2000,
+    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_002000.pt",
+    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_002000",
+    "clock": 5555,
+    "simulated": 22753280,
+    "valid": 20496637,
     "steps": {
-      "wm": 15000,
-      "actor": 1500,
-      "critic": 30000
+      "wm": 20000,
+      "actor": 2000,
+      "critic": 40000
     },
     "stats": {
-      "wm_state": 15426435,
-      "wm_proc": 15426435,
-      "proprio": 15375956,
-      "goal": 15375956
+      "wm_state": 20547116,
+      "wm_proc": 20547116,
+      "proprio": 20496637,
+      "goal": 20496637
     },
     "ratio": {
-      "previous_clock": 15370240.0,
+      "previous_clock": 20490240.0,
       "pending": 0,
-      "cohorts": 4151
+      "cohorts": 5555
     }
   },
   "V0": 0,

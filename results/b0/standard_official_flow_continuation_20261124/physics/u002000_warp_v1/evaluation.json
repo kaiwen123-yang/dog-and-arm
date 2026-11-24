@@ -1,0 +1,62 @@
+{
+  "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_002000.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "config/b0/contact_dev_v1.json",
+  "requested_dev": false,
+  "source": "results/raw_large/b0/contact_held_r1",
+  "passed": 0,
+  "evaluated": 5,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 385,
+      "policy_calls": 39,
+      "final_door_deg": 0.0,
+      "failure": "operation_station_drift"
+    },
+    {
+      "side": "pull",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.07011276561414698,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 446,
+      "policy_calls": 45,
+      "final_door_deg": 4.878124520317692,
+      "failure": "operation_station_drift"
+    },
+    {
+      "side": "push",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 85,
+      "policy_calls": 9,
+      "final_door_deg": 1.3366478501691026,
+      "failure": "unexpected_contact:robot_self"
+    },
+    {
+      "side": "push",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 2018,
+      "policy_calls": 202,
+      "final_door_deg": 3.233250189864895,
+      "failure": "unexpected_contact:gripper_base_handle"
+    }
+  ]
+}

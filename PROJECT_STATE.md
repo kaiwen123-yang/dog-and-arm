@@ -1,5 +1,9 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-25 01:53 北京时间｜同一标准链已冻结 u2000
+
+已完成 u1500 和 u2000 物理评测，两节点 Warp 原十项均 0/10，完整双后端均 0/4，free 均 0/60。u2000 Warp 背推恢复停车；纯 Actor 背推保持入口有 2 ms 双指，未到第二次策略查询。继续在同链跑向 u3000。当前 B0-04、候选空、合格回报 NA、V0 为 0。[本轮报告](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md) · [计数与逐案](results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json)
+
 ## 2026-11-24 23:40 北京时间｜同链续训已保留 u1001
 
 现场 u1001 完整快照已在独立进程恢复。父 u1000 的四组统计、replay、RNG、在线 Ratio 以及三网络和优化器均已继承。四次中断的额外训练成本另列。两项冻结诊断和 u1000 的 256×64 独立策略开发块已经完成。目前处于 B0-04，u1500 以后物理验收待跑；续训状态、命令和预算见[本轮报告](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md)。大包和工作进程位于 AutoDL 的 `.official-continuation-bdb72d8`，以新目录的 `recovery.json` 和 `node_*.json` 为恢复入口。

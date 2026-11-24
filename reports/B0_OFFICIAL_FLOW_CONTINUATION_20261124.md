@@ -1,5 +1,9 @@
 # official_flow_s0_v1 同链续训
 
+## 11 月 25 日 01:53 北京时间｜u1500 和 u2000
+
+u1500、u2000 已冻结，两节点均完成原 Warp 接触十项、Warp/native 双侧完整、原 free 60 案及六个纯 Actor 入口。u2000 累计 20,496,637 个有效转移。本轮保留新增 1,000 Actor / 10,000 WM / 20,000 Critic，另见下文回滚成本。两节点 Warp 接触均 0/10、完整均 0/4、free 均 0/60。u1500 四案均完成驶近；u2000 Warp 背推恢复驶近与停车，随后接触门板。u2000 背推保持入口在 14 ms 的实测前缀中有一个 2 ms 双指 tick，尚未到第二个策略查询；另外五个入口均无双指 tick。主段仍在运行。逐案数据见[独立 manifest](../results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json)和[原物理判定](../results/b0/standard_official_flow_continuation_20261124/physical_cases.csv)。
+
 ## 11 月 24 日 23:31 北京时间的恢复与诊断
 
 目标为固定 SuperMimic 的 M1＋Piper 标准迁移。实际已保留 u1001。主段目标 u3000。发布此节点时仍处 B0-04，候选为空，合格双侧完整回报 NA。

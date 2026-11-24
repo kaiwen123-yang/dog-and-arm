@@ -1423,3 +1423,5 @@ D57 保留的最新一致节点仍为 u1001，已由另一进程从磁盘恢复�
 01:16。资源释放后，AutoDL 由 `resume_gpu.sh` 从本轮已回读的 u1001 执行 `B0_FLOW_SEGMENT=continuation bash scripts/b0/env.sh python -u -m scripts.b0.official_flow --resume --stop 3000`。sessions.jsonl 记录 from_clock=2775、cfg 完全匹配、host_history=false、host_activation_gib=0。已连续完成至 u1008，官方图捕获成功。自此之后的保留更新使用原 GPU replay 和 GPU 反向传播路径。
 
 01:32–01:39。u1500 已一致保存，累计有效转移 15,375,956，累计 WM/Actor/Critic=15,000/1,500/30,000。相对 u1000 保留新增 5,120,466 有效转移。Warp 原接触十项 0/10，四个完整回合 0/4，均完成 approach_base，双后端前拉均驻车超时、背推均 robot_frame 意外接触。free 0/60；六个纯 Actor 入口的最长双指均为 0。评测读同一冻结包。覆盖汇总首次将名为 resume_gpu.sh 的启动脚本误作数字恢复目录；限定为数字后缀目录后重新生成覆盖与索引，未重复跑已完成的物理案。已生成定窗对照、所有案例最终求解量、力限比例、原始判定路径和独立 manifest。主段继续。
+
+01:47–01:53。u2000 累计 20,496,637 有效转移，20,000 WM、2,000 Actor、40,000 Critic。原 Warp 十项 0/10，双后端完整 0/4，free 0/60。Warp 背推完成驶近和停车，随后接触门板；native 背推只完成驶近。前拉两端均驻车超时。六个纯 Actor 入口各一次，背推 hold 裁判仅接受 7 个 2 ms tick，双指载荷只出现一拍，第二次 Actor 没有被查询。其余五个入口双指零。u1500/u2000 固定窗、求解力限、实际/参考相位表已生成。u1500 发布时首次 CSV 索引采用 CRLF，git diff --check 检出后在生成器统一 LF 并回读，指标未变。正式验收与 u5000 决定等待主段端点实测。
