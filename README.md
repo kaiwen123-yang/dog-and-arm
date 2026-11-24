@@ -1,10 +1,10 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-标准迁移当前为 B0-04。C20/T2 配对及十项冻结锚点复测已交付，双侧完整回报 NA。[当前结果](reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md) · [接续入口](prompts/NEXT_RUN.txt)
+本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先完成开源SuperMimic标准迁移，以达到或接近论文指标为目标，独立保存结果；迁移成功并冻结基线后才开发算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
-本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先按开源SuperMimic完成标准迁移，以达到或接近论文指标为目标，单独保留结果供后续比较；迁移成功并冻结基线后才开发新算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
+**11月24日最新实验ff2d1e8已审查，仍在B0-04。** solver缓存已修、C20/T2各1000WM批结束，八节点未过原保留条件；新增Actor=0，冻结u0原十项0/10，完整双侧回报NA、候选为空。C20首开度接近原损失折中，首TCP/J2有收益；当前T2配方封存。[本次审查](reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md) · [原实验](reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md) · [独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md)
 
-**11 月 24 日最新实验 753f1bc 已审查，标准迁移仍在 B0-04。** 首动作响应、WM数据贯通和新seed0 u200已完成，六节点各0/10，本轮独立60案/36案首2ms超力/0阶段事件；完整双侧回报NA、无候选。数据已经持续进入联训，新的明确线索是20ms端点q/v兼容性与solver状态身份。下一轮按用户要求执行[集中迁移计划](docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)：并行定位、集中修复、原损失训练与持续物理评分，u200不作默认终点，通过十项后当轮继续D和完整双侧验证。[本轮审查](reports/B0_RESPONSE_ROUND_REVIEW_20261124.md) · [独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [本轮manifest](results/b0/standard_response_20261124/baseline_manifest.json) · [逐案评分](results/b0/standard_response_20261124/nominal_segments.csv) · [下一入口](prompts/NEXT_RUN.txt)
+按用户“一次性多推进”要求，执行[新集中计划](docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md)：有限物理步长核验、一套C20统计适配、预登记两支u1/u10真实H32，再按物理改善持续推进。开发试验资格不追认旧WM通过、不降低原正式门槛；同包十项通过后当轮继续D与完整双侧/native，条件具备继续独立seed与冻结H。本次计划实验均尚未执行。[完整启动词](prompts/B0_START.txt) · [NEXT_RUN](prompts/NEXT_RUN.txt) · [距目标差距](docs/GOAL_GAP_20261124.md)
 
 P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000动作BC和解析补偿的有效成绩单列保留，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
 
@@ -32,7 +32,7 @@ P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000�
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_LANES_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -42,9 +42,9 @@ P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000�
 
 ## 用户现在需要做什么
 
-在已有工作区检查git status并正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给Codex。以已审查实验753f1bc及其后审查提交为起点执行 [集中迁移计划](docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)：先复用2ms记录并核对solver，按证据修接口或有限验证WM内部时间适配，再实际联训。检查点不作为默认收工点，已过门槛自动接下一阶段，停止无效配方后在同轮处理下一项明确问题。保留原方法和独立结果；迁移成功并冻结后再开发算法。
+在已有工作区检查git status并正常拉取，将[B0_START.txt](prompts/B0_START.txt)交给Codex。从ff2d1e8及其后审查提交执行[新集中计划](docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md)：有限物理步长核验、一套C20统计适配、两支u1/u10有限H32，再按真实改善持续推进。旧selected_wm=null保持，新pilot资格与正式验收区分；通过门槛同轮接下一阶段。先迁移成功冻结，再开发算法。
 
-最新实验现场为AutoDL /root/autodl-tmp/dog-and-arm-b0-response-v1。实际启动前核对工作树、进程、退出回执和完整恢复文件；u200的1次Ratio pending尚未执行。保留其他树修改和旧实验。沿用独立仿真环境，继承B0-03 seed0/P6，独立seed按原协议各自启动，H必须在三seed全部冻结后开启。具体入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
+最新实验现场为AutoDL `/root/autodl-tmp/dog-and-arm-b0-temporal-v1`，C20/T2权重在`results/raw_large/b0/temporal_pair_v1/`；旧response u200另存且1次Ratio pending未执行，不机械续训。先核工作树、进程、回执和必要资产，保留已有修改。继承B0-03 seed0/P6，独立seed按原协议启动，H在三seed全部冻结后才开启。具体见[NEXT_RUN](prompts/NEXT_RUN.txt)。
 
 ## H0：相机和机械臂联合运行
 
@@ -122,9 +122,12 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 | AGENTS.md | Codex 项目规则与用户偏好 |
 | PROJECT_STATE.md | 当前完成情况、验证范围及下一步 |
 | DAILY_WORK_LOG.md | 北京时间逐日详细工作、问题处理、实验结果与交接记录 |
-| docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md | 当前集中推进计划：时间/solver核查、条件数值适配、持续联训到完整双侧验证 |
+| docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md | 当前集中计划：物理步长、C20统计适配、有限H32与原完整验收 |
+| reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md | ff2d1e8审查：C20原损失折中、T2失稳、数据/物理资格与执行出口 |
+| results/b0/temporal_review_20261124/audit_summary.json | 当前十案/预算/抽样复算、代数与计划边界 |
+| docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md | 已执行C20/T2时间配对计划及封存回执 |
 | reports/B0_RESPONSE_ROUND_REVIEW_20261124.md | 753f1bc轮审查：数据已贯通、q/v兼容、solver疑点和梯度解释边界 |
-| results/b0/response_review_20261124/audit_summary.json | 最新独立60案、预算/抽样复算与证据范围 |
+| results/b0/response_review_20261124/audit_summary.json | 历史753f1bc独立60案、预算/抽样复算与证据范围 |
 | docs/B0_CONTACT_RESPONSE_PLAN_20261124.md | 已执行：训练首动作响应、WM数据持续保留、原目标诊断与真实联合训练 |
 | reports/B0_LANES_ROUND_REVIEW_20261124.md | 27284e2轮逐案/预算复算、数据断点、首响应与判定身份审查 |
 | docs/B0_STANDARD_TRANSFER_PLAN_20261124.md | 已执行逐lane轮的历史计划与回执 |

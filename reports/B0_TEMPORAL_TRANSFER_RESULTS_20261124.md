@@ -1,5 +1,7 @@
 # B0-04 真实积分、求解器修复与 C20/T2 配对结果
 
+**后续审查入口：** [ff2d1e8审查](B0_TEMPORAL_ROUND_REVIEW_20261124.md)及[下一集中计划](../docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md)。本报告原实测、选模结论与预算保持；新增计划中的物理步长/C20重标/H32试验尚未执行。
+
 2026-11-24，北京时间。实验从 main `b5831d7` 接续，上一轮实验封存在 `753f1bc`。**本轮没有选出可启动新 H32 的世界模型。当前仍为 B0-04，候选为空，完整双侧归一化物理回报 NA。** 新增计算为一次原损失 WM 配对、独立物理重采和封存 Actor 的十项正式复测。[本轮 manifest](../results/b0/standard_temporal_20261124/baseline_manifest.json) · [预登记计划](../docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md) · [物理指标定义](../docs/B0_PAPER_BASELINE_PROTOCOL.md)
 
 ## 真实微步与连续求解器

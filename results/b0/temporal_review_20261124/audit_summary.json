@@ -1,0 +1,902 @@
+{
+  "commit": "ff2d1e8af6a287cbad106fb88c557a080d7ade0a",
+  "scope": {
+    "read": "Committed JSON/JSONL/CSV and paired_indices.npz; source code and previous plan inspected.",
+    "not_read": [
+      "AutoDL raw 2 ms NPY/NPZ trajectories",
+      "large checkpoints/optimizer states"
+    ],
+    "new_simulations": 0,
+    "new_training": 0
+  },
+  "status": {
+    "stage": "B0-04",
+    "final_candidate": null,
+    "selected_wm": null,
+    "full_bilateral_return": null,
+    "new_h32_updates": 0,
+    "new_joint_critic_batches": 0,
+    "new_online_actor_training_intervals": 0
+  },
+  "formal_recomputed": {
+    "cases": 10,
+    "passed": 0,
+    "first_2ms_overforce": 6,
+    "events": 0,
+    "prefix_substeps": 1000,
+    "physics_substeps": 1628,
+    "sum_case_physical_wall_s": 18.096080208197236,
+    "stable_grip_N": {
+      "pull": 51.07054266852431,
+      "push": 33.15086024463695
+    },
+    "failure_reasons_match_previous": 10,
+    "changed_failure_ticks": [
+      {
+        "side": "pull",
+        "segment": "release_retreat",
+        "failure_tick": "502",
+        "historical_u0_failure_tick": "504"
+      }
+    ],
+    "note": "Frozen u0 repeat only, not a new Actor candidate; separate from previous 60 cases."
+  },
+  "eight_node_metrics_mm": {
+    "C20_0": {
+      "hold_u0_jaw_abs_mm": {
+        "pull": 28.494531631469727,
+        "push": 49.22174072265625
+      },
+      "hold_u0_tcp_mm": {
+        "pull": 36.708492279052734,
+        "push": 29.47730255126953
+      },
+      "old_grip_twofinger_h32_tcp_p95_mm": {
+        "pull": 15.653331661224366,
+        "push": 16.44608325958252
+      },
+      "multimode_twofinger_h32_tcp_p95_mm": {
+        "pull": 20.83424816131592,
+        "push": 15.59956398010254
+      },
+      "multimode_h32_tcp_strata_worse_than_C20_0": 0,
+      "multimode_nonempty_h32_strata": 14,
+      "nonfinite_response_coordinates": 0,
+      "nonfinite_micro_coordinates": 0,
+      "long_nonfinite_metric_windows": 0
+    },
+    "C20_50": {
+      "hold_u0_jaw_abs_mm": {
+        "pull": 28.58745002746582,
+        "push": 42.11589050292969
+      },
+      "hold_u0_tcp_mm": {
+        "pull": 34.49569320678711,
+        "push": 28.43528938293457
+      },
+      "old_grip_twofinger_h32_tcp_p95_mm": {
+        "pull": 241.60055618286134,
+        "push": 211.40907592773436
+      },
+      "multimode_twofinger_h32_tcp_p95_mm": {
+        "pull": 247.02501907348633,
+        "push": 210.63812866210938
+      },
+      "multimode_h32_tcp_strata_worse_than_C20_0": 14,
+      "multimode_nonempty_h32_strata": 14,
+      "nonfinite_response_coordinates": 0,
+      "nonfinite_micro_coordinates": 0,
+      "long_nonfinite_metric_windows": 0
+    },
+    "C20_200": {
+      "hold_u0_jaw_abs_mm": {
+        "pull": 28.533987045288086,
+        "push": 43.604305267333984
+      },
+      "hold_u0_tcp_mm": {
+        "pull": 23.836471557617188,
+        "push": 17.777475357055664
+      },
+      "old_grip_twofinger_h32_tcp_p95_mm": {
+        "pull": 39.219207191467284,
+        "push": 78.53269081115722
+      },
+      "multimode_twofinger_h32_tcp_p95_mm": {
+        "pull": 39.33632049560547,
+        "push": 79.60147705078124
+      },
+      "multimode_h32_tcp_strata_worse_than_C20_0": 14,
+      "multimode_nonempty_h32_strata": 14,
+      "nonfinite_response_coordinates": 0,
+      "nonfinite_micro_coordinates": 0,
+      "long_nonfinite_metric_windows": 0
+    },
+    "C20_1000": {
+      "hold_u0_jaw_abs_mm": {
+        "pull": 28.039047241210938,
+        "push": 43.436737060546875
+      },
+      "hold_u0_tcp_mm": {
+        "pull": 15.118514060974121,
+        "push": 13.793723106384277
+      },
+      "old_grip_twofinger_h32_tcp_p95_mm": {
+        "pull": 20.971922588348388,
+        "push": 30.200563812255858
+      },
+      "multimode_twofinger_h32_tcp_p95_mm": {
+        "pull": 23.33446464538574,
+        "push": 32.205136871337885
+      },
+      "multimode_h32_tcp_strata_worse_than_C20_0": 14,
+      "multimode_nonempty_h32_strata": 14,
+      "nonfinite_response_coordinates": 0,
+      "nonfinite_micro_coordinates": 0,
+      "long_nonfinite_metric_windows": 0
+    },
+    "T2_0": {
+      "hold_u0_jaw_abs_mm": {
+        "pull": 28.78563117980957,
+        "push": 49.474578857421875
+      },
+      "hold_u0_tcp_mm": {
+        "pull": 36.77985382080078,
+        "push": 29.951982498168945
+      },
+      "old_grip_twofinger_h32_tcp_p95_mm": {
+        "pull": 23.606151199340818,
+        "push": 22.457231616973854
+      },
+      "multimode_twofinger_h32_tcp_p95_mm": {
+        "pull": 25.33225002288818,
+        "push": 26.51933708190918
+      },
+      "multimode_h32_tcp_strata_worse_than_C20_0": 11,
+      "multimode_nonempty_h32_strata": 14,
+      "nonfinite_response_coordinates": 0,
+      "nonfinite_micro_coordinates": 0,
+      "long_nonfinite_metric_windows": 0
+    },
+    "T2_50": {
+      "hold_u0_jaw_abs_mm": {
+        "pull": 21.589004516601562,
+        "push": 38.55692672729492
+      },
+      "hold_u0_tcp_mm": {
+        "pull": 36.955284118652344,
+        "push": 31.817459106445312
+      },
+      "old_grip_twofinger_h32_tcp_p95_mm": {
+        "pull": 74.72465362548829,
+        "push": 53.15707244873047
+      },
+      "multimode_twofinger_h32_tcp_p95_mm": {
+        "pull": 76.91621780395508,
+        "push": 55.591278076171875
+      },
+      "multimode_h32_tcp_strata_worse_than_C20_0": 14,
+      "multimode_nonempty_h32_strata": 14,
+      "nonfinite_response_coordinates": 0,
+      "nonfinite_micro_coordinates": 0,
+      "long_nonfinite_metric_windows": 0
+    },
+    "T2_200": {
+      "hold_u0_jaw_abs_mm": {
+        "pull": 23.416688919067383,
+        "push": 37.39277267456055
+      },
+      "hold_u0_tcp_mm": {
+        "pull": 38.496700286865234,
+        "push": 24.512203216552734
+      },
+      "old_grip_twofinger_h32_tcp_p95_mm": {
+        "pull": 51.97082290649414,
+        "push": 64.82180061340333
+      },
+      "multimode_twofinger_h32_tcp_p95_mm": {
+        "pull": 50.908372688293454,
+        "push": 65.58446807861328
+      },
+      "multimode_h32_tcp_strata_worse_than_C20_0": 14,
+      "multimode_nonempty_h32_strata": 14,
+      "nonfinite_response_coordinates": 0,
+      "nonfinite_micro_coordinates": 0,
+      "long_nonfinite_metric_windows": 0
+    },
+    "T2_1000": {
+      "hold_u0_jaw_abs_mm": {
+        "pull": 16.885223388671875,
+        "push": 30.723615646362305
+      },
+      "hold_u0_tcp_mm": {
+        "pull": 39.87693405151367,
+        "push": 17.01650619506836
+      },
+      "old_grip_twofinger_h32_tcp_p95_mm": {
+        "pull": 434.55531616210936,
+        "push": 488.6110275268555
+      },
+      "multimode_twofinger_h32_tcp_p95_mm": {
+        "pull": 454.30173950195314,
+        "push": 496.7335693359375
+      },
+      "multimode_h32_tcp_strata_worse_than_C20_0": 14,
+      "multimode_nonempty_h32_strata": 14,
+      "nonfinite_response_coordinates": 0,
+      "nonfinite_micro_coordinates": 0,
+      "long_nonfinite_metric_windows": 0
+    }
+  },
+  "selection_audit": {
+    "original_wording": "earliest bilateral first-action improvement with held-grip and multimode validation retention and physically consistent internal path",
+    "automated_strict_no_regression_predicate_found": false,
+    "assessment": "No evidence that a hard rule of every stratum <= baseline was implemented. The config declares qualitative retention and the index records selected_wm=null. Current C20/T2 failures are not explained solely by a tiny statistical regression: major H32 degradation, poor severe hold response and T2 recurrent-gradient instability are present.",
+    "future_condition": "Register numerical training-entry criteria/tolerances and physical evaluation gates separately. Avoid requiring strict Pareto improvement on every correlated small stratum, but do not waive physically inconsistent paths or unstable derivatives just to start H32."
+  },
+  "selection_assessment_by_group": {
+    "C20_0": "Inherited initialization; no new bilateral improvement to promote.",
+    "C20_50_200": "Long-horizon held-grip and multimode TCP predictions degrade substantially versus inherited C20_0.",
+    "C20_1000": "Hold jaw error remains 28.04/43.44 mm; held-grip H32 P95 increases about 34%/84%, all 14 nonempty multimode H32 strata also worsen. Cannot be explained solely by roundoff or a few tiny strata.",
+    "T2_0": "Same network tensors but changed recurrence; old grip H32 P95 already 23.61/22.46 versus C20_0 15.65/16.45 mm.",
+    "T2_50_200": "Bilateral jaw response improves, but long-horizon errors worsen and interval gradients become severely amplified.",
+    "T2_1000": "800 batches after +200 are posthoc diagnostics, not candidate promotion; H32 TCP P95 is hundreds of millimeters."
+  },
+  "budgets_recomputed": {
+    "per_arm": {
+      "C20": {
+        "updates": 1000,
+        "h1": 200,
+        "h7": 800,
+        "batch": 256,
+        "total_windows": 256000,
+        "supervised_successors": 1484800,
+        "stored_positions": 1740800,
+        "internal_net_forward_examples": 1484800,
+        "training_loop_s": 31.14022064767778,
+        "peak_allocated_bytes": 378974720,
+        "clipped_batches": 960,
+        "nonfinite_gradient_batches": 0
+      },
+      "T2": {
+        "updates": 1000,
+        "h1": 200,
+        "h7": 800,
+        "batch": 256,
+        "total_windows": 256000,
+        "supervised_successors": 1484800,
+        "stored_positions": 1740800,
+        "internal_net_forward_examples": 14848000,
+        "training_loop_s": 113.78893734887242,
+        "peak_allocated_bytes": 1593398272,
+        "clipped_batches": 1000,
+        "nonfinite_gradient_batches": 0
+      }
+    },
+    "training_processes_recorded": 6,
+    "training_process_wall_sum_s": 243.37742500000002,
+    "training_process_intervals_union_s": 163.274359,
+    "time_scope": "Loop totals are recomputed from training logs. Whole-process durations are separately recorded in process_timing.json and include init/load/save/exit. Shared-GPU interval union is not exclusive GPU time."
+  },
+  "t2_gradient_intervals_recomputed": [
+    {
+      "first": 1,
+      "last": 50,
+      "gradients": {
+        "1": {
+          "batches": 10,
+          "preclip_p50": 1.888591229915619,
+          "preclip_p95": 3.576986896991729,
+          "preclip_max": 3.8396458625793457,
+          "clipped_batches": 10
+        },
+        "7": {
+          "batches": 40,
+          "preclip_p50": 12.898818492889404,
+          "preclip_p95": 153.4923721313476,
+          "preclip_max": 507.0527038574219,
+          "clipped_batches": 40
+        }
+      }
+    },
+    {
+      "first": 51,
+      "last": 200,
+      "gradients": {
+        "1": {
+          "batches": 30,
+          "preclip_p50": 3.664525032043457,
+          "preclip_p95": 36.98592395782469,
+          "preclip_max": 43.55488586425781,
+          "clipped_batches": 30
+        },
+        "7": {
+          "batches": 120,
+          "preclip_p50": 14.508509635925293,
+          "preclip_p95": 8675660.149999997,
+          "preclip_max": 606926592.0,
+          "clipped_batches": 120
+        }
+      }
+    },
+    {
+      "first": 201,
+      "last": 1000,
+      "gradients": {
+        "1": {
+          "batches": 160,
+          "preclip_p50": 5.380305528640747,
+          "preclip_p95": 20.25641155242915,
+          "preclip_max": 72.20650482177734,
+          "clipped_batches": 160
+        },
+        "7": {
+          "batches": 640,
+          "preclip_p50": 77924.140625,
+          "preclip_p95": 350774742220.7979,
+          "preclip_max": 6.5983582568448e+17,
+          "clipped_batches": 640
+        }
+      }
+    }
+  ],
+  "protocol_deviation": {
+    "arm": "T2",
+    "at": 200,
+    "late_discovery": "H7 interval preclip p95=8.68e6, max=6.07e8; the endpoint decision inspected finite forward metrics and last gradient, missing intermediate spikes.",
+    "extra_completed_wm_batches": 800,
+    "extra_internal_forward_examples": 11878400,
+    "included_in_total": true,
+    "disposition": "Post-hoc diagnostic evidence, excluded from candidate promotion. Added per-interval gradient receipts and rechecked the +200 checkpoint."
+  },
+  "sampling_recomputed": {
+    "native": {
+      "draws_per_arm": {
+        "1": 6400,
+        "7": 25600
+      },
+      "source_episode_count": 10,
+      "state_boundary_violations": 0,
+      "inventory_legal_windows_source_recorded": {
+        "1": 13640,
+        "7": 13580
+      }
+    },
+    "grip": {
+      "draws_per_arm": {
+        "1": 14933,
+        "7": 59734
+      },
+      "source_episode_count": 512,
+      "state_boundary_violations": 0,
+      "inventory_legal_windows_source_recorded": {
+        "1": 14396,
+        "7": 11644
+      }
+    },
+    "multimode": {
+      "draws_per_arm": {
+        "1": 14934,
+        "7": 59733
+      },
+      "source_episode_count": 512,
+      "state_boundary_violations": 0,
+      "inventory_legal_windows_source_recorded": {
+        "1": 18223,
+        "7": 15242
+      }
+    },
+    "response": {
+      "draws_per_arm": {
+        "1": 14933,
+        "7": 59733
+      },
+      "source_episode_count": 300,
+      "state_boundary_violations": 0,
+      "inventory_legal_windows_source_recorded": {
+        "1": 3698,
+        "7": 2720
+      }
+    }
+  },
+  "sampling_note": "Actual indices and source counts recomputed; state boundary membership verified. Raw per-transition validity flags unavailable locally; full validity qualification remains source-recorded plus loader code inspection. Counts shared by paired arms, not independent draws. Native inventory lengths alone overcount valid windows because terminal partial intervals are filtered.",
+  "hold_source_qualification": {
+    "train_initial_states": 12,
+    "train_source_trajectories": 4,
+    "validation_initial_states": 6,
+    "validation_source_trajectories": 2,
+    "hold_u0_original": {
+      "pull": {
+        "legal_H1": 1,
+        "legal_H7": 0,
+        "H1_draws": 45
+      },
+      "push": {
+        "legal_H1": 1,
+        "legal_H7": 0,
+        "H1_draws": 54
+      },
+      "train_failure_tick": 4,
+      "event_failure_tick": 1
+    },
+    "hold_u0_ref_arm_age0_H7_draws": {
+      "pull": 18,
+      "push": 13
+    },
+    "note": "First completed failing 20ms interval is allowed; postterminal tails and validation states are excluded from training. Branches from one state and overlapping windows are correlated."
+  },
+  "validation_scope": {
+    "response_starts": 6,
+    "response_source_trajectories": 2,
+    "response_related_branches": 168,
+    "old_grip_twofinger_h32_windows": {
+      "pull": 412,
+      "push": 450
+    },
+    "multimode_twofinger_h32_windows": {
+      "pull": 198,
+      "push": 193
+    },
+    "h32_multimode_small_strata": "first_contact/recontact/other_contact can contain only 2-9 overlapping windows; P95 is descriptive, not independent population coverage.",
+    "identities": "Same valid-window rule, fixed seed 301 and cap512 across checkpoints; no parameter updates in scoring."
+  },
+  "c20_1000_multimode_14_strata": [
+    {
+      "side": "pull",
+      "mode": "free",
+      "available": 254,
+      "scored": 254,
+      "baseline_p95_mm": 19.448445987701415,
+      "p95_mm": 39.38461685180664,
+      "ratio": 2.025077832784801
+    },
+    {
+      "side": "pull",
+      "mode": "first_contact",
+      "available": 5,
+      "scored": 5,
+      "baseline_p95_mm": 15.34715003967285,
+      "p95_mm": 35.17070083618164,
+      "ratio": 2.2916763532815083
+    },
+    {
+      "side": "pull",
+      "mode": "two_finger",
+      "available": 198,
+      "scored": 198,
+      "baseline_p95_mm": 20.83424816131592,
+      "p95_mm": 23.33446464538574,
+      "ratio": 1.1200051216012732
+    },
+    {
+      "side": "pull",
+      "mode": "loss_or_slip",
+      "available": 26,
+      "scored": 26,
+      "baseline_p95_mm": 19.38111925125122,
+      "p95_mm": 23.966755867004395,
+      "ratio": 1.236603291910354
+    },
+    {
+      "side": "pull",
+      "mode": "release",
+      "available": 278,
+      "scored": 278,
+      "baseline_p95_mm": 22.858101272583006,
+      "p95_mm": 40.57647075653075,
+      "ratio": 1.7751461625205032
+    },
+    {
+      "side": "pull",
+      "mode": "other_contact",
+      "available": 9,
+      "scored": 9,
+      "baseline_p95_mm": 16.117369842529296,
+      "p95_mm": 20.91548500061035,
+      "ratio": 1.29769839651009
+    },
+    {
+      "side": "pull",
+      "mode": "recontact",
+      "available": 4,
+      "scored": 4,
+      "baseline_p95_mm": 17.910992527008055,
+      "p95_mm": 21.339107322692872,
+      "ratio": 1.191397254536037
+    },
+    {
+      "side": "push",
+      "mode": "free",
+      "available": 278,
+      "scored": 278,
+      "baseline_p95_mm": 24.009358119964595,
+      "p95_mm": 52.17685108184814,
+      "ratio": 2.1731880886253814
+    },
+    {
+      "side": "push",
+      "mode": "first_contact",
+      "available": 2,
+      "scored": 2,
+      "baseline_p95_mm": 7.761856198310852,
+      "p95_mm": 39.580267906188965,
+      "ratio": 5.099330223974323
+    },
+    {
+      "side": "push",
+      "mode": "two_finger",
+      "available": 193,
+      "scored": 193,
+      "baseline_p95_mm": 15.59956398010254,
+      "p95_mm": 32.205136871337885,
+      "ratio": 2.0644895531962293
+    },
+    {
+      "side": "push",
+      "mode": "loss_or_slip",
+      "available": 12,
+      "scored": 12,
+      "baseline_p95_mm": 16.072701787948606,
+      "p95_mm": 31.577326107025147,
+      "ratio": 1.9646557575467485
+    },
+    {
+      "side": "push",
+      "mode": "release",
+      "available": 260,
+      "scored": 260,
+      "baseline_p95_mm": 27.75363826751709,
+      "p95_mm": 42.69615497589106,
+      "ratio": 1.5383984818258125
+    },
+    {
+      "side": "push",
+      "mode": "other_contact",
+      "available": 5,
+      "scored": 5,
+      "baseline_p95_mm": 12.527492713928222,
+      "p95_mm": 34.77279968261719,
+      "ratio": 2.7757190107128427
+    },
+    {
+      "side": "push",
+      "mode": "recontact",
+      "available": 6,
+      "scored": 6,
+      "baseline_p95_mm": 13.804472208023071,
+      "p95_mm": 33.10361099243164,
+      "ratio": 2.398035252169368
+    }
+  ],
+  "paired_loss_probe": {
+    "scope": "First H1 and first H7 of actual paired initialization-registered minibatches; identical real windows at all four evaluations. One batch per horizon, selected by position prior to inspecting losses.",
+    "C20_0_H1_source_fraction": {
+      "native": 3.0475780775260203e-05,
+      "grip": 0.002458810416588631,
+      "multimode": 0.0041512512747624575,
+      "response": 0.9933594625278737
+    },
+    "C20_0_H7_source_fraction": {
+      "native": 3.595827527334651e-05,
+      "grip": 0.0003684796616581138,
+      "multimode": 0.0006075468047527999,
+      "response": 0.9989880152583157
+    },
+    "limit": "Exactly one matched H1 batch and one H7 batch at each node, not all-training prevalence or a causal gradient-conflict test; gradient norms alone do not reveal vector alignment."
+  },
+  "recurrence_selected_diagnostic": {
+    "selection_rule": "Largest logged T2 H7 preclip norm through +200. At the frozen +200 endpoints choose the row with largest initial-state adjoint in the T2 batch; use identical row for C20. This is targeted diagnosis, not a prevalence estimate.",
+    "chosen": {
+      "source": "grip",
+      "absolute_start": 13305,
+      "batch_row": 96
+    },
+    "historical_spike_k": 85,
+    "historical_spike_preclip_norm": 606926592.0,
+    "frozen_checkpoint": 200,
+    "single_row_FP64_grad": {
+      "C20": 1.6621983779208573,
+      "T2": 12489.777949302597
+    },
+    "T2_inner_28": {
+      "inner_j": 28,
+      "local_total_vjp_norm": 4.422992927995073,
+      "fixed_increment_integrator_vjp": 1.0115862622051086,
+      "state_dependent_network_vjp": 4.750216473334699,
+      "network_vjp_before_inverse_std": 0.07848577503338326,
+      "network_vjp_after_inverse_std": 4.750216473334699,
+      "centered_fp64_derivatives": [
+        {
+          "epsilon": 1e-05,
+          "centered_directional_derivative": 4.422992836219941
+        },
+        {
+          "epsilon": 1e-06,
+          "centered_directional_derivative": 4.422992927133329
+        },
+        {
+          "epsilon": 1e-07,
+          "centered_directional_derivative": 4.422992925523506
+        }
+      ]
+    },
+    "limit": "Historical +85 gradient used +84 weights; frozen +200 replay is not same-weight reproduction of that spike. Selected worst-adjoint row is targeted diagnosis, not a prevalence estimate.",
+    "interpretation": "Magnitudes depend on mixed-coordinate units. Adjoint neighbor ratios are gains for the measured cotangent, not spectral norms; block and direct/network norms are not additive. Three local FP64 finite differences test the derivative at the actual trajectory states."
+  },
+  "solver_recomputed": {
+    "before": {
+      "rows": 12,
+      "max_first_ctrl_diff": 1.1920928955078125e-06,
+      "max_bias_diff": 0.000396728515625,
+      "max_warmstart_diff": 0.0,
+      "max_opening_diff_mm": 0.00513458251953125,
+      "max_net_door_force_diff_N": 0.01136016845703125,
+      "failure_tick_mismatch": 0
+    },
+    "retest": {
+      "rows": 12,
+      "max_first_ctrl_diff": 0.0,
+      "max_bias_diff": 0.0,
+      "max_warmstart_diff": 0.0,
+      "max_opening_diff_mm": 6.103515625e-05,
+      "max_net_door_force_diff_N": 0.000102996826171875,
+      "failure_tick_mismatch": 0
+    }
+  },
+  "closure_receipt": {
+    "opening_rms_all_by_block_mm": {
+      "2ms": 5.50025398004e-07,
+      "4ms": 0.5639199468808745,
+      "10ms": 2.937202618276284,
+      "20ms": 10.444785139060413
+    },
+    "hold_oracle_20ms": [
+      {
+        "start": "pull_0_validation_grip_hold",
+        "side": "pull",
+        "opening_mm_h1_last_block_signed": "-30.69458076983574"
+      },
+      {
+        "start": "push_0_validation_grip_hold",
+        "side": "push",
+        "opening_mm_h1_last_block_signed": "-46.629129934241064"
+      }
+    ],
+    "repeat_pairs": 54,
+    "repeat_max_endpoint_opening_mm": 0.00531412661075592,
+    "scope": "Aggregate closure is a diagnostic of the stored float32 physical trajectories, including terminal tails; not a formal policy-success measure. Raw microstep arrays are absent locally."
+  },
+  "source_support_limit": {
+    "fixed_input_normalization": "Inherited from 10808 inputs across 8 native train trajectories; large z scores in newly measured contact transitions contrast with old grip/multimode.",
+    "example_train_nonterminal": {
+      "rows": 3495,
+      "p95_row_max_abs_z": 488.6503,
+      "rows_any_z_gt_100": 476,
+      "largest_J6_z": 805.752,
+      "physical_J6_rad_s": 90.0911
+    },
+    "interpretation": "Support/conditioning mismatch is evidenced; wrong units or sole cause are not established. Raw arrays were not independently replayed locally."
+  },
+  "native_clamp_limit": {
+    "native_window_draws_per_arm": 32000,
+    "supervised_successors_per_arm": 185600,
+    "J4_J6_clamp_or_98percent_hits": 0,
+    "interpretation": "Counts include repeated sampled windows; source-recorded actual native 3.3 forces. Isolated saturated-engine differences do not justify deleting all native training data."
+  },
+  "next_evidence_priority": [
+    "Keep repaired solver and actual data ingress closed unless a concrete regression appears.",
+    "Separate measured high-speed/saturation physics fidelity and integration convergence from learned-model conditioning; the native sampled source has no observed J4/J6 force-clamp cases, so do not delete it for that cause.",
+    "Any normalization or numerical conditioning adaptation needs train-only statistics, same-data comparison and preserved initialization semantics; isolated z-score size is evidence of support mismatch, not proof of sole cause.",
+    "Use multiple predeclared matched batches/episodes and parameter-gradient interactions to assess source conflict; current source-loss probe is one H1 and one H7 batch, not a global causal estimate.",
+    "Check full interval H1/H7 gradients before promotion; preserve posthoc status of T2+201..1000; use a valid model for real H32 rather than mechanically repeating same failed budget."
+  ],
+  "source_paths": {
+    "root": "results/b0/standard_temporal_20261124",
+    "facts": [
+      "baseline_manifest.json",
+      "anchor_nominal.csv",
+      "C20_training.jsonl",
+      "T2_training.jsonl",
+      "process_timing.json"
+    ],
+    "sampling": [
+      "paired_indices.npz",
+      "paired_sources.json",
+      "hold_actual_draws.csv"
+    ],
+    "validation": [
+      "wm_validation/node_summary.json",
+      "wm_validation/{C20,T2}_{0,50,200,1000}/long_validation.csv",
+      "wm_validation/paired_source_loss.json",
+      "wm_validation/recurrence_u200.json",
+      "wm_validation/input_support.json"
+    ],
+    "physics": [
+      "solver_route_comparison.csv",
+      "solver_fixed_closure/temporal_closure.json",
+      "solver_fixed_closure/temporal_residuals.csv",
+      "native_wrist_draws_3.16.0.json"
+    ],
+    "gate_code": [
+      "config/b0/standard_temporal_v1.yaml",
+      "scripts/b0/index_temporal_round.py",
+      "scripts/b0/index_temporal_wm.py",
+      "scripts/b0/train_temporal_pair.py",
+      "scripts/b0/score_temporal_wm.py"
+    ]
+  },
+  "review_date_beijing": "2026-11-24",
+  "review_kind": "read_only_evidence_recomputation_and_forward_plan",
+  "review_new_simulations": 0,
+  "review_new_training": 0,
+  "source_commit": "ff2d1e8af6a287cbad106fb88c557a080d7ade0a",
+  "source_tree": "ddf62bad729868004975fd6e4e181f4ce6dd8659",
+  "c20_component_loss_analysis": {
+    "classification": "analytically_derived_and_recomputed_from_committed_tables",
+    "dt_s": 0.02,
+    "c": 0.55,
+    "k_s": 0.011,
+    "finger_q_scale_m": 0.002,
+    "finger_v_scale_m_s": 0.05,
+    "error_relation": "e_q = r + c*dt*e_v",
+    "loss_considered": "Only the two per-finger normalized position/velocity quadratic components, freely optimized in terminal velocity.",
+    "optimal_position_residual_factor": 0.9296920395119117,
+    "cases": [
+      {
+        "side": "pull",
+        "oracle_abs_opening_residual_mm": 30.69458076983574,
+        "component_optimal_abs_opening_residual_mm": 28.53650739787169,
+        "measured_C20_200_abs_opening_error_mm": 28.533987045288086,
+        "measured_C20_1000_abs_opening_error_mm": 28.039047241210938
+      },
+      {
+        "side": "push",
+        "oracle_abs_opening_residual_mm": 46.629129934241064,
+        "component_optimal_abs_opening_residual_mm": 43.350730909230506,
+        "measured_C20_200_abs_opening_error_mm": 43.604305267333984,
+        "measured_C20_1000_abs_opening_error_mm": 43.436737060546875
+      }
+    ],
+    "limits": [
+      "Not the optimum of the full neural network or full state loss.",
+      "Not a hard lower bound on position error; velocity error can be traded against position.",
+      "Uses the full eligible 20 ms first transition, including time after the formal first 2 ms failure.",
+      "Does not prove the cause of formal first-substep failure."
+    ]
+  },
+  "c20_first_hold_response_recomputed": {
+    "pull": {
+      "C20_0": {
+        "tcp_mm": 36.708492279052734,
+        "jaw_mm": -28.494531631469727,
+        "j2_rad": 0.09876561164855957,
+        "j2_v_rad_s": 6.086943626403809,
+        "arm_v_rad_s": 7.2321648597717285,
+        "state_max_abs_z": 2.2127132415771484,
+        "action_max_abs_z": 3.71336030960083
+      },
+      "C20_1000": {
+        "tcp_mm": 15.118514060974121,
+        "jaw_mm": -28.039047241210938,
+        "j2_rad": 0.0319516658782959,
+        "j2_v_rad_s": 0.01294565200805664,
+        "arm_v_rad_s": 1.9965828657150269,
+        "state_max_abs_z": 2.2127132415771484,
+        "action_max_abs_z": 3.71336030960083
+      }
+    },
+    "push": {
+      "C20_0": {
+        "tcp_mm": 29.47730255126953,
+        "jaw_mm": -49.22174072265625,
+        "j2_rad": 0.03632068634033203,
+        "j2_v_rad_s": 2.134828567504883,
+        "arm_v_rad_s": 11.298824310302734,
+        "state_max_abs_z": 1.4086904525756836,
+        "action_max_abs_z": 2.2521607875823975
+      },
+      "C20_1000": {
+        "tcp_mm": 13.793723106384277,
+        "jaw_mm": -43.436737060546875,
+        "j2_rad": 0.010060906410217285,
+        "j2_v_rad_s": -0.25242090225219727,
+        "arm_v_rad_s": 0.7871946096420288,
+        "state_max_abs_z": 1.4086904525756836,
+        "action_max_abs_z": 2.2521607875823975
+      }
+    }
+  },
+  "normalization_review": {
+    "existing_implementation": "learning/b0/contact_training.py::rebase_wm_input_layer",
+    "existing_prior_experiment": "config/b0/standard_contact_40_wmcoords.yaml; 2026-11-23 wmcoords-u50 0/10",
+    "official_runner_updates_normalization": true,
+    "official_source": "https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/runners/supermimic_runner.py",
+    "formula": "Wnew=Wold*diag((stdnew+eps)/(stdold+eps)); bnew=bold+Wold*((meannew-meanold)/(stdold+eps))",
+    "transformed_input_columns": {
+      "state": 75,
+      "processed_action": 23,
+      "context_unchanged": 5
+    },
+    "preserves_at_step_zero": [
+      "physical-input function",
+      "physical state/action Jacobian"
+    ],
+    "does_not_preserve_by_default": [
+      "optimizer trajectory after parameter updates",
+      "parameter-coordinate gradient L2 scale"
+    ],
+    "not_a_cure_for_T2_recurrence_at_step_zero": true
+  },
+  "physical_time_resolution_review": {
+    "status": "planned_not_run",
+    "already_fixed": "continuous qfrc_bias cache identity; preserve_continuous_bias=true",
+    "distinction": "q/v bookkeeping closure and repeatability do not establish timestep convergence.",
+    "planned_registered_windows": 11,
+    "planned_physics_steps_ms": [
+      2,
+      1,
+      0.5
+    ],
+    "conditional_key_windows_only_finer_steps_ms": [
+      0.25,
+      0.125
+    ],
+    "control_for_isolating_integration": "Replay complete archived 23 ctrl at the original 2 ms cadence, holding over finer substeps; do not accelerate bias refresh.",
+    "formal_reference_preserved": "original 2 ms Warp and original native MuJoCo 3.3.0; numerical diagnostic passes cannot fill original formal scores",
+    "gencoord_c_at_C20_by_physics_step_ms": {
+      "2": 0.55,
+      "1": 0.525,
+      "0.5": 0.5125
+    },
+    "native_deletion_supported": false,
+    "primary_backend": "Actual fixed Warp training backend, solver and model; CPU 3.16/native 3.3 secondary checks have separate identities.",
+    "internal_dynamics": "Engine-internal bias/mass/dynamics recompute every physical step; only external servo cache sampling phase and original delay are held.",
+    "timestamp_semantics": "q/v at integrated endpoint; force/site from solve interval start; preserve judge decision time separately."
+  },
+  "forward_plan": {
+    "path": "docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md",
+    "old_selected_wm_remains_null": true,
+    "T2_additional_budget": 0,
+    "new_C20_offline_batches_max_if_same_physics": 1000,
+    "new_C20_offline_batches_max_if_new_physics_pair_required": 2000,
+    "pilot_kind": "development_h32_pilot; explicitly not retroactive WM-retention approval",
+    "pilot_arms": 2,
+    "pilot_updates_per_arm": 10,
+    "pilot_total_max_H32": 20,
+    "pilot_total_max_joint_WM_minibatches": 200,
+    "pilot_total_max_critic_minibatches": 400,
+    "pilot_nodes": [
+      0,
+      1,
+      10
+    ],
+    "selection": "Lock one experiment WM before any pilot result; default C20+1000, replace only by fixed rebase+1000 rule; control C20+0 in the same numerical/data identity.",
+    "u1_pairing": "same initial actor/critic/normalization, initial replay and actual draw indices",
+    "u10_pairing_limit": "online trajectories may differ; measures closed-loop adaptation, not a same-data single-factor effect",
+    "all_experiments_in_plan_unexecuted": true,
+    "formal_thresholds_changed": false,
+    "algorithm_development_postponed_until_standard_transfer_frozen": true
+  },
+  "source_paths_additional": [
+    "learning/b0/model.py",
+    "learning/b0/contact_training.py",
+    "learning/b0/contact_lanes.py",
+    "learning/b0/temporal_dynamics.py",
+    "scripts/b0/temporal_input_support.py",
+    "scripts/b0/replay_wrist_extremes.py",
+    "config/b0/standard_contact_40_wmcoords.yaml",
+    "results/b0/standard_temporal_20261124/wm_validation/C20_0/responses.csv",
+    "results/b0/standard_temporal_20261124/wm_validation/C20_200/responses.csv",
+    "results/b0/standard_temporal_20261124/wm_validation/C20_1000/responses.csv",
+    "results/b0/standard_temporal_20261124/hold_videos.json"
+  ],
+  "historical_scope_correction": {
+    "source": "results/b0/pair_units_v1/nominal_segments.csv",
+    "run": "pair_canonical_to350_v1",
+    "side": "pull",
+    "segment": "release_retreat",
+    "completed_phase": "release",
+    "failure_phase": "retreat_arm",
+    "failure": "reference_exhausted",
+    "scope": "Historical single-phase event exists; current temporal and previous response zero-event results must not be generalized to all historical standard experiments."
+  }
+}

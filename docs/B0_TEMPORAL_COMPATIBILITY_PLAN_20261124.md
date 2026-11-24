@@ -1,5 +1,7 @@
 # B0 标准迁移集中推进：从真实转移一致性到完整双侧验证
 
+**当前接续说明（2026-11-24，ff2d1e8审查后）：** 本计划已执行并封存，原selected_wm=null与T2追加800批的偏差记录保持。新的执行入口为[B0_DYNAMICS_TRAINING_PLAN_20261124.md](B0_DYNAMICS_TRAINING_PLAN_20261124.md)，另行前瞻登记有限C20 H32机制实验；不追认本计划原保留条件通过，正式物理协议不改。[新审查](../reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md)
+
 **执行回执（2026-11-24）。** 本计划的 A 和 C20/T2 配对已实跑，选点未通过；+200 时漏查 H7 反向失稳的额外预算已登记。以下保留实验前定义。[本轮实测报告](../reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md)
 
 日期：2026-11-24（Asia/Shanghai）。从已封存实验 [753f1bc](https://github.com/kaiwen123-yang/dog-and-arm/commit/753f1bcca6d4f5dd48b1b2886e3523036c7d366d) 及其后本次审查提交接续。**本文件是尚未执行的计划：本次只审查和发布，没有新增训练、仿真、模型适配或物理成绩。**

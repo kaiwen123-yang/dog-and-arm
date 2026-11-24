@@ -1,5 +1,17 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-24 北京时间｜ff2d1e8已审查，下一轮执行C20有限H32与集中迁移
+
+**仍在B0-04，原八节点未过WM保留条件，最终候选为空，完整双侧回报NA。** 本轮C20/T2各1000WM批、冻结u0正式0/10/6首2ms超力/0事件与预算已复算；新增Actor为0。连续solver bias接口已解决，当前T2递推失稳配方封存。C20首开度误差接近原q/v分量损失的解析折中28.537/43.351mm；它的首TCP/J2预测已改善，旧H32保持仍退化，不能追认原选模通过。
+
+当前执行[新集中计划](docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md)：实际训练Warp内固定11窗做2/1/0.5ms、同2ms外部控制缓存时钟的物理比较；需要数值适配则当轮统一接口与数据身份。复用已有首层函数保持重标做一套C20原损失对照，再按预登记规则锁一个实验WM，与C20+0开展有限u1/u10真实H32。两支合计20H32/200联合WM/400Critic，预热另记。新development_h32_pilot资格只用于机制实验，不改写ff2d1e8的selected_wm=null，不降低6N与原正式门槛。原2msWarp/native3.3成绩保留，细步证据单列。
+
+有可重复物理改善即选一条链继续，不以u200默认收工；同包十项10/10后当轮D、连续双侧Warp/C/native，条件具备继续独立seed与三seed冻结H。先迁移成功、冻结独立结果，再开发算法。本次为审查/计划发布，未新增训练或仿真，未访问AutoDL重读大权重/原始数组。
+
+[审查报告](reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md) · [复算摘要](results/b0/temporal_review_20261124/audit_summary.json) · [原实验](reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md) · [原manifest](results/b0/standard_temporal_20261124/baseline_manifest.json) · [完整启动词](prompts/B0_START.txt) · [NEXT_RUN](prompts/NEXT_RUN.txt) · [目标差距](docs/GOAL_GAP_20261124.md)
+
+现场 `/root/autodl-tmp/dog-and-arm-b0-temporal-v1`，原response u200恢复另存且Ratio pending=1，先核现场并保留已有工作树。以下为实验回执和历史审查，旧“当前/下一轮”不覆盖本节。
+
 ## 2026-11-24 北京时间｜时间配对完成，B0-04 仍无有效 WM 出口
 
 真实 2 ms 积分闭合。已修连续求解器 bias 并重采 12 个训练、6 个验证起点。C20/T2 使用同一保存的真实索引，各完成原 H1/H7 的 1,000 批；八个节点均未同时保住双侧首动作和原 H32 握持/多模式表现。T2 +1000 开度误差 16.89/30.72 mm，原握持 H32 TCP P95 达 434.56/488.61 mm。+200 时漏查 H7 裁剪前梯度峰值，后续 800 批 T2 单列为事后诊断。封存 u0 的正式十项在新树复测 0/10、6 案首 2 ms 超力、0 个阶段事件。新增 H32 更新为 0，候选为空，完整回报 NA。

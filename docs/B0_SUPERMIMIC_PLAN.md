@@ -1,12 +1,12 @@
 # B0：SuperMimic 在 M1＋Piper H 上的迁移与基线验证
 
-> 当前更新（2026-11-24）：最新753f1bc首动作与数据贯通轮已封存，六节点各0/10，完整双侧回报NA；数据通路已实证。按用户要求，下一轮扩大为[集中迁移推进](B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)，当前先迁移成功、冻结独立结果，再开发算法。见[新审查](../reports/B0_RESPONSE_ROUND_REVIEW_20261124.md)、[指标协议](B0_PAPER_BASELINE_PROTOCOL.md)、[独立结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md)与[目标差距](GOAL_GAP_20261124.md)。
+> 当前更新（2026-11-24）：最新ff2d1e8已审查，C20/T2八节点未过原WM保留条件，新增Actor=0、冻结u0十项0/10；B0-04、候选为空、完整回报NA。先迁移成功、冻结独立结果，再开发算法。执行[物理时间尺度、C20适配与H32集中计划](B0_DYNAMICS_TRAINING_PLAN_20261124.md)，见[审查](../reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md)、[指标协议](B0_PAPER_BASELINE_PROTOCOL.md)、[独立结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md)和[目标差距](GOAL_GAP_20261124.md)。
 
-当前B0-04。继承单位/采样/调度/逐lane与数据贯通；并行核查真实2ms积分、solver身份、数据/WM退化、原目标，集中修复有证据的平台问题。仅在证据触发时验证同一原网络/GenCoord内部2ms×10、外层20ms的数值候选，原损失和H32=640ms保留、额外预算单列。有效出口继续真实联训，u50/u200不作为默认终点；同包十项通过当轮接D与完整双侧/native，条件具备继续独立seed/冻结H。所有算法开发后置。
+solver连续bias已解决，当前T2配方封存。下一轮先有限核验实际训练Warp高速响应的步长依赖，再复用首层函数保持重标做一套C20原损失配对。另登记两支各u10的有限H32机制实验，检验首TCP/J2改善的物理用途；这不追认旧WM保留条件通过，也不降低原6N/十项/D/C/native/seed/H。原2msWarp和native3.3正式成绩保持，必要细步训练身份单列。
 
-P1–P6和B0-03 seed0继续继承。标准Actor锚点是results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt，门WM以results/b0/contact_s0_wm_held_r2/wm_002000.pt接续明确登记的预热。R/J的参考前馈、15,000动作BC、解析补偿成绩作为历史对照，不作标准Actor起点。完整任务、独立seed与H按原门槛推进，迁移未完成不进入R1–R8。
+P1–P6和B0-03 seed0继续继承。Actor仍为results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt；C20基准为response_wm_v1/wm_000000.pt及已完成C20端点。R/J的前馈、15000动作BC和解析补偿只作历史对照。u1/u10试验有可重复物理改善后继续单链至50/100/200及必要后续，同包十项通过即同轮接后续验收。
 
-本次仅审查/计划发布，没有新增训练、物理评测或硬件动作。下方首次规划、早期读取快照和起步条件为历史，方法来源与验收定义继续有效，当前执行以上方入口为准。
+本次仅审查与计划发布，无新增训练/仿真。下方首次规划和早期读取快照为历史，来源与验收定义继续有效，当前执行以上方入口为准。
 
 总路线见 [RESEARCH_ROADMAP.md](RESEARCH_ROADMAP.md)，状态/动作/数据细节见 [B0_DATA_MODEL_CONTRACT.md](B0_DATA_MODEL_CONTRACT.md)，执行入口见 [B0_START.txt](../prompts/B0_START.txt)。
 
