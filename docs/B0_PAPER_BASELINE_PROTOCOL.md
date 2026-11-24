@@ -2,7 +2,7 @@
 
 日期：2026-11-23（Asia/Shanghai）。用户要求：依据已开源的 SuperMimic 详细研究和迁移，以达到或接近论文指标为目标，单独形成可供后续比较的结果。本文把这一要求落实为当前 B0 的结果定义、计分和冻结规则；不改变“标准迁移 → 后续新开发”的顺序。
 
-**独立方法名称：`SuperMimic-M1Piper-standard-v1`。** 当前应持续保存它的真实中间结果和失败，最终交付同一方法在 M1＋Piper H 上的独立基线。记录一个负结果不等于宣布标准迁移完成；达到功能门槛与论文参考数值带仍是当前目标。实际最新成绩以 [独立标准结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md) 和 [27284e2轮审查](../reports/B0_LANES_ROUND_REVIEW_20261124.md) 为准，当前执行 [首动作与WM数据计划](B0_CONTACT_RESPONSE_PLAN_20261124.md)。2026-11-24 更新入口和已实施项说明；以下计分、数据资格与物理出口保持原登记定义。
+**独立方法名称：`SuperMimic-M1Piper-standard-v1`。** 持续保存真实中间结果和失败，最终形成M1＋Piper H独立基线；保存负结果不等于完成。最新成绩见[独立标准结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md)和[753f1bc审查](../reports/B0_RESPONSE_ROUND_REVIEW_20261124.md)，执行[集中迁移计划](B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)。用户要求一次性多推进，检查点不作默认终点，满足前置门槛自动接下一阶段；不改变下文计分、数据资格、冻结和物理出口。条件数值时间适配需另登记schema/增量解码/实际数据与额外计算，尚未实施验证，不冒充官方默认。
 
 ## 1. 论文指标与本项目目标必须同时明确
 

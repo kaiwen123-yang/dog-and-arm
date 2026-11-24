@@ -1,5 +1,15 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-24 北京时间｜753f1bc已审查，下一轮扩大为集中迁移推进
+
+**B0-04、候选为空、完整双侧回报NA。** 最新独立60案/36案首2ms超力/0阶段事件和200H32/217,971有效在线区间已核对。数据贯通已完成，不能继续沿用旧轮“multimode没进联训”的解释。原20ms端点速度oracle仍低估两侧开度30.70/46.63mm；固定官方公式基于恒加速度合成。solver登记forward与连续采集的派生缓存身份还有一项未证实疑点。20ms残差含正式失败后诊断，不直接等于首2ms失败根因。本次只审查/复算和发布计划，未新训、未仿真、未读取现场大权重/原2ms数组。
+
+用户追加要求一次性多推进。下一轮执行[集中迁移计划](docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)：并行核对时间/solver、数据/WM退化、原目标；集中修复已证平台问题；有证据才有限验证C20/T2时间适配，原网络/损失/外层H32保持；有效出口立即实训与原正式评分。u50/u200是检查点，有物理进展继续；停止无效配方后在同轮处理下一项明确问题。同一候选10/10即接D、完整双侧Warp/C/native，条件具备继续独立seed/三seed冻结H，不等另一份计划。算法开发仍在迁移成功之后。
+
+[最新审查](reports/B0_RESPONSE_ROUND_REVIEW_20261124.md) · [复算摘要](results/b0/response_review_20261124/audit_summary.json) · [原实验报告](reports/B0_CONTACT_RESPONSE_RESULTS_20261124.md) · [实验manifest](results/b0/standard_response_20261124/baseline_manifest.json) · [完整启动词](prompts/B0_START.txt) · [简要接续](prompts/NEXT_RUN.txt) · [目标差距](docs/GOAL_GAP_20261124.md)
+
+现场AutoDL `/root/autodl-tmp/dog-and-arm-b0-response-v1`；u200恢复 `results/b0/response_s0_to200_v1/cohort_state.pt` 有1次Ratio pending。旧轮与用户其他树修改保留；先核实现场再执行。以下是实验回执与历史审查，其中旧“下一轮”不覆盖本节。
+
 ## 2026-11-24 北京时间｜首动作响应与 WM 数据贯通轮已封存至 u200
 
 **B0-04，最终候选为空，完整双侧物理回报 NA。** 12 个训练起点与 6 个独立验证起点已完成同状态 u0/旧 u200 首动作物理分支。旧 grip、多模式和本轮响应持续进入 H1/H7。新增预热 1,000 批后按独立验证保留情况选 +0，从 B0-03 新开 seed0，实际完成 200 H32、2,000 联合 WM、4,000 Critic 和 217,971 个有效在线区间。六节点原正式十项各 0/10，共 60 案、36 案首 2 ms 超力、0 阶段事件。背推释放存续从 40 到 964 ms，u200 前拉/背推 stable_grip 首步为 39.62/16.50 N，门槛 6 N。上一轮 27284e2 的 60 案独立保存。

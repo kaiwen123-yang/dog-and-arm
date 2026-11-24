@@ -1,33 +1,43 @@
-2026-11-24 执行回执：本提示中的首动作响应、数据贯通、原损失预热和新 seed0 H32/评分已经执行至 u200，六节点各 0/10。现行接续请执行 prompts/NEXT_RUN.txt，先读 reports/B0_CONTACT_RESPONSE_RESULTS_20261124.md。以下为已执行轮次的原始启动词。
-
-继续 dog-and-arm 的 B0-04 SuperMimic 标准迁移。先完成迁移并冻结独立结果，再做算法开发。最新已结束实验为 27284e2e7792d17376410a0d7459398f7ca1927b；从随后已推送的审查/计划提交接续。这一轮要实际实施、采集、原损失 WM 训练、H32 联训和正式物理评分，不只重复审计或生成计划。
+继续 dog-and-arm 的 SuperMimic 标准迁移，执行一次集中推进轮。用户明确要求一次性多推进，不要每修一个问题、做一张诊断表或到 u200 就结束。先完成迁移并冻结独立结果，再开发算法。优先争取从当前 B0-04 推进到 seed0 完整双侧及同包 native 验证；条件具备就在同一轮继续独立 seed 与冻结 H，不等待另一份启动计划。
 
 一、接续与必读
-先 git status、正常 fetch main；保留已有修改，必要时用独立工作树，不 reset、clean、强推或制作本机压缩归档。读 AGENTS.md、PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最近记录、reports/B0_LANES_ROUND_REVIEW_20261124.md、docs/B0_CONTACT_RESPONSE_PLAN_20261124.md、docs/B0_PAPER_BASELINE_PROTOCOL.md、reports/B0_STANDARD_TRANSFER_BASELINE.md 顶部，以及 results/b0/standard_lanes_20261124/baseline_manifest.json 和 results/b0/lanes_review_20261124/audit_summary.json。不要把7180672旧轮或历史540/546混合包当作当前标准结果。
+先 git status、正常 fetch main，保留已有修改，必要时独立工作树；普通提交/推送，不 reset、clean、强推或归档整个目录。实验锚点为 753f1bcca6d4f5dd48b1b2886e3523036c7d366d，接续其后的最新审查提交。读 AGENTS.md、PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最近记录、reports/B0_RESPONSE_ROUND_REVIEW_20261124.md、docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md、docs/B0_PAPER_BASELINE_PROTOCOL.md，以及 standard_response_20261124 的 manifest 和 response_review_20261124/audit_summary.json。完整计划是本提示的具体实施约定。
 
-核实 AutoDL /root/autodl-tmp/dog-and-arm-b0-lanes-v1、第二平台独立工作树、进程/退出回执和大资产。上轮已完成 1000 个新增 WM 预热 minibatch、200 H32、2000 联合 WM、4000 Critic；219677有效策略区间，u0/1/10/50/100/200各0/10，共60案、36案首2ms超力、0阶段事件。完整双侧物理回报NA，无最终候选。u200恢复有2次Ratio待更新，不能算已执行或机械续到u500。
+已封存轮六节点各0/10，独立60案、36案首2ms超力、0阶段事件；200H32、2000联合WM、4000Critic、217971有效在线区间，完整20ms持续双指为0。背推释放到u200仍改善，本轮原本是在登记端点封存，不能说完全没有进展。完整双侧回报NA、候选为空，旧27284e2的60案和7180672的230案分别记账。旧grip、多模式和首响应已经实际贯通H1/H7，不再重复修这个已完成问题。
 
-二、固定边界
-保留 SuperMimic abc124c1bd5976341034668af3d12c087f2f1f55 与 mjlab_research dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd、原主要网络、GenCoord、tracking/softdone、Muon＋Adam、H32 Actor/Critic。继承已实测的fixed effort/reset、ReturnSampler、实际Ratio、clip末帧、lane/age、固定WM统计、逐lane真实200ms前缀；不重做P1–P6/B0-03 seed0/G1。当前只做仿真。动作BC、参考直通、解析补偿、新奖励/风险头/phase-TD、课程、新网络、VLA、双门和硬件后置。
+核实 AutoDL /root/autodl-tmp/dog-and-arm-b0-response-v1、第二平台工作树、进程与退出回执、资产。原2ms数组按 results/b0/standard_response_20261124/registration.json 读取，主要在 results/raw_large/b0/response_entries_v1。u200的 results/b0/response_s0_to200_v1/cohort_state.pt 含1次未执行Ratio，勿误计或自动补做。不要把只读入库摘要称为已加载现场全部数组。
 
-三、先处理已证的数据衔接与真实首动作
-新 lanes_modes_v1 的512训练lanes、18223有效区间已进入WM预热，却没有进入随后联训的离线池。当前在线足够时H1为256全在线；H7为192在线+32旧native+32旧Warpgrip。此断点已证实，但尚未证明是全部失败的原因。联训open/hold仅1087/219677区间且全部terminal；不能根据总数据量宣称接触覆盖，也不能声称首失败数据全被过滤。
+二、并行定位，集中处理已证平台问题
+主任务整合共享代码、配置、训练和评测，三个工作面并行：真实2ms积分/solver身份；数据资格、采样和WM早期退化；原目标梯度与实际更新。共用模块指定一个编辑负责人。已有证据足以实施的项直接推进，不等全部报告写完；每个改变保留可归因的小对照。
 
-复用并修正 measure_lane_response.py 的身份记录。在训练自己的实际prefix、history、previous action、normalizer、goal clock上现场查询B0-03/u0与u200冻结Actor，不能借正式保存命令冒充现场查询。按计划先登记12训练/6独立验证起点，覆盖两侧接触前沿、稳定握持/推拉、释放。保持相同真实初态/求解器状态，首20ms做臂/夹口2×2及完整参考中心/重复分支；参考动作只用于WM诊断与数据，不能作为Actor控制或BC。
+先复用18个登记起点及分支，逐子步检查 q_k-q_(k-1)-0.002*v_k 和十步速度求和。原始指qpos为29:31，raw qvel为28:30，full_state速度才是59:61。报告各指、总开度q1-q2、耦合q1+q2、速度反向/峰值、J2、饱和、力与时间。比较2/4/10/20ms分块、官方c=(N+1)/(2N)，不拟合c、不拿平均速度冒充端点qvel。净门力0且双指同时受载tick0不代表各单指载荷或所有门接触0。
 
-保存23路动作的canonical/physical/fixed-effort坐标，真实每2ms门力、双指、夹口、臂、TCP、门角与首次失败；同时保存训练reference phase和独立正式event phase。现有诊断tick4/5与正式tick1有判定时钟差别，不能改裁判来延长存续。训练source从配置读，正式source从run_spec读。22.04/22.47mm只是持续双指open/hold条件范围，不是全训练上限或新clamp。现有u50分支20ms真实开度68.35/66.51mm、WM约22–26mm，必须复核真实首响应，不能只看H32 TCP。必要的原GenCoord积分残差诊断使用真实端点速度，不先改积分器或尺度。
+从未额外forward的真实live状态做最小配对：直接推进、登记式forward、旁lane reset，加重复。检查首ctrl、qfrc_bias、warmstart、接触与2ms/20ms后继；不能所有支路先统一forward。若影响在重复范围内关闭疑点，有影响才修确定接口。状态/时钟/数据身份修复后只重采受影响的必要小集。
 
-四、让必要训练数据持续进入原H1/H7
-按计划把单个H7离线数据接口扩展成明确登记的多个训练来源，接入旧grip、新multimode和本轮首动作响应。默认每次H32前仍2个H1+8个H7/batch256：H1=192在线+64登记Warp；H7=192在线+32native+32登记Warp。Warp各合格来源固定等份、源内lane/age，无合法H7的来源记0并按预登记规则回填。禁止跨episode/终止补窗。首次失败的完整数值有效20ms按既有规则进入H1，失败后更长积分只作明确标记的诊断。教师/干预只用于WM，Actor起点仍取当前在线replay；验证/D/C/H不进训练或统计。
+用已有J2=17、jaw=22正负两档检查中心/单侧差商、尺度和模式；旧native/H7/J5=20脚本不冒充当前核验。20ms残差含正式2ms失败后的诊断积分，先分清时间再谈失败因果。
 
-保留输入统计，从 lanes_wm_v1/wm_001000.pt 用原H1/H7损失预热，新增0/200/1000 minibatch检查；初始优化器来源和全部继承成本写清。按两侧实际首命令H1夹指/开度响应、H7误差和原独立验证保留情况选点，不只按训练loss/H32 TCP。实际记录每batch来源/相位/模式/独立episode/H1H7和Ratio分母。若需要保留对照，至多一个同起点、同预算、冻结Actor/Critic的WM数据配方对照，不扩展算法变体。
+三、条件时间适配与原损失实训
+微步/接口不闭合先修；若微步闭合、接口一致而20ms端点q/v仍不相容，执行计划内唯一T2/C20有限配对。C20保留原20ms/c=.55；T2用同一原网络与初始张量、同一固定统计，外层20ms内持同一23路动作，自回归10次2ms/c=1。31路prediction持续统一乘h/H=.1后交原apply_prediction，原finger .02/door .1解码保留，禁止重复缩放末层/velocity_units或扫系数。
 
-五、解释原目标并实际联训
-在真实将采样的同一online replay batch和相同噪声上，诊断原tracking、动作率、限位、survival与Critic bootstrap对首夹口/J2的梯度；按乘积法则核对分项之和，不修改原目标或detach机制。u200仅夹口20ms动作率已为-0.18767/-0.35863，而六正项上界+0.1；不能直接归因缺少握持奖励。正常u1后核对实际动作变化，u10复查。没有物理真值的Critic不能把自预测当证据。
+微步representation/inner Dynamics与宏步loss/reward表示分开；官方Dynamics构造会捕获dt，不临时改共享rep。Actor/history/goal/奖励/动作率/软终止/折扣/bootstrap/Critic/ReturnSampler/Ratio仍20ms，H32仍640ms，内部320步完整可微。禁止真值回填、内部teacher forcing或新损失。
 
-适配经实际响应验证后，新开一条固定seed0主链：Actor/normalizer从B0-03 free_s0_cloud_servo_r2/checkpoint_001000.pt，WM从本轮选点，Critic沿标准初始化规则，优化器/RNG/replay/Ratio登记。保留u0/1/10/50，并用 bash scripts/b0/evaluate_standard_contact.sh <new_run> <update> warp 逐节点正式十项。真实首动作改善、阶段事件、首次失败前双指持续或门力/几何改善支持后再到u100/u200；u50后连续两个检查点无物理改善则停止同配方追加，不机械延长。若必要响应仍未改善，保存可复查残差并处理已定位的问题；不得以一份诊断表宣布迁移结束。
+同一实际抽样索引喂两臂，原H1评分20ms，H7评分七个20ms边界；每臂最多1000WM批（200H1+800H7、batch256），0/50/200/1000检查，新优化器/时间schema独立登记。若旧C20回执确可证明同初值、同优化器和逐样本序列，可复用，不重复无用计算。两臂匹配样本量而非算力，T2内部前向约10倍，额外成本单列。验证微步轨迹、两侧首命令、旧握持/多模式H1/H7/H32及统计支持；粗端点好但内部严重失真不能选。
 
-六、验收与交付
-同一候选十项10/10 → 每项D≥18/20 → 连续完整双侧Warp nominal、C每侧≥18/20及同包native3.3双侧完整nominal和持续H32 → 独立seed1/2各自通过B0-03/后续门槛 → 三seed配方/选模/候选全冻结后H每seed/侧≥40/50。完整归一化回报按原全长分母/首失败吸收/真实dt/固定effort，目标0.90或项目0.88接近带，同时过物理门槛。不用片段分数、想象return或失败后积分代填。
+候选验证失败，停止该配方，在本轮继续定位已证的表示/加载/统计/数据资格/覆盖问题，最小修复或必要train-only补采后复测；不把第一次失败直接推给下一轮。修后C20有效也可进入主链，不强求T2。若没有可信出口，不用无效模型强开H32，也不擅加新网络/奖励/微步监督。
 
-新轮结果与旧standard_lanes_20261124分目录保存，形成独立manifest/逐案结果/误差/预算/恢复与必要视频。每个有意义节点按北京时间详细追加唯一DAILY_WORK_LOG.md，写实际命令、问题证据、已证原因或假设、修复/复测、失败/未执行和下一步。更新PROJECT_STATE、独立结果与NEXT_RUN，普通commit/push到kaiwen123-yang/dog-and-arm并从GitHub回读main和关键文件。既有发布授权继续有效，无需再次询问。充分使用可用资源并行独立采集/验证，不设强制墙钟终止。
+四、一条主链持续推进，检查点不当收工点
+有效出口成立后，Actor从标准B0-03 results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt及其归一化启动，WM从已选点；Critic按既有标准维度适配初始化，新optimizer/RNG/replay/Ratio写清。固定双源abc124c/dd51a9f、原网络/GenCoord/原损失/Muon+Adam保留。继续2H1(192online+64Warp)、8H7(192online+32native+32Warp)、原H32batch256、20Critic，三Warp来源固定等份。Actor初态只来自在线，验证/D/C/H不入训练。
+
+在主链正常u1嵌入必要原图/参数梯度/实际Δtheta与同状态动作观察；不要另开Critic算法。解释WM更新顺序、raw/clipped V、分项非零残差。需要hook检查时同完整状态开关配对，独立计成本。
+
+完成u0/1/10/50的原正式十项与独立WM/首响应；有实际接触、首次失效、门力或阶段改善就连续到u100/u200及必要u350/u500等，登记每次新增预算，勿以u200默认结束。原入口：bash scripts/b0/evaluate_standard_contact.sh <run> <update> warp。新训练配置须先实现并登记再交现有train_contact入口，不能把计划里的未来配置当已存在。
+
+连续两个后续节点无物理改善或模型/物理共同恶化，停止该配方，在同轮处理下一项已证迁移问题、复测再继续；旧失败/新配方分开，不把换schema当兼容恢复。只涨想象回报或训练loss下降不支持无限续训。记录每批数据来源、物理/想象步、额外内部前向、共享GPU墙钟、恢复与Ratio待账。不设后台强制墙钟终止，不为占满设备开无关任务。
+
+五、通过后当轮接完整验收
+同一冻结候选十项10/10后，直接每项D01-D20>=18/20；再同包完整初态连续前拉/背推，Warp双侧nominal、C每侧>=18/20、原native3.3双侧完整nominal及持续H32证据。开发失败就在本轮按证据处理并重评前置门槛，不能拼checkpoint/片段或把评测案导入训练。具备条件后独立seed1/2各自B0-03并完成同配方；三seed配方/选模/候选全部冻结才开H，每seed/侧>=40/50。H不得用于调参选模。
+
+完整回报按固定全长分母、真实dt、失败吸收和固定effort计算，目标0.90或项目接近带0.88且物理门槛同时通过。完整轨迹缺失则NA。新算法、BC、参考直通、解析补偿、新奖励/风险头/phase-TD、VLA/双门/硬件均后置。不要承诺一定一次成功；交付必须有真实阶段进展，或同轮小对照/必要修复复测后仍存在的明确阻塞及适用范围，不能只说下轮再查。
+
+六、持续交付
+新结果独立目录如 results/b0/standard_temporal_<实际北京时间日期>/，不覆盖旧轮。每个实际实现/采集/失败/预热/选点/训练/评测/恢复节点按北京时间追加唯一DAILY_WORK_LOG.md，更新PROJECT_STATE、独立报告/manifest及NEXT_RUN，保存必要视频与现场大资产路径。普通提交推送并从GitHub回读main与交付文件，保留其他树修改，授权已具备，无需重复问推送许可。结束时详细说明到达哪个物理阶段、完整指标、仍缺什么和能直接接续的提示词。

@@ -1,5 +1,7 @@
 # B0-04 首动作响应、WM 数据贯通与 seed0 正式结果
 
+> 2026-11-24 后续审查：本报告保持753f1bc实验原始结果。逐案/预算复算、q/v时间兼容与solver疑点、梯度解释边界见[独立审查](B0_RESPONSE_ROUND_REVIEW_20261124.md)。下一步按用户要求扩大为[集中迁移推进](../docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)，检查点不作为默认终点；本次审查没有新增实验。
+
 2026-11-24，北京时间。实验从 main 的 `0c81d82` 接续，联训实现为 `ad29c8a`。本轮在 AutoDL 的独立树实际采集、训练并评分。**标准迁移仍在 B0-04。u0/1/10/50/100/200 各 0/10，合计 60 案、36 案首个 2 ms 超门力、0 个阶段事件。最终候选为空，完整前拉和背推回报 NA。** 本轮与上一轮 `27284e2` 的 60 案分别保存。[本轮 manifest](../results/b0/standard_response_20261124/baseline_manifest.json) · [逐案成绩](../results/b0/standard_response_20261124/nominal_segments.csv) · [正式打分分项](../results/b0/standard_response_20261124/nominal_score_details.jsonl)
 
 ## 首命令与其真实物理后继

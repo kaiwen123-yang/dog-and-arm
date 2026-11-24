@@ -1,8 +1,8 @@
 # 腿臂协同研究主线与阶段依赖
 
-更新：2026-11-24（Asia/Shanghai），最新实验27284e2已结束并审查。**先专注完成SuperMimic标准迁移并冻结独立基线，成功后再做算法开发。** 世界模型、可微动力学、原H32学习属于当前B0；新结构/损失/控制先验及后续视觉语言不混入本轮。
+更新：2026-11-24（Asia/Shanghai），最新实验753f1bc已结束并审查。**先完成SuperMimic标准迁移并冻结独立基线，再做算法开发。** 用户要求一次性多推进，以可验收迁移阶段为交付单位；相关诊断并行、已证平台问题集中修复、随即实际训练与物理评测，满足门槛在同轮自动接下一层。
 
-当前仍在B0-04：逐lane与预热后seed0 u200的六节点各0/10，完整回报NA。已有实现继承；下一轮聚焦训练身份首动作响应、必要WM数据贯通和原目标梯度，随后单一配方真实联训。新multimode未进联训离线池已证实，其失败因果尚待验证。执行[首动作与WM数据计划](B0_CONTACT_RESPONSE_PLAN_20261124.md)、[指标协议](B0_PAPER_BASELINE_PROTOCOL.md)，结果见[独立报告](../reports/B0_STANDARD_TRANSFER_BASELINE.md)，审查见[本轮审查](../reports/B0_LANES_ROUND_REVIEW_20261124.md)，差距见[GOAL_GAP](GOAL_GAP_20261124.md)。P1–P6/B0-03 seed0继承，R/J混合结果单列。
+当前仍B0-04：首响应/数据贯通/新seed0 u200已实训，六节点各0/10，完整回报NA。旧multimode断点已修复；新线索是20ms端点q/v兼容、solver缓存身份和原梯度解释。执行[集中迁移计划](B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)与[指标协议](B0_PAPER_BASELINE_PROTOCOL.md)，u200仅检查点，有物理改善继续；10/10后当轮接D、完整Warp/C/native，条件具备继续seed/H。见[审查](../reports/B0_RESPONSE_ROUND_REVIEW_20261124.md)、[独立结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md)和[目标差距](GOAL_GAP_20261124.md)。P1–P6/B0-03 seed0继承，R/J混合结果单列。
 
 阶段顺序保持B0→R1–R8；以下后续研究定义为迁移完成后的路线，不是当前授权并行启动的任务。实际状态见[PROJECT_STATE](../PROJECT_STATE.md)，每日过程写入[DAILY_WORK_LOG](../DAILY_WORK_LOG.md)。
 
@@ -75,7 +75,7 @@ RoboMIND 是 R2/R3 的**可选数据支线**，不进入 B0 的前置依赖。�
 
 ## 6. 当前执行边界
 
-本次只审查已结束27284e2轮、复算已提交记录并发布下一计划与启动词，没有新训练/物理评测或硬件执行。下一次按 [B0_START](../prompts/B0_START.txt) 实际完成 [首动作与WM数据计划](B0_CONTACT_RESPONSE_PLAN_20261124.md)。保留固定官方核心和已完成采集机制；补训练身份首响应、持续接入必要数据、解释原目标并实际联合学习。最多一个明确的WM数据保留小对照，不展开多算法变体。
+本次只审查753f1bc已结束轮、复算入库记录并发布集中推进计划，没有新训练/物理或硬件。下一次按[B0_START](../prompts/B0_START.txt)实际执行[集中迁移计划](B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)。已证接口集中修复；只有证据指向时间表示时做一组原损失C20/T2配对，额外成本单列。有效出口立即持续联训，停止无效配方后在本轮处理下一明确问题；通过阶段自动接正式下一门槛，保持原方法与H隔离。
 
 同一标准候选先十项接触nominal/各D≥18/20，再连续双侧Warp各1条完整nominal通过、C每侧≥18/20及同包native3.3两侧各1条完整nominal通过。持续H32能力确认后推进独立seed1/2，各自初始化/采集/B0-03；全部三seed配方/选模/候选冻结后再H，每seed/侧≥40/50。完整物理回报每seed/侧/split达到0.90或项目0.88接近带，且物理门槛同时满足，才能冻结独立迁移结果并进入后续开发。CPU3.16按需诊断，不加为正式出口。
 

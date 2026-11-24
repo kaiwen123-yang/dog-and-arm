@@ -1,5 +1,11 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-24｜753f1bc审查与集中推进计划，原实验成绩未改
+
+**标准迁移仍未通过，B0-04、无最终候选、完整双侧回报NA。** 本轮60案/0通过/36首2ms超力/0阶段事件和训练预算复算成立；新grip/multimode/response数据已真实进入联训。下一瓶颈是已有2ms真实转移与原20ms表示的兼容性、solver身份及原目标解释边界。本次仅审查和发布，原manifest/代码/配置/实验逐案未改，无新增训练或物理评分。[完整审查](B0_RESPONSE_ROUND_REVIEW_20261124.md) · [审查摘要](../results/b0/response_review_20261124/audit_summary.json)
+
+按用户“一次性多推进”要求，下一轮[集中迁移计划](../docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)从并行定位、集中修复推进到真实WM/H32与正式评价；u200不作默认终点，过十项后同轮接D、完整双侧Warp/C/native，条件具备继续独立seed与冻结H。C20/T2只是在有证据时执行的数值适配对照，尚无新结果；正式成功门槛和算法开发顺序保持。[启动词](../prompts/B0_START.txt) · [距目标的具体差距](../docs/GOAL_GAP_20261124.md)
+
 ## 2026-11-24 北京时间｜首动作响应、数据贯通与新 seed0 u200
 
 **标准迁移仍在 B0-04。** 本轮从 0c81d82 独立实施。12 个训练、6 个验证起点完成实时 Actor 查询及共享求解器物理分支，三个登记 Warp 来源已在原 H1/H7 联训实抽。实际新增 1,000 个预热 minibatch，按原握持和多模式验证保留情况选本轮 +0。新 seed0 完成 u0/1/10/50/100/200 的原十项物理评分，各 0/10；60 案中 36 案首 2 ms 超门力，正式阶段事件为零。u200 背推释放峰力 24.84 N，首次失败 964 ms，双侧握持入口仍超 6 N。无最终候选，完整回报 NA。本次负结果快照、旧 27284e2 及更早标准轮各自记账。[完整报告](B0_CONTACT_RESPONSE_RESULTS_20261124.md) · [独立 manifest](../results/b0/standard_response_20261124/baseline_manifest.json) · [逐案评分](../results/b0/standard_response_20261124/nominal_segments.csv)

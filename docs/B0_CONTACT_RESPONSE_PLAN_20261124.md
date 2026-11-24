@@ -1,5 +1,7 @@
 # B0-04 下一轮：首动作响应与 WM 联训数据贯通
 
+> **执行回执（2026-11-24）：本计划已经从0c81d82实施，并在753f1bc封存。** 首动作采集、三Warp源持续进入H1/H7、原损失预热与新seed0 H32/原评分已执行，六节点各0/10。本轮在登记u200端点结束，背推释放仍有改善；完整回报NA。见[实验报告](../reports/B0_CONTACT_RESPONSE_RESULTS_20261124.md)和[后续审查](../reports/B0_RESPONSE_ROUND_REVIEW_20261124.md)。现行下一轮是[集中迁移计划](B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)。下方原“尚未执行/下一轮”为执行前历史，不覆盖此回执。
+
 日期：2026-11-24（Asia/Shanghai）。实验起点为 [27284e2](https://github.com/kaiwen123-yang/dog-and-arm/commit/27284e2e7792d17376410a0d7459398f7ca1927b)；执行时正常获取其后本次计划提交。**本文件是尚未执行的下一轮计划。当前只完成审查、复算和文档发布，没有新增训练、仿真或硬件动作。** 上一份[逐 lane 计划](B0_STANDARD_TRANSFER_PLAN_20261124.md)已有执行回执，不从头重做。
 
 当前唯一主线是 `SuperMimic-M1Piper-standard-v1`。先完成迁移、形成独立可比较的成功基线，再开发算法。WM、可微动力学和原 H32 Actor/Critic 本来属于当前 B0，下一轮需要实际实施、训练和评分。[最新审查](../reports/B0_LANES_ROUND_REVIEW_20261124.md) · [独立结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md) · [指标协议](B0_PAPER_BASELINE_PROTOCOL.md) · [启动词](../prompts/B0_START.txt)
