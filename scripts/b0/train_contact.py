@@ -90,6 +90,10 @@ def main():
                   initialization=dict(actor=str(cfg.get('calibrated_actor',cfg['actor_checkpoint'])),wm=str(cfg['wm_checkpoint']),resume=str(args.resume) if args.resume else None),
                   max_step_reward=run.policy.wm_env.max_step_reward,max_critic_value=run.policy._v_max,
                   validation_excluded=True,cohort_truncation=cfg['cohort_steps'],requested_endpoint=args.updates)
+    if cfg.get('collector') == 'lane_reset':
+        metadata.update(cohort_truncation=None, recording_block_ticks=run.steps,
+                        resume_boundary='explicit administrative cut for all live lanes on process restart; fresh 200ms prefixes')
+        run.compact_directory = raw
     metadata['actor_class'] = type(run.actor).__name__
     metadata['started_unix'] = started_unix
     metadata['policy_learner'] = type(run.policy).__name__
@@ -118,6 +122,11 @@ def main():
         state.update(optimizers=[o.state_dict() for o in run.optimizer_list()],
                      replay=list(run.replay.chunks),simulated=run.simulated,
                      cpu_rng=torch.get_rng_state(),gpu_rng=torch.cuda.get_rng_state(),numpy_rng=np.random.get_state())
+        if cfg.get('collector') == 'lane_reset':
+            if run.sampler._step != 0:
+                raise RuntimeError('Administrative recovery requires a closed sampler horizon')
+            state['lane_boundary'] = dict(last_episode=getattr(run,'last_episode',0),
+                live_lanes=run.n if hasattr(run,'lanes') else 0, mode='administrative_restart')
         if run.schedule is not None:
             state['ratio_state'] = run.schedule.state_dict()
         if run.sampler is not None:
@@ -135,6 +144,9 @@ def main():
         for o,s in zip(run.optimizer_list(),state['optimizers'],strict=True):
             o.load_state_dict(s)
         run.replay.chunks.extend(state['replay'])
+        if cfg.get('collector') == 'lane_reset':
+            run.last_episode = state['lane_boundary']['last_episode']
+            (out/'resume_boundary.json').write_text(json.dumps(state['lane_boundary']))
         run.total,run.simulated=state['collected'],state['simulated']
         if run.schedule is not None:
             run.schedule.load_state_dict(state['ratio_state'])

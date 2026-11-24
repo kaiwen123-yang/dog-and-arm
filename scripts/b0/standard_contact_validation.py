@@ -130,7 +130,7 @@ def score(args):
     rows = json.loads((args.data / "cohorts.json").read_text())
     # Registered paths are relative to the workspace that collected each dataset.
     source_root = args.data.resolve().parents[2]
-    challenge = args.data.name == "recovery_b_grip_challenge_r1"
+    challenge = "allocation" in registration and "anchor" in registration
     if challenge:
         rows = [row for row in rows if row["split"] == "validation"]
         seeds = [seed for split, seed in registration["allocation"] if split == "validation"]

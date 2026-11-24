@@ -38,10 +38,10 @@ class PhysicalActionPrior:
 
 
 class OnlineContactReplay:
-    """Store complete, synchronously started cohorts, with a measured successor per row.
+    """Index measured successors and episode-local windows on ragged lanes.
 
-    A failed lane contributes its valid 20 ms terminal interval, then leaves the
-    sampling pool. Remaining lanes continue to the end of this collection cohort.
+    Continuous collection carries six rows across storage block boundaries.
+    Each H1/H7 window is indexed once, by its final newly collected row.
     """
     def __init__(self, capacity, device, draw="single_cohort"):
         if draw not in ("single_cohort", "official_lane_age"):
@@ -50,16 +50,25 @@ class OnlineContactReplay:
         self.device = device
         self.draw = draw
         self.index = {}
+        self.tail = []
 
     def append(self, rows):
-        data = torch.stack(rows,1)
+        overlap = len(self.tail) if 'episode' in rows[0].keys() else 0
+        data = torch.stack(self.tail + rows if overlap else rows, 1)
+        if 'episode' in rows[0].keys():
+            self.tail = (self.tail + rows)[-6:]
         valid = data.pop('valid')
         starts = {}
         for steps in (1,7):
             if valid.shape[1] < steps:
                 starts[steps] = torch.empty((0,2),device=valid.device,dtype=torch.long)
             else:
-                starts[steps] = valid.unfold(1,steps,1).all(-1).nonzero()
+                legal = valid.unfold(1,steps,1).all(-1)
+                if 'episode' in data.keys():
+                    ids = data['episode'].unfold(1,steps,1)
+                    legal &= ids[...,0] == ids[...,-1]
+                    legal[:,:max(0,overlap-steps+1)] = False
+                starts[steps] = legal.nonzero()
         if len(starts[1]):
             self.chunks.append((data,starts))
             self.index.clear()
@@ -141,7 +150,11 @@ class DoorImagination(MultiTaskWorldModelEnv):
 
     def _update_goal(self):
         # Measured successor and predicted successor both score against t+1.
-        self._ref_body_state = self.motion.body_state(self.motion_times+1)
+        frames = self.motion_times + 1
+        if self.motion.reference_tail == 'official_clip_last':
+            ends = self.motion.motion_ends
+            frames = torch.minimum(frames, ends[torch.searchsorted(ends,self.motion_times,right=True)]-1)
+        self._ref_body_state = self.motion.body_state(frames)
         self._wm_goal_obs,self._actor_goal_obs = self.motion.goals(
             self.representation,self.motion_times,self.aux_state,self.rep_state[:,58])
         self._build_task_goals()
@@ -303,6 +316,9 @@ class ContactRun:
 
     @torch.no_grad()
     def collect(self,raw_path=None,*,training=True):
+        if training and self.cfg.get('collector') == 'lane_reset':
+            from .contact_lanes import collect_lanes
+            return collect_lanes(self, raw_path)
         bank,plant=self.bank,self.plant
         if training and self.sampler is not None:
             frames = self.sampler.sample(self.n)

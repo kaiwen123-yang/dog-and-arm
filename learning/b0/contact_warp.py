@@ -126,7 +126,7 @@ class ContactPlant(ResearchPlant):
         current.wait_stream(base._torch_stream)
 
     def step_contact(self, actions, side_bits, phase_ids, record=False, measure_peak_force=False,
-                     capture_first_failure_state=False):
+                     capture_first_failure_state=False, measure_grip=False):
         if actions.shape != (self.count, 23):
             raise ValueError('Expected one clipped action per world with 23 channels')
         if side_bits.shape != (self.count,) or phase_ids.shape not in ((self.count,), (self.count, 10)):
@@ -141,6 +141,8 @@ class ContactPlant(ResearchPlant):
         target = (actions * self.scale + self.offset) * self.finger_factor
         first = torch.zeros(self.count, device=self.device, dtype=torch.int32)
         peak_force = torch.zeros(self.count, device=self.device) if measure_peak_force else None
+        if measure_grip:
+            finger_min = torch.full((self.count,2), torch.inf, device=self.device)
         if capture_first_failure_state:
             stop_q = torch.zeros_like(self.data.qpos[:])
             stop_v = torch.zeros_like(self.data.qvel[:])
@@ -196,6 +198,8 @@ class ContactPlant(ResearchPlant):
                 stop_q = torch.where(stopped[:, None], data.qpos[:], stop_q)
                 stop_v = torch.where(stopped[:, None], data.qvel[:], stop_v)
                 stop_valid |= stopped & finite
+            if measure_grip:
+                finger_min = torch.minimum(finger_min, m[:,4:6])
             if measure_peak_force:
                 peak_force = torch.maximum(peak_force, force_norm)
             if record:
@@ -208,6 +212,8 @@ class ContactPlant(ResearchPlant):
                     records.setdefault(key, []).append(value.clone())
         result = dict(first_fail_substep=first, reason=reason, overflow=overflow,
                       valid_full_interval=finite, physics_steps=torch.full_like(first,10))
+        if measure_grip:
+            result['finger_min'] = finger_min
         if capture_first_failure_state:
             result.update(stop_qpos=stop_q, stop_qvel=stop_v, stop_valid=stop_valid)
         if measure_peak_force:

@@ -965,3 +965,13 @@ WM的固定统计u50双指H32 TCP P95为104.18/107.70mm，最完整lane-age为24
 执行文档链接/引用路径、JSON解析、git diff --check、当前/历史入口与指标分母检查。两名独立审查分别核对数值及计划可执行性，修正nominal每侧1案/C每侧20案的歧义，补全恢复物理状态与新WM数据来源标签要求。没有为文档修改新增仿真或无关测试。
 
 普通提交只包含本次明确文档和审查结果，推送前再次核对远端SHA，发布后从GitHub回读main、计划、启动词和审查，再同步本地并核对字节。7180672及其前实验推送状态已确认；本次文档自身提交随本次提交保存，最终实际SHA在聊天交付，不为了预填自身SHA制造循环提交。下一执行者按B0_START实际完成实现、采集、训练与评分，并逐日继续本文件。
+
+## 2026-11-24 11:16–11:26 北京时间｜逐 lane 标准采集与独立 WM 预热
+
+Windows 默认 Tailscale SSH 在密钥交换前关闭。用 `ssh dev2-ubuntu-lan` 实际连通，开发机原 main 有四份跟踪修改及未跟踪 P5 结果。在独立 dog-and-arm-b0-lanes 工作树执行 `git fetch origin main`、`git pull --ff-only origin main`，GitHub API 与 git 均为 ee41ee3。AutoDL 原 pair-v1 为带修改的 detached 95159f7，15 份退出回执均为 0，lane_age 恢复文件约 750 MiB。新现场 /root/autodl-tmp/dog-and-arm-b0-lanes-v1 复用两个固定 vendor、B0 环境和标准锚点；历史教师包软链在 pair-v1 缺权重，已从 recovery 目录链接到新现场并实际加载。未重启旧队列。
+
+固定唯一 seed0 配方 standard_lanes_v1。新 collector 同一批内按 lane 实际积分十个 20ms 前缀，随后只入库有效策略转移。复位依据首失效、数值有效性或参考末尾，各 lane 有独立 clock/history/prev/episode。H7 允许穿过记录块但禁止穿过物理 reset。每块保存所有 lane 的压缩时序，代表块保留子步。连续运行跨块不截断；进程恢复选择显式行政边界，清空未完成的物理片段并重建前缀，保留学习器、replay、采样器及 Ratio 欠账与 RNG。
+
+实际执行 `bash scripts/b0/env.sh python -m scripts.b0.h32_contact_challenge --multimode --run lanes_modes_v1`。沿用旧握持扰动幅度，从 approach_arm/grasp/open/hold/release/retreat_arm 六个参考阶段各侧采集；84100–84107 训练、84200–84202 独立验证。历史策略只产生真实 Warp 动力学监督。训练与验证全部尝试保留。随后 `bash scripts/b0/env.sh python -m scripts.b0.fit_contact_model --episodes results/raw_large/b0/contact_held_r1/* --init-wm results/b0/contact_s0_wm_held_r2/wm_002000.pt --warp-train results/b0/recovery_b_grip_challenge_r1 results/b0/lanes_modes_v1 --run lanes_wm_v1 --minibatches 1000`。输入统计固定，优化器全新；新增200个 H1、800个 H7 minibatch，Actor/Critic 0 次。独立 `standard_contact_validation score --state-loss --device cuda:0` 同窗核对 0/200/1000。冻结握持集两侧 H32 双指 TCP P95 50.53/40.36 → 25.24/28.60 → 15.65/16.45 mm；新验证自由运动 68.99/39.16 → 19.45/24.01 mm，选择新增1000出口。
+
+真实联训 `bash scripts/b0/env.sh python -u scripts/b0/train_contact.py --config config/b0/standard_lanes_v1.yaml --run lanes_s0_v1 --updates 50` 完成：55,723 条有效策略转移，71,680 个含前缀的物理 lane 区间。相同冻结 u0、85201 采样种子、各 128,000 个物理子步的 `compare_lane_collection` 实测：旧 collector 3,135 有效/256 episodes，新 collector 7,593 有效/528 episodes，双方两侧均无完整 20ms 持续双指。同 episode 状态、时钟、上一动作与每个 H7 跨行实际断言通过；数据率改善没有自动产生稳定握持。u0/1/10/50 正式评测独立运行中。

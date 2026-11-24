@@ -93,7 +93,13 @@ def main():
                    help='Replace the last two seven-step batches in each block of ten with H32 supervision')
     p.add_argument('--from-b003', type=Path)
     p.add_argument('--resume-wm', type=Path, help='Continue a completed teacher-only WM minibatch in a fresh run')
+    p.add_argument('--init-wm', type=Path, help='Initialize weights and fixed input statistics on a new dataset; fresh optimizers')
+    p.add_argument('--warp-train', type=Path, nargs='+', help='Registered physical training cohorts')
     a = p.parse_args()
+    if a.warp_train and (not a.init_wm or a.resume_wm or a.from_b003 or a.tcp_loss or a.train_h32):
+        p.error('New Warp pretraining requires a standard weights-only initializer')
+    if sum(x is not None for x in (a.from_b003,a.init_wm,a.resume_wm)) > 1:
+        p.error('Choose one initialization mode')
     if Path(a.run).name != a.run or a.run in ('', '.', '..') or a.minibatches <= 0 or a.batch_size <= 0:
         p.error('Use a new run name and positive update/batch sizes')
     torch.manual_seed(a.seed)
@@ -119,7 +125,7 @@ def main():
         prior_cfg = json.loads((a.resume_wm.parent / 'config.json').read_text())
         if (a.from_b003 is not None or previous['schema'] != SCHEMA or previous['seed'] != a.seed
                 or previous['args']['batch_size'] != a.batch_size or tuple(previous['hidden']) != hidden
-                or previous['args']['episodes'] != a.episodes):
+                or previous['args']['episodes'] != a.episodes or previous['args'].get('warp_train') != a.warp_train):
             raise ValueError('Continuation requires identical data, batch, seed and network shape')
         start = previous['minibatches']
         if a.minibatches <= start:
@@ -130,6 +136,28 @@ def main():
         source = torch.load(a.from_b003, weights_only=False, map_location='cpu')
         migrated = transfer_wm(dynamics, source['dyn'])
         del source
+    elif a.init_wm:
+        weights = torch.load(a.init_wm, weights_only=False, map_location='cpu')
+        if weights['schema'] != SCHEMA or weights['seed'] != a.seed or tuple(weights['hidden']) != hidden:
+            raise ValueError("Unexpected door WM initializer")
+        dynamics.load_state_dict(weights['dyn'])
+    supplemental = []
+    for directory in a.warp_train or []:
+        from scripts.b0.h32_fit_recovery_wm import load_cohorts
+        from learning.b0.contact_policy import DoorMotions
+        registration = json.loads((directory/'registration.json').read_text())
+        config = json.loads((Path(registration['anchor']).parent/'actual_config.json').read_text())['cfg']
+        paths = [Path(registration['reference_directory'])/name for name in config['references']]
+        rows = [r for r in json.loads((directory/'cohorts.json').read_text()) if r['split']=='train']
+        seeds = [seed for split,seed in registration['allocation'] if split=='train']
+        if [r['seed'] for r in rows] != seeds or len(set(s for _,s in registration['allocation'])) != len(registration['allocation']):
+            raise ValueError("Unexpected training split")
+        extra, _ = load_cohorts(rows,paths,DoorMotions(paths,rep,a.device),model,a.device)
+        train.extend(extra)
+        supplemental.append(dict(directory=str(directory),behavior=registration['anchor'],seeds=seeds,
+            lanes=len(extra),windows={h:sum(len(e.starts(h)) for e in extra) for h in (1,7,32)}))
+    if len(set(e.group for e in train+val)) != len(train)+len(val):
+        raise ValueError("Overlapping episode identities")
     horizons = (1, 7, 32) if a.train_h32 else (1, 7)
     windows = {s: ContactWindows(train, s) for s in horizons}
     learners = {}
@@ -140,11 +168,11 @@ def main():
         learners[s] = WorldModelLearner(dynamics, rep, cfg, a.device)
     for learner in learners.values():
         learner.optimizers = learners[7].optimizers
-    if previous is None:
+    if previous is None and not a.init_wm:
         for ep in train:
             valid = torch.as_tensor(ep.valid, device=a.device)
             learners[7].update_normalization(ep.state[:-1][valid], ep.action[valid])
-    else:
+    elif previous is not None:
         for opt, weights in zip(learners[7].optimizers, previous['optimizers'], strict=True):
             opt.load_state_dict(weights)
         torch.set_rng_state(previous['torch_rng'])
@@ -164,7 +192,9 @@ def main():
                   full=rep.full_state_dim, representation=rep.rep_state_dim, prediction=rep.prediction_dim,
                   context=list(CONTEXT_NAMES), batch_size=a.batch_size, hidden=hidden, minibatches=a.minibatches,
                   training_horizons=horizons, h32_per_ten=2 if a.train_h32 else 0, tcp_loss=a.tcp_loss,
-                  loss_scales=vars(learners[7].cfg), actual_physics='native held teacher',
+                  loss_scales=vars(learners[7].cfg), actual_physics=sorted({json.loads((ep.path/'metadata.json').read_text()).get('physics_source','unspecified') for ep in episodes} | ({'MuJoCo Warp held 20 ms'} if supplemental else set())),
+                  init_wm=str(a.init_wm) if a.init_wm else None, fixed_initializer_statistics=bool(a.init_wm),
+                  supplemental_train=supplemental,
                   sources=[dict(path=str(ep.path), group=ep.group, split=ep.split, side=ep.side,
                                 valid_steps=int(ep.valid.sum()), partial_steps=int((~ep.valid).sum()),
                                 mode_counts={m:int((ep.modes[ep.valid]==m).sum()) for m in MODES}) for ep in episodes])
@@ -205,7 +235,7 @@ def main():
         writer.writeheader()
         writer.writerows(scored)
     (out/'outcome.json').write_text(json.dumps(dict(completed=a.minibatches, window_updates=counts,
-              teacher_samples=(a.minibatches-start)*a.batch_size, online_samples=0, gradient=gradient), indent=2)+'\n')
+              offline_physical_windows_drawn=(a.minibatches-start)*a.batch_size, online_samples=0, gradient=gradient), indent=2)+'\n')
     print(out, counts, gradient, flush=True)
 
 
