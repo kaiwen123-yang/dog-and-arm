@@ -1,6 +1,7 @@
 """Additional read-only traces and the registered training-clock single-world diagnostic."""
 import json
 import traceback
+import sys
 import warnings
 from pathlib import Path
 import numpy as np
@@ -13,10 +14,23 @@ def capture_warnings(path):
     original = warnings.showwarning
     def report(message, category, filename, lineno, file=None, line=None):
         if 'overflow' in str(message).lower():
+            details={}
+            frame=sys._getframe()
+            while frame is not None:
+                local=frame.f_locals
+                if frame.f_code.co_name=='evaluate_segment':
+                    details['active_side']=local.get('side')
+                if frame.f_code.co_name=='put_data' and 'f' in local:
+                    details['warp_data_field']=local['f'].name
+                    val=np.asarray(local['val'])
+                    bad=np.abs(val)>np.finfo(np.float32).max
+                    details.update(shape=list(val.shape),dtype=str(val.dtype),outside_float32=int(bad.sum()),
+                                   first_bad_indices=np.argwhere(bad)[:4].tolist())
+                frame=frame.f_back
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open('a') as f:
                 f.write(json.dumps(dict(category=category.__name__,message=str(message),file=filename,
-                    line=lineno,stack=traceback.format_stack(),**WARNING_CONTEXT))+'\n')
+                    line=lineno,stack=traceback.format_stack(),**WARNING_CONTEXT,**details))+'\n')
         original(message,category,filename,lineno,file,line)
     warnings.simplefilter('always',RuntimeWarning)
     warnings.showwarning=report

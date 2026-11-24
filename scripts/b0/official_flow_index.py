@@ -9,7 +9,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from scripts.b0.official_flow import OUT, RAW, NODES, io
+from scripts.b0.official_flow import OUT, RAW, NODES, CONTINUATION, io
 
 SOURCE='695f3d7b41a1b1774e8955c31ae02d98733e28eb'
 NOMINAL = dict(root_position_rmse_m=.01,root_orientation_rmse_deg=np.rad2deg(.02),
@@ -190,4 +190,9 @@ def index(stop):
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('stop',type=int)
-    index(p.parse_args().stop)
+    stop=p.parse_args().stop
+    if CONTINUATION:
+        from scripts.b0.official_flow_continuation_index import index as continuation_index
+        continuation_index(stop)
+    else:
+        index(stop)

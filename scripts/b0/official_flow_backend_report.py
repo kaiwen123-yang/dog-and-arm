@@ -24,7 +24,7 @@ def report():
             path=refs/old['episode']
             test=fn(path,j,q[j-9:j+1],v[j-9:j+1],prev[j-10:j])
             test2=fn(path,j,q[j-9:j+1],v[j-9:j+1],prev[j-10:j])
-            assert np.array_equal(test,test2)
+            repeat_error=float(np.max(abs(test-test2)))
             full=io.read(OUT/'backend'/f'u1000_{backend}'/side/'full/nominal/result.json')
             with np.load(Path(full['raw_directory'])/'solved_servo_trace.npz') as tr:
                 step=10*j
@@ -37,7 +37,7 @@ def report():
                             preceding_wheel_speed_rad_s=tr['v_pre'][prev_idx,mapping.dof[wheel]].tolist())
             end=full['last_physical_observation']
             pair[backend]=dict(replayed_action_max_abs_difference=float(np.max(abs(test-a[j]))),
-                same_input_repeated_action_exact=True,reference_frame=j,snapshot=snap,
+                same_input_repeated_action_exact=bool(np.array_equal(test,test2)),same_input_repeat_max_abs=repeat_error,reference_frame=j,snapshot=snap,
                 repeated_phase_events=[v['phase'] for v in full['events']],original_steps=old['physics_steps'],
                 repeated_steps=full['physics_steps'],original_failure=old['first_failure'],repeat_failure=full['first_failure'],
                 last_xy_m=end['station_error_m'],last_heading_deg=end['heading_error_deg'],
@@ -51,10 +51,19 @@ def report():
     warnings=[]
     for p in sorted((OUT/'backend').glob('warnings_*.jsonl')):
         warnings.extend(json.loads(line) for line in p.read_text().splitlines())
+    extra=[io.read(p) for p in (OUT/'backend').glob('warning_*/evaluation.json')]
+    fluid={}
+    for side in ('mobile','push'):
+        m=make_model(side)
+        fluid[side]=dict(wind=m.opt.wind.tolist(),density=m.opt.density,viscosity=m.opt.viscosity,
+            warp_has_fluid=bool(m.opt.wind.any() or m.opt.density>0 or m.opt.viscosity>0))
     io.write(OUT/'backend'/'comparison.json',dict(sides=rows,original_2ms_repeats=4,fine_cases=2,
+        additional_warning_cases=sum(r['evaluated'] for r in extra),fluid_model=fluid,
         warning_occurrences=warnings,old_warning=dict(category='RuntimeWarning',message='overflow encountered in cast',
         file='warp/_src/types.py',line=3728,order='after pull and before push verdict in u1000 Warp full'),
-        interpretation='Warning causality requires the actual stack/field. Finite traces do not establish harmlessness.'))
+        interpretation=('The instrumented push construction converted efm_fluid during put_data. '
+            'Both models have has_fluid=false. In the installed derivative.py the buffer is zeroed before generation (3223), '
+            'and fluid qH/multiply kernels are guarded by has_fluid (3379/3478). The historical warning has no field receipt.')))
 
 
 if __name__=='__main__':

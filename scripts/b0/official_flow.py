@@ -193,19 +193,26 @@ def map_observation_history(run, scratch):
                 scope="storage only; all sampled observations transferred losslessly to original CUDA device")
 
 
-def host_saved_activations(limit):
+def host_saved_activations(limit, buffers):
     # Byte-preserving transport for autograd's saved inputs on a shared device.
     # RNG, forward/backward kernels, parameters, losses and optimizer calls stay on CUDA.
-    moved=0
+    moved=slot=0
     def pack(tensor):
-        nonlocal moved
+        nonlocal moved,slot
         if (tensor.device.type=='cuda' and tensor.ndim>=2 and tensor.shape[0]==4096
                 and tensor.nbytes>=4*1024**2 and moved<limit):
             moved+=tensor.nbytes
-            return tensor.device,tensor.detach().to('cpu',copy=True)
+            if slot==len(buffers):
+                buffers.append(torch.empty_like(tensor,device='cpu',pin_memory=True))
+            host=buffers[slot]
+            if host.shape!=tensor.shape or host.dtype!=tensor.dtype:
+                raise RuntimeError('Fixed graph activation layout changed')
+            slot+=1
+            host.copy_(tensor.detach(),non_blocking=True)
+            return tensor.device,host
         return tensor.detach()
     def unpack(saved):
-        return saved[1].to(saved[0]) if isinstance(saved,tuple) else saved
+        return saved[1].to(saved[0],non_blocking=True) if isinstance(saved,tuple) else saved
     return torch.autograd.graph.saved_tensors_hooks(pack,unpack)
 
 
@@ -240,6 +247,8 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
         io.write(OUT/'interface.json',info)
         u=0
         save(run,u)
+    # The captured CUDA graph reuses these pinned addresses on every replay.
+    activation_buffers=[]
     started=time.monotonic()
     while u < stop:
         try:
@@ -267,7 +276,7 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
                     wm=run.learners[7].update(run.replay.windows(7,run.b) for _ in range(10))
                     if not torch.stack(list(wm.values())).isfinite().all():
                         raise FloatingPointError('nonfinite WM optimizer result')
-                    with (host_saved_activations(host_activation_gib*1024**3)
+                    with (host_saved_activations(host_activation_gib*1024**3,activation_buffers)
                           if host_activation_gib else nullcontext()):
                         policy=run.policy.update()
                 metrics={k:float(v) for k,v in (wm|policy).items()}
