@@ -1,5 +1,9 @@
 # dog-and-arm 项目指令
 
+## 2026-11-25 北京时间｜官方同链已实训至预算末点 u4991
+
+u3000 主段完成后依据同钟双侧物理改善继续。u4000 Warp 原接触首次通过背推 `open_5` 和 `stable_grip`；u4991 同包 Warp 与 native MuJoCo 3.3.0 都为 2/10，同样两项通过。五节点完整从头 0/20、free 0/300。B0-04，最终候选空，合格完整双侧回报 NA，完整成功视频 0。保留主链累计 4,991 Actor / 49,910 WM / 99,820 Critic，51,124,715 有效转移。本轮实际支出含中断为 3,997 / 40,000 / 79,940，原 WM 上限已用尽。剩余到 u5000 的 9 次更新待额外预算授权。[实训报告](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md) · [独立 manifest](results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json) · [预算决定](results/b0/standard_official_flow_continuation_20261124/budget_decision.json) · [下一入口](prompts/NEXT_RUN.txt)
+
 当前入口为 reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md、docs/B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md、results/b0/official_flow_review_20261124/continuation_registration.json、PROJECT_STATE.md 顶部和 prompts/NEXT_RUN.txt。51a0133 的 official_flow_s0_v1 已真实完成 u1000：1000 H32/10000 H7 WM/20000 Critic，10255490有效转移。B0-04、候选null、合格完整双侧回报NA、V0为0。110接触案0通过/0接触事件；24 full案0成功但有15驶近/11停车事件。新Actor free0/240均完成7s，未达精度，不继承旧B0-03资格。
 
 下一轮完整恢复同一u1000，先累计u3000，有真实物理依据至u5000；本轮新增上限4000Actor/40000WM/80000Critic，历史1000不重复计。保留proprio/history10和官方在线统计/Ratio/10H7/H32，不新Actor、不冷WM、不切rep_state、不再加WM误差前置。只补NODES/原子保存、独立输出与显式父恢复、≤500物理tick轻量覆盖留档；保持学习cfg严格相同。两项有限诊断并行，不要求先发现bug才续训。当前任务仍为标准迁移，完整成功立即交连续视频，再继续原双侧和多seed资格。

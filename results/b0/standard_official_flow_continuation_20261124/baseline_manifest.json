@@ -108,19 +108,19 @@
     "critic": 20000
   },
   "cumulative_steps": {
-    "wm": 40000,
-    "actor": 4000,
-    "critic": 80000
+    "wm": 49910,
+    "actor": 4991,
+    "critic": 99820
   },
   "retained_new_steps": {
-    "wm": 30000,
-    "actor": 3000,
-    "critic": 60000
+    "wm": 39910,
+    "actor": 3991,
+    "critic": 79820
   },
   "charged_new_steps": {
-    "wm": 30090,
-    "actor": 3006,
-    "critic": 60120
+    "wm": 40000,
+    "actor": 3997,
+    "critic": 79940
   },
   "discarded_attempts": [
     {
@@ -172,29 +172,31 @@
       "interrupted_partial_tick_excluded": true
     }
   ],
-  "new_valid": 30719064,
-  "cumulative_valid": 40974554,
-  "new_lane_intervals": 33665024,
-  "new_microsteps": 2693201920,
-  "new_prefix_lane_intervals": 2945960,
-  "new_valid_terminal": 266133,
-  "retained_training_wall_s": 5146.9593827575445,
+  "new_valid": 40869225,
+  "cumulative_valid": 51124715,
+  "new_lane_intervals": 44564480,
+  "new_microsteps": 3565158400,
+  "new_prefix_lane_intervals": 3695255,
+  "new_valid_terminal": 332255,
+  "retained_training_wall_s": 6759.075548486784,
   "wall_by_process_through_retained_update_s": {
     "durable_u1001": 40.95530388131738,
     "1795540571.1211922": 3504.977274749428,
-    "1795544643.2252562": 1601.026804126799
+    "1795544643.2252562": 1601.026804126799,
+    "1795546320.2978976": 1612.1161657292396
   },
   "wall_scope": "monotonic time after restore to last retained update in each process, includes internal checkpoints except its own final write; evaluation and discarded attempts excluded",
-  "aggregate_new_simulated_seconds": 673300.48,
-  "new_ratio_stored_positions_per_valid": 16.00048751485397,
-  "new_wm_windows": 61440000,
-  "new_wm_scored_successors": 430080000,
-  "new_imagined_steps": 393216000,
+  "aggregate_new_simulated_seconds": 891289.6,
+  "new_ratio_stored_positions_per_valid": 15.999457782720372,
+  "new_wm_windows": 81735680,
+  "new_wm_scored_successors": 572149760,
+  "new_imagined_steps": 523108352,
   "nodes": [
     1500,
     2000,
     3000,
-    4000
+    4000,
+    4991
   ],
   "physics": [
     {
@@ -412,6 +414,60 @@
           "heading_deg": 0.11547446818422338
         }
       ]
+    },
+    {
+      "node": 4991,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 2,
+      "contact_events": 3,
+      "full_cases": 2,
+      "full_success": 0,
+      "full": [
+        {
+          "side": "pull",
+          "completed": "approach_base,settle",
+          "phase": "pregrasp",
+          "failure": "door_contact_outside_manipulation",
+          "xy_m": 0.005254054834433226,
+          "heading_deg": 1.180615760119814
+        },
+        {
+          "side": "push",
+          "completed": "approach_base,settle",
+          "phase": "pregrasp",
+          "failure": "wheel_support_or_tilt",
+          "xy_m": 0.0062270451184752934,
+          "heading_deg": 0.14410912731707434
+        }
+      ]
+    },
+    {
+      "node": 4991,
+      "backend": "native",
+      "contact_cases": 10,
+      "contact_pass": 2,
+      "contact_events": 4,
+      "full_cases": 2,
+      "full_success": 0,
+      "full": [
+        {
+          "side": "pull",
+          "completed": "approach_base,settle",
+          "phase": "pregrasp",
+          "failure": "timeout:pregrasp",
+          "xy_m": 0.00851088105147293,
+          "heading_deg": 0.28728138250386864
+        },
+        {
+          "side": "push",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "timeout:settle",
+          "xy_m": 0.00880027654485134,
+          "heading_deg": 0.030684251538561712
+        }
+      ]
     }
   ],
   "free": [
@@ -505,6 +561,30 @@
     },
     {
       "node": 4000,
+      "task": "park",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 4991,
+      "task": "support",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 4991,
+      "task": "moving_arm",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 4991,
       "task": "park",
       "passed": 0,
       "attempted": 20,
@@ -752,33 +832,93 @@
       "both_ticks": 316,
       "longest_dual_ticks": 309,
       "dual_seconds": 0.618
+    },
+    {
+      "node": 4991,
+      "start": "pull_0_validation_grip_grasp",
+      "phase": "grasp",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 4991,
+      "start": "pull_0_validation_grip_hold",
+      "phase": "hold",
+      "actor_queries": 1,
+      "scored_ticks": 1,
+      "both_ticks": 1,
+      "longest_dual_ticks": 1,
+      "dual_seconds": 0.002
+    },
+    {
+      "node": 4991,
+      "start": "pull_0_validation_grip_release",
+      "phase": "release",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 151,
+      "longest_dual_ticks": 69,
+      "dual_seconds": 0.138
+    },
+    {
+      "node": 4991,
+      "start": "push_0_validation_grip_grasp",
+      "phase": "grasp",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 251,
+      "longest_dual_ticks": 236,
+      "dual_seconds": 0.47200000000000003
+    },
+    {
+      "node": 4991,
+      "start": "push_0_validation_grip_hold",
+      "phase": "hold",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 320,
+      "longest_dual_ticks": 320,
+      "dual_seconds": 0.64
+    },
+    {
+      "node": 4991,
+      "start": "push_0_validation_grip_release",
+      "phase": "release",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 320,
+      "longest_dual_ticks": 320,
+      "dual_seconds": 0.64
     }
   ],
   "video_manifests": [],
   "recovery": {
     "host": "autodl-d57",
     "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8",
-    "update": 4000,
-    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_004000.pt",
-    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_004000",
-    "clock": 10991,
-    "simulated": 45019136,
-    "valid": 40974554,
+    "update": 4991,
+    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_004991.pt",
+    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_004991",
+    "clock": 13652,
+    "simulated": 55918592,
+    "valid": 51124715,
     "steps": {
-      "wm": 40000,
-      "actor": 4000,
-      "critic": 80000
+      "wm": 49910,
+      "actor": 4991,
+      "critic": 99820
     },
     "stats": {
-      "wm_state": 41025033,
-      "wm_proc": 41025033,
-      "proprio": 40974554,
-      "goal": 40974554
+      "wm_state": 51175194,
+      "wm_proc": 51175194,
+      "proprio": 51124715,
+      "goal": 51124715
     },
     "ratio": {
-      "previous_clock": 40970240.0,
+      "previous_clock": 51118080.0,
       "pending": 0,
-      "cohorts": 10991
+      "cohorts": 13652
     }
   },
   "V0": 0,
@@ -793,5 +933,71 @@
   "C": null,
   "seeds_1_2": null,
   "H": null,
-  "scope": "Individual failed full attempts retain their measured-prefix diagnostics; qualified scores require success."
+  "scope": "Individual failed full attempts retain their measured-prefix diagnostics; qualified scores require success.",
+  "close": {
+    "status": "authorized_budget_complete",
+    "decided_beijing": "2026-11-25T03:30:21.929488+08:00",
+    "extension_evidence": "decision_u003000.json",
+    "additional_physical_evidence": "repeat_u004000.json",
+    "requested_node": 5000,
+    "actual_last_node": 4991,
+    "registered_cap": {
+      "wm": 40000,
+      "actor": 4000,
+      "critic": 80000
+    },
+    "actual_charged": {
+      "wm": 40000,
+      "actor": 3997,
+      "critic": 79940
+    },
+    "actual_retained": {
+      "wm": 39910,
+      "actor": 3991,
+      "critic": 79820
+    },
+    "discarded": {
+      "wm": 90,
+      "actor": 6,
+      "critic": 120
+    },
+    "exact_remaining_under_registered_cap": {
+      "wm": 0,
+      "actor": 3,
+      "critic": 60
+    },
+    "further_complete_cycles_under_cap": 0,
+    "remaining_to_u5000": {
+      "actor": 9,
+      "wm": 90,
+      "critic": 180
+    },
+    "over_original_cap_to_reach_u5000": {
+      "actor": 6,
+      "wm": 90,
+      "critic": 120
+    },
+    "additional_budget_authorized": false,
+    "physics_result": "Both original engines passed push/open_5 and push/stable_grip at u4991; both scored 2/10.",
+    "same_package_contacts_required": 10,
+    "qualified": false,
+    "D": "not run",
+    "C": "not run",
+    "seed1_2": "not run",
+    "H": "not run",
+    "full_successes": 0,
+    "V0": 0,
+    "qualified_bilateral_return": null,
+    "current_policy_u5000_block": "not run: u5000 not reached",
+    "recovery": "node_004991.json",
+    "restore": "restored_u004991.json"
+  },
+  "coverage_archive": "coverage_archive.json",
+  "milestones": "milestones.json",
+  "terminal_restore": "restored_u004991.json",
+  "confirmed_sustained_contact": "repeat_u004000.json",
+  "case_rows": "physical_cases.csv",
+  "physical_ratios": "last_physical_intervals.csv",
+  "actuator_ratios": "wheel_arm_jaw.csv",
+  "complete_video_register": "video_manifest.json"
 }

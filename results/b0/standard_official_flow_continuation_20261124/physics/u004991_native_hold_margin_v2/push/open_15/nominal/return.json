@@ -1,0 +1,125 @@
+{
+  "protocol": "fixed_effort_successor_2ms_v1",
+  "scope": "segment_from_registered_start",
+  "side": "push",
+  "segment": "open_15",
+  "episode": "push_15_train",
+  "backend": "native",
+  "physical_passed": false,
+  "case": "nominal",
+  "prefix_excluded_substeps": 100,
+  "previous_action_valid_at_start": true,
+  "reference_query": "registered reference substeps/qpos,qvel at start+executed interval end (2 ms grid)",
+  "score_hold": "after the original terminal event, preserve its physical constraints and readiness through reference end",
+  "planned_start_substep": 8750,
+  "planned_end_substep": 15267,
+  "executed_substeps": 6517,
+  "absorbed_substeps": 0,
+  "planned_duration_s": 13.034,
+  "measured_duration_s": 13.034,
+  "equivalent_planned_20ms": 651.7,
+  "max_positive_reward_per_20ms": 0.1,
+  "denominator": 65.17,
+  "first_failure": {
+    "reason": "reference_exhausted",
+    "phase": "hold",
+    "physics_steps": 6517,
+    "readiness": {
+      "current": 1369,
+      "required": 1500,
+      "best": 1369,
+      "last_not_ready": {
+        "reference_substep": 13897,
+        "ramp": true,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": true,
+        "gripped": true,
+        "detached": false,
+        "door_speed_rad_s": 0.010001577497859859,
+        "planar_speed_m_s": 0.0005570614199719441,
+        "yaw_rate_deg_s": 0.0587823900695433,
+        "tcp_handle_error_m": 0.0030001505168673007,
+        "width_m": 0.021891073283296602
+      }
+    }
+  },
+  "measured_peak_net_force_n": 4.966899236284731,
+  "physical_gate_pass_step": null,
+  "physical_wall_seconds": 14.349036572501063,
+  "normalized_fixed_effort": 0.9991243467022352,
+  "reference_phase_contributions": {
+    "hold": {
+      "measured_reward": 20.051039326889907,
+      "contribution_to_case": 0.3076728452798819
+    },
+    "open": {
+      "measured_reward": 45.06189434769476,
+      "contribution_to_case": 0.6914515014223532
+    }
+  },
+  "normalized_canonical": 0.9992526555487486,
+  "tracking_errors": {
+    "root_position_rmse_m": 0.002220948770332206,
+    "root_orientation_rmse_deg": 0.1904191861708092,
+    "root_linear_velocity_rmse_m_s": 0.0013372237907674038,
+    "root_body_angular_velocity_rmse_rad_s": 0.002749594795941837,
+    "tcp_position_rmse_m": 0.018275240459876534,
+    "max_joint_range_normalized_rmse": 0.02760443529296506,
+    "per_joint_range_normalized_rmse": {
+      "m1_FAR_ABAD_JOINT": 0.002708934846883615,
+      "m1_FAR_HIP_JOINT": 0.001213426384595211,
+      "m1_FAR_KNEE_JOINT": 0.0006941790652721833,
+      "m1_FBL_ABAD_JOINT": 0.003749066702742244,
+      "m1_FBL_HIP_JOINT": 0.0015196159512051019,
+      "m1_FBL_KNEE_JOINT": 0.0007505046273485335,
+      "m1_RAR_ABAD_JOINT": 0.003085234050902902,
+      "m1_RAR_HIP_JOINT": 0.0007587812243216312,
+      "m1_RAR_KNEE_JOINT": 0.0004579397824427389,
+      "m1_RBL_ABAD_JOINT": 0.0011328117109855953,
+      "m1_RBL_HIP_JOINT": 0.0010112070677452843,
+      "m1_RBL_KNEE_JOINT": 0.0012529101987208099,
+      "piper_joint1": 0.0007926404411635202,
+      "piper_joint2": 0.018191130554530935,
+      "piper_joint3": 0.02760443529296506,
+      "piper_joint4": 0.00618147045952029,
+      "piper_joint5": 0.001806505517636078,
+      "piper_joint6": 0.007332235884509928
+    },
+    "leg_position_rmse_rad": 0.004858477110678132,
+    "arm_position_rmse_rad": 0.04612491070414157,
+    "finite_joint_velocity_rmse_rad_s": 0.012637600094818853,
+    "wheel_speed_rmse_rad_s": 0.0354969446440266,
+    "gripper_width_rmse_m": 0.0002968628257704683,
+    "finger_equality_residual_rmse_m": 0.0011079335320893062,
+    "door_angle_rmse_deg": 1.5323367947162665,
+    "door_rate_rmse_rad_s": 0.008419581958166568
+  },
+  "error_samples": "unweighted measured control-interval endpoints including any last partial interval",
+  "signed_reward_term_sums": {
+    "fixed_effort": {
+      "anchor_position": 6.516642599366605,
+      "anchor_orientation": 6.516550527885556,
+      "body_position": 13.010405792854726,
+      "body_orientation": 13.010573203675449,
+      "body_linear_velocity": 13.03342363703996,
+      "body_angular_velocity": 13.033709946088493,
+      "action_rate": -0.008372032326121825,
+      "joint_limit": 0.0
+    },
+    "canonical": {
+      "anchor_position": 6.516642599366605,
+      "anchor_orientation": 6.516550527885556,
+      "body_position": 13.010405792854726,
+      "body_orientation": 13.010573203675449,
+      "body_linear_velocity": 13.03342363703996,
+      "body_angular_velocity": 13.033709946088493,
+      "action_rate": -1.0144798829062052e-05,
+      "joint_limit": 0.0
+    }
+  },
+  "first_canonical_action_l2_jump_from_applied": 0.06312549904925589,
+  "first_piper_j2_jump_rad": 0.008362668039710287
+}

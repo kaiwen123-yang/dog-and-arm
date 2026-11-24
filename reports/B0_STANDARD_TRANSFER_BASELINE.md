@@ -1,5 +1,9 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-25｜最新已执行节点
+
+official_flow_s0_v1 同链 u4991 在 Warp/native 原接触均 2/10，背推 5° 开门保持与稳定握持通过。正式接触尚未取得十项资格，完整尝试 0/20，V0=0，合格双侧回报 NA，候选为空。原本轮 WM 上限实付 40,000 批。实训、回滚、有限诊断与后续预算见[同链续训结果](B0_OFFICIAL_FLOW_CONTINUATION_20261124.md)和[独立 manifest](../results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json)。
+
 ## 2026-11-24｜u1000 审查与下一段登记
 
 当前实测仍是51a0133：B0-04、候选null、合格完整双侧回报NA、V0成功视频0。官方在线主环已完成1000H32/10000WM/20000Critic，原接触0/110，完整任务0/24但产生15驶近/11停车事件。新Actor free0/240均跑满7s、精度不通过。[独立审查](B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md) · [结果复算](../results/b0/official_flow_review_20261124/evidence_audit.json)

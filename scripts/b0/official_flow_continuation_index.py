@@ -21,8 +21,11 @@ def index(stop):
         assert r['statistics']['proprio']==r['valid'] and r['statistics']['wm_state']==r['valid']+50479
     assert updates[-1]['valid']==latest['valid']
     nodes=[u for u in (1500,2000,3000,4000,5000) if u<=stop]
+    if (OUT/'coverage_u004991.json').exists() and 4991<=stop and 4991 not in nodes:
+        nodes.append(4991)
     if stop not in nodes:
         nodes.append(stop)
+    nodes.sort()
     cases,clocks,servo,free,summary,videos=[],[],[],[],[],[]
     for u in nodes:
         tag=f'u{u:06}'
@@ -130,4 +133,11 @@ def index(stop):
         scope='Individual failed full attempts retain their measured-prefix diagnostics; qualified scores require success.')
     if any(row['contact_pass']==10 for row in summary) or videos:
         result['qualification_followthrough_required']=True
+    decision=OUT/'budget_decision.json'
+    if decision.is_file() and io.read(decision)['actual_last_node']==stop:
+        result.update(close=io.read(decision),coverage_archive='coverage_archive.json',
+            milestones='milestones.json',terminal_restore=f'restored_u{stop:06}.json',
+            confirmed_sustained_contact='repeat_u004000.json',case_rows='physical_cases.csv',
+            physical_ratios='last_physical_intervals.csv',actuator_ratios='wheel_arm_jaw.csv',
+            complete_video_register='video_manifest.json')
     io.write(OUT/'baseline_manifest.json',result)

@@ -1,5 +1,7 @@
 # B0 下一轮：完整恢复 official_flow_s0_v1，集中推进真实任务
 
+**2026-11-25 执行回读。** 本登记的 u3000 主段已完成，依据双侧物理实测延长，达到原实付预算末点 u4991。实际结果与 u5000 的超额问题见[实训报告](../reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md)和[预算决定](../results/b0/standard_official_flow_continuation_20261124/budget_decision.json)。以下为 11 月 24 日启动前原计划。
+
 登记日期：2026-11-24，北京时间。接续已完成的 [51a0133](https://github.com/kaiwen123-yang/dog-and-arm/commit/51a0133802983b65602949000099e7d18fa8e835)。**本文件是下一轮计划，尚未发生新增训练或物理成功。** 当前 B0-04、最终候选 null、合格完整双侧回报 NA。解释与证据见[本轮审查](../reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md)和[机器登记](../results/b0/official_flow_review_20261124/continuation_registration.json)。
 
 ## 1. 不变的目标与本轮决定

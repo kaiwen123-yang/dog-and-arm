@@ -1,5 +1,9 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-25 北京时间｜官方同链已实训至预算末点 u4991
+
+u3000 主段完成后依据同钟双侧物理改善继续。u4000 Warp 原接触首次通过背推 `open_5` 和 `stable_grip`；u4991 同包 Warp 与 native MuJoCo 3.3.0 都为 2/10，同样两项通过。五节点完整从头 0/20、free 0/300。B0-04，最终候选空，合格完整双侧回报 NA，完整成功视频 0。保留主链累计 4,991 Actor / 49,910 WM / 99,820 Critic，51,124,715 有效转移。本轮实际支出含中断为 3,997 / 40,000 / 79,940，原 WM 上限已用尽。剩余到 u5000 的 9 次更新待额外预算授权。[实训报告](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md) · [独立 manifest](results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json) · [预算决定](results/b0/standard_official_flow_continuation_20261124/budget_decision.json) · [下一入口](prompts/NEXT_RUN.txt)
+
 ## 2026-11-25 01:53 北京时间｜同一标准链已冻结 u2000
 
 已完成 u1500 和 u2000 物理评测，两节点 Warp 原十项均 0/10，完整双后端均 0/4，free 均 0/60。u2000 Warp 背推恢复停车；纯 Actor 背推保持入口有 2 ms 双指，未到第二次策略查询。继续在同链跑向 u3000。当前 B0-04、候选空、合格回报 NA、V0 为 0。[本轮报告](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md) · [计数与逐案](results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json)

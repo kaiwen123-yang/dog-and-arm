@@ -1,5 +1,9 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
+## 2026-11-25｜最新已执行节点
+
+official_flow_s0_v1 同链 u4991 在 Warp/native 原接触均 2/10，背推 5° 开门保持与稳定握持通过。正式接触尚未取得十项资格，完整尝试 0/20，V0=0，合格双侧回报 NA，候选为空。原本轮 WM 上限实付 40,000 批。实训、回滚、有限诊断与后续预算见[同链续训结果](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md)和[独立 manifest](results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json)。
+
 **当前先完成固定官方 SuperMimic 在 M1＋Piper 的标准迁移，达到或接近既定论文参照并冻结独立结果，随后才开发算法、多模态/VLA 和实机联合系统。** WM、可微动力学和 H32 Actor/Critic 属于当前 B0；V0 完整成功仿真视频是新增交付。
 
 2026-11-24 已审查 [51a0133 的官方在线实训](reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md)：official_flow_s0_v1 实际完成1000 H32/10000 WM/20000 Critic、10255490有效转移。**仍B0-04、候选null、合格完整双侧回报NA。** 110接触案0通过；24完整尝试0成功，但已有驶近15次、停车11次完成事件，最远未完成预抓取。新Actor free0/240均运行7s，精度未通过。[最新审查](reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md) · [目标差距](docs/GOAL_GAP_20261124.md)
