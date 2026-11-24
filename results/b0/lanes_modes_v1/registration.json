@@ -1,0 +1,73 @@
+{
+  "anchor": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+  "reference_directory": "results/raw_large/b0/full_warp_hold_park_r1",
+  "allocation": [
+    [
+      "train",
+      84100
+    ],
+    [
+      "train",
+      84101
+    ],
+    [
+      "train",
+      84102
+    ],
+    [
+      "train",
+      84103
+    ],
+    [
+      "train",
+      84104
+    ],
+    [
+      "train",
+      84105
+    ],
+    [
+      "train",
+      84106
+    ],
+    [
+      "train",
+      84107
+    ],
+    [
+      "validation",
+      84200
+    ],
+    [
+      "validation",
+      84201
+    ],
+    [
+      "validation",
+      84202
+    ]
+  ],
+  "worlds": 64,
+  "steps": 40,
+  "strata": [
+    [
+      "approach_arm"
+    ],
+    [
+      "grasp"
+    ],
+    [
+      "open"
+    ],
+    [
+      "hold"
+    ],
+    [
+      "release"
+    ],
+    [
+      "retreat_arm"
+    ]
+  ],
+  "design": "Each lane: independent RSI in the listed strata, 100 real prefix substeps, 1/3/5/10 x 20ms perturbed learned feedback then return to unperturbed feedback. Total jaw width additions Uniform[0,14] mm; arm vector random direction, norm Uniform[0,25] mrad, every fourth lane zero arm or zero jaw. Validity stops after first hard terminal. All attempts retained; no case references."
+}

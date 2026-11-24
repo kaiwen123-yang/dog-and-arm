@@ -1,0 +1,102 @@
+{
+  "wm": "results/b0/lanes_s0_to100_v1/checkpoint_000100.pt",
+  "data": "results/b0/recovery_b_grip_challenge_r1",
+  "device": "cuda:0",
+  "registration": {
+    "anchor": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+    "reference_directory": "results/raw_large/b0/full_warp_hold_park_r1",
+    "allocation": [
+      [
+        "train",
+        71200
+      ],
+      [
+        "train",
+        71201
+      ],
+      [
+        "train",
+        71202
+      ],
+      [
+        "train",
+        71203
+      ],
+      [
+        "train",
+        71204
+      ],
+      [
+        "train",
+        71205
+      ],
+      [
+        "train",
+        71206
+      ],
+      [
+        "train",
+        71207
+      ],
+      [
+        "calibration",
+        71300
+      ],
+      [
+        "calibration",
+        71301
+      ],
+      [
+        "validation",
+        71400
+      ],
+      [
+        "validation",
+        71401
+      ],
+      [
+        "validation",
+        71402
+      ]
+    ],
+    "worlds": 64,
+    "steps": 40,
+    "design": "Each lane: independent open/hold RSI, 100 real prefix substeps, 1/3/5/10 x 20ms perturbed learned feedback then return to unperturbed feedback. Total jaw width additions Uniform[0,14] mm; arm vector random direction, norm Uniform[0,25] mrad, every fourth lane zero arm or zero jaw. Validity stops after first hard terminal. All attempts retained; no case references."
+  },
+  "counts": {
+    "validation_71400": {
+      "attempted_lanes": 64,
+      "valid_lanes": 64,
+      "valid_transitions": 1598,
+      "valid_h32_lanes": 36,
+      "valid_h32_windows": 324,
+      "physical_failures": 28,
+      "full_terminal_included": true
+    },
+    "validation_71401": {
+      "attempted_lanes": 64,
+      "valid_lanes": 64,
+      "valid_transitions": 1524,
+      "valid_h32_lanes": 34,
+      "valid_h32_windows": 306,
+      "physical_failures": 30,
+      "full_terminal_included": true
+    },
+    "validation_71402": {
+      "attempted_lanes": 64,
+      "valid_lanes": 64,
+      "valid_transitions": 1639,
+      "valid_h32_lanes": 38,
+      "valid_h32_windows": 342,
+      "physical_failures": 26,
+      "full_terminal_included": true
+    }
+  },
+  "window_cap": 512,
+  "sampling_seed": 301,
+  "normalizers_from": null,
+  "substep_state_check": "historical challenge stored per-substep forces and complete successor; no substep pose file",
+  "modes": "first interval: physical finger loads and commanded reference phase; recontact uses branch-local contact history",
+  "predictor": "open-loop propagation with measured clipped commands; comparison uses identical windows and successors",
+  "nonfinite": "count per predictor, metric, side, horizon and mode; large finite errors retained in maximum"
+}

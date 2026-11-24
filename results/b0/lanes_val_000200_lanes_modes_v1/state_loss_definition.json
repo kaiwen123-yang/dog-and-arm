@@ -1,0 +1,57 @@
+{
+  "source": "abc124c WorldModelLearner._compute_losses and _rollout",
+  "groups": {
+    "root_pos": {
+      "width": 3,
+      "unit": "m",
+      "nominal_error": 0.01
+    },
+    "root_ori": {
+      "width": 9,
+      "unit": "sqrt(0.5) times rotation matrix entries; nominal in rad",
+      "nominal_error": 0.02
+    },
+    "joint_pos": {
+      "width": 22,
+      "unit": "rad",
+      "nominal_error": 0.1
+    },
+    "joint_vel": {
+      "width": 22,
+      "unit": "rad/s",
+      "nominal_error": 3.14
+    },
+    "finger_pos": {
+      "width": 2,
+      "unit": "m",
+      "nominal_error": 0.002
+    },
+    "finger_vel": {
+      "width": 2,
+      "unit": "m/s",
+      "nominal_error": 0.05
+    },
+    "door_angle": {
+      "width": 1,
+      "unit": "rad",
+      "nominal_error": 0.03490658503988659
+    },
+    "door_speed": {
+      "width": 1,
+      "unit": "rad/s",
+      "nominal_error": 0.1
+    }
+  },
+  "state_loss": "mean squared error over h successor steps and all channels weighted by 1/nominal_error^2; then mean over sampled windows",
+  "group_columns": "unweighted group MSE over channels and all h successors",
+  "horizons": [
+    1,
+    7,
+    8,
+    32
+  ],
+  "window": "Within-lane valid 20 ms recorded clipped commands. Complete terminal interval included; no crossing reset or cohort boundary.",
+  "sampling": "Each side/h/stratum independently capped without replacement, numpy seed 301. All, physical start mode, and reference start phase overlap; do not add their counts.",
+  "physical_columns": "Endpoint errors at successor h. RMSE/P95/max over finite windows; nonfinite windows counted.",
+  "interpretation": "Recorded-action open loop on the transferred robot and door; dataset, channels and scales differ from G1."
+}

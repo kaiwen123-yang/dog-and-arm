@@ -2,9 +2,7 @@
 
 本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先按开源SuperMimic完成标准迁移，以达到或接近论文指标为目标，单独保留结果供后续比较；迁移成功并冻结基线后才开发新算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
-**11 月 24 日标准 B0 接触迁移仍未通过。** 已实际完成原坐标与固定 effort 的匹配训练至 u500，以及 ReturnSampler、Ratio、尾帧、WM 握持数据/统计、按 lane/age 重放的对照。八条配置链均为 seed0，u500 配对各 0/10，完整任务回报 NA。[独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [机器清单](results/b0/standard_baseline_20261124/baseline_manifest.json) · [逐案评分](results/b0/pair_units_v1/nominal_segments.csv) · [接续入口](prompts/NEXT_RUN.txt)
-
-**下一轮集中对齐逐lane采集、接触覆盖、原WM预热和单一标准配方联训。** [下一计划](docs/B0_STANDARD_TRANSFER_PLAN_20261124.md) · [本轮审查](reports/B0_STANDARD_ROUND_REVIEW_20261124.md) · [目标差距](docs/GOAL_GAP_20261124.md)
+**11 月 24 日，标准迁移已完成新采集生命周期、多模式世界模型预热与单配方 seed0 联训到 u200。** 六个冻结更新节点正式十项均为 0/10。逐 lane 复位提高有效采集率，预热改善双侧开环误差；真实策略仍在握持首 2ms 超门力。完整双侧回报 NA，下一轮集中检查实际夹口/臂首命令附近的动力学覆盖。[独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [新轮 manifest](results/b0/standard_lanes_20261124/baseline_manifest.json) · [逐案评分](results/b0/standard_lanes_20261124/nominal_segments.csv) · [下一入口](prompts/NEXT_RUN.txt)
 
 P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000动作BC和解析补偿的有效成绩单列保留，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
 

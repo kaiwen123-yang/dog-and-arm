@@ -2,7 +2,7 @@
 
 ## 2026-11-24 接续状态
 
-用户已明确：先专注 SuperMimic 标准迁移，迁移成功并冻结独立结果后再做算法开发。最新实验端点 7180672：八条 seed0 链、23 套正式十项、230 案全失败，完整双侧回报 NA，尚无最终候选。u500 是动作率单位配对；最完整对齐配置仅 u50，不能混用预算。当前执行 docs/B0_STANDARD_TRANSFER_PLAN_20261124.md，审查见 reports/B0_STANDARD_ROUND_REVIEW_20261124.md，实测入口 reports/B0_STANDARD_TRANSFER_BASELINE.md。下一轮集中对齐终止后逐 lane 重新采集、接触训练覆盖、原 H1/H7 WM 预热与一条主配方的真实 H32 联训；最多一个明确的小预算对照。新生命周期尚为计划，不能写成已实现。下面注明旧轮的描述为历史，已回收阶段不重复启动。
+先完成 SuperMimic 标准迁移并冻结独立结果，再做算法开发。最新单配方 standard_lanes_v1 已从 ee41ee3 实现逐 lane 采集、补采训练身份并预热门 WM，seed0 真实联训至 u200。六个节点十项均 0/10、完整回报 NA，尚在 B0-04。当前入口为 prompts/NEXT_RUN.txt、PROJECT_STATE 顶部、reports/B0_STANDARD_TRANSFER_BASELINE.md 与 results/b0/standard_lanes_20261124/baseline_manifest.json。旧 7180672 的八条链、230 案和 u500 单位对照预算另计。已结束任务不重开。
 
 ## 当前目标与授权
 
@@ -71,9 +71,9 @@
 
 ## 论文指标与独立标准结果
 
-- 目标方法ID为SuperMimic-M1Piper-standard-v1。reports/B0_STANDARD_TRANSFER_BASELINE.md及配套manifest是独立结果入口，最新7180672快照仍未完成、没有最终候选；对应results/b0/standard_baseline_20261124/baseline_manifest.json。不能把保存负结果当作标准阶段已结束。
+- 目标方法ID为SuperMimic-M1Piper-standard-v1。reports/B0_STANDARD_TRANSFER_BASELINE.md及配套manifest是独立结果入口，最新逐 lane u200 快照仍未完成、没有最终候选；对应 results/b0/standard_lanes_20261124/baseline_manifest.json。不能把保存负结果当作标准阶段已结束。
 - 对照论文v3与固定官方源，分别记原论文G1 benchmark、迁移场景的完整归一化tracking/WM误差/训练成本、原物理成功门槛。回报目标0.90、接近数值带0.88（本项目预登记0.02容差），每最终seed/侧/split分别报告且须过物理门槛；0.90是论文SONIC参照线，不是SuperMimic最佳值。缺完整轨迹记NA，不用Policy/reward、单步tracking或失败后诊断积分冒充。
-- 已完成并实训：固定基础effort动作率/reset哨兵、ReturnSampler、实际Ratio、逐clip夹末帧和逐样本lane/age。gain32的优化参数化不改变固定正则单位；固定统计、H1/H7混合和离线WM数据是登记平台配方，不是官方默认。当前同步40步cohort在lane终止后等待，下一执行按固定官方逐lane复位语义对齐，保留真实200ms前缀/独立history/clock、episode边界、实际预算和完整恢复。首次物理失败的完整数值有效20ms已可进入H1/Actor，不预设Actor初态池过滤错误。
+- 已完成并实训：固定基础effort动作率/reset哨兵、ReturnSampler、实际Ratio、逐clip夹末帧和逐样本lane/age。gain32的优化参数化不改变固定正则单位；固定统计、H1/H7混合和离线WM数据是登记平台配方，不是官方默认。standard_lanes_v1 已在终止后按 lane 复位，运行真实 200ms 前缀，跨记录块保留独立 history/clock 和 episode。进程恢复显式截断未完成物理片段并重建前缀。旧同步 collector 保留作冻结采集对照。首次物理失败的完整数值有效20ms已可进入H1/Actor，不预设Actor初态池过滤错误。
 - 固定官方8storedframes实际7scoredtransitions，不盲改H7为H8；官方Muon＋Adam和论文表中的Adam分开记录；fixed mjlab约0.2s全局timeline bins与论文1s分开。论文0.007–0.011不能与TCP毫米误差直接比较。
 - 迁移成功并冻结独立结果前，不添加Actor动作BC、参考动作直通、解析补偿、新任务奖励/风险头/phase-TD、自研课程、新网络或对象相对新任务；后续多模态/VLA和算法开发统一后置。有据的数据/接口/采集/数值适配及原损失WM预热属于当前迁移，必须实际训练和物理评分，不只反复审计。
 - 独立基线最终保存唯一候选/seed、代码与任务版本、全部继承预算、数据资格和测试身份、逐案分母/失败与必要视频。后续方法同seed/case配对，额外视觉/数据/BC/解析控制及成本单列。未达当前目标不自动切到多模态或新方法。

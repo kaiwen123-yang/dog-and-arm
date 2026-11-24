@@ -1,0 +1,62 @@
+{
+  "checkpoint": "results/b0/lanes_s0_to100_v1/checkpoint_000100.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "config/b0/contact_dev_v1.json",
+  "requested_dev": false,
+  "source": "results/raw_large/b0/contact_held_r1",
+  "passed": 0,
+  "evaluated": 5,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 754,
+      "policy_calls": 76,
+      "final_door_deg": 0.0,
+      "failure": "operation_station_drift"
+    },
+    {
+      "side": "pull",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.07004910611664834,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 49,
+      "policy_calls": 5,
+      "final_door_deg": 4.978519336493593,
+      "failure": "unexpected_contact:finger_non_grasp_handle"
+    },
+    {
+      "side": "push",
+      "segment": "approach_grasp",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 71,
+      "policy_calls": 8,
+      "final_door_deg": 0.00125598357620541,
+      "failure": "unexpected_contact:finger_non_grasp_handle"
+    },
+    {
+      "side": "push",
+      "segment": "release_retreat",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 107,
+      "policy_calls": 11,
+      "final_door_deg": 2.8273706807485297,
+      "failure": "unexpected_contact:finger_non_grasp_handle"
+    }
+  ]
+}

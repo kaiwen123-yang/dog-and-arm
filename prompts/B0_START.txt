@@ -1,27 +1,7 @@
-继续 dog-and-arm 的 SuperMimic 标准迁移。用户已明确：先专注迁移，迁移成功并形成独立可比较结果后，再做算法开发。当前仍是 B0-04，不把后续新方法混进这轮。
+继续 B0-04 SuperMimic 标准迁移。先 git status、fetch main，在独立工作树保留已有修改。读 PROJECT_STATE 顶部、北京时间 DAILY_WORK_LOG 最近记录、reports/B0_STANDARD_TRANSFER_BASELINE.md 顶部和 results/b0/standard_lanes_20261124/baseline_manifest.json。最新单配方 seed0 已完成新增 1000 个 WM 预热 minibatch、200 次 H32 与六个节点正式十项，60/60 失败。前一轮 7180672 的 230 案另计。完整双侧回报 NA。
 
-【先恢复准确上下文】
-检查 git status 和远端 main，保留已有修改，正常快进或使用独立工作树，不强推/reset/clean。最新已审查实验端点是 71806725b66e1aec0ac03536737edf31e669ac40；之后的本轮计划提交是文档更新，不是新实验。先完整阅读 AGENTS.md、PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最近日期、docs/B0_STANDARD_TRANSFER_PLAN_20261124.md、reports/B0_STANDARD_ROUND_REVIEW_20261124.md、docs/B0_PAPER_BASELINE_PROTOCOL.md、reports/B0_STANDARD_TRANSFER_BASELINE.md，以及 results/b0/standard_baseline_20261124/{baseline_manifest,contact_training}.json。旧11月23日计划和恢复轮说明为历史。
+先查 AutoDL /root/autodl-tmp/dog-and-arm-b0-lanes-v1。三次训练和六次正式评分均已退出，最终恢复文件 results/b0/lanes_s0_to200_v1/cohort_state.pt 含2次 Ratio 待更新。跨进程为显式行政截断和重建真实前缀。保留原任务、原奖励、H32、B0-03 Actor、固定官方双源、参考/身份和逐 lane 采集。不要重启已回收任务或把 u200 直接续到 u500。
 
-现场历史路径为 AutoDL /root/autodl-tmp/dog-and-arm-b0-pair-v1。核对实际工作树、进程、.local-pair/*.exit、outcome.json、权重/cohort_state.pt 和资源后接续，已回收队列不重开。不重跑已关闭的 G1、P1–P6、B0-03 seed0 或恢复全部归档。
+下一轮的具体问题是标准 Actor 从真实握持状态发出的第一个臂/夹口组合是否得到足够的训练动力学覆盖。先读 held_action_support.json、entry_response_matched_u50.json、grip_commands.csv。用训练身份的同侧同相位实际状态，测量覆盖该命令区间的真实恒动作 20ms 分支，保留失败；分别统计首失效时刻、夹口/臂动作、双指、门力和后继。验证和 H 不入训练；教师只用于 WM。对比已有预热出口和联训出口在这些状态动作上的 H1/H7 误差与同一冻结验证集，并检查同等 joint WM 预算内训练样本的来源和覆盖。在数据与前缀映射确有改善后，再从标准来源按一条固定配方做真实 H32 与正式评分。不能用动作 BC、参考直通、解析补偿、新奖励/风险头/phase-TD、课程、VLA、双门或硬件替代本阶段。
 
-【已完成与当前事实】
-最新八条链均为seed0，23组正式十项共230案0通过，129案首2ms超力；完整双侧物理回报NA，最终候选为空。动作率effort单位及reset哨兵、ReturnSampler、实际Ratio、逐clip末帧、握持WM数据/统计、lane-age都已实现实训，不再当待办重做。u500是旧采样/调度下的单位配对，最完整对齐的lane_age_s0_v1只到u50，不能混用预算。
-
-【本轮完成具体实现、采集、训练与评测】
-1. 以现有已对齐配置为基础登记一条主配方，最多一条问题明确的小预算对照。固定官方SuperMimic abc124c1bd5976341034668af3d12c087f2f1f55和mjlab_research dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd，保留原主要网络、GenCoord、tracking/softdone、H32、Muon＋Adam和现有H1/H7目标。gain32、固定统计、离线数据与小批量分别登记为平台配方，不称官方默认。
-2. 优先对齐终止后的逐lane重置与持续采集。现有40步同步cohort在lane失败后不再收该lane数据，固定官方环境会按done env IDs复位。复用ContactPlant.reset(...,ids)，保留每个新episode真实200ms接触前缀、独立reference clock、10帧history与上一实际命令；前缀不计策略回报/在线经验。显式episode边界保证H7不跨reset，Ratio只计实际新增有效策略转移，ReturnSampler沿首失效dt/状态计分。完整resume须恢复可继续的物理状态、计数器与全部学习/采样/RNG状态；否则明确行政截断并重新运行前缀，不伪称连续恢复。相同冻结Actor下与旧collector做小规模实测对照，不假定多采就一定学会握持。
-3. 复用并补齐训练身份的真实接触数据，按两侧及接近/握持建立/持续握持/推拉/保持/释放统计独立episode、完整20ms、实际载荷、H1/H7和诊断H32。已有512 lanes握持窗不冒充全模式已覆盖；只补具体缺项。20ms必须真实恒动作积分，500Hz变化命令不能重贴成20ms。教师/历史混合控制的数据只作WM状态—动作—后继监督，不给标准Actor动作BC或教师初态；验证与H不进训练、统计或replay。
-4. 从held_r2用原H1/H7损失预热门WM，Actor/Critic不更新，建议0/200/1000 minibatch检查。记录新数据初始化和stats/optimizer处理，不能绕过现有resume的数据一致性约束；新数据的后端/行为来源和样本账本按实填写。沿既有独立集检查两侧接触、自由模式及H1/H7/H32误差；有具体需要才做少量同Warp状态两档动作扰动诊断，不新增梯度loss。随后从标准B0-03 Actor加选定预热WM建立可恢复的真实联合训练，不只交付审计和新计划。
-5. 主线使用固定effort、ReturnSampler、Ratio、clip-last、lane/age及已核验生命周期，Actor初态继续来自当前在线replay。预登记u0/1/10/50，再据实进入u100/200及后续。正式入口：bash scripts/b0/evaluate_standard_contact.sh <新run> <冻结更新数> warp。两侧持续双指、受控门力、首次失败时刻和阶段有进展就继续；连续有意义扩展节点无进展/退化时定位问题，不盲续旧u500，不因短跑仍0/10就默认结束。用实际物理门槛判断，不以loss/片段均值代替。
-
-【保持正确解释】
-训练首2ms触发门槛后仍积分10子步，数值/容量有效的该完整20ms已进入H1/Actor；不能误称这些初态全部被过滤，进而新建教师Actor池。H7 open/hold为0是覆盖事实；“持续双指0”只针对保留指力且整个首区间满足定义的样本，其余力未知。已有encoder/局部native梯度检查不构成改网络或新增损失的依据。
-
-【迁移先完成，算法开发后置】
-本轮不加Actor动作BC、参考动作直通、解析补偿、新力/门角/phase奖励、风险头、phase-TD、自研课程或对象相对新任务，不启动VLA/视觉语言、双门或硬件。保留原被动门、参考、伺服、20ms/2ms、v1/hold-margin、所有阈值/时限及D/C/H身份。R/J成功单列，不能作标准Actor初始化或填入标准成绩。
-
-同一标准候选依次十项接触nominal10/10→各D≥18/20→完整初态连续双侧Warp各1条nominal通过、C每侧≥18/20及同包native3.3每侧1条完整nominal通过→持续H32能力→seed1/2独立初始化/采集并各自通过B0-03→三seed配方/选模/唯一候选冻结后每seed/侧H≥40/50。完整物理归一化回报每seed/侧/split目标0.90、项目接近带0.88，并同时过物理门槛；缺完整轨迹写NA。完整任务无教师前缀、接管、重置或门驱动。通过并冻结独立迁移结果后才进入后续算法开发。
-
-【交付与授权】
-继续使用独立环境，充分利用可用资源，长任务可恢复、无后台强制墙钟kill。保留其他项目进程和已有修改。按北京时间逐日详细更新唯一DAILY_WORK_LOG.md：实际工作/命令、数据与初始化、问题证据、已证原因或假设、修复复测、失败/未执行、预算和下一步。更新独立结果报告及新轮manifest、PROJECT_STATE和NEXT_RUN，原实验快照不覆盖。自然节点普通commit/push到kaiwen123-yang/dog-and-arm并回读main及关键文件；用户已经授权，不重复请求上传许可。仅报告真实执行的结果，最终给出提交链接、物理成绩和仍缺门槛。
+正式入口 bash scripts/b0/evaluate_standard_contact.sh <run> <update> warp。逐案检查后再从同一候选十项 10/10 → 每项 D≥18/20 → 连续双侧 Warp nominal、C 每侧≥18/20 及同包 native 完整 nominal → 独立 seed1/2 → 三 seed 全冻结后 H 每 seed/侧≥40/50。完整回报目标0.90、接近带0.88，同时满足物理门槛。按北京时间继续唯一 DAILY_WORK_LOG，更新独立结果、状态与下一入口，普通 commit/push 后从 GitHub 回读。

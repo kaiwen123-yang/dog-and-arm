@@ -1,0 +1,2275 @@
+{
+  "method": "SuperMimic-M1Piper-standard-v1",
+  "status": "B0-04",
+  "seed": 0,
+  "final_candidate": null,
+  "final_frozen": false,
+  "code_parent": "ee41ee39170e5695f34cf62aa150328c000fb09c",
+  "implementation": "54e8aa94833d2478619719cf8a1c83480d9141d3",
+  "previous": "results/b0/standard_baseline_20261124/baseline_manifest.json",
+  "upstream": {
+    "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+    "mjlab_research": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd"
+  },
+  "field_root": "/root/autodl-tmp/dog-and-arm-b0-lanes-v1",
+  "selected_recipe": "config/b0/standard_lanes_v1.yaml",
+  "resolved": {
+    "reference_root": "results/raw_large/b0/native_teacher_20261121_r1",
+    "worlds": 128,
+    "wm_batch": 256,
+    "wm_batches": 10,
+    "actor_batch": 256,
+    "wm_hidden": [
+      2048,
+      2048,
+      2048
+    ],
+    "actor_hidden": [
+      2048,
+      1024,
+      512,
+      256
+    ],
+    "critic_hidden": [
+      256,
+      128
+    ],
+    "buffer_size": 1000,
+    "replay_ratio": 16,
+    "physics_dt": 0.002,
+    "policy_dt": 0.02,
+    "history_length": 10,
+    "free_motion_clip_frames": 351,
+    "actor_horizon": 32,
+    "wm_window": 8,
+    "collection_noise": 0.1,
+    "milestones": [
+      0,
+      1000,
+      5000,
+      10000
+    ],
+    "periodic_updates": 10000,
+    "diagnostic_block": 50000,
+    "window_recipe": "terminal_one_step_and_seven_step",
+    "one_step_batches": 2,
+    "network_output_units": "quarter_effort_over_servo_gain",
+    "additional_physical_checks": [
+      50,
+      200
+    ],
+    "hypothesis": "Continuous per-lane physical RSI after termination and measured multimode H1/H7 pretraining improve bilateral standard contact control.",
+    "base": "config/b0/pair_effort_aligned_grip_fixed_stats_lane_age.yaml",
+    "cohort_steps": 40,
+    "replay_cohorts": 32,
+    "rsi_phases": [
+      "approach_arm",
+      "grasp",
+      "open",
+      "hold",
+      "release",
+      "retreat_arm",
+      "post_release_hold"
+    ],
+    "reference_directory": "results/raw_large/b0/contact_held_r1",
+    "references": [
+      "pull_0_train_grip",
+      "push_0_train_grip",
+      "pull_5_train",
+      "push_5_train",
+      "pull_15_train",
+      "push_15_train"
+    ],
+    "additional_teacher_episodes": [
+      "pull_0_train",
+      "push_0_train",
+      "pull_5_train_drop",
+      "push_5_train_drop"
+    ],
+    "actor_checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "wm_checkpoint": "results/b0/lanes_wm_v1/wm_001000.pt",
+    "reward": "pinned_o1_tracking",
+    "reward_at": "successor_reference",
+    "diagnostic_updates": [
+      0,
+      1,
+      10,
+      50,
+      100,
+      200
+    ],
+    "arm_jaw_output_gain": 32.0,
+    "action_rate_coordinates": "fixed_effort",
+    "contact_reset_sampling": "official_return",
+    "contact_update_schedule": "official_ratio_valid",
+    "reference_tail": "official_clip_last",
+    "wm_grip_cohorts": "results/b0/recovery_b_grip_challenge_r1",
+    "freeze_wm_input_statistics": true,
+    "contact_replay_draw": "official_lane_age",
+    "collector": "lane_reset"
+  },
+  "inherited": {
+    "actor_checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "actor_updates": 1000,
+    "free_wm_minibatches": 10000,
+    "free_critic_minibatches": 20000,
+    "free_valid_online_transitions": 1088000,
+    "door_wm_checkpoint": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "door_teacher_wm_minibatches": 2000
+  },
+  "data": {
+    "supplemental": [
+      {
+        "directory": "results/b0/recovery_b_grip_challenge_r1",
+        "behavior": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+        "seeds": [
+          71200,
+          71201,
+          71202,
+          71203,
+          71204,
+          71205,
+          71206,
+          71207
+        ],
+        "lanes": 512,
+        "windows": {
+          "1": 14396,
+          "7": 11644,
+          "32": 3024
+        }
+      },
+      {
+        "directory": "results/b0/lanes_modes_v1",
+        "behavior": "results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt",
+        "seeds": [
+          84100,
+          84101,
+          84102,
+          84103,
+          84104,
+          84105,
+          84106,
+          84107
+        ],
+        "lanes": 512,
+        "windows": {
+          "1": 18223,
+          "7": 15242,
+          "32": 3996
+        }
+      }
+    ],
+    "new_split": {
+      "train": {
+        "lanes": 512,
+        "prefix_2ms_steps": 51200,
+        "physical_intervals": 20480,
+        "valid": 18223,
+        "hard_terminals": 68
+      },
+      "validation": {
+        "lanes": 192,
+        "prefix_2ms_steps": 19200,
+        "physical_intervals": 7680,
+        "valid": 6925,
+        "hard_terminals": 22
+      }
+    },
+    "coverage": "coverage.json",
+    "behavior": "historical feedback for WM only; no validation/H in optimizers, statistics or replay"
+  },
+  "pretraining": {
+    "run": "lanes_wm_v1",
+    "selected": "wm_001000.pt",
+    "outcome": {
+      "completed": 1000,
+      "window_updates": {
+        "1": 200,
+        "7": 800
+      },
+      "offline_physical_windows_drawn": 256000,
+      "online_samples": 0,
+      "gradient": {
+        "episode": "pull_5_validation_drop",
+        "start": 1037,
+        "horizon": 7,
+        "output": "door rad and TCP world x m",
+        "door_first_action_l2": 0.006175288464874029,
+        "tcp_first_action_l2": 0.01022518053650856
+      }
+    },
+    "fresh_optimizers": true,
+    "fixed_statistics": true
+  },
+  "independent_wm": [
+    {
+      "score": "lanes_joint100_grip",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 79.25851097106934
+    },
+    {
+      "score": "lanes_joint100_grip",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 15.640745782852171
+    },
+    {
+      "score": "lanes_joint100_grip",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 13.94507608413696
+    },
+    {
+      "score": "lanes_joint100_grip",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 52.480422019958496
+    },
+    {
+      "score": "lanes_joint100_grip",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 15.257248449325562
+    },
+    {
+      "score": "lanes_joint100_grip",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 11.863484382629395
+    },
+    {
+      "score": "lanes_joint10_grip",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 127.18638496398925
+    },
+    {
+      "score": "lanes_joint10_grip",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 15.640745782852171
+    },
+    {
+      "score": "lanes_joint10_grip",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 13.94507608413696
+    },
+    {
+      "score": "lanes_joint10_grip",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 149.4655876159668
+    },
+    {
+      "score": "lanes_joint10_grip",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 15.257248449325562
+    },
+    {
+      "score": "lanes_joint10_grip",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 11.863484382629395
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 50.64512405395508
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 28.751636600494386
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 30.58620204925535
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 24.71157760620117
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 15.359294176101683
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 9.131451940536488
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 38.49249801635742
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 40.5143684387207
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 27.394265937805127
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 23.061390686035153
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 14.772557640075684
+    },
+    {
+      "score": "lanes_joint200_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 9.415066337585447
+    },
+    {
+      "score": "lanes_joint200_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 26.6487322807312
+    },
+    {
+      "score": "lanes_joint200_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 15.640745782852171
+    },
+    {
+      "score": "lanes_joint200_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 13.94507608413696
+    },
+    {
+      "score": "lanes_joint200_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 19.907823753356933
+    },
+    {
+      "score": "lanes_joint200_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 15.257248449325562
+    },
+    {
+      "score": "lanes_joint200_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 11.863484382629395
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 49.11711635589597
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 28.751636600494386
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 30.58620204925535
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 62.66195373535156
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 15.359294176101683
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 9.131451940536488
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 63.60733318328853
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 40.5143684387207
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 27.394265937805127
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 37.643836975097656
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 14.772557640075684
+    },
+    {
+      "score": "lanes_joint50_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 9.415066337585447
+    },
+    {
+      "score": "lanes_joint50_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 54.069597244262695
+    },
+    {
+      "score": "lanes_joint50_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 15.640745782852171
+    },
+    {
+      "score": "lanes_joint50_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 13.94507608413696
+    },
+    {
+      "score": "lanes_joint50_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 37.960867691040036
+    },
+    {
+      "score": "lanes_joint50_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 15.257248449325562
+    },
+    {
+      "score": "lanes_joint50_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 11.863484382629395
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 68.98692474365234
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 28.751636600494386
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 30.58620204925535
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 69.34942665100098
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 15.359294176101683
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 9.131451940536488
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 39.157913780212375
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 40.5143684387207
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 27.394265937805127
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 39.82094039916992
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 14.772557640075684
+    },
+    {
+      "score": "lanes_val_000000_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 9.415066337585447
+    },
+    {
+      "score": "lanes_val_000000_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 50.52594757080078
+    },
+    {
+      "score": "lanes_val_000000_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 15.640745782852171
+    },
+    {
+      "score": "lanes_val_000000_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 13.94507608413696
+    },
+    {
+      "score": "lanes_val_000000_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 40.360255050659156
+    },
+    {
+      "score": "lanes_val_000000_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 15.257248449325562
+    },
+    {
+      "score": "lanes_val_000000_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 11.863484382629395
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 34.47445945739746
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 28.751636600494386
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 30.58620204925535
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 24.718579959869377
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 15.359294176101683
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 9.131451940536488
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 33.26667366027832
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 40.5143684387207
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 27.394265937805127
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 27.18616485595703
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 14.772557640075684
+    },
+    {
+      "score": "lanes_val_000200_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 9.415066337585447
+    },
+    {
+      "score": "lanes_val_000200_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 25.243511867523193
+    },
+    {
+      "score": "lanes_val_000200_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 15.640745782852171
+    },
+    {
+      "score": "lanes_val_000200_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 13.94507608413696
+    },
+    {
+      "score": "lanes_val_000200_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 28.598797607421876
+    },
+    {
+      "score": "lanes_val_000200_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 15.257248449325562
+    },
+    {
+      "score": "lanes_val_000200_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 11.863484382629395
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 19.448712444305418
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 28.751636600494386
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 254,
+      "independent_lanes": 30,
+      "p95_mm": 30.58620204925535
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 20.83432321548462
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 15.359294176101683
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 198,
+      "independent_lanes": 27,
+      "p95_mm": 9.131451940536488
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "wm",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 24.009571170806883
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "hold",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 40.5143684387207
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "push",
+      "mode": "free",
+      "predictor": "constant_velocity",
+      "scored": 278,
+      "independent_lanes": 32,
+      "p95_mm": 27.394265937805127
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 15.599353408813476
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 14.772557640075684
+    },
+    {
+      "score": "lanes_val_001000_lanes_modes_v1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 193,
+      "independent_lanes": 24,
+      "p95_mm": 9.415066337585447
+    },
+    {
+      "score": "lanes_val_001000_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 15.653579378128052
+    },
+    {
+      "score": "lanes_val_001000_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 15.640745782852171
+    },
+    {
+      "score": "lanes_val_001000_recovery_b_grip_challenge_r1",
+      "side": "pull",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 412,
+      "independent_lanes": 51,
+      "p95_mm": 13.94507608413696
+    },
+    {
+      "score": "lanes_val_001000_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "wm",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 16.44647397994995
+    },
+    {
+      "score": "lanes_val_001000_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "hold",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 15.257248449325562
+    },
+    {
+      "score": "lanes_val_001000_recovery_b_grip_challenge_r1",
+      "side": "push",
+      "mode": "two_finger",
+      "predictor": "constant_velocity",
+      "scored": 450,
+      "independent_lanes": 56,
+      "p95_mm": 11.863484382629395
+    }
+  ],
+  "frozen_collection_comparison": {
+    "source": "results/b0/lanes_s0_v1/checkpoint_000000.pt",
+    "seeds": [
+      85200,
+      85201
+    ],
+    "actor_updates": 0,
+    "results": {
+      "cohort": {
+        "physics_substeps": 128000,
+        "prefix_intervals": 2560,
+        "valid": 3135,
+        "valid_per_physical_interval": 0.244921875,
+        "waiting_or_invalid": 7105,
+        "episodes": 256,
+        "continuous_dual_intervals": {
+          "pull": 0,
+          "push": 0
+        },
+        "starts_by_side_and_phase": {
+          "1": {
+            "pull": {
+              "approach_base": 0,
+              "settle": 0,
+              "pregrasp": 0,
+              "approach_arm": 472,
+              "grasp": 524,
+              "open": 21,
+              "hold": 9,
+              "release": 412,
+              "retreat_arm": 804,
+              "post_release_hold": 464,
+              "stow": 0,
+              "retreat_base": 0,
+              "final": 0
+            },
+            "push": {
+              "approach_base": 0,
+              "settle": 0,
+              "pregrasp": 0,
+              "approach_arm": 222,
+              "grasp": 13,
+              "open": 27,
+              "hold": 10,
+              "release": 52,
+              "retreat_arm": 36,
+              "post_release_hold": 69,
+              "stow": 0,
+              "retreat_base": 0,
+              "final": 0
+            }
+          },
+          "7": {
+            "pull": {
+              "approach_base": 0,
+              "settle": 0,
+              "pregrasp": 0,
+              "approach_arm": 406,
+              "grasp": 424,
+              "open": 0,
+              "hold": 0,
+              "release": 363,
+              "retreat_arm": 679,
+              "post_release_hold": 386,
+              "stow": 0,
+              "retreat_base": 0,
+              "final": 0
+            },
+            "push": {
+              "approach_base": 0,
+              "settle": 0,
+              "pregrasp": 0,
+              "approach_arm": 170,
+              "grasp": 0,
+              "open": 0,
+              "hold": 0,
+              "release": 0,
+              "retreat_arm": 0,
+              "post_release_hold": 0,
+              "stow": 0,
+              "retreat_base": 0,
+              "final": 0
+            }
+          }
+        },
+        "blocks": [
+          {
+            "valid_transitions": 2202,
+            "cumulative_valid_transitions": 2202,
+            "starts_per_motion": [
+              20,
+              15,
+              21,
+              17,
+              29,
+              26
+            ],
+            "simulated_lane_intervals": 5120,
+            "prefix_steps_per_lane": 100,
+            "prefix_invalid": 0,
+            "failed_lanes": 78,
+            "start_ref_min": 643,
+            "start_ref_max": 9593
+          },
+          {
+            "valid_transitions": 933,
+            "cumulative_valid_transitions": 3135,
+            "starts_per_motion": [
+              10,
+              68,
+              10,
+              12,
+              10,
+              18
+            ],
+            "simulated_lane_intervals": 5120,
+            "prefix_steps_per_lane": 100,
+            "prefix_invalid": 0,
+            "failed_lanes": 110,
+            "start_ref_min": 714,
+            "start_ref_max": 9608
+          }
+        ]
+      },
+      "lane_reset": {
+        "physics_substeps": 128000,
+        "prefix_intervals": 5207,
+        "valid": 7593,
+        "valid_per_physical_interval": 0.593203125,
+        "waiting_or_invalid": 0,
+        "episodes": 528,
+        "continuous_dual_intervals": {
+          "pull": 0,
+          "push": 0
+        },
+        "starts_by_side_and_phase": {
+          "1": {
+            "pull": {
+              "approach_base": 0,
+              "settle": 0,
+              "pregrasp": 0,
+              "approach_arm": 1327,
+              "grasp": 1287,
+              "open": 37,
+              "hold": 15,
+              "release": 546,
+              "retreat_arm": 1987,
+              "post_release_hold": 1306,
+              "stow": 0,
+              "retreat_base": 0,
+              "final": 0
+            },
+            "push": {
+              "approach_base": 0,
+              "settle": 0,
+              "pregrasp": 0,
+              "approach_arm": 669,
+              "grasp": 37,
+              "open": 38,
+              "hold": 19,
+              "release": 66,
+              "retreat_arm": 74,
+              "post_release_hold": 185,
+              "stow": 0,
+              "retreat_base": 0,
+              "final": 0
+            }
+          },
+          "7": {
+            "pull": {
+              "approach_base": 0,
+              "settle": 0,
+              "pregrasp": 0,
+              "approach_arm": 1250,
+              "grasp": 1104,
+              "open": 0,
+              "hold": 0,
+              "release": 534,
+              "retreat_arm": 1831,
+              "post_release_hold": 1150,
+              "stow": 0,
+              "retreat_base": 0,
+              "final": 0
+            },
+            "push": {
+              "approach_base": 0,
+              "settle": 0,
+              "pregrasp": 0,
+              "approach_arm": 575,
+              "grasp": 0,
+              "open": 0,
+              "hold": 0,
+              "release": 0,
+              "retreat_arm": 0,
+              "post_release_hold": 0,
+              "stow": 0,
+              "retreat_base": 0,
+              "final": 0
+            }
+          }
+        },
+        "blocks": [
+          {
+            "valid_transitions": 2297,
+            "cumulative_valid_transitions": 2297,
+            "simulated_lane_intervals": 5120,
+            "starts_per_motion": [
+              31,
+              78,
+              42,
+              37,
+              51,
+              65
+            ],
+            "prefix_intervals": 2823,
+            "prefix_invalid": 0,
+            "failed_lanes": 177,
+            "post_failure_diagnostic_substeps": 1020,
+            "waiting_intervals": 0,
+            "last_episode": 304
+          },
+          {
+            "valid_transitions": 3470,
+            "cumulative_valid_transitions": 5767,
+            "simulated_lane_intervals": 5120,
+            "starts_per_motion": [
+              4,
+              122,
+              10,
+              8,
+              7,
+              12
+            ],
+            "prefix_intervals": 1650,
+            "prefix_invalid": 0,
+            "failed_lanes": 168,
+            "post_failure_diagnostic_substeps": 338,
+            "waiting_intervals": 0,
+            "last_episode": 467
+          },
+          {
+            "valid_transitions": 1826,
+            "cumulative_valid_transitions": 7593,
+            "simulated_lane_intervals": 2560,
+            "starts_per_motion": [
+              3,
+              43,
+              4,
+              4,
+              4,
+              3
+            ],
+            "prefix_intervals": 734,
+            "prefix_invalid": 0,
+            "failed_lanes": 56,
+            "post_failure_diagnostic_substeps": 99,
+            "waiting_intervals": 0,
+            "last_episode": 528
+          }
+        ]
+      }
+    }
+  },
+  "contact_training": [
+    {
+      "run": "lanes_s0_v1",
+      "parent": null,
+      "resume_boundary": null,
+      "actual_config": "results/b0/lanes_s0_v1/actual_config.json",
+      "recovery": "results/b0/lanes_s0_v1/cohort_state.pt",
+      "raw": "results/raw_large/b0/lanes_s0_v1",
+      "checkpoints": [
+        "checkpoint_000000.pt",
+        "checkpoint_000001.pt",
+        "checkpoint_000010.pt",
+        "checkpoint_000050.pt"
+      ],
+      "first_new_update": 1,
+      "last_update": 50,
+      "added_h32": 50,
+      "added_wm": 500,
+      "added_critic": 1000,
+      "imagined": 409600,
+      "elapsed_s": 89.26722810231149,
+      "starts": 1604,
+      "rejected_prefixes": 0,
+      "collection": {
+        "intervals": 71680,
+        "prefix": 15957,
+        "policy_valid": 55723,
+        "policy_invalid": 0,
+        "post_failure_substeps": 5585,
+        "by_side_phase": [
+          {
+            "side": "pull",
+            "phase": "approach_arm",
+            "episodes": 49,
+            "valid": 3438,
+            "entire_interval_dual": 0,
+            "terminal": 3,
+            "peak_n": 0.0
+          },
+          {
+            "side": "pull",
+            "phase": "grasp",
+            "episodes": 76,
+            "valid": 6015,
+            "entire_interval_dual": 0,
+            "terminal": 67,
+            "peak_n": 51.09726333618164
+          },
+          {
+            "side": "pull",
+            "phase": "open",
+            "episodes": 92,
+            "valid": 92,
+            "entire_interval_dual": 0,
+            "terminal": 92,
+            "peak_n": 51.23046112060547
+          },
+          {
+            "side": "pull",
+            "phase": "hold",
+            "episodes": 62,
+            "valid": 62,
+            "entire_interval_dual": 0,
+            "terminal": 62,
+            "peak_n": 51.08183670043945
+          },
+          {
+            "side": "pull",
+            "phase": "release",
+            "episodes": 37,
+            "valid": 1480,
+            "entire_interval_dual": 0,
+            "terminal": 1,
+            "peak_n": 190.4561767578125
+          },
+          {
+            "side": "pull",
+            "phase": "retreat_arm",
+            "episodes": 99,
+            "valid": 9561,
+            "entire_interval_dual": 0,
+            "terminal": 1,
+            "peak_n": 180.39759826660156
+          },
+          {
+            "side": "pull",
+            "phase": "post_release_hold",
+            "episodes": 122,
+            "valid": 15460,
+            "entire_interval_dual": 0,
+            "terminal": 0,
+            "peak_n": 0.0
+          },
+          {
+            "side": "push",
+            "phase": "approach_arm",
+            "episodes": 223,
+            "valid": 5709,
+            "entire_interval_dual": 0,
+            "terminal": 159,
+            "peak_n": 291.9442138671875
+          },
+          {
+            "side": "push",
+            "phase": "grasp",
+            "episodes": 112,
+            "valid": 1170,
+            "entire_interval_dual": 0,
+            "terminal": 105,
+            "peak_n": 311.17755126953125
+          },
+          {
+            "side": "push",
+            "phase": "open",
+            "episodes": 77,
+            "valid": 77,
+            "entire_interval_dual": 0,
+            "terminal": 77,
+            "peak_n": 194.69993591308594
+          },
+          {
+            "side": "push",
+            "phase": "hold",
+            "episodes": 49,
+            "valid": 49,
+            "entire_interval_dual": 0,
+            "terminal": 49,
+            "peak_n": 44.40326690673828
+          },
+          {
+            "side": "push",
+            "phase": "release",
+            "episodes": 42,
+            "valid": 146,
+            "entire_interval_dual": 0,
+            "terminal": 40,
+            "peak_n": 307.91778564453125
+          },
+          {
+            "side": "push",
+            "phase": "retreat_arm",
+            "episodes": 277,
+            "valid": 1544,
+            "entire_interval_dual": 0,
+            "terminal": 203,
+            "peak_n": 279.4222412109375
+          },
+          {
+            "side": "push",
+            "phase": "post_release_hold",
+            "episodes": 525,
+            "valid": 10920,
+            "entire_interval_dual": 0,
+            "terminal": 453,
+            "peak_n": 221.6701202392578
+          }
+        ],
+        "recording_blocks": 14
+      }
+    },
+    {
+      "run": "lanes_s0_to100_v1",
+      "parent": "results/b0/lanes_s0_v1/cohort_state.pt",
+      "resume_boundary": {
+        "last_episode": 1604,
+        "live_lanes": 128,
+        "mode": "administrative_restart"
+      },
+      "actual_config": "results/b0/lanes_s0_to100_v1/actual_config.json",
+      "recovery": "results/b0/lanes_s0_to100_v1/cohort_state.pt",
+      "raw": "results/raw_large/b0/lanes_s0_to100_v1",
+      "checkpoints": [
+        "checkpoint_000050.pt",
+        "checkpoint_000100.pt"
+      ],
+      "first_new_update": 51,
+      "last_update": 100,
+      "added_h32": 50,
+      "added_wm": 500,
+      "added_critic": 1000,
+      "imagined": 409600,
+      "elapsed_s": 85.27775787375867,
+      "starts": 1870,
+      "rejected_prefixes": 0,
+      "collection": {
+        "intervals": 71680,
+        "prefix": 18559,
+        "policy_valid": 53121,
+        "policy_invalid": 0,
+        "post_failure_substeps": 9753,
+        "by_side_phase": [
+          {
+            "side": "pull",
+            "phase": "approach_arm",
+            "episodes": 93,
+            "valid": 9545,
+            "entire_interval_dual": 0,
+            "terminal": 1,
+            "peak_n": 198.9053955078125
+          },
+          {
+            "side": "pull",
+            "phase": "grasp",
+            "episodes": 119,
+            "valid": 10002,
+            "entire_interval_dual": 0,
+            "terminal": 103,
+            "peak_n": 227.66932678222656
+          },
+          {
+            "side": "pull",
+            "phase": "open",
+            "episodes": 66,
+            "valid": 66,
+            "entire_interval_dual": 0,
+            "terminal": 66,
+            "peak_n": 51.15797805786133
+          },
+          {
+            "side": "pull",
+            "phase": "hold",
+            "episodes": 72,
+            "valid": 72,
+            "entire_interval_dual": 0,
+            "terminal": 72,
+            "peak_n": 52.167755126953125
+          },
+          {
+            "side": "pull",
+            "phase": "release",
+            "episodes": 21,
+            "valid": 489,
+            "entire_interval_dual": 0,
+            "terminal": 12,
+            "peak_n": 217.4881591796875
+          },
+          {
+            "side": "pull",
+            "phase": "retreat_arm",
+            "episodes": 61,
+            "valid": 4903,
+            "entire_interval_dual": 0,
+            "terminal": 3,
+            "peak_n": 213.72067260742188
+          },
+          {
+            "side": "pull",
+            "phase": "post_release_hold",
+            "episodes": 72,
+            "valid": 8730,
+            "entire_interval_dual": 0,
+            "terminal": 0,
+            "peak_n": 0.0
+          },
+          {
+            "side": "push",
+            "phase": "approach_arm",
+            "episodes": 144,
+            "valid": 5512,
+            "entire_interval_dual": 0,
+            "terminal": 109,
+            "peak_n": 105.22274780273438
+          },
+          {
+            "side": "push",
+            "phase": "grasp",
+            "episodes": 107,
+            "valid": 3738,
+            "entire_interval_dual": 0,
+            "terminal": 107,
+            "peak_n": 96.0845718383789
+          },
+          {
+            "side": "push",
+            "phase": "open",
+            "episodes": 77,
+            "valid": 77,
+            "entire_interval_dual": 0,
+            "terminal": 77,
+            "peak_n": 39.323341369628906
+          },
+          {
+            "side": "push",
+            "phase": "hold",
+            "episodes": 62,
+            "valid": 62,
+            "entire_interval_dual": 0,
+            "terminal": 62,
+            "peak_n": 38.86041259765625
+          },
+          {
+            "side": "push",
+            "phase": "release",
+            "episodes": 64,
+            "valid": 373,
+            "entire_interval_dual": 0,
+            "terminal": 63,
+            "peak_n": 153.33901977539062
+          },
+          {
+            "side": "push",
+            "phase": "retreat_arm",
+            "episodes": 331,
+            "valid": 2204,
+            "entire_interval_dual": 0,
+            "terminal": 268,
+            "peak_n": 115.25450897216797
+          },
+          {
+            "side": "push",
+            "phase": "post_release_hold",
+            "episodes": 765,
+            "valid": 7348,
+            "entire_interval_dual": 0,
+            "terminal": 718,
+            "peak_n": 110.93584442138672
+          }
+        ],
+        "recording_blocks": 14
+      }
+    },
+    {
+      "run": "lanes_s0_to200_v1",
+      "parent": "results/b0/lanes_s0_to100_v1/cohort_state.pt",
+      "resume_boundary": {
+        "last_episode": 3474,
+        "live_lanes": 128,
+        "mode": "administrative_restart"
+      },
+      "actual_config": "results/b0/lanes_s0_to200_v1/actual_config.json",
+      "recovery": "results/b0/lanes_s0_to200_v1/cohort_state.pt",
+      "raw": "results/raw_large/b0/lanes_s0_to200_v1",
+      "checkpoints": [
+        "checkpoint_000100.pt",
+        "checkpoint_000200.pt"
+      ],
+      "first_new_update": 101,
+      "last_update": 200,
+      "added_h32": 100,
+      "added_wm": 1000,
+      "added_critic": 2000,
+      "imagined": 819200,
+      "elapsed_s": 135.58226432465017,
+      "starts": 2235,
+      "rejected_prefixes": 0,
+      "collection": {
+        "intervals": 133120,
+        "prefix": 22287,
+        "policy_valid": 110833,
+        "policy_invalid": 0,
+        "post_failure_substeps": 10530,
+        "by_side_phase": [
+          {
+            "side": "pull",
+            "phase": "approach_arm",
+            "episodes": 87,
+            "valid": 7929,
+            "entire_interval_dual": 0,
+            "terminal": 0,
+            "peak_n": 200.9272003173828
+          },
+          {
+            "side": "pull",
+            "phase": "grasp",
+            "episodes": 125,
+            "valid": 10777,
+            "entire_interval_dual": 0,
+            "terminal": 119,
+            "peak_n": 273.6748352050781
+          },
+          {
+            "side": "pull",
+            "phase": "open",
+            "episodes": 183,
+            "valid": 183,
+            "entire_interval_dual": 0,
+            "terminal": 183,
+            "peak_n": 51.020164489746094
+          },
+          {
+            "side": "pull",
+            "phase": "hold",
+            "episodes": 116,
+            "valid": 116,
+            "entire_interval_dual": 0,
+            "terminal": 116,
+            "peak_n": 73.51303100585938
+          },
+          {
+            "side": "pull",
+            "phase": "release",
+            "episodes": 41,
+            "valid": 260,
+            "entire_interval_dual": 0,
+            "terminal": 31,
+            "peak_n": 200.14697265625
+          },
+          {
+            "side": "pull",
+            "phase": "retreat_arm",
+            "episodes": 80,
+            "valid": 5511,
+            "entire_interval_dual": 0,
+            "terminal": 15,
+            "peak_n": 205.84213256835938
+          },
+          {
+            "side": "pull",
+            "phase": "post_release_hold",
+            "episodes": 103,
+            "valid": 13542,
+            "entire_interval_dual": 0,
+            "terminal": 3,
+            "peak_n": 33.27268981933594
+          },
+          {
+            "side": "push",
+            "phase": "approach_arm",
+            "episodes": 224,
+            "valid": 9667,
+            "entire_interval_dual": 0,
+            "terminal": 144,
+            "peak_n": 55.85569381713867
+          },
+          {
+            "side": "push",
+            "phase": "grasp",
+            "episodes": 212,
+            "valid": 10062,
+            "entire_interval_dual": 0,
+            "terminal": 194,
+            "peak_n": 40.1510009765625
+          },
+          {
+            "side": "push",
+            "phase": "open",
+            "episodes": 130,
+            "valid": 130,
+            "entire_interval_dual": 0,
+            "terminal": 130,
+            "peak_n": 30.93863868713379
+          },
+          {
+            "side": "push",
+            "phase": "hold",
+            "episodes": 101,
+            "valid": 101,
+            "entire_interval_dual": 0,
+            "terminal": 101,
+            "peak_n": 78.4911117553711
+          },
+          {
+            "side": "push",
+            "phase": "release",
+            "episodes": 97,
+            "valid": 2251,
+            "entire_interval_dual": 0,
+            "terminal": 63,
+            "peak_n": 138.78575134277344
+          },
+          {
+            "side": "push",
+            "phase": "retreat_arm",
+            "episodes": 471,
+            "valid": 13071,
+            "entire_interval_dual": 0,
+            "terminal": 199,
+            "peak_n": 89.83663177490234
+          },
+          {
+            "side": "push",
+            "phase": "post_release_hold",
+            "episodes": 761,
+            "valid": 37233,
+            "entire_interval_dual": 0,
+            "terminal": 522,
+            "peak_n": 49.19904327392578
+          }
+        ],
+        "recording_blocks": 26
+      }
+    }
+  ],
+  "new_joint_totals": {
+    "h32": 200,
+    "wm_minibatches": 2000,
+    "critic_minibatches": 4000,
+    "valid": 219677,
+    "physics_intervals": 276480,
+    "prefix_intervals": 56803,
+    "imagined": 1638400,
+    "process_hours": 0.08614645841686676,
+    "exclusive_gpu_hours": null
+  },
+  "formal_nominal": [
+    {
+      "checkpoint": "results/b0/lanes_s0_to100_v1/checkpoint_000100.pt",
+      "backend": "warp",
+      "contact_training_budget": {
+        "contact_h32_updates": 100,
+        "contact_valid_transitions": 108844,
+        "contact_attempted_lane_intervals": 143360,
+        "contact_imagined_policy_steps": 819200,
+        "measured_contact_process_seconds_through_update": 173.4288783762604,
+        "attributable_gpu_hours": null
+      },
+      "segments_only": {
+        "cases": 10,
+        "physical_passes": 0,
+        "finite_segment_returns": 10,
+        "mean": 0.010355318163010845,
+        "median": -0.003524458331544811,
+        "worst": -0.022014300373778817,
+        "total_scored_substeps": 987,
+        "first_2ms_failures": 6,
+        "failures": {
+          "operation_station_drift": 1,
+          "door_force_limit": 6,
+          "unexpected_contact:finger_non_grasp_handle": 3
+        }
+      },
+      "full_from_start_return": null,
+      "by_side": {
+        "pull": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": 0.022537761277008832,
+          "median": -0.008648849559729574,
+          "worst": -0.022014300373778817,
+          "total_scored_substeps": 806,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 1,
+            "door_force_limit": 3,
+            "unexpected_contact:finger_non_grasp_handle": 1
+          }
+        },
+        "push": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.0018271249509871402,
+          "median": -0.001842841831929872,
+          "worst": -0.0036483806045040377,
+          "total_scored_substeps": 181,
+          "first_2ms_failures": 3,
+          "failures": {
+            "unexpected_contact:finger_non_grasp_handle": 2,
+            "door_force_limit": 3
+          }
+        }
+      }
+    },
+    {
+      "checkpoint": "results/b0/lanes_s0_to200_v1/checkpoint_000200.pt",
+      "backend": "warp",
+      "contact_training_budget": {
+        "contact_h32_updates": 200,
+        "contact_valid_transitions": 219677,
+        "contact_attempted_lane_intervals": 276480,
+        "contact_imagined_policy_steps": 1638400,
+        "measured_contact_process_seconds_through_update": 308.22134987451136,
+        "attributable_gpu_hours": null
+      },
+      "segments_only": {
+        "cases": 10,
+        "physical_passes": 0,
+        "finite_segment_returns": 10,
+        "mean": 0.181801170086745,
+        "median": -0.0008127575529598217,
+        "worst": -0.011202057983716348,
+        "total_scored_substeps": 6184,
+        "first_2ms_failures": 6,
+        "failures": {
+          "operation_station_drift": 1,
+          "door_force_limit": 6,
+          "unexpected_contact:finger_non_grasp_handle": 1,
+          "reference_exhausted": 1,
+          "timeout:release": 1
+        }
+      },
+      "full_from_start_return": null,
+      "by_side": {
+        "pull": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": 0.022163093331937094,
+          "median": -0.00254110342674804,
+          "worst": -0.011202057983716348,
+          "total_scored_substeps": 497,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 1,
+            "door_force_limit": 3,
+            "unexpected_contact:finger_non_grasp_handle": 1
+          }
+        },
+        "push": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": 0.3414392468415529,
+          "median": -0.0005926092375925582,
+          "worst": -0.0019030698494594774,
+          "total_scored_substeps": 5687,
+          "first_2ms_failures": 3,
+          "failures": {
+            "reference_exhausted": 1,
+            "door_force_limit": 3,
+            "timeout:release": 1
+          }
+        }
+      }
+    },
+    {
+      "checkpoint": "results/b0/lanes_s0_v1/checkpoint_000000.pt",
+      "backend": "warp",
+      "contact_training_budget": {
+        "contact_h32_updates": 0,
+        "contact_valid_transitions": 0,
+        "contact_attempted_lane_intervals": 0,
+        "contact_imagined_policy_steps": 0,
+        "measured_contact_process_seconds_through_update": null,
+        "attributable_gpu_hours": null
+      },
+      "segments_only": {
+        "cases": 10,
+        "physical_passes": 0,
+        "finite_segment_returns": 10,
+        "mean": -0.15822764827084573,
+        "median": -0.08600001823087758,
+        "worst": -0.5029825444677629,
+        "total_scored_substeps": 1630,
+        "first_2ms_failures": 6,
+        "failures": {
+          "operation_station_drift": 3,
+          "door_force_limit": 6,
+          "unexpected_contact:finger_non_grasp_handle": 1
+        }
+      },
+      "full_from_start_return": null,
+      "by_side": {
+        "pull": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.13671151703638967,
+          "median": -0.11518426175860975,
+          "worst": -0.2813803539718819,
+          "total_scored_substeps": 1030,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 2,
+            "door_force_limit": 3
+          }
+        },
+        "push": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.17974377950530177,
+          "median": -0.056815774703145396,
+          "worst": -0.5029825444677629,
+          "total_scored_substeps": 600,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 1,
+            "door_force_limit": 3,
+            "unexpected_contact:finger_non_grasp_handle": 1
+          }
+        }
+      }
+    },
+    {
+      "checkpoint": "results/b0/lanes_s0_v1/checkpoint_000001.pt",
+      "backend": "warp",
+      "contact_training_budget": {
+        "contact_h32_updates": 1,
+        "contact_valid_transitions": 2103,
+        "contact_attempted_lane_intervals": 5120,
+        "contact_imagined_policy_steps": 8192,
+        "measured_contact_process_seconds_through_update": 20.886679407209158,
+        "attributable_gpu_hours": null
+      },
+      "segments_only": {
+        "cases": 10,
+        "physical_passes": 0,
+        "finite_segment_returns": 10,
+        "mean": -0.11049558160252909,
+        "median": -0.049171831462562654,
+        "worst": -0.5292589569775498,
+        "total_scored_substeps": 4134,
+        "first_2ms_failures": 6,
+        "failures": {
+          "operation_station_drift": 2,
+          "door_force_limit": 6,
+          "timeout:release": 1,
+          "unexpected_contact:finger_non_grasp_handle": 1
+        }
+      },
+      "full_from_start_return": null,
+      "by_side": {
+        "pull": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.04039480037519468,
+          "median": -0.044667112338106975,
+          "worst": -0.21830953926683047,
+          "total_scored_substeps": 3759,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 1,
+            "door_force_limit": 3,
+            "timeout:release": 1
+          }
+        },
+        "push": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.1805963628298635,
+          "median": -0.05367655058701833,
+          "worst": -0.5292589569775498,
+          "total_scored_substeps": 375,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 1,
+            "door_force_limit": 3,
+            "unexpected_contact:finger_non_grasp_handle": 1
+          }
+        }
+      }
+    },
+    {
+      "checkpoint": "results/b0/lanes_s0_v1/checkpoint_000010.pt",
+      "backend": "warp",
+      "contact_training_budget": {
+        "contact_h32_updates": 10,
+        "contact_valid_transitions": 13776,
+        "contact_attempted_lane_intervals": 20480,
+        "contact_imagined_policy_steps": 81920,
+        "measured_contact_process_seconds_through_update": 43.71960889920592,
+        "attributable_gpu_hours": null
+      },
+      "segments_only": {
+        "cases": 10,
+        "physical_passes": 0,
+        "finite_segment_returns": 10,
+        "mean": -0.08645321147629541,
+        "median": -0.041616385370467204,
+        "worst": -0.4978730603604032,
+        "total_scored_substeps": 4011,
+        "first_2ms_failures": 6,
+        "failures": {
+          "operation_station_drift": 1,
+          "door_force_limit": 6,
+          "timeout:release": 1,
+          "unexpected_contact:finger_non_grasp_handle": 2
+        }
+      },
+      "full_from_start_return": null,
+      "by_side": {
+        "pull": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.014387889911793017,
+          "median": -0.04072115399940887,
+          "worst": -0.13139665696932862,
+          "total_scored_substeps": 3970,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 1,
+            "door_force_limit": 3,
+            "timeout:release": 1
+          }
+        },
+        "push": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.1585185330407978,
+          "median": -0.04251161674152554,
+          "worst": -0.4978730603604032,
+          "total_scored_substeps": 41,
+          "first_2ms_failures": 3,
+          "failures": {
+            "unexpected_contact:finger_non_grasp_handle": 2,
+            "door_force_limit": 3
+          }
+        }
+      }
+    },
+    {
+      "checkpoint": "results/b0/lanes_s0_v1/checkpoint_000050.pt",
+      "backend": "warp",
+      "contact_training_budget": {
+        "contact_h32_updates": 50,
+        "contact_valid_transitions": 55723,
+        "contact_attempted_lane_intervals": 71680,
+        "contact_imagined_policy_steps": 409600,
+        "measured_contact_process_seconds_through_update": 88.83498971350491,
+        "attributable_gpu_hours": null
+      },
+      "segments_only": {
+        "cases": 10,
+        "physical_passes": 0,
+        "finite_segment_returns": 10,
+        "mean": -0.04962274767118626,
+        "median": -0.022327243239972944,
+        "worst": -0.20580214581560424,
+        "total_scored_substeps": 895,
+        "first_2ms_failures": 6,
+        "failures": {
+          "operation_station_drift": 3,
+          "door_force_limit": 6,
+          "unexpected_contact:finger_non_grasp_handle": 1
+        }
+      },
+      "full_from_start_return": null,
+      "by_side": {
+        "pull": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.09332275513279814,
+          "median": -0.07193634525356295,
+          "worst": -0.20580214581560424,
+          "total_scored_substeps": 308,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 2,
+            "door_force_limit": 3
+          }
+        },
+        "push": {
+          "cases": 5,
+          "physical_passes": 0,
+          "finite_segment_returns": 5,
+          "mean": -0.005922740209574378,
+          "median": -0.004392759980946205,
+          "worst": -0.040226594855926896,
+          "total_scored_substeps": 587,
+          "first_2ms_failures": 3,
+          "failures": {
+            "operation_station_drift": 1,
+            "door_force_limit": 3,
+            "unexpected_contact:finger_non_grasp_handle": 1
+          }
+        }
+      }
+    }
+  ],
+  "full_from_start_return": null,
+  "subsequent_gates": {
+    "D": "unopened",
+    "full_warp_C": "unopened",
+    "full_native": "unopened",
+    "seed1_2": "unopened",
+    "H": "sealed"
+  },
+  "restart_receipts": "restart_receipts.json",
+  "protocols": {
+    "reference": [
+      "contact_dev_v1",
+      "contact_dev_hold_margin_v2"
+    ],
+    "primary_score": "fixed_effort_successor_2ms_v1",
+    "normalized_segment_missing_suffix": "Original physical failure stops scoring; zero remainder to the registered duration",
+    "segment_prefix": "registered teacher prefix only, excluded from score",
+    "paper_target": 0.9,
+    "near_band": 0.88,
+    "near_band_absolute_tolerance": 0.02,
+    "physical_gates_also_required": true,
+    "teacher_action_bc_updates_in_standard_actor": 0,
+    "analytic_compensation": false,
+    "reference_action_feedforward": false
+  },
+  "diagnostics": [
+    "entry_response_matched_u50.json",
+    "held_action_support.json",
+    "grip_commands.csv"
+  ],
+  "continuation_decision": "Same recipe stopped at u200. Six force failures on the first 2ms at both u100/u200. No registered phase events or complete dual-finger 20ms policy intervals. The prolonged push approach at u200 ended without contact."
+}
