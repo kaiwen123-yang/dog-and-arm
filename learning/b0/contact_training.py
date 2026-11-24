@@ -224,7 +224,8 @@ class ContactRun:
         # Keep the original physical exploration magnitude when a calibrated
         # arm/jaw decoder uses a larger unit to represent nominal poses.
         self.exploration_scale=self.actor.standard_action.clone()
-        self.actor.load_state_dict(actor_checkpoint['actor'])
+        if actor_checkpoint is not None:
+            self.actor.load_state_dict(actor_checkpoint['actor'])
         if from_free_anchor and 'arm_jaw_output_gain' in cfg:
             if cfg.get('calibrated_actor') or actor_checkpoint.get('schema') is not None:
                 raise ValueError("Arm/jaw unit change requires a fresh B0-03 standard initialization")
@@ -243,7 +244,8 @@ class ContactRun:
         self.dyn.load_state_dict(wm_checkpoint['dyn'])
         self.grip_windows = None
         self.b = cfg['wm_batch']
-        horizons = [(1, 2), (7, self.seven_batches)]
+        official = cfg.get('execution_recipe') == 'official_flow_s0_v1'
+        horizons = [(7, 10)] if official else [(1, 2), (7, self.seven_batches)]
         if self.h32_teacher_batches:
             horizons.append((32, self.h32_teacher_batches))
         self.learners = {n: WorldModelLearner(self.dyn,rep,ContactWorldModelCfg(
@@ -254,7 +256,7 @@ class ContactRun:
         eps=[ContactEpisode.read(p,device) for p in teachers]
         if len(set(e.group for e in eps)) != len(eps):
             raise ValueError('Duplicate teacher episode group')
-        self.offline={n:ContactWindows(eps,n) for n in self.learners}
+        self.offline={} if official else {n:ContactWindows(eps,n) for n in self.learners}
         self.replay=OnlineContactReplay(cfg['replay_cohorts'],device,cfg.get('contact_replay_draw','single_cohort'))
         self.n=cfg['worlds']
         self.steps=cfg['cohort_steps']
@@ -268,7 +270,7 @@ class ContactRun:
         env.reference_rep=(rep.represent(contact_state(bank.qpos,bank.qvel)) if scales is not None else None)
         self.critic=build_mlp(rep.rep_state_dim+570+5,tuple(cfg['critic_hidden']),1).to(device)
         # Input width changed. Hidden and final layer carry unchanged semantics.
-        old=actor_checkpoint['critic']
+        old={} if actor_checkpoint is None else actor_checkpoint['critic']
         for name,w in self.critic.named_parameters():
             if name not in ('0.weight','0.bias') and name in old and old[name].shape==w.shape:
                 w.data.copy_(old[name])
@@ -326,6 +328,10 @@ class ContactRun:
         if cfg.get("contact_update_schedule") == "official_ratio_valid":
             from .contact_sampling import ContactUpdateSchedule
             self.schedule = ContactUpdateSchedule(self)
+            if official:
+                from .official_replay import OfficialReplay
+                self.replay = OfficialReplay(self.n, cfg['buffer_size'], device)
+                env.replay_buffer = self.replay
         elif cfg.get("contact_update_schedule", "one_per_cohort") != "one_per_cohort":
             raise ValueError("Unknown contact_update_schedule")
 

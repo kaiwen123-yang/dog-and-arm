@@ -1,0 +1,36 @@
+execution_recipe: official_flow_s0_v1
+seed: 0
+wm_checkpoint: results/raw_large/b0/joint_contact_20261124/adapt/wm_000850.pt
+reference_paths:
+  - results/raw_large/b0/contact_held_r1/pull_0_train_grip
+  - results/raw_large/b0/contact_held_r1/push_0_train_grip
+  - results/raw_large/b0/contact_held_r1/pull_5_train
+  - results/raw_large/b0/contact_held_r1/push_5_train
+  - results/raw_large/b0/contact_held_r1/pull_15_train
+  - results/raw_large/b0/contact_held_r1/push_15_train
+  - results/raw_large/b0/full_warp_hold_park_r1/pull_60_train
+  - results/raw_large/b0/full_warp_hold_park_r1/push_25_train
+worlds: 4096
+wm_batch: 2048
+actor_batch: 4096
+buffer_size: 1000
+replay_cohorts: 1
+cohort_steps: 1
+replay_ratio: 16
+collection_noise: 0.1
+wm_hidden: [2048, 2048, 2048]
+actor_hidden: [2048, 1024, 512, 256]
+critic_hidden: [256, 128]
+contact_reset_sampling: official_return
+contact_update_schedule: official_ratio_valid
+collector: lane_reset
+contact_replay_draw: official_lane_age
+reference_tail: official_clip_last
+rsi_phases: [approach_base, settle, pregrasp, approach_arm, grasp, open, hold, release, retreat_arm, post_release_hold, stow, retreat_base, final]
+action_rate_coordinates: fixed_effort
+physics_dt: 0.00025
+policy_dt: 0.02
+temporal_id: C20
+training_physics_id: warp_250us_servo2ms_continuous_v1
+preserve_continuous_bias: true
+actor_horizon: 32

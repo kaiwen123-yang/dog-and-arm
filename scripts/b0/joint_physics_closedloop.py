@@ -21,7 +21,7 @@ from scripts.b0.training_entry_response import arr,phases,register_solver
 
 
 @torch.no_grad()
-def run(args):
+def run(args, out=OUT, raw_root=RAW):
     dt=IDENTITIES[args.identity]
     model,rep=model_and_rep(dt)
     robot=RobotRepresentation(model,DEVICE)
@@ -35,9 +35,11 @@ def run(args):
         common=torch.load(OLD/"h32_shared"/"first.pt",map_location="cpu",weights_only=False)["actor"]
         assert all(torch.equal(v,common[k]) for k,v in actor.cpu().state_dict().items())
         actor.to(DEVICE)
-    bank=DoorMotions([Path(cfg["reference_directory"])/n for n in cfg["references"]],rep,DEVICE,reference_tail=cfg["reference_tail"])
+    paths = (list(map(Path, cfg["reference_paths"])) if "reference_paths" in cfg else
+             [Path(cfg["reference_directory"])/n for n in cfg["references"]])
+    bank=DoorMotions(paths,rep,DEVICE,reference_tail=cfg["reference_tail"])
     rows=[]
-    dest=RAW/"closedloop"/args.node/args.identity/f"repeat{args.repeat}"
+    dest=raw_root/"closedloop"/args.node/args.identity/f"repeat{args.repeat}"
     names=[(s,p) for s in ("pull","push") for p in ("grasp","hold","release")]
     for side,phase in (names if args.repeat==0 else names[::-1]):
         name=f"{side}_0_validation_grip_{phase}"
@@ -108,7 +110,7 @@ def run(args):
             steps.append(sub)
             history=torch.cat((history[:,1:],sensor(robot,full_state(plant.data.qpos[:],plant.data.qvel[:]),cmd)[:,None]),1)
         actual={k:np.concatenate([x[k][:a["judge_ticks"]] for x,a in zip(steps,queries)]) for k in steps[0]}
-        pub=OUT/"closedloop"/args.node/args.identity/f"repeat{args.repeat}"
+        pub=out/"closedloop"/args.node/args.identity/f"repeat{args.repeat}"
         pub.mkdir(parents=True,exist_ok=True)
         np.savez_compressed(dst/"trace.npz",**actual,**{"query_"+k:np.asarray([r[k] for r in queries]) for k in queries[0]},
             **{"prefix_"+k:np.stack([r[k] for r in pre]) for k in pre[0]},prefix_last_action=prev0)
@@ -132,7 +134,7 @@ def run(args):
         write(pub/(name+".json"),r)
         rows.append(r)
         print(name,len(queries),ticks,r["both_ticks"],flush=True)
-    write(OUT/f"closedloop_{args.node}_{args.identity}_r{args.repeat}.json",dict(rows=rows,
+    write(out/f"closedloop_{args.node}_{args.identity}_r{args.repeat}.json",dict(rows=rows,
         run="Recomputed full registered 200 ms prefixes. All commands after the prefix are sampled from frozen Actor parameters and normalization on that lane's measured state. Original event judge; no reset in scored segment.",
         scored_ticks=sum(r["scored_ticks"] for r in rows),prefix_ticks=sum(r["recomputed_prefix_ticks"] for r in rows),
         policy_ticks=sum(r["integrated_policy_ticks"] for r in rows),actor_calls=sum(r["actor_queries"] for r in rows)))

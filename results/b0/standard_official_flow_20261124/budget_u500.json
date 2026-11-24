@@ -1,0 +1,63 @@
+{
+  "registered": "2026-11-24T21:30:07.250464+08:00",
+  "from_update": 200,
+  "to_update": 500,
+  "expected_additional": {
+    "WM": 3000,
+    "H32": 300,
+    "Critic": 6000
+  },
+  "evidence": [
+    {
+      "side": "pull",
+      "events": [
+        {
+          "phase": "approach_base",
+          "end_step": 2342,
+          "ref_end_step": 2342,
+          "ticks": 30,
+          "door_deg": 0.0,
+          "width_m": 0.042945153074919626,
+          "net_force_n": 0.0
+        },
+        {
+          "phase": "settle",
+          "end_step": 3051,
+          "ref_end_step": 3051,
+          "ticks": 500,
+          "door_deg": 0.0,
+          "width_m": 0.04183087831246082,
+          "net_force_n": 0.0
+        }
+      ],
+      "failure": "operation_station_drift"
+    },
+    {
+      "side": "push",
+      "events": [
+        {
+          "phase": "approach_base",
+          "end_step": 2342,
+          "ref_end_step": 2342,
+          "ticks": 30,
+          "door_deg": 0.0,
+          "width_m": 0.04292525525523318,
+          "net_force_n": 0.0
+        },
+        {
+          "phase": "settle",
+          "end_step": 3047,
+          "ref_end_step": 3047,
+          "ticks": 500,
+          "door_deg": 0.0,
+          "width_m": 0.04183806698003775,
+          "net_force_n": 0.0
+        }
+      ],
+      "failure": "operation_station_drift"
+    }
+  ],
+  "reason": "Both native-3.3 full-start trajectories reached approach_base and settle. u0 Warp had neither phase, u10 Warp first showed approach_base. Compare station retention, approach/grip and further phase progression in the same candidate at u500.",
+  "continuation": "Exact u200 physical state, online replay, sampler, stats, Ratio, RNG and optimizer reload. Same config; no new WM gates.",
+  "next": "Compare u500 vs u200 on both full tasks, frozen ten cases, six observed contact starts and free tracking before authorizing u1000."
+}

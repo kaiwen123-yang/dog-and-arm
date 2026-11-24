@@ -145,6 +145,9 @@ class ContactUpdateSchedule:
         from supermimic.runners.supermimic_runner import Ratio
         # Count both online and offline positions in the joint WM update.
         self.positions = run.b * (2 * 2 + run.seven_batches * 8 + run.h32_teacher_batches * 33)
+        if run.cfg.get("execution_recipe") == "official_flow_s0_v1":
+            cfg = run.learners[7].cfg
+            self.positions = cfg.batch_size * cfg.num_batches * cfg.horizon
         self.ratio = Ratio(run.cfg["replay_ratio"] / self.positions)
         self.pending = 0
         self.cohorts = 0

@@ -10,7 +10,8 @@ from .contact_model import contact_state
 def collect_lanes(run, raw_path=None):
     plant, bank = run.plant, run.bank
     n, device = run.n, run.device
-    if run.sampler is None or run.schedule is None or not run.cfg.get('freeze_wm_input_statistics'):
+    official = run.cfg.get('execution_recipe') == 'official_flow_s0_v1'
+    if run.sampler is None or run.schedule is None or (not official and not run.cfg.get('freeze_wm_input_statistics')):
         raise ValueError("The continuous recipe requires ReturnSampler, Ratio and fixed WM statistics")
     if not hasattr(run, 'lanes'):
         run.last_episode = getattr(run, 'last_episode', 0)
@@ -65,7 +66,7 @@ def collect_lanes(run, raw_path=None):
         end = bank.motion_ends[torch.searchsorted(bank.motion_ends,frame,right=True)]
         clip_end = policy & (frame+1 >= end-1)
         terminal = policy & (fail>0)
-        if valid.any() and not run.cfg.get('freeze_actor_statistics',False):
+        if not official and valid.any() and not run.cfg.get('freeze_actor_statistics',False):
             run.actor.train()
             run.actor.update_normalization(obs[valid])
             run.actor.eval()
@@ -122,6 +123,12 @@ def collect_lanes(run, raw_path=None):
         np.savez_compressed(run.compact_directory/f'lanes_{block:06}.npz',**arrays)
     counts = arrays['valid'].sum(axis=1).tolist()
     run.replay.append(rows)
+    if official and counts[0]:
+        # One real tick per call. Flush its exact online observation after insertion.
+        run.learners[7].update_normalization(state[valid], action[valid])
+        run.actor.train()
+        run.actor.update_normalization(obs[valid])
+        run.actor.eval()
     run.schedule.add_cohort(run.total,counts)
     run.total += sum(counts)
     run.simulated += n*run.steps
