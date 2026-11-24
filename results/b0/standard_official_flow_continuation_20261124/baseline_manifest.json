@@ -108,19 +108,19 @@
     "critic": 20000
   },
   "cumulative_steps": {
+    "wm": 40000,
+    "actor": 4000,
+    "critic": 80000
+  },
+  "retained_new_steps": {
     "wm": 30000,
     "actor": 3000,
     "critic": 60000
   },
-  "retained_new_steps": {
-    "wm": 20000,
-    "actor": 2000,
-    "critic": 40000
-  },
   "charged_new_steps": {
-    "wm": 20090,
-    "actor": 2006,
-    "critic": 40120
+    "wm": 30090,
+    "actor": 3006,
+    "critic": 60120
   },
   "discarded_attempts": [
     {
@@ -172,27 +172,29 @@
       "interrupted_partial_tick_excluded": true
     }
   ],
-  "new_valid": 20479369,
-  "cumulative_valid": 30734859,
-  "new_lane_intervals": 22622208,
-  "new_microsteps": 1809776640,
-  "new_prefix_lane_intervals": 2142839,
-  "new_valid_terminal": 194793,
-  "retained_training_wall_s": 3545.9325786307454,
+  "new_valid": 30719064,
+  "cumulative_valid": 40974554,
+  "new_lane_intervals": 33665024,
+  "new_microsteps": 2693201920,
+  "new_prefix_lane_intervals": 2945960,
+  "new_valid_terminal": 266133,
+  "retained_training_wall_s": 5146.9593827575445,
   "wall_by_process_through_retained_update_s": {
     "durable_u1001": 40.95530388131738,
-    "1795540571.1211922": 3504.977274749428
+    "1795540571.1211922": 3504.977274749428,
+    "1795544643.2252562": 1601.026804126799
   },
   "wall_scope": "monotonic time after restore to last retained update in each process, includes internal checkpoints except its own final write; evaluation and discarded attempts excluded",
-  "aggregate_new_simulated_seconds": 452444.16000000003,
-  "new_ratio_stored_positions_per_valid": 16.000492983939104,
-  "new_wm_windows": 40960000,
-  "new_wm_scored_successors": 286720000,
-  "new_imagined_steps": 262144000,
+  "aggregate_new_simulated_seconds": 673300.48,
+  "new_ratio_stored_positions_per_valid": 16.00048751485397,
+  "new_wm_windows": 61440000,
+  "new_wm_scored_successors": 430080000,
+  "new_imagined_steps": 393216000,
   "nodes": [
     1500,
     2000,
-    3000
+    3000,
+    4000
   ],
   "physics": [
     {
@@ -356,6 +358,60 @@
           "heading_deg": 0.19863158279083956
         }
       ]
+    },
+    {
+      "node": 4000,
+      "backend": "warp",
+      "contact_cases": 10,
+      "contact_pass": 2,
+      "contact_events": 5,
+      "full_cases": 2,
+      "full_success": 0,
+      "full": [
+        {
+          "side": "pull",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "timeout:settle",
+          "xy_m": 0.020176655210244056,
+          "heading_deg": 0.45650103450079693
+        },
+        {
+          "side": "push",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "unexpected_contact:finger_non_grasp_handle",
+          "xy_m": 0.014975589957823216,
+          "heading_deg": 0.13954153236034772
+        }
+      ]
+    },
+    {
+      "node": 4000,
+      "backend": "native",
+      "contact_cases": 0,
+      "contact_pass": 0,
+      "contact_events": 0,
+      "full_cases": 2,
+      "full_success": 0,
+      "full": [
+        {
+          "side": "pull",
+          "completed": "approach_base",
+          "phase": "settle",
+          "failure": "timeout:settle",
+          "xy_m": 0.021118770458608445,
+          "heading_deg": 0.34246768146672835
+        },
+        {
+          "side": "push",
+          "completed": "approach_base,settle",
+          "phase": "pregrasp",
+          "failure": "unexpected_contact:finger_non_grasp_handle",
+          "xy_m": 0.013648379727554621,
+          "heading_deg": 0.11547446818422338
+        }
+      ]
     }
   ],
   "free": [
@@ -425,6 +481,30 @@
     },
     {
       "node": 3000,
+      "task": "park",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 4000,
+      "task": "support",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 4000,
+      "task": "moving_arm",
+      "passed": 0,
+      "attempted": 20,
+      "complete_manifest": true,
+      "gate_passed": false
+    },
+    {
+      "node": 4000,
       "task": "park",
       "passed": 0,
       "attempted": 20,
@@ -612,33 +692,93 @@
       "both_ticks": 0,
       "longest_dual_ticks": 0,
       "dual_seconds": 0.0
+    },
+    {
+      "node": 4000,
+      "start": "pull_0_validation_grip_grasp",
+      "phase": "grasp",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 4000,
+      "start": "pull_0_validation_grip_hold",
+      "phase": "hold",
+      "actor_queries": 1,
+      "scored_ticks": 1,
+      "both_ticks": 0,
+      "longest_dual_ticks": 0,
+      "dual_seconds": 0.0
+    },
+    {
+      "node": 4000,
+      "start": "pull_0_validation_grip_release",
+      "phase": "release",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 44,
+      "longest_dual_ticks": 13,
+      "dual_seconds": 0.026000000000000002
+    },
+    {
+      "node": 4000,
+      "start": "push_0_validation_grip_grasp",
+      "phase": "grasp",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 229,
+      "longest_dual_ticks": 229,
+      "dual_seconds": 0.458
+    },
+    {
+      "node": 4000,
+      "start": "push_0_validation_grip_hold",
+      "phase": "hold",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 315,
+      "longest_dual_ticks": 309,
+      "dual_seconds": 0.618
+    },
+    {
+      "node": 4000,
+      "start": "push_0_validation_grip_release",
+      "phase": "release",
+      "actor_queries": 32,
+      "scored_ticks": 320,
+      "both_ticks": 316,
+      "longest_dual_ticks": 309,
+      "dual_seconds": 0.618
     }
   ],
   "video_manifests": [],
   "recovery": {
     "host": "autodl-d57",
     "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8",
-    "update": 3000,
-    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_003000.pt",
-    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_003000",
-    "clock": 8295,
-    "simulated": 33976320,
-    "valid": 30734859,
+    "update": 4000,
+    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_004000.pt",
+    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_004000",
+    "clock": 10991,
+    "simulated": 45019136,
+    "valid": 40974554,
     "steps": {
-      "wm": 30000,
-      "actor": 3000,
-      "critic": 60000
+      "wm": 40000,
+      "actor": 4000,
+      "critic": 80000
     },
     "stats": {
-      "wm_state": 30785338,
-      "wm_proc": 30785338,
-      "proprio": 30734859,
-      "goal": 30734859
+      "wm_state": 41025033,
+      "wm_proc": 41025033,
+      "proprio": 40974554,
+      "goal": 40974554
     },
     "ratio": {
-      "previous_clock": 30730240.0,
+      "previous_clock": 40970240.0,
       "pending": 0,
-      "cohorts": 8295
+      "cohorts": 10991
     }
   },
   "V0": 0,
