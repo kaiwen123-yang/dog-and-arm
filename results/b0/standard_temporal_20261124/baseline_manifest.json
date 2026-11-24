@@ -1,0 +1,367 @@
+{
+  "method": "SuperMimic-M1Piper-standard-v1",
+  "stage": "B0-04",
+  "final_candidate": null,
+  "selected_wm": null,
+  "full_bilateral_return": null,
+  "standard_transfer_complete": false,
+  "goal": 0.9,
+  "near": 0.88,
+  "plan_commit": "b5831d747289cb5e302151214759f3add26c7700",
+  "sealed_previous": "753f1bcca6d4f5dd48b1b2886e3523036c7d366d",
+  "implementation": "b806b96905b01d260a6a152f732f372255b46c7b",
+  "upstream": {
+    "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+    "mjlab_research": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd"
+  },
+  "field_root": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1",
+  "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "config": "config/b0/standard_temporal_v1.yaml",
+  "challenge_plan": "docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md",
+  "physical": {
+    "backend": "MuJoCo-Warp 3.16.0, Warp 1.18.0",
+    "dt_s": 0.002,
+    "policy_dt_s": 0.02,
+    "score": "fixed_effort_successor_2ms_v1",
+    "door_force_limit_N": 6,
+    "contact_cases": [
+      "config/b0/contact_dev_v1.json",
+      "config/b0/contact_dev_hold_margin_v2.json"
+    ],
+    "references": "config/b0/standard_response_v1.yaml and its inherited held reference paths",
+    "full_protocol": "docs/B0_PAPER_BASELINE_PROTOCOL.md"
+  },
+  "registered_source": "registration.json",
+  "new_response": {
+    "prefix_world_steps": 50400,
+    "branched_world_steps": 161280,
+    "delivered_20ms": 6010,
+    "accepted": 18
+  },
+  "source_trajectories": {
+    "train": 4,
+    "validation": 2
+  },
+  "starts": {
+    "train": 12,
+    "validation": 6
+  },
+  "legal_window_inventory": {
+    "native": {
+      "episodes": 10,
+      "horizons": {
+        "1": 13640,
+        "7": 13580
+      }
+    },
+    "grip": {
+      "episodes": 512,
+      "horizons": {
+        "1": 14396,
+        "7": 11644
+      }
+    },
+    "multimode": {
+      "episodes": 512,
+      "horizons": {
+        "1": 18223,
+        "7": 15242
+      }
+    },
+    "response": {
+      "episodes": 300,
+      "horizons": {
+        "1": 3698,
+        "7": 2720
+      }
+    }
+  },
+  "raw_response": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_entries_v1",
+  "independent_response": "solver_fixed_closure/temporal_closure.json",
+  "solver_before": "solver_before.json",
+  "solver_retest": "solver_retest.json",
+  "inherited": {
+    "actor_checkpoint": "results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt",
+    "actor_updates": 1000,
+    "free_wm_minibatches": 10000,
+    "free_critic_minibatches": 20000,
+    "free_valid_online_transitions": 1088000,
+    "door_wm_checkpoint": "results/b0/contact_s0_wm_held_r2/wm_002000.pt",
+    "door_teacher_wm_minibatches": 2000,
+    "prior_lanes_warm": 1000
+  },
+  "previous_unselected_warm": {
+    "wall_s": 24.22969238460064,
+    "h1": 200,
+    "h7": 800,
+    "actor": 0,
+    "critic": 0,
+    "samples": 256000,
+    "successor_targets": 1484800,
+    "stored_positions": 1740800
+  },
+  "previous_joint": {
+    "h32": 200,
+    "wm": 2000,
+    "critic": 4000,
+    "imagined_steps": 1638400,
+    "shared_process_s": 326.26780761778355,
+    "stored": 3481600,
+    "successors": 2969600,
+    "sample_windows": 512000,
+    "prefix_rejections": 0,
+    "intervals": 276480,
+    "prefix": 58509,
+    "policy_valid": 217971,
+    "post_failure_substeps": 27668,
+    "entire_interval_dual": 0
+  },
+  "previous_recovery": [
+    {
+      "run": "response_s0_v1",
+      "restart": null,
+      "parent_endpoint_matches": null,
+      "weights": [
+        "results/b0/response_s0_v1/checkpoint_000000.pt",
+        "results/b0/response_s0_v1/checkpoint_000001.pt",
+        "results/b0/response_s0_v1/checkpoint_000010.pt",
+        "results/b0/response_s0_v1/checkpoint_000050.pt"
+      ],
+      "full_state": "/root/autodl-tmp/dog-and-arm-b0-response-v1/results/b0/response_s0_v1/cohort_state.pt",
+      "bytes": 498328191,
+      "optimizers": 6,
+      "replay_chunks": 15,
+      "rng_keys": [
+        "cpu_rng",
+        "gpu_rng",
+        "numpy_rng"
+      ],
+      "ratio": {
+        "previous_clock": 53312.0,
+        "pending": 0,
+        "cohorts": 15
+      },
+      "lane_boundary": {
+        "last_episode": 2258,
+        "live_lanes": 128,
+        "mode": "administrative_restart"
+      }
+    },
+    {
+      "run": "response_s0_to100_v1",
+      "restart": {
+        "last_episode": 2258,
+        "live_lanes": 128,
+        "mode": "administrative_restart"
+      },
+      "parent_endpoint_matches": {
+        "actor": true,
+        "critic": true,
+        "dyn": true
+      },
+      "weights": [
+        "results/b0/response_s0_to100_v1/checkpoint_000050.pt",
+        "results/b0/response_s0_to100_v1/checkpoint_000100.pt"
+      ],
+      "full_state": "/root/autodl-tmp/dog-and-arm-b0-response-v1/results/b0/response_s0_to100_v1/cohort_state.pt",
+      "bytes": 812462571,
+      "optimizers": 6,
+      "replay_chunks": 29,
+      "rng_keys": [
+        "cpu_rng",
+        "gpu_rng",
+        "numpy_rng"
+      ],
+      "ratio": {
+        "previous_clock": 107712.0,
+        "pending": 0,
+        "cohorts": 29
+      },
+      "lane_boundary": {
+        "last_episode": 4026,
+        "live_lanes": 128,
+        "mode": "administrative_restart"
+      }
+    },
+    {
+      "run": "response_s0_to200_v1",
+      "restart": {
+        "last_episode": 4026,
+        "live_lanes": 128,
+        "mode": "administrative_restart"
+      },
+      "parent_endpoint_matches": {
+        "actor": true,
+        "critic": true,
+        "dyn": true
+      },
+      "weights": [
+        "results/b0/response_s0_to200_v1/checkpoint_000100.pt",
+        "results/b0/response_s0_to200_v1/checkpoint_000200.pt"
+      ],
+      "full_state": "/root/autodl-tmp/dog-and-arm-b0-response-v1/results/b0/response_s0_to200_v1/cohort_state.pt",
+      "bytes": 883906745,
+      "optimizers": 6,
+      "replay_chunks": 32,
+      "rng_keys": [
+        "cpu_rng",
+        "gpu_rng",
+        "numpy_rng"
+      ],
+      "ratio": {
+        "previous_clock": 217600.0,
+        "pending": 1,
+        "cohorts": 54
+      },
+      "lane_boundary": {
+        "last_episode": 5871,
+        "live_lanes": 128,
+        "mode": "administrative_restart"
+      }
+    }
+  ],
+  "initializer": "results/b0/response_wm_v1/wm_000000.pt",
+  "initialization": "identical initialization tensors and fixed statistics, fresh official Muon + Adam for each arm",
+  "numerical_adaptation": "T2 uses independent 2ms inner Dynamics, c=1, sustained 0.1 over all 31 increment channels, ten autoregressive calls per 20ms action; C20 uses c=0.55",
+  "paired_indices": "paired_indices.npz",
+  "paired_sources": "paired_sources.json",
+  "wm_budget": {
+    "C20": {
+      "h1": 200,
+      "h7": 800,
+      "batch": 256,
+      "total_windows": 256000,
+      "source_draws": {
+        "1": {
+          "native": 6400,
+          "grip": 14933,
+          "multimode": 14934,
+          "response": 14933
+        },
+        "7": {
+          "native": 25600,
+          "grip": 59734,
+          "multimode": 59733,
+          "response": 59733
+        }
+      },
+      "stored_positions": 1740800,
+      "supervised_successors": 1484800,
+      "net_forward_examples": 1484800,
+      "training_loop_seconds_by_restart": {
+        "0": 3.983592262491584,
+        "50": 5.300166754052043,
+        "200": 21.856461631134152
+      },
+      "training_loop_seconds": 31.14022064767778,
+      "timing_scope": "shared GPU; after loading data, weights and optimizers, excluding final save and validation",
+      "peak_allocated_bytes": 378974720,
+      "peak_reserved_bytes": 515899392,
+      "clip_norm": 1.0,
+      "clipped_batches": 960,
+      "nonfinite_batches": 0,
+      "checkpoints": [
+        "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_pair_v1/C20/wm_000000.pt",
+        "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_pair_v1/C20/wm_000050.pt",
+        "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_pair_v1/C20/wm_000200.pt",
+        "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_pair_v1/C20/wm_001000.pt"
+      ]
+    },
+    "T2": {
+      "h1": 200,
+      "h7": 800,
+      "batch": 256,
+      "total_windows": 256000,
+      "source_draws": {
+        "1": {
+          "native": 6400,
+          "grip": 14933,
+          "multimode": 14934,
+          "response": 14933
+        },
+        "7": {
+          "native": 25600,
+          "grip": 59734,
+          "multimode": 59733,
+          "response": 59733
+        }
+      },
+      "stored_positions": 1740800,
+      "supervised_successors": 1484800,
+      "net_forward_examples": 14848000,
+      "training_loop_seconds_by_restart": {
+        "0": 11.230508947744966,
+        "50": 19.625259436666965,
+        "200": 82.93316896446049
+      },
+      "training_loop_seconds": 113.78893734887242,
+      "timing_scope": "shared GPU; after loading data, weights and optimizers, excluding final save and validation",
+      "peak_allocated_bytes": 1593398272,
+      "peak_reserved_bytes": 1887436800,
+      "clip_norm": 1.0,
+      "clipped_batches": 1000,
+      "nonfinite_batches": 0,
+      "checkpoints": [
+        "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_pair_v1/T2/wm_000000.pt",
+        "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_pair_v1/T2/wm_000050.pt",
+        "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_pair_v1/T2/wm_000200.pt",
+        "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/results/raw_large/b0/temporal_pair_v1/T2/wm_001000.pt"
+      ]
+    },
+    "total_network_forward_examples": 16332800,
+    "total_supervised_successors_counted_per_arm": 2969600
+  },
+  "process_timing": "process_timing.json",
+  "wm_nodes": "wm_validation/node_summary.json",
+  "selection": "None of the eight nodes combines bilateral response, retained long validation and consistent internal path.",
+  "new_h32_updates": 0,
+  "new_joint_critic_batches": 0,
+  "new_online_actor_training_intervals": 0,
+  "formal_anchor": {
+    "frozen": "results/b0/response_s0_v1/checkpoint_000000.pt",
+    "cases": 10,
+    "passed": 0,
+    "first_2ms_overforce": 6,
+    "events": 0,
+    "policy_physics_substeps": 1628,
+    "prefix_substeps": 1000,
+    "sum_case_wall_s": 18.096080208197236,
+    "source": "anchor_nominal.csv",
+    "identity": "new single-world Warp formal rerun of archived u0, zero new Actor updates"
+  },
+  "no_new_candidate_cases": true,
+  "not_reached": [
+    "new seed0 H32 main chain",
+    "D",
+    "full Warp nominal/C",
+    "full native3.3 nominal",
+    "seed1/2",
+    "frozen H"
+  ],
+  "timing_note": "Counts of internal forwards are individual batch examples, exclude reverse operations, scoring and diagnostics. Historical budgets remain separate.",
+  "protocol_deviation": {
+    "arm": "T2",
+    "at": 200,
+    "late_discovery": "H7 interval preclip p95=8.68e6, max=6.07e8; the endpoint decision inspected finite forward metrics and last gradient, missing intermediate spikes.",
+    "extra_completed_wm_batches": 800,
+    "extra_internal_forward_examples": 11878400,
+    "included_in_total": true,
+    "disposition": "Post-hoc diagnostic evidence, excluded from candidate promotion. Added per-interval gradient receipts and rechecked the +200 checkpoint."
+  },
+  "evidence": {
+    "actor": "historical_u1_actor.json",
+    "old_u1_loss": "wm_validation/historical_u1_loss.json",
+    "original_loss_retest": "wm_validation/paired_source_loss.json",
+    "backward_retest": "wm_validation/recurrence_u200.json",
+    "backend_retests": [
+      "nonterminal_wrist_replay_3.3.0.json",
+      "nonterminal_wrist_replay_3.16.0.json"
+    ],
+    "fixed_statistics": "wm_validation/input_support.json",
+    "native_sample_saturation": "native_wrist_draws_3.16.0.json",
+    "servo": "hold_actuation_audit.json",
+    "actual_draws": "hold_actual_draws.csv",
+    "video": "hold_videos.json"
+  },
+  "report": "reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md"
+}

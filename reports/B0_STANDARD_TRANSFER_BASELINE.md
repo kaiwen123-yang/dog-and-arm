@@ -1,5 +1,13 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-24 北京时间｜时间配对完成，B0-04 仍无有效 WM 出口
+
+真实 2 ms 积分闭合。已修连续求解器 bias 并重采 12 个训练、6 个验证起点。C20/T2 使用同一保存的真实索引，各完成原 H1/H7 的 1,000 批；八个节点均未同时保住双侧首动作和原 H32 握持/多模式表现。T2 +1000 开度误差 16.89/30.72 mm，原握持 H32 TCP P95 达 434.56/488.61 mm。+200 时漏查 H7 裁剪前梯度峰值，后续 800 批 T2 单列为事后诊断。封存 u0 的正式十项在新树复测 0/10、6 案首 2 ms 超力、0 个阶段事件。新增 H32 更新为 0，候选为空，完整回报 NA。
+
+从合法窗实测到高腕速并复现 native3.3 和 CPU/Warp3.16 在力限处的速度导数差；三个引擎两侧验证 hold 仍在首 2 ms 超力。现场 `/root/autodl-tmp/dog-and-arm-b0-temporal-v1`。原 response u200 及其 60 案继续保留。
+
+[详细结果](B0_TEMPORAL_TRANSFER_RESULTS_20261124.md) · [独立 manifest](../results/b0/standard_temporal_20261124/baseline_manifest.json)
+
 ## 2026-11-24｜753f1bc审查与集中推进计划，原实验成绩未改
 
 **标准迁移仍未通过，B0-04、无最终候选、完整双侧回报NA。** 本轮60案/0通过/36首2ms超力/0阶段事件和训练预算复算成立；新grip/multimode/response数据已真实进入联训。下一瓶颈是已有2ms真实转移与原20ms表示的兼容性、solver身份及原目标解释边界。本次仅审查和发布，原manifest/代码/配置/实验逐案未改，无新增训练或物理评分。[完整审查](B0_RESPONSE_ROUND_REVIEW_20261124.md) · [审查摘要](../results/b0/response_review_20261124/audit_summary.json)

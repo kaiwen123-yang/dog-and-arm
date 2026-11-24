@@ -1,6 +1,8 @@
 # dog-and-arm 项目指令
 
-## 2026-11-24 接续状态
+当前标准迁移入口（2026-11-24 时间配对后）：读取 PROJECT_STATE.md 顶部、reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md 和 prompts/NEXT_RUN.txt。C20/T2 轮已封存，无有效 WM；以下历史计划中的待执行表述以最新回执为准。
+
+## 2026-11-24 计划提交 b5831d7 的接续状态（历史）
 
 先完成标准迁移并冻结独立结果，再开发算法。最新实验753f1bc的首动作响应/WM数据贯通/新seed0 u200已结束并审查，六节点各0/10，完整回报NA、无候选，仍在B0-04。现行入口为 reports/B0_RESPONSE_ROUND_REVIEW_20261124.md、docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md、PROJECT_STATE.md顶部与prompts/B0_START.txt/NEXT_RUN.txt。用户要求一次性多推进：并行定位、集中修复、实际训练与评测，u200不作默认终点；同包过十项后当轮接D、完整双侧/native，条件具备继续独立seed和冻结H。历史轮分别记账。
 

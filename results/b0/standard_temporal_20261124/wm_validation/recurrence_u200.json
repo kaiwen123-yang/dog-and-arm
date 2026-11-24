@@ -1,0 +1,1247 @@
+{
+  "checkpoint": 200,
+  "actual_training_step_of_selected_batch": 85,
+  "observed_training_grads_at_step": 606926592.0,
+  "draw_rule": "Largest logged T2 H7 preclip norm through +200. At the frozen +200 endpoints choose the row with largest initial-state adjoint in the T2 batch; use identical row for C20. This is targeted diagnosis, not a prevalence estimate.",
+  "chosen": {
+    "source": "grip",
+    "absolute_start": 13305,
+    "batch_row": 96
+  },
+  "whole_batch_frozen": {
+    "C20": {
+      "full_batch_loss": 1.2158570289611816,
+      "parameter_gradient_l2": 3.019671344858706,
+      "max_initial_adjoint": 0.9720072933517311,
+      "nonfinite": 0
+    },
+    "T2": {
+      "full_batch_loss": 1.4774394035339355,
+      "parameter_gradient_l2": 108.94692087736891,
+      "max_initial_adjoint": 29.7587939502915,
+      "nonfinite": 0
+    }
+  },
+  "whole_batch_frozen_train_precision": {
+    "C20": {
+      "full_batch_loss": 1.2158780097961426,
+      "parameter_gradient_l2": 3.018503078320151,
+      "max_initial_adjoint": 0.9718188608047325,
+      "nonfinite": 0
+    },
+    "T2": {
+      "full_batch_loss": 1.4774264097213745,
+      "parameter_gradient_l2": 7.470793917021157,
+      "max_initial_adjoint": 1.3202273560888331,
+      "nonfinite": 0
+    }
+  },
+  "selected_row": {
+    "C20": {
+      "torch.float32": {
+        "loss": 0.004029831383377314,
+        "endpoint_only_loss": 0.006562485825270414,
+        "ordinary_grad_l2": 1.662199292515445,
+        "manual_grad_l2": 1.6621999334015958,
+        "max_abs_boundary_diff": 4.76837158203125e-07,
+        "abs_loss_difference": 5.122274160385132e-09,
+        "relative_grad_difference": 1.1060111386547757e-05,
+        "max_quaternion_norm_error": 0.0,
+        "dt": 0.02,
+        "substep_coeff": 0.55,
+        "ten_step_loop": false,
+        "decode_factor": 1.0
+      },
+      "torch.float64": {
+        "loss": 0.004029820696959468,
+        "endpoint_only_loss": 0.006562440950231428,
+        "ordinary_grad_l2": 1.6621983779208573,
+        "manual_grad_l2": 1.6621983779208558,
+        "max_abs_boundary_diff": 4.163336342344337e-15,
+        "abs_loss_difference": 1.1275702593849246e-17,
+        "relative_grad_difference": 4.839616646585113e-14,
+        "max_quaternion_norm_error": 3.452531249781288e-08,
+        "dt": 0.02,
+        "substep_coeff": 0.55,
+        "ten_step_loop": false,
+        "decode_factor": 1.0,
+        "endpoint_only_adjoint_by_inner_step": [
+          {
+            "inner": 0,
+            "norm": 4.444107307059716,
+            "components": {
+              "root_pose": 0.5917338111032012,
+              "root_rep": 0.1209784746161895,
+              "joint_positions": 4.40106041677365,
+              "joint_velocities": 0.08685073851851455,
+              "door": 0.049536262528936816,
+              "geometry": 0.07730056894996501
+            }
+          },
+          {
+            "inner": 1,
+            "norm": 4.355308479864964,
+            "components": {
+              "root_pose": 0.46007977568897307,
+              "root_rep": 0.30638765863139594,
+              "joint_positions": 4.3188340493356865,
+              "joint_velocities": 0.10073212786089596,
+              "door": 0.02157505353962173,
+              "geometry": 0.015005572435079034
+            }
+          },
+          {
+            "inner": 2,
+            "norm": 4.509873880051703,
+            "components": {
+              "root_pose": 0.4561279566164886,
+              "root_rep": 0.052600679099095014,
+              "joint_positions": 4.484850507684551,
+              "joint_velocities": 0.11733084783762895,
+              "door": 0.02007515776040787,
+              "geometry": 0.009447414038268525
+            }
+          },
+          {
+            "inner": 3,
+            "norm": 4.569374440026429,
+            "components": {
+              "root_pose": 0.4427267923577894,
+              "root_rep": 0.22365745833738376,
+              "joint_positions": 4.541458345800246,
+              "joint_velocities": 0.08545926132335423,
+              "door": 0.021680570245967524,
+              "geometry": 0.023148708704139185
+            }
+          },
+          {
+            "inner": 4,
+            "norm": 4.6750458823592265,
+            "components": {
+              "root_pose": 0.43594176557210257,
+              "root_rep": 0.01683763393882739,
+              "joint_positions": 4.653654905295385,
+              "joint_velocities": 0.08879887130589773,
+              "door": 0.036428237006682705,
+              "geometry": 0.003006609513182824
+            }
+          },
+          {
+            "inner": 5,
+            "norm": 4.702258297687556,
+            "components": {
+              "root_pose": 0.45534737249342716,
+              "root_rep": 0.3585403941586131,
+              "joint_positions": 4.665595092190877,
+              "joint_velocities": 0.07150186269684972,
+              "door": 0.031213990025138284,
+              "geometry": 0.038422135200763353
+            }
+          },
+          {
+            "inner": 6,
+            "norm": 4.9346582803017895,
+            "components": {
+              "root_pose": 0.49644919638296875,
+              "root_rep": 0.17249651736164123,
+              "joint_positions": 4.90491104683296,
+              "joint_velocities": 0.12108097885156043,
+              "door": 0.04203762686841434,
+              "geometry": 0.007439583553234637
+            }
+          },
+          {
+            "inner": 7,
+            "norm": 5.070664298208277,
+            "components": {
+              "root_pose": 0.49646022738425816,
+              "root_rep": 0.0,
+              "joint_positions": 5.044598410570821,
+              "joint_velocities": 0.12474196607241216,
+              "door": 0.040373081580993654,
+              "geometry": 0.0
+            }
+          }
+        ],
+        "local_amplification": [
+          {
+            "inner_j": 1,
+            "local_total_vjp_norm": 1.0203886424131101,
+            "fixed_increment_integrator_vjp": 1.0013386833380502,
+            "state_dependent_network_vjp": 0.07355347553245867,
+            "network_vjp_before_inverse_std": 0.001960001345835113,
+            "network_vjp_after_inverse_std": 0.07355347553245865,
+            "next_state_block_vjps": {
+              "root_aux": 0.10561507652407966,
+              "root_rep": 0.06441641995731234,
+              "joints": 0.9993197843294288,
+              "door": 0.0049263775602183275,
+              "geometry": 0.007386131453192844
+            },
+            "sum_block_residual_l2": 1.135600635137867e-16,
+            "centered_fp64_derivatives": [
+              {
+                "epsilon": 1e-05,
+                "centered_directional_derivative": 1.0203886422078394
+              },
+              {
+                "epsilon": 1e-06,
+                "centered_directional_derivative": 1.020388642386516
+              },
+              {
+                "epsilon": 1e-07,
+                "centered_directional_derivative": 1.0203886426085607
+              }
+            ],
+            "unit_cotangent": "final-boundary loss adjoint at next inner step; norms unweighted in mixed native coordinates"
+          },
+          {
+            "inner_j": 5,
+            "local_total_vjp_norm": 0.9942129050329473,
+            "fixed_increment_integrator_vjp": 0.9968148761626093,
+            "state_dependent_network_vjp": 0.011087863340171797,
+            "network_vjp_before_inverse_std": 0.0003465585042991802,
+            "network_vjp_after_inverse_std": 0.011087863340171809,
+            "next_state_block_vjps": {
+              "root_aux": 0.09682059840019859,
+              "root_rep": 0.08095188916830008,
+              "joints": 0.9888240246573058,
+              "door": 0.006115416661223406,
+              "geometry": 0.02066445333569645
+            },
+            "sum_block_residual_l2": 1.58825939041825e-16,
+            "centered_fp64_derivatives": [
+              {
+                "epsilon": 1e-05,
+                "centered_directional_derivative": 0.9942129050331815
+              },
+              {
+                "epsilon": 1e-06,
+                "centered_directional_derivative": 0.9942129050310999
+              },
+              {
+                "epsilon": 1e-07,
+                "centered_directional_derivative": 0.9942129047119108
+              }
+            ],
+            "unit_cotangent": "final-boundary loss adjoint at next inner step; norms unweighted in mixed native coordinates"
+          },
+          {
+            "inner_j": 3,
+            "local_total_vjp_norm": 0.9869784013641959,
+            "fixed_increment_integrator_vjp": 0.9994305770279082,
+            "state_dependent_network_vjp": 0.021928385950468966,
+            "network_vjp_before_inverse_std": 0.0005210583736857939,
+            "network_vjp_after_inverse_std": 0.02192838595046895,
+            "next_state_block_vjps": {
+              "root_aux": 0.09691129377887722,
+              "root_rep": 0.019977731754345075,
+              "joints": 0.9837830664548164,
+              "door": 0.00474405845160736,
+              "geometry": 0.011903170894252626
+            },
+            "sum_block_residual_l2": 1.129430922598738e-16,
+            "centered_fp64_derivatives": [
+              {
+                "epsilon": 1e-05,
+                "centered_directional_derivative": 0.9869784013620541
+              },
+              {
+                "epsilon": 1e-06,
+                "centered_directional_derivative": 0.9869784013509519
+              },
+              {
+                "epsilon": 1e-07,
+                "centered_directional_derivative": 0.9869784012989102
+              }
+            ],
+            "unit_cotangent": "final-boundary loss adjoint at next inner step; norms unweighted in mixed native coordinates"
+          }
+        ]
+      }
+    },
+    "T2": {
+      "torch.float32": {
+        "loss": 0.01071713026612997,
+        "endpoint_only_loss": 0.023387040942907333,
+        "ordinary_grad_l2": 24150.590823507042,
+        "manual_grad_l2": 24150.590823507042,
+        "max_abs_boundary_diff": 0.0,
+        "abs_loss_difference": 0.0,
+        "relative_grad_difference": 0.0,
+        "max_quaternion_norm_error": 5.960464477539063e-08,
+        "dt": 0.002,
+        "substep_coeff": 1.0,
+        "ten_step_loop": true,
+        "decode_factor": 0.1
+      },
+      "torch.float64": {
+        "loss": 0.01098932720891389,
+        "endpoint_only_loss": 0.024785342218928173,
+        "ordinary_grad_l2": 12489.777949302597,
+        "manual_grad_l2": 12489.777949302597,
+        "max_abs_boundary_diff": 0.0,
+        "abs_loss_difference": 0.0,
+        "relative_grad_difference": 0.0,
+        "max_quaternion_norm_error": 3.452531249781288e-08,
+        "dt": 0.002,
+        "substep_coeff": 1.0,
+        "ten_step_loop": true,
+        "decode_factor": 0.1,
+        "endpoint_only_adjoint_by_inner_step": [
+          {
+            "inner": 0,
+            "norm": 28140.52077012633,
+            "components": {
+              "root_pose": 23449.046634212264,
+              "root_rep": 2162.188491716683,
+              "joint_positions": 14878.7509388782,
+              "joint_velocities": 2805.891336740034,
+              "door": 2835.7519625061777,
+              "geometry": 253.6083577460117
+            }
+          },
+          {
+            "inner": 1,
+            "norm": 25305.91312873838,
+            "components": {
+              "root_pose": 20491.10153917365,
+              "root_rep": 2606.628079290582,
+              "joint_positions": 14020.746321976627,
+              "joint_velocities": 3002.7459288737546,
+              "door": 2801.136513489972,
+              "geometry": 515.0832369500234
+            }
+          },
+          {
+            "inner": 2,
+            "norm": 23656.95297388742,
+            "components": {
+              "root_pose": 19074.783002136453,
+              "root_rep": 4043.8029833125383,
+              "joint_positions": 12299.830458220244,
+              "joint_velocities": 4034.9846899962904,
+              "door": 3443.923828591243,
+              "geometry": 155.5402702659662
+            }
+          },
+          {
+            "inner": 3,
+            "norm": 37343.87186418591,
+            "components": {
+              "root_pose": 31087.062996593864,
+              "root_rep": 15924.716346406667,
+              "joint_positions": 11517.227051191867,
+              "joint_velocities": 4496.558269662663,
+              "door": 3456.0071850809586,
+              "geometry": 3123.0031150352575
+            }
+          },
+          {
+            "inner": 4,
+            "norm": 41865.86403004092,
+            "components": {
+              "root_pose": 34266.72268929712,
+              "root_rep": 8429.045933540447,
+              "joint_positions": 20039.318784054776,
+              "joint_velocities": 10060.952656809226,
+              "door": 1961.1580360985788,
+              "geometry": 922.0982772285533
+            }
+          },
+          {
+            "inner": 5,
+            "norm": 39174.17743606906,
+            "components": {
+              "root_pose": 23460.007135047974,
+              "root_rep": 20378.159377136366,
+              "joint_positions": 21096.525387370595,
+              "joint_velocities": 10854.359835556048,
+              "door": 1058.0201038253906,
+              "geometry": 2230.458700883468
+            }
+          },
+          {
+            "inner": 6,
+            "norm": 28434.50094324658,
+            "components": {
+              "root_pose": 20704.90024884215,
+              "root_rep": 4042.1630321300077,
+              "joint_positions": 16094.56410965539,
+              "joint_velocities": 9977.55592449278,
+              "door": 2102.590731074358,
+              "geometry": 693.8037979719819
+            }
+          },
+          {
+            "inner": 7,
+            "norm": 22582.439244887217,
+            "components": {
+              "root_pose": 6709.132720814659,
+              "root_rep": 7360.1314737132525,
+              "joint_positions": 16908.47294659737,
+              "joint_velocities": 10558.338416072913,
+              "door": 2534.962946567637,
+              "geometry": 2642.2642635748857
+            }
+          },
+          {
+            "inner": 8,
+            "norm": 12693.549535193966,
+            "components": {
+              "root_pose": 4731.595746160951,
+              "root_rep": 4133.555329750039,
+              "joint_positions": 9824.269725454522,
+              "joint_velocities": 4942.425024618458,
+              "door": 823.3920339178271,
+              "geometry": 173.5126198672407
+            }
+          },
+          {
+            "inner": 9,
+            "norm": 25561.599072925772,
+            "components": {
+              "root_pose": 20299.362408578378,
+              "root_rep": 12479.367349742459,
+              "joint_positions": 7028.999134902144,
+              "joint_velocities": 4847.400320424052,
+              "door": 676.8818154797872,
+              "geometry": 3497.7615446664
+            }
+          },
+          {
+            "inner": 10,
+            "norm": 26497.710102069537,
+            "components": {
+              "root_pose": 23460.47381004365,
+              "root_rep": 4812.906453412257,
+              "joint_positions": 9501.912148616548,
+              "joint_velocities": 6155.801204425642,
+              "door": 526.9217143078757,
+              "geometry": 335.96322839324534
+            }
+          },
+          {
+            "inner": 11,
+            "norm": 18907.315617548156,
+            "components": {
+              "root_pose": 7371.656216713691,
+              "root_rep": 13476.781408771914,
+              "joint_positions": 8577.629972068664,
+              "joint_velocities": 5774.792668865675,
+              "door": 236.00341069256257,
+              "geometry": 3813.393164672702
+            }
+          },
+          {
+            "inner": 12,
+            "norm": 9767.181838871997,
+            "components": {
+              "root_pose": 5376.2825193586295,
+              "root_rep": 3376.319130376772,
+              "joint_positions": 6753.1469658447395,
+              "joint_velocities": 2965.1101346328915,
+              "door": 687.6104992201718,
+              "geometry": 473.5147558873943
+            }
+          },
+          {
+            "inner": 13,
+            "norm": 9184.589526245298,
+            "components": {
+              "root_pose": 3300.2540879353087,
+              "root_rep": 4501.5812624501,
+              "joint_positions": 6536.899014184426,
+              "joint_velocities": 3131.666525521329,
+              "door": 772.9902912587715,
+              "geometry": 254.7075168557087
+            }
+          },
+          {
+            "inner": 14,
+            "norm": 5271.214613399642,
+            "components": {
+              "root_pose": 2365.406330797586,
+              "root_rep": 2431.1217795482207,
+              "joint_positions": 3783.0079445808615,
+              "joint_velocities": 1316.7198164777483,
+              "door": 410.47487296828007,
+              "geometry": 258.48303337258085
+            }
+          },
+          {
+            "inner": 15,
+            "norm": 9411.22860273786,
+            "components": {
+              "root_pose": 6431.684475325666,
+              "root_rep": 5594.4965268842925,
+              "joint_positions": 3572.065092448126,
+              "joint_velocities": 1413.1171032400007,
+              "door": 361.2490985777007,
+              "geometry": 1009.5629500662845
+            }
+          },
+          {
+            "inner": 16,
+            "norm": 10867.855217197728,
+            "components": {
+              "root_pose": 8571.700900952981,
+              "root_rep": 1870.8855751849735,
+              "joint_positions": 5659.696714665619,
+              "joint_velocities": 2951.984979902103,
+              "door": 254.82567059427834,
+              "geometry": 569.8153255049374
+            }
+          },
+          {
+            "inner": 17,
+            "norm": 11709.742747111955,
+            "components": {
+              "root_pose": 9076.225933039985,
+              "root_rep": 2789.0108319010915,
+              "joint_positions": 6079.30226696518,
+              "joint_velocities": 3147.4714543856094,
+              "door": 223.55907309918004,
+              "geometry": 217.12974698704755
+            }
+          },
+          {
+            "inner": 18,
+            "norm": 11933.67136264774,
+            "components": {
+              "root_pose": 8838.186380697294,
+              "root_rep": 3037.5168581187704,
+              "joint_positions": 5845.759963805204,
+              "joint_velocities": 4548.816437051575,
+              "door": 398.9130812670435,
+              "geometry": 220.66456343392235
+            }
+          },
+          {
+            "inner": 19,
+            "norm": 13717.499214626176,
+            "components": {
+              "root_pose": 2406.9948982387646,
+              "root_rep": 11157.625390997233,
+              "joint_positions": 5330.78123730672,
+              "joint_velocities": 4897.060325803982,
+              "door": 679.8274594255124,
+              "geometry": 2241.1965750737827
+            }
+          },
+          {
+            "inner": 20,
+            "norm": 8191.493206165359,
+            "components": {
+              "root_pose": 3978.036256776643,
+              "root_rep": 3107.767590744031,
+              "joint_positions": 5541.098343206431,
+              "joint_velocities": 3248.7687384966944,
+              "door": 497.5040600233609,
+              "geometry": 334.34956749870196
+            }
+          },
+          {
+            "inner": 21,
+            "norm": 8907.870507150703,
+            "components": {
+              "root_pose": 1282.602091288736,
+              "root_rep": 6195.5064042720405,
+              "joint_positions": 5349.851810930325,
+              "joint_velocities": 3110.772562173367,
+              "door": 547.6473897177184,
+              "geometry": 850.3242006796313
+            }
+          },
+          {
+            "inner": 22,
+            "norm": 3127.0662194354736,
+            "components": {
+              "root_pose": 1337.7595521015292,
+              "root_rep": 1232.4225798537389,
+              "joint_positions": 2022.534696105097,
+              "joint_velocities": 1486.7459672062776,
+              "door": 369.6929795025062,
+              "geometry": 179.84448591972208
+            }
+          },
+          {
+            "inner": 23,
+            "norm": 4406.81869941723,
+            "components": {
+              "root_pose": 2484.6563391494974,
+              "root_rep": 2509.0739489302678,
+              "joint_positions": 1928.535190475696,
+              "joint_velocities": 1713.6698762845447,
+              "door": 326.7024913237028,
+              "geometry": 434.09089028880516
+            }
+          },
+          {
+            "inner": 24,
+            "norm": 4332.594926028895,
+            "components": {
+              "root_pose": 2617.1786802513743,
+              "root_rep": 1068.310971582254,
+              "joint_positions": 2443.927680512022,
+              "joint_velocities": 2176.0431211892983,
+              "door": 264.1690480711785,
+              "geometry": 52.294912553897426
+            }
+          },
+          {
+            "inner": 25,
+            "norm": 5372.249294824341,
+            "components": {
+              "root_pose": 353.2462194271345,
+              "root_rep": 4019.8204445016518,
+              "joint_positions": 2570.423529901595,
+              "joint_velocities": 2376.2976048285436,
+              "door": 295.3563289060563,
+              "geometry": 486.02509951348975
+            }
+          },
+          {
+            "inner": 26,
+            "norm": 1734.1611654744027,
+            "components": {
+              "root_pose": 586.8092616456132,
+              "root_rep": 957.7431449180787,
+              "joint_positions": 1033.7991207913992,
+              "joint_velocities": 682.9506226131881,
+              "door": 458.15616727346395,
+              "geometry": 25.073052494172494
+            }
+          },
+          {
+            "inner": 27,
+            "norm": 2013.1974873605466,
+            "components": {
+              "root_pose": 210.65435430892356,
+              "root_rep": 1596.2126111158577,
+              "joint_positions": 915.1775676644,
+              "joint_velocities": 644.766844366845,
+              "door": 431.82358320753093,
+              "geometry": 144.7352592670672
+            }
+          },
+          {
+            "inner": 28,
+            "norm": 455.16633649087066,
+            "components": {
+              "root_pose": 89.5992673163228,
+              "root_rep": 229.52996406527913,
+              "joint_positions": 272.1588740778902,
+              "joint_velocities": 216.10842441264174,
+              "door": 138.62485497195794,
+              "geometry": 80.46245403686481
+            }
+          },
+          {
+            "inner": 29,
+            "norm": 109.43260942830291,
+            "components": {
+              "root_pose": 9.247956228631153,
+              "root_rep": 72.32324115169584,
+              "joint_positions": 57.02522570152471,
+              "joint_velocities": 39.40789720610568,
+              "door": 38.824728733286044,
+              "geometry": 18.630668572662383
+            }
+          },
+          {
+            "inner": 30,
+            "norm": 37.427704276425814,
+            "components": {
+              "root_pose": 8.55993681992683,
+              "root_rep": 27.368368795464015,
+              "joint_positions": 19.471328205570497,
+              "joint_velocities": 10.87219147731174,
+              "door": 7.997205625926629,
+              "geometry": 4.152162218192884
+            }
+          },
+          {
+            "inner": 31,
+            "norm": 17.31471154668787,
+            "components": {
+              "root_pose": 3.511123940423753,
+              "root_rep": 5.817538478543378,
+              "joint_positions": 14.857948895969272,
+              "joint_velocities": 3.9682511453848326,
+              "door": 3.9036009620293255,
+              "geometry": 1.3724895816792058
+            }
+          },
+          {
+            "inner": 32,
+            "norm": 14.672568987342475,
+            "components": {
+              "root_pose": 4.844627021132872,
+              "root_rep": 1.1641762326710536,
+              "joint_positions": 13.72550861492172,
+              "joint_velocities": 1.3291355489544918,
+              "door": 0.2851626197458336,
+              "geometry": 0.4701676809734767
+            }
+          },
+          {
+            "inner": 33,
+            "norm": 14.690521616526903,
+            "components": {
+              "root_pose": 4.948853059880745,
+              "root_rep": 0.30858922646916714,
+              "joint_positions": 13.753992179189702,
+              "joint_velocities": 1.3775027055506415,
+              "door": 0.39358802295713025,
+              "geometry": 0.018037345542450366
+            }
+          },
+          {
+            "inner": 34,
+            "norm": 14.631303192991696,
+            "components": {
+              "root_pose": 4.61010392145178,
+              "root_rep": 0.8800393513081097,
+              "joint_positions": 13.788164465228679,
+              "joint_velocities": 1.32898464266299,
+              "door": 0.3632250550701889,
+              "geometry": 0.18945647931233148
+            }
+          },
+          {
+            "inner": 35,
+            "norm": 14.697836758072881,
+            "components": {
+              "root_pose": 4.195262787927059,
+              "root_rep": 1.211842285212593,
+              "joint_positions": 13.991770577233142,
+              "joint_velocities": 1.0866508553905805,
+              "door": 0.06244332577217352,
+              "geometry": 0.05710207160783754
+            }
+          },
+          {
+            "inner": 36,
+            "norm": 14.58287112626399,
+            "components": {
+              "root_pose": 2.864971802028003,
+              "root_rep": 1.1267036226752423,
+              "joint_positions": 14.204163982061372,
+              "joint_velocities": 1.0957976605955484,
+              "door": 0.2570708344031684,
+              "geometry": 0.3968292445143855
+            }
+          },
+          {
+            "inner": 37,
+            "norm": 14.881235391487412,
+            "components": {
+              "root_pose": 2.8161494942672394,
+              "root_rep": 1.2990049319947075,
+              "joint_positions": 14.488782792158243,
+              "joint_velocities": 1.372763310798699,
+              "door": 0.1511043605828323,
+              "geometry": 0.030274673347467463
+            }
+          },
+          {
+            "inner": 38,
+            "norm": 15.71343158280173,
+            "components": {
+              "root_pose": 5.083005433567755,
+              "root_rep": 3.082095005887623,
+              "joint_positions": 14.458377565131524,
+              "joint_velocities": 1.390307043693787,
+              "door": 0.20236668130983707,
+              "geometry": 0.746384940259763
+            }
+          },
+          {
+            "inner": 39,
+            "norm": 15.572965677185026,
+            "components": {
+              "root_pose": 5.307615499114585,
+              "root_rep": 1.3956460117686347,
+              "joint_positions": 14.469051596000218,
+              "joint_velocities": 1.735223849657021,
+              "door": 0.14481847489046035,
+              "geometry": 0.11498530067480567
+            }
+          },
+          {
+            "inner": 40,
+            "norm": 15.072923724754155,
+            "components": {
+              "root_pose": 1.3896340071639375,
+              "root_rep": 1.9764756959009926,
+              "joint_positions": 14.72496716184119,
+              "joint_velocities": 1.89391287932808,
+              "door": 0.07791373211776012,
+              "geometry": 0.968429811841899
+            }
+          },
+          {
+            "inner": 41,
+            "norm": 15.083395777261913,
+            "components": {
+              "root_pose": 1.2202015654089142,
+              "root_rep": 0.8835975359632237,
+              "joint_positions": 14.944686736129935,
+              "joint_velocities": 1.3753005296556755,
+              "door": 0.03758995853197032,
+              "geometry": 0.051628624078416945
+            }
+          },
+          {
+            "inner": 42,
+            "norm": 15.365085841814023,
+            "components": {
+              "root_pose": 3.3748058310080413,
+              "root_rep": 2.1044159099390134,
+              "joint_positions": 14.761047285865068,
+              "joint_velocities": 1.4100412934222195,
+              "door": 0.05978821892614041,
+              "geometry": 0.6226348460219755
+            }
+          },
+          {
+            "inner": 43,
+            "norm": 14.92868474547199,
+            "components": {
+              "root_pose": 3.525297273094439,
+              "root_rep": 0.7374917373868141,
+              "joint_positions": 14.408513994743316,
+              "joint_velocities": 1.502566135027072,
+              "door": 0.17513391062606873,
+              "geometry": 0.018997099563265302
+            }
+          },
+          {
+            "inner": 44,
+            "norm": 14.776782526680492,
+            "components": {
+              "root_pose": 1.3965059810222646,
+              "root_rep": 2.4862678936308584,
+              "joint_positions": 14.404980145426816,
+              "joint_velocities": 1.5755555134657615,
+              "door": 0.09546204144576494,
+              "geometry": 0.47602907407973233
+            }
+          },
+          {
+            "inner": 45,
+            "norm": 14.747533082815128,
+            "components": {
+              "root_pose": 1.1794415421806181,
+              "root_rep": 0.5396625047470052,
+              "joint_positions": 14.666871127451026,
+              "joint_velocities": 0.809035584345493,
+              "door": 0.16399999733303008,
+              "geometry": 0.0941849943275649
+            }
+          },
+          {
+            "inner": 46,
+            "norm": 14.78309952603173,
+            "components": {
+              "root_pose": 1.0231182648939645,
+              "root_rep": 0.7977356966287596,
+              "joint_positions": 14.69782769800599,
+              "joint_velocities": 0.8846948565299708,
+              "door": 0.1413856327839791,
+              "geometry": 0.16752445888229608
+            }
+          },
+          {
+            "inner": 47,
+            "norm": 14.647055618899866,
+            "components": {
+              "root_pose": 1.0537236460196215,
+              "root_rep": 0.44181759537568993,
+              "joint_positions": 14.588709722212325,
+              "joint_velocities": 0.6274616322178219,
+              "door": 0.07915210959260104,
+              "geometry": 0.016657672431190984
+            }
+          },
+          {
+            "inner": 48,
+            "norm": 14.672168659327065,
+            "components": {
+              "root_pose": 1.5915217819661656,
+              "root_rep": 1.2438388075335796,
+              "joint_positions": 14.513277370807234,
+              "joint_velocities": 0.6430701562076305,
+              "door": 0.08783427986227726,
+              "geometry": 0.3687580204292244
+            }
+          },
+          {
+            "inner": 49,
+            "norm": 14.556026067470087,
+            "components": {
+              "root_pose": 1.8554024444955244,
+              "root_rep": 0.4962316792450219,
+              "joint_positions": 14.412687534976495,
+              "joint_velocities": 0.6773896600095988,
+              "door": 0.05971711418745052,
+              "geometry": 0.03385114858905797
+            }
+          },
+          {
+            "inner": 50,
+            "norm": 14.537621105884053,
+            "components": {
+              "root_pose": 1.0658565089112442,
+              "root_rep": 1.1049538078826304,
+              "joint_positions": 14.436502895409069,
+              "joint_velocities": 0.6024312787758518,
+              "door": 0.06249153440455122,
+              "geometry": 0.45388315283628783
+            }
+          },
+          {
+            "inner": 51,
+            "norm": 14.603772637606076,
+            "components": {
+              "root_pose": 1.1511302814597033,
+              "root_rep": 0.3996757964746168,
+              "joint_positions": 14.542540695996811,
+              "joint_velocities": 0.5451407990906114,
+              "door": 0.04724673709572228,
+              "geometry": 0.02080730612084757
+            }
+          },
+          {
+            "inner": 52,
+            "norm": 14.608583913776984,
+            "components": {
+              "root_pose": 1.1877388776914513,
+              "root_rep": 0.5865547405013699,
+              "joint_positions": 14.532056909513974,
+              "joint_velocities": 0.6195824905855489,
+              "door": 0.060992062412703704,
+              "geometry": 0.2960968507244069
+            }
+          },
+          {
+            "inner": 53,
+            "norm": 14.578496780135236,
+            "components": {
+              "root_pose": 1.1724443152321895,
+              "root_rep": 0.2465912148619633,
+              "joint_positions": 14.52490390993389,
+              "joint_velocities": 0.34741663892763186,
+              "door": 0.050906437114922126,
+              "geometry": 0.031813357096197946
+            }
+          },
+          {
+            "inner": 54,
+            "norm": 14.615508187300815,
+            "components": {
+              "root_pose": 1.1209913729403487,
+              "root_rep": 0.33644412555760794,
+              "joint_positions": 14.565238389592473,
+              "joint_velocities": 0.30232725692751766,
+              "door": 0.04616590835396236,
+              "geometry": 0.059672926813638526
+            }
+          },
+          {
+            "inner": 55,
+            "norm": 14.726268103919374,
+            "components": {
+              "root_pose": 1.1174873616326115,
+              "root_rep": 0.1350736972904988,
+              "joint_positions": 14.679653797275792,
+              "joint_velocities": 0.28212725113481624,
+              "door": 0.15498532894102987,
+              "geometry": 0.009874994245807732
+            }
+          },
+          {
+            "inner": 56,
+            "norm": 14.763477770997486,
+            "components": {
+              "root_pose": 1.312355007043248,
+              "root_rep": 0.2987996898650427,
+              "joint_positions": 14.697936220897338,
+              "joint_velocities": 0.3051548460565723,
+              "door": 0.14949174447119565,
+              "geometry": 0.06263034615267696
+            }
+          },
+          {
+            "inner": 57,
+            "norm": 14.774317164321095,
+            "components": {
+              "root_pose": 1.3629400566515084,
+              "root_rep": 0.21896243134571472,
+              "joint_positions": 14.707664383167227,
+              "joint_velocities": 0.21759106307973264,
+              "door": 0.1099528256097287,
+              "geometry": 0.008391966952834309
+            }
+          },
+          {
+            "inner": 58,
+            "norm": 14.771861302752539,
+            "components": {
+              "root_pose": 1.0447233039106594,
+              "root_rep": 0.32525007059111305,
+              "joint_positions": 14.728352901143142,
+              "joint_velocities": 0.23230088594207832,
+              "door": 0.0939360460492379,
+              "geometry": 0.15324847351930052
+            }
+          },
+          {
+            "inner": 59,
+            "norm": 14.844129803808766,
+            "components": {
+              "root_pose": 1.0350072631501437,
+              "root_rep": 0.13326107434606072,
+              "joint_positions": 14.805271114634012,
+              "joint_velocities": 0.24118119750798575,
+              "door": 0.06994823167258088,
+              "geometry": 0.008785251987704195
+            }
+          },
+          {
+            "inner": 60,
+            "norm": 14.84620671274194,
+            "components": {
+              "root_pose": 1.099071133714963,
+              "root_rep": 0.3405575255116595,
+              "joint_positions": 14.799292415401235,
+              "joint_velocities": 0.2441694310173037,
+              "door": 0.06835030487298646,
+              "geometry": 0.050700103981014925
+            }
+          },
+          {
+            "inner": 61,
+            "norm": 14.830369397546866,
+            "components": {
+              "root_pose": 1.1380126505203292,
+              "root_rep": 0.11194713091076566,
+              "joint_positions": 14.781206728969805,
+              "joint_velocities": 0.3795183068921557,
+              "door": 0.06091981981337325,
+              "geometry": 0.020827399659314346
+            }
+          },
+          {
+            "inner": 62,
+            "norm": 14.829020517871372,
+            "components": {
+              "root_pose": 1.1369409194933349,
+              "root_rep": 0.1553165472370377,
+              "joint_positions": 14.778998190085453,
+              "joint_velocities": 0.40052153927791506,
+              "door": 0.05987794286196765,
+              "geometry": 0.01735687673914876
+            }
+          },
+          {
+            "inner": 63,
+            "norm": 14.83700855157237,
+            "components": {
+              "root_pose": 1.132745621536659,
+              "root_rep": 0.07827122052978869,
+              "joint_positions": 14.788850147301126,
+              "joint_velocities": 0.3650309609476527,
+              "door": 0.06399020855064427,
+              "geometry": 0.012357337443815647
+            }
+          },
+          {
+            "inner": 64,
+            "norm": 14.837552545944051,
+            "components": {
+              "root_pose": 1.024933683940523,
+              "root_rep": 0.2920486045847169,
+              "joint_positions": 14.79427250874414,
+              "joint_velocities": 0.3732575057765142,
+              "door": 0.06096512439691008,
+              "geometry": 0.06039151216185215
+            }
+          },
+          {
+            "inner": 65,
+            "norm": 14.876571704004471,
+            "components": {
+              "root_pose": 1.0377774752293905,
+              "root_rep": 0.14977187643060808,
+              "joint_positions": 14.833405361330719,
+              "joint_velocities": 0.42543182775092386,
+              "door": 0.044654454785769376,
+              "geometry": 0.008431332798766117
+            }
+          },
+          {
+            "inner": 66,
+            "norm": 14.872805418144253,
+            "components": {
+              "root_pose": 1.089697883657149,
+              "root_rep": 0.24065175417301704,
+              "joint_positions": 14.824550641208283,
+              "joint_velocities": 0.4298478149829313,
+              "door": 0.044589664733643224,
+              "geometry": 0.030449393295705063
+            }
+          },
+          {
+            "inner": 67,
+            "norm": 14.909380860577292,
+            "components": {
+              "root_pose": 1.127093365006018,
+              "root_rep": 0.3325490404541284,
+              "joint_positions": 14.85688739774422,
+              "joint_velocities": 0.42365856288071385,
+              "door": 0.04124939576449242,
+              "geometry": 0.020447205108498095
+            }
+          },
+          {
+            "inner": 68,
+            "norm": 14.943963049147007,
+            "components": {
+              "root_pose": 1.063891725994774,
+              "root_rep": 0.3517556829021845,
+              "joint_positions": 14.898703950646656,
+              "joint_velocities": 0.3015687326413411,
+              "door": 0.04065950704387097,
+              "geometry": 0.0495746320484787
+            }
+          },
+          {
+            "inner": 69,
+            "norm": 15.030596203659178,
+            "components": {
+              "root_pose": 1.054819909409625,
+              "root_rep": 0.07296813711806095,
+              "joint_positions": 14.988626471778273,
+              "joint_velocities": 0.37309817909834053,
+              "door": 0.051975055992037986,
+              "geometry": 0.005067439982308129
+            }
+          },
+          {
+            "inner": 70,
+            "norm": 15.052906055075873,
+            "components": {
+              "root_pose": 1.0546986094799264,
+              "root_rep": 0.0,
+              "joint_positions": 15.01088305080142,
+              "joint_velocities": 0.385172421444749,
+              "door": 0.05122291500937981,
+              "geometry": 0.0
+            }
+          }
+        ],
+        "local_amplification": [
+          {
+            "inner_j": 28,
+            "local_total_vjp_norm": 4.422992927995073,
+            "fixed_increment_integrator_vjp": 1.0115862622051086,
+            "state_dependent_network_vjp": 4.750216473334699,
+            "network_vjp_before_inverse_std": 0.07848577503338326,
+            "network_vjp_after_inverse_std": 4.750216473334699,
+            "next_state_block_vjps": {
+              "root_aux": 0.19679557526220348,
+              "root_rep": 1.1856394344844445,
+              "joints": 3.3731088564084772,
+              "door": 0.25034779344395847,
+              "geometry": 0.4407280039517281
+            },
+            "sum_block_residual_l2": 8.496704863778464e-16,
+            "centered_fp64_derivatives": [
+              {
+                "epsilon": 1e-05,
+                "centered_directional_derivative": 4.422992836219941
+              },
+              {
+                "epsilon": 1e-06,
+                "centered_directional_derivative": 4.422992927133329
+              },
+              {
+                "epsilon": 1e-07,
+                "centered_directional_derivative": 4.422992925523506
+              }
+            ],
+            "unit_cotangent": "final-boundary loss adjoint at next inner step; norms unweighted in mixed native coordinates"
+          },
+          {
+            "inner_j": 29,
+            "local_total_vjp_norm": 4.159330010211284,
+            "fixed_increment_integrator_vjp": 1.1559856467960679,
+            "state_dependent_network_vjp": 4.6987240823897185,
+            "network_vjp_before_inverse_std": 0.08542442262809322,
+            "network_vjp_after_inverse_std": 4.6987240823897185,
+            "next_state_block_vjps": {
+              "root_aux": 0.08390949290681904,
+              "root_rep": 1.5664762938313634,
+              "joints": 2.787676762379359,
+              "door": 0.29637795221990043,
+              "geometry": 0.44443375270727475
+            },
+            "sum_block_residual_l2": 7.76571353750703e-16,
+            "centered_fp64_derivatives": [
+              {
+                "epsilon": 1e-05,
+                "centered_directional_derivative": 4.15932992306467
+              },
+              {
+                "epsilon": 1e-06,
+                "centered_directional_derivative": 4.159330009356754
+              },
+              {
+                "epsilon": 1e-07,
+                "centered_directional_derivative": 4.159330011521689
+              }
+            ],
+            "unit_cotangent": "final-boundary loss adjoint at next inner step; norms unweighted in mixed native coordinates"
+          },
+          {
+            "inner_j": 26,
+            "local_total_vjp_norm": 3.097895052536649,
+            "fixed_increment_integrator_vjp": 0.9568939322455701,
+            "state_dependent_network_vjp": 3.5459908810549727,
+            "network_vjp_before_inverse_std": 0.08026552538071381,
+            "network_vjp_after_inverse_std": 3.5459908810549727,
+            "next_state_block_vjps": {
+              "root_aux": 0.3356490093928828,
+              "root_rep": 1.4488804732670457,
+              "joints": 2.092603820269569,
+              "door": 0.19857649486626525,
+              "geometry": 0.030971594046656527
+            },
+            "sum_block_residual_l2": 6.86613525735436e-16,
+            "centered_fp64_derivatives": [
+              {
+                "epsilon": 1e-05,
+                "centered_directional_derivative": 3.0978948423437953
+              },
+              {
+                "epsilon": 1e-06,
+                "centered_directional_derivative": 3.0978950505133884
+              },
+              {
+                "epsilon": 1e-07,
+                "centered_directional_derivative": 3.0978950543714134
+              }
+            ],
+            "unit_cotangent": "final-boundary loss adjoint at next inner step; norms unweighted in mixed native coordinates"
+          }
+        ]
+      }
+    }
+  },
+  "optimizer_updates": 0,
+  "precision": "FP32 highest-vs-FP64 diagnostic evaluation; historical training used high FP32 matmul precision",
+  "autograd": "Pinned learner eager path versus explicit net\u2192ratio\u2192existing ContactRepresentation integration. Both paths retain all successors for original loss; terminal-boundary-only VJPs diagnose amplification without modifying the original objective.",
+  "interpretation": "Magnitudes depend on mixed-coordinate units. Adjoint neighbor ratios are gains for the measured cotangent, not spectral norms; block and direct/network norms are not additive. Three local FP64 finite differences test the derivative at the actual trajectory states."
+}

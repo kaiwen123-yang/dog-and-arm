@@ -74,7 +74,11 @@ def group_masks(sub, data, rec, load_threshold):
         "training_after_first_failure_20ms": macro > first[:, None],
         "event_after_first_failure_tick": ticks+1 > event_tick[:, None],
         "event_after_termination": measured(sub, "event_phase") < 0,
-        "training_eligible_20ms": np.repeat(data["valid"].T, 10, axis=1),
+        "live_training_clock_20ms_any_split": np.repeat(data["valid"].T,10,axis=1),
+        "train_only_nonrepeat_live_20ms": np.repeat(data["valid"].T,10,axis=1) &
+            (rec["row"]["split"] == "train") & np.array([lab[1] != "repeat" for lab in rec["labels"]])[:,None],
+        "validation_nonrepeat_live_20ms": np.repeat(data["valid"].T,10,axis=1) &
+            (rec["row"]["split"] == "validation") & np.array([lab[1] != "repeat" for lab in rec["labels"]])[:,None],
         "first_command_20ms": np.broadcast_to(macro == 0, dual.shape)
     }
     return masks, first, failure_tick, event_tick

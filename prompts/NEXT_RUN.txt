@@ -1,17 +1,9 @@
-继续 dog-and-arm 的 SuperMimic 标准迁移，执行一次集中推进轮。用户要求一次性多推进：并行定位、集中修复、真实WM/H32训练与正式物理评分；u50/u200是检查点，不是默认收工点。通过当前门槛就在同轮接下一层，不等新计划。迁移成功并冻结独立结果后再开发算法。
+继续 dog-and-arm 的 SuperMimic-M1Piper-standard-v1。先正常 fetch GitHub main、查工作树并保留已有修改。读取 AGENTS.md、PROJECT_STATE.md 顶部、唯一 DAILY_WORK_LOG.md 最近记录、reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md、results/b0/standard_temporal_20261124/baseline_manifest.json 和 docs/B0_PAPER_BASELINE_PROTOCOL.md。
 
-正常fetch main，保留已有修改。已封存实验为753f1bcca6d4f5dd48b1b2886e3523036c7d366d，接续其后的审查提交。读AGENTS、PROJECT_STATE顶部、DAILY_WORK_LOG最近记录、reports/B0_RESPONSE_ROUND_REVIEW_20261124.md、docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md、docs/B0_PAPER_BASELINE_PROTOCOL.md和prompts/B0_START.txt；本文件是简要入口，完整实施边界在计划/启动词。
+当前 B0-04，WM 未选、候选 null、完整双侧回报 NA。新轮已修连续 bias、重采 18 个起点，实训同索引 C20/T2 各 1,000 批并完成两侧独立验证；未新开 H32。+200 已发现的梯度尖峰有回执，T2 超过该点的 800 批仅作事后诊断。同一冻结 u0 正式十项复测 0/10，6 案首 2ms 超力，0 阶段事件；旧 60 案另记。禁止把 T2 局部开度改善当选点，把旧策略改名为新链，或重复同配方长训。
 
-当前B0-04、无候选、完整双侧回报NA。最新六节点各0/10，独立60案/36案首2ms超力/0阶段事件；200H32、2000联合WM、4000Critic、217971有效在线区间，完整20ms持续双指0。背推释放到u200仍改善，原轮按登记端点封存。旧60案和230案分开。旧grip、新multimode、response已真正进入H1/H7，不能再把数据未接入当当前问题。
+现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1。可直接运行 bash scripts/b0/env.sh python scripts/b0/index_temporal_wm.py 重读八个冻结节点；bash scripts/b0/env.sh python scripts/b0/index_temporal_round.py 从实际抽样/预算与独立正式案重建 manifest。各点 WM/optimizer/RNG 位于 results/raw_large/b0/temporal_pair_v1/{C20,T2}/，更早 response u200 的 cohort_state.pt 位于已封存的 response 工作树，Ratio pending=1，供诊断。不要重跑配对索引生成器或覆盖现场。
 
-现场AutoDL /root/autodl-tmp/dog-and-arm-b0-response-v1；原2ms数据按standard_response_20261124/registration.json取，u200完整恢复results/b0/response_s0_to200_v1/cohort_state.pt有1次未执行Ratio，不自动补做。检查现场/进程/资产，保留第二平台原树修改。
+已有证据包括同一合法窗的分源原损失、梯度、输入统计、饱和力、H1/H7资格，以及原 native3.3 与 CPU/Warp3.16 的饱和导数差。它不能解释三端都出现的验证hold首2ms超力。针对新提出且有证据的平台接口或训练数据覆盖问题，先用已保存的真实命令与合法训练窗建立可归因对照，独立验握持/多模式H1/H7/H32、两侧首动作和内部轨迹。必要适配只改已证错误，并用原目标复测；不改变既定物理、统计、任务、时间或新增算法来绕过既定结果。
 
-三个工作面并行：2ms真实积分与solver身份；数据/原损失/联训WM退化；原目标与实际更新。主任务整合共享代码。先闭合raw qpos29:31、qvel28:30（full_state才59:61），逐步q差=.002*v_post，分析两指/开度/耦合/J2/伺服。用现有正负两档复查局部方向。做最小同live状态直接推进/登记forward/旁lane reset配对，查bias、warmstart、首ctrl与后继。0净门力且0双指同时加载tick不证明无单指/门接触。20ms端点含正式2ms失败后的诊断，不等同失败根因。
-
-修已证接口；仅在微步闭合且20ms端点q/v持续不相容时做一组T2/C20：相同原网络/初值/固定统计/真实样本索引，T2外层20ms内自回归10×2ms，c1；31路prediction持续×.1后走原解码，禁止重复缩放。独立micro表示，不污染宏步reward/history/goal/discount/Critic/Ratio；H32仍640ms。原H1/H7在20ms/七个粗边界评分，无新loss/内部真值。每臂1000WM批上限，0/50/200/1000检验，10倍额外内部计算单列。真实微步及旧/多模式验证未通过就停该候选，在本轮继续处理有证据的接口/数据问题，不能硬用坏WM开Actor或直接拖到下轮。
-
-有效出口后从标准B0-03 Actor与选定WM启动一条主链。u0/1/10/50正式十项；有真实物理改善继续100/200/350/500及有据后续点，记录新增预算。原Critic/奖励/H32不改，必要梯度观察嵌入正常u1。无改善停配方，在同轮最小修复/复测，旧结果独立保留。
-
-同一候选十项10/10自动接每项D>=18/20，再完整双侧Warp nominal/C每侧>=18/20、同包native3.3双侧完整nominal；条件具备继续独立seed1/2各自B0-03，三seed全部冻结后才开H，每seed/侧>=40/50。完整回报0.90或项目0.88接近带且物理门槛通过；未具备完整轨迹仍NA。不得拼不同checkpoint、混入新算法或把D/C/H导入训练。
-
-本轮以可验收阶段为交付单位；单次bug/诊断/预热/u200不是默认终点。保留科学对照，不承诺必然学成；真受阻需给同轮已验证的阻塞与排除范围。按北京时间持续写唯一DAILY_WORK_LOG，更新独立结果/manifest/状态/启动入口，普通推送并GitHub回读，无需重复申请授权。
+只有选出有效 WM 后，才从 B0-03 Actor 和已选 WM 启动单条 seed0 新链，保留修后的采集身份与原 H32/20 ms，完成正常 u1 原图观察以及 u0/1/10/50 正式十项，依据真实改善到 100/200 和后续。10/10后接每项D≥18/20、双侧完整Warp名义及C各≥18/20、同包原native3.3双侧名义；具备条件再进行各自B0-03的独立seed1/2，三seed冻结后才开H。D/C/H评测案例排除在训练之外。继续北京时间唯一日志、独立回执、普通推送和GitHub回读。

@@ -1,0 +1,865 @@
+{
+  "replay_version": "3.16.0",
+  "force_limits_nm": [
+    12.0,
+    8.0
+  ],
+  "order": [
+    "J4",
+    "J6"
+  ],
+  "source": "paired_indices.npz/paired_sources.json; same index schedule for both arms; native Teacher recorded MuJoCo 3.3.0",
+  "qualification": "Each drawn H1/H7 window verified within same episode, all actual bounds differ by ten ticks. Count force at all ten interval solves from substeps/actuator_force.npy; hard clamp is >= actual absolute \u00b1force limit. The .98 physical monitoring band is counted separately.",
+  "counting": "Window is (source episode, start, h); successor identity is (source episode, 20 ms interval). Draws sample with replacement. Both horizon totals use union of unique physical intervals. Duplicate exposures across arms are not independent.",
+  "replay_definition": "Within actually drawn native successor intervals on each side, choose the greatest actual fraction of either hard wrist force limit (first global interval on ties). Replay only these two intervals on this CPU, exact source q/v and actual ten full bias-compensated 23-motor ctrl vectors; no stored arbitrary-boundary warmstart, so forward then zero warmstart. Geometry built from exact per-episode config.",
+  "side_horizon_counts": {
+    "all": {
+      "H1": {
+        "draws": 6400,
+        "distinct_windows": 5078,
+        "weighted_successors": 6400,
+        "distinct_successors": 5078,
+        "distinct_episodes": 10,
+        "weighted_substeps": 64000,
+        "actual_peak_abs_nm": [
+          0.9833687993811964,
+          0.36505450605202583
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      },
+      "H7": {
+        "draws": 25600,
+        "distinct_windows": 11519,
+        "weighted_successors": 179200,
+        "distinct_successors": 13640,
+        "distinct_episodes": 10,
+        "weighted_substeps": 1792000,
+        "actual_peak_abs_nm": [
+          0.9839501049677608,
+          0.3650755327482109
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      },
+      "both": {
+        "draws": 32000,
+        "distinct_windows": 16597,
+        "weighted_successors": 185600,
+        "distinct_successors": 13640,
+        "distinct_episodes": 10,
+        "weighted_substeps": 1856000,
+        "actual_peak_abs_nm": [
+          0.9839501049677608,
+          0.3650755327482109
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      }
+    },
+    "pull": {
+      "H1": {
+        "draws": 3215,
+        "distinct_windows": 2556,
+        "weighted_successors": 3215,
+        "distinct_successors": 2556,
+        "distinct_episodes": 5,
+        "weighted_substeps": 32150,
+        "actual_peak_abs_nm": [
+          0.6557132201296625,
+          0.30035903295392075
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      },
+      "H7": {
+        "draws": 12933,
+        "distinct_windows": 5820,
+        "weighted_successors": 90531,
+        "distinct_successors": 6855,
+        "distinct_episodes": 5,
+        "weighted_substeps": 905310,
+        "actual_peak_abs_nm": [
+          0.6557132201296625,
+          0.30035903295392075
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      },
+      "both": {
+        "draws": 16148,
+        "distinct_windows": 8376,
+        "weighted_successors": 93746,
+        "distinct_successors": 6855,
+        "distinct_episodes": 5,
+        "weighted_substeps": 937460,
+        "actual_peak_abs_nm": [
+          0.6557132201296625,
+          0.30035903295392075
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      }
+    },
+    "push": {
+      "H1": {
+        "draws": 3185,
+        "distinct_windows": 2522,
+        "weighted_successors": 3185,
+        "distinct_successors": 2522,
+        "distinct_episodes": 5,
+        "weighted_substeps": 31850,
+        "actual_peak_abs_nm": [
+          0.9833687993811964,
+          0.36505450605202583
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      },
+      "H7": {
+        "draws": 12667,
+        "distinct_windows": 5699,
+        "weighted_successors": 88669,
+        "distinct_successors": 6785,
+        "distinct_episodes": 5,
+        "weighted_substeps": 886690,
+        "actual_peak_abs_nm": [
+          0.9839501049677608,
+          0.3650755327482109
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      },
+      "both": {
+        "draws": 15852,
+        "distinct_windows": 8221,
+        "weighted_successors": 91854,
+        "distinct_successors": 6785,
+        "distinct_episodes": 5,
+        "weighted_substeps": 918540,
+        "actual_peak_abs_nm": [
+          0.9839501049677608,
+          0.3650755327482109
+        ],
+        "weighted_windows_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_draws_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_targets_with_hard_clamp_J4_J6": [
+          0,
+          0
+        ],
+        "percent_targets_with_hard_clamp_J4_J6": [
+          0.0,
+          0.0
+        ],
+        "weighted_saturated_ticks_J4_J6": [
+          0,
+          0
+        ],
+        "nonzero_saturation_dedup_targets_J4_J6": [
+          0,
+          0
+        ],
+        "weighted_targets_reaching_98pct_J4_J6": [
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "source_episodes": [
+    {
+      "episode": "pull_0_train",
+      "side": "pull",
+      "complete_intervals": 876,
+      "all_complete_peak_nm": [
+        0.4440674586001805,
+        0.30035903295392075
+      ]
+    },
+    {
+      "episode": "pull_0_train_grip",
+      "side": "pull",
+      "complete_intervals": 1415,
+      "all_complete_peak_nm": [
+        0.6557132201296625,
+        0.30035903295392075
+      ]
+    },
+    {
+      "episode": "pull_15_train",
+      "side": "pull",
+      "complete_intervals": 1875,
+      "all_complete_peak_nm": [
+        0.47851878326748576,
+        0.30035903295392075
+      ]
+    },
+    {
+      "episode": "pull_5_train",
+      "side": "pull",
+      "complete_intervals": 1597,
+      "all_complete_peak_nm": [
+        0.4440674586001805,
+        0.30035903295392075
+      ]
+    },
+    {
+      "episode": "pull_5_train_drop",
+      "side": "pull",
+      "complete_intervals": 1092,
+      "all_complete_peak_nm": [
+        0.3381972579110979,
+        0.24788407819978886
+      ]
+    },
+    {
+      "episode": "push_0_train",
+      "side": "push",
+      "complete_intervals": 876,
+      "all_complete_peak_nm": [
+        0.9839501049677608,
+        0.36411985667839275
+      ]
+    },
+    {
+      "episode": "push_0_train_grip",
+      "side": "push",
+      "complete_intervals": 1417,
+      "all_complete_peak_nm": [
+        0.9839501049677608,
+        0.36411985667839275
+      ]
+    },
+    {
+      "episode": "push_15_train",
+      "side": "push",
+      "complete_intervals": 1866,
+      "all_complete_peak_nm": [
+        0.9839501049677608,
+        0.36411985667839275
+      ]
+    },
+    {
+      "episode": "push_5_train",
+      "side": "push",
+      "complete_intervals": 1589,
+      "all_complete_peak_nm": [
+        0.9839501049677608,
+        0.36411985667839275
+      ]
+    },
+    {
+      "episode": "push_5_train_drop",
+      "side": "push",
+      "complete_intervals": 1037,
+      "all_complete_peak_nm": [
+        0.97993981965584,
+        0.3650755327482109
+      ]
+    }
+  ],
+  "actually_drawn_replays": {
+    "pull": {
+      "group": "pull_0_train_grip",
+      "start": 1143,
+      "path": "results/raw_large/b0/contact_held_r1/pull_0_train_grip",
+      "max_force_fraction": 0.05464276834413854,
+      "weighted_occurrences": 16,
+      "chosen_joint": "J4",
+      "trace": {
+        "start_qvel_rad_s": [
+          0.29576237609719275,
+          -0.30550916987992754
+        ],
+        "native33_measured_qvel_rad_s": [
+          [
+            0.38074735598979276,
+            -0.3955286798591549
+          ],
+          [
+            0.3740062954352092,
+            -0.3854743038131545
+          ],
+          [
+            0.3633530410847939,
+            -0.3747262103613878
+          ],
+          [
+            0.3532979364623235,
+            -0.36468770874200296
+          ],
+          [
+            0.34380202903679913,
+            -0.35497950839207376
+          ],
+          [
+            0.33465413444930514,
+            -0.3455230879660518
+          ],
+          [
+            0.3257706762033323,
+            -0.33631313657673156
+          ],
+          [
+            0.317123536790307,
+            -0.32732021894381746
+          ],
+          [
+            0.3086901501176243,
+            -0.31860576772425814
+          ],
+          [
+            0.30045185602406105,
+            -0.31012339731771416
+          ]
+        ],
+        "replay_qvel_rad_s": [
+          [
+            0.3807898000068526,
+            -0.39553895537618977
+          ],
+          [
+            0.3740425360586853,
+            -0.3854866785546714
+          ],
+          [
+            0.36333016905424276,
+            -0.3747404292484145
+          ],
+          [
+            0.35317818486818886,
+            -0.36470440147111255
+          ],
+          [
+            0.3435420387980728,
+            -0.35500113016324225
+          ],
+          [
+            0.33426318190707033,
+            -0.34555444463865453
+          ],
+          [
+            0.32526769211186807,
+            -0.3363521720983727
+          ],
+          [
+            0.31652505404106607,
+            -0.32738981978685233
+          ],
+          [
+            0.30802203654592053,
+            -0.31866284958967084
+          ],
+          [
+            0.29975193828628216,
+            -0.31016625668162695
+          ]
+        ],
+        "measured_force_nm": [
+          [
+            0.6557132201296625,
+            -0.2695623785440695
+          ],
+          [
+            0.08488845903252695,
+            0.03215051958534332
+          ],
+          [
+            0.0656325145531298,
+            0.03280862473570778
+          ],
+          [
+            0.07139413013101858,
+            0.03053215649622487
+          ],
+          [
+            0.07516887024863195,
+            0.029585301114156692
+          ],
+          [
+            0.07711396732752007,
+            0.02885615690776433
+          ],
+          [
+            0.07844096782719845,
+            0.02812902353964475
+          ],
+          [
+            0.07960762873961613,
+            0.027407441179231995
+          ],
+          [
+            0.08074415939478286,
+            0.02662019087586387
+          ],
+          [
+            0.08195122052473636,
+            0.02597352906977335
+          ]
+        ],
+        "replay_force_nm": [
+          [
+            0.6557132201296625,
+            -0.2695623785440695
+          ],
+          [
+            0.08462700388743372,
+            0.032182168177815385
+          ],
+          [
+            0.06540248126980686,
+            0.03284756098094377
+          ],
+          [
+            0.07152243229673161,
+            0.030577762688949406
+          ],
+          [
+            0.07589761005091589,
+            0.02963966425146225
+          ],
+          [
+            0.07872573743554767,
+            0.028927036912943294
+          ],
+          [
+            0.08090106416305076,
+            0.028231616782928626
+          ],
+          [
+            0.08282039182547152,
+            0.02753619381136474
+          ],
+          [
+            0.08462567166717605,
+            0.02684620753961653
+          ],
+          [
+            0.08635741590339308,
+            0.02616655534989576
+          ]
+        ],
+        "qvel_path_rmse_rad_s": [
+          0.0004225934745974699,
+          3.695077816702644e-05
+        ],
+        "qvel_path_max_abs_error_rad_s": [
+          0.0006999177377788879,
+          6.960084303486713e-05
+        ],
+        "endpoint_error_rad_s": [
+          -0.0006999177377788879,
+          -4.285936391279499e-05
+        ]
+      }
+    },
+    "push": {
+      "group": "push_0_train",
+      "start": 677,
+      "path": "results/raw_large/b0/contact_held_r1/push_0_train",
+      "max_force_fraction": 0.08199584208064674,
+      "weighted_occurrences": 13,
+      "chosen_joint": "J4",
+      "trace": {
+        "start_qvel_rad_s": [
+          -0.1491517250467103,
+          0.08076549929971079
+        ],
+        "native33_measured_qvel_rad_s": [
+          [
+            -0.17522501347187452,
+            0.10375616411122074
+          ],
+          [
+            -0.18080854794763246,
+            0.10270925384346825
+          ],
+          [
+            -0.18004575064848982,
+            0.09998036484245393
+          ],
+          [
+            -0.1770239402167301,
+            0.09727165693357884
+          ],
+          [
+            -0.17312947388336306,
+            0.0946540229392551
+          ],
+          [
+            -0.16889017958822367,
+            0.09211254400491907
+          ],
+          [
+            -0.16463474261696245,
+            0.08964323999552387
+          ],
+          [
+            -0.16038862770682036,
+            0.08723109042583045
+          ],
+          [
+            -0.1561434523589673,
+            0.08485810605592084
+          ],
+          [
+            -0.15196601962110978,
+            0.08258737598083786
+          ]
+        ],
+        "replay_qvel_rad_s": [
+          [
+            -0.17501656729835846,
+            0.1037954625670944
+          ],
+          [
+            -0.18007699968011392,
+            0.10277902059886962
+          ],
+          [
+            -0.17857396335684247,
+            0.10006162958843927
+          ],
+          [
+            -0.17472716970559932,
+            0.09735267957377816
+          ],
+          [
+            -0.17003051001546773,
+            0.09472723449043659
+          ],
+          [
+            -0.16508760138575862,
+            0.09217290463402916
+          ],
+          [
+            -0.16016960737293806,
+            0.08968429907970517
+          ],
+          [
+            -0.15540738885459202,
+            0.08726009162524496
+          ],
+          [
+            -0.15086485039079608,
+            0.08489988936287009
+          ],
+          [
+            -0.14657025704979387,
+            0.08260325171876778
+          ]
+        ],
+        "measured_force_nm": [
+          [
+            -0.9839501049677608,
+            0.07404349167082103
+          ],
+          [
+            -0.7992638369612166,
+            -0.003232219613003906
+          ],
+          [
+            -0.7362030620186033,
+            -0.00831181670186254
+          ],
+          [
+            -0.7115662079224876,
+            -0.008120994502384349
+          ],
+          [
+            -0.7010603679298697,
+            -0.0077730704360305936
+          ],
+          [
+            -0.6964539119012159,
+            -0.0074896630841720935
+          ],
+          [
+            -0.6946141265379993,
+            -0.00723257412488465
+          ],
+          [
+            -0.693563123109243,
+            -0.006995699673638001
+          ],
+          [
+            -0.6931433287427922,
+            -0.006738464994725746
+          ],
+          [
+            -0.6934032670235126,
+            -0.006409939479297577
+          ]
+        ],
+        "replay_force_nm": [
+          [
+            -0.9839501049677608,
+            0.07404349167082103
+          ],
+          [
+            -0.8005478653900866,
+            -0.003353258857096364
+          ],
+          [
+            -0.7407427507342845,
+            -0.008529842184969993
+          ],
+          [
+            -0.7207828167495904,
+            -0.008380015136914665
+          ],
+          [
+            -0.7155943593556344,
+            -0.008037846564420192
+          ],
+          [
+            -0.7162968976864192,
+            -0.0077368628695992925
+          ],
+          [
+            -0.7192872108430208,
+            -0.0074460499944279945
+          ],
+          [
+            -0.7229259713026863,
+            -0.0071545556351324535
+          ],
+          [
+            -0.7263997968018145,
+            -0.006863467397870693
+          ],
+          [
+            -0.7292884900930972,
+            -0.006576630869616906
+          ]
+        ],
+        "qvel_path_rmse_rad_s": [
+          0.003658020899923522,
+          5.754001606439452e-05
+        ],
+        "qvel_path_max_abs_error_rad_s": [
+          0.00539576257131591,
+          8.12647459853405e-05
+        ],
+        "endpoint_error_rad_s": [
+          0.00539576257131591,
+          1.5875737929924028e-05
+        ]
+      }
+    }
+  }
+}

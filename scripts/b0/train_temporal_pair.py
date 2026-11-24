@@ -72,6 +72,24 @@ def replay_batch(pool, names, src, starts, h):
     return torch.cat(parts)
 
 
+def interval_diagnostics(rows):
+    by_horizon = {}
+    for horizon in (1, 7):
+        norms = np.asarray([r['grad_norm'] for r in rows if r['h'] == horizon])
+        by_horizon[f'H{horizon}'] = dict(
+            batches=len(norms), preclip_p50=float(np.median(norms)),
+            preclip_p95=float(np.percentile(norms, 95)), preclip_max=float(norms.max()),
+            clipped_batches=int((norms > 1.).sum()))
+    return dict(first=rows[0]['k'], last=rows[-1]['k'], gradients=by_horizon,
+                peak_allocated_bytes=max(r['peak_allocated_bytes'] for r in rows))
+
+
+def checkpoint_receipt(arm, rows):
+    receipt = interval_diagnostics(rows)
+    (OUT/f"{arm}_review_{rows[-1]['k']:06}.json").write_text(json.dumps(receipt, indent=2))
+    print(json.dumps(receipt), flush=True)
+
+
 def main(args):
     torch.manual_seed(0)
     torch.set_float32_matmul_precision("high")
@@ -127,6 +145,7 @@ def main(args):
         torch.cuda.set_rng_state(state["cuda_rng"])
     stats_path = OUT/f"{args.arm}_training.jsonl"
     with stats_path.open("a" if args.resume else "x", buffering=1) as log:
+        interval = []
         for k in range(args.resume, args.stop):
             h = 1 if k % 10 < 2 else 7
             batch = replay_batch(pool, registry["names"], src[k], starts[k], h)
@@ -140,8 +159,11 @@ def main(args):
                 (OUT/f"{args.arm}_nonfinite.json").write_text(json.dumps(row))
                 raise FloatingPointError(f"Nonfinite update {k+1}")
             log.write(json.dumps(row, allow_nan=False)+"\n")
+            interval.append(row)
             if k+1 in NODES:
                 save(k+1)
+                checkpoint_receipt(args.arm, interval)
+                interval.clear()
                 print(f"{args.arm} +{k+1}, loss {row['losses']['Loss/state']}", flush=True)
 
 

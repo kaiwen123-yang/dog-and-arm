@@ -1,5 +1,7 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
+标准迁移当前为 B0-04。C20/T2 配对及十项冻结锚点复测已交付，双侧完整回报 NA。[当前结果](reports/B0_TEMPORAL_TRANSFER_RESULTS_20261124.md) · [接续入口](prompts/NEXT_RUN.txt)
+
 本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先按开源SuperMimic完成标准迁移，以达到或接近论文指标为目标，单独保留结果供后续比较；迁移成功并冻结基线后才开发新算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
 **11 月 24 日最新实验 753f1bc 已审查，标准迁移仍在 B0-04。** 首动作响应、WM数据贯通和新seed0 u200已完成，六节点各0/10，本轮独立60案/36案首2ms超力/0阶段事件；完整双侧回报NA、无候选。数据已经持续进入联训，新的明确线索是20ms端点q/v兼容性与solver状态身份。下一轮按用户要求执行[集中迁移计划](docs/B0_TEMPORAL_COMPATIBILITY_PLAN_20261124.md)：并行定位、集中修复、原损失训练与持续物理评分，u200不作默认终点，通过十项后当轮继续D和完整双侧验证。[本轮审查](reports/B0_RESPONSE_ROUND_REVIEW_20261124.md) · [独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [本轮manifest](results/b0/standard_response_20261124/baseline_manifest.json) · [逐案评分](results/b0/standard_response_20261124/nominal_segments.csv) · [下一入口](prompts/NEXT_RUN.txt)

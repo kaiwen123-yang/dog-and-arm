@@ -1,0 +1,776 @@
+{
+  "u0_u1_run": "results/b0/response_s0_v1",
+  "initializer_tensor_equal": true,
+  "buffers_unchanged": {
+    "action_scale": true,
+    "action_offset": true,
+    "state_normalizer._mean": true,
+    "state_normalizer._var": true,
+    "state_normalizer._std": true,
+    "state_normalizer.count": true,
+    "action_normalizer._mean": true,
+    "action_normalizer._var": true,
+    "action_normalizer._std": true,
+    "action_normalizer.count": true
+  },
+  "parameter_displacement_l2": {
+    "mlp.0.weight": 0.6147172451019287,
+    "mlp.0.bias": 0.06480628252029419,
+    "mlp.1.weight": 0.06953491270542145,
+    "mlp.1.bias": 0.07218797504901886,
+    "mlp.3.weight": 0.12354354560375214,
+    "mlp.3.bias": 0.06715486198663712,
+    "mlp.4.weight": 0.06421446800231934,
+    "mlp.4.bias": 0.06761067360639572,
+    "mlp.6.weight": 0.11199560016393661,
+    "mlp.6.bias": 0.055620260536670685,
+    "mlp.7.weight": 0.061955876648426056,
+    "mlp.7.bias": 0.054584015160799026,
+    "mlp.9.weight": 0.30031993985176086,
+    "mlp.9.bias": 0.004995661322027445
+  },
+  "actual_10_batch_counts": {
+    "1": {
+      "online": {
+        "all": 384,
+        "open_hold": 59,
+        "two_finger": 0
+      },
+      "grip": {
+        "all": 43,
+        "open_hold": 43,
+        "two_finger": 32
+      },
+      "multimode": {
+        "all": 42,
+        "open_hold": 11,
+        "two_finger": 12
+      },
+      "response": {
+        "all": 43,
+        "open_hold": 14,
+        "two_finger": 12
+      }
+    },
+    "7": {
+      "online": {
+        "all": 1536,
+        "open_hold": 0,
+        "two_finger": 0
+      },
+      "native": {
+        "all": 256,
+        "open_hold": 65,
+        "two_finger": 67
+      },
+      "grip": {
+        "all": 85,
+        "open_hold": 84,
+        "two_finger": 68
+      },
+      "multimode": {
+        "all": 86,
+        "open_hold": 29,
+        "two_finger": 28
+      },
+      "response": {
+        "all": 85,
+        "open_hold": 9,
+        "two_finger": 32
+      }
+    }
+  },
+  "reloaded_historical_train_inventory": {
+    "native": {
+      "episodes": 10,
+      "horizons": {
+        "1": 13640,
+        "7": 13580
+      }
+    },
+    "grip": {
+      "episodes": 512,
+      "horizons": {
+        "1": 14396,
+        "7": 11644
+      }
+    },
+    "multimode": {
+      "episodes": 512,
+      "horizons": {
+        "1": 18223,
+        "7": 15242
+      }
+    },
+    "response": {
+      "episodes": 300,
+      "horizons": {
+        "1": 3696,
+        "7": 2718
+      }
+    }
+  },
+  "draws": [
+    {
+      "h": 1,
+      "source": "native",
+      "draw": {
+        "split": "train",
+        "samples": 256,
+        "episodes": 10,
+        "trajectories": 10,
+        "side_phase_mode": {
+          "push/retreat_arm/release": 12,
+          "push/approach_base/free": 16,
+          "push/approach_arm/free": 19,
+          "push/post_release_hold/free": 8,
+          "pull/approach_arm/free": 12,
+          "pull/approach_base/free": 26,
+          "push/grasp/free": 6,
+          "push/settle/free": 7,
+          "push/open/two_finger": 11,
+          "push/pregrasp/free": 26,
+          "pull/settle/free": 8,
+          "pull/post_release_hold/free": 9,
+          "pull/pregrasp/free": 23,
+          "pull/open/two_finger": 20,
+          "push/grasp/two_finger": 6,
+          "pull/grasp/two_finger": 4,
+          "push/hold/two_finger": 10,
+          "pull/retreat_arm/release": 7,
+          "pull/hold/two_finger": 7,
+          "push/release/release": 7,
+          "pull/grasp/free": 6,
+          "push/hold/release": 1,
+          "pull/release/release": 5
+        }
+      },
+      "u0": {
+        "original_weighted_loss": 0.0008384285029023886,
+        "group_contributions": {
+          "root_pos": 2.2433452944743558e-05,
+          "root_ori": 6.311035822969027e-05,
+          "joint_pos": 1.3408229124838871e-05,
+          "joint_vel": 0.0001084341667218348,
+          "finger_pos": 0.0001334694075690975,
+          "finger_vel": 0.0004916726949534589,
+          "door_angle": 7.503692231209022e-09,
+          "door_speed": 5.892637443227407e-06
+        },
+        "gradient_l2": 0.04234127700328827,
+        "grad_dot_actual_total_wm_delta": -0.0007187988958321512,
+        "state_abs_z_p99": 2.341947317123413,
+        "state_abs_z_max": 13.217605590820312,
+        "action_abs_z_p99": 2.319167375564575,
+        "action_abs_z_max": 2.3388874530792236
+      },
+      "u1": {
+        "original_weighted_loss": 0.009487917646765709,
+        "group_contributions": {
+          "root_pos": 0.00011653165830143882,
+          "root_ori": 0.0001639585396483492,
+          "joint_pos": 0.0004658208126784302,
+          "joint_vel": 0.0038709548146889142,
+          "finger_pos": 0.0003485452213585778,
+          "finger_vel": 0.0038323815040771036,
+          "door_angle": 6.989291487638116e-07,
+          "door_speed": 0.00068902576928057
+        },
+        "gradient_l2": 0.3620746433734894,
+        "grad_dot_actual_total_wm_delta": 0.01874055713415146,
+        "state_abs_z_p99": 2.341947317123413,
+        "state_abs_z_max": 13.217605590820312,
+        "action_abs_z_p99": 2.319167375564575,
+        "action_abs_z_max": 2.3388874530792236
+      }
+    },
+    {
+      "h": 1,
+      "source": "grip",
+      "draw": {
+        "split": "train",
+        "samples": 256,
+        "episodes": 209,
+        "trajectories": 209,
+        "side_phase_mode": {
+          "pull/open/loss_or_slip": 30,
+          "push/open/two_finger": 87,
+          "pull/open/two_finger": 91,
+          "push/open/recontact": 4,
+          "pull/hold/two_finger": 4,
+          "push/hold/two_finger": 8,
+          "push/release/recontact": 1,
+          "pull/open/recontact": 4,
+          "push/release/release": 2,
+          "pull/hold/loss_or_slip": 2,
+          "push/open/loss_or_slip": 21,
+          "pull/release/release": 2
+        }
+      },
+      "u0": {
+        "original_weighted_loss": 0.015709558501839638,
+        "group_contributions": {
+          "root_pos": 2.2620939959903895e-05,
+          "root_ori": 8.251044234949375e-05,
+          "joint_pos": 1.5977566418299707e-05,
+          "joint_vel": 0.00012100310952797052,
+          "finger_pos": 0.00953187212314421,
+          "finger_vel": 0.0059054912849059015,
+          "door_angle": 3.847514430438178e-08,
+          "door_speed": 3.00435819935369e-05
+        },
+        "gradient_l2": 0.07364819943904877,
+        "grad_dot_actual_total_wm_delta": -0.00038496844354085624,
+        "state_abs_z_p99": 2.7280051708221436,
+        "state_abs_z_max": 10.51143741607666,
+        "action_abs_z_p99": 2.325716018676758,
+        "action_abs_z_max": 2.669806718826294
+      },
+      "u1": {
+        "original_weighted_loss": 0.02541949599981308,
+        "group_contributions": {
+          "root_pos": 0.000129129759788186,
+          "root_ori": 0.0001313659168541533,
+          "joint_pos": 0.0005050978958728767,
+          "joint_vel": 0.004231241565725108,
+          "finger_pos": 0.009400538154354323,
+          "finger_vel": 0.010214694925854282,
+          "door_angle": 8.29303210899511e-07,
+          "door_speed": 0.0008065995174430069
+        },
+        "gradient_l2": 0.46226444840431213,
+        "grad_dot_actual_total_wm_delta": 0.020383551716804504,
+        "state_abs_z_p99": 2.7280051708221436,
+        "state_abs_z_max": 10.51143741607666,
+        "action_abs_z_p99": 2.325716018676758,
+        "action_abs_z_max": 2.669806718826294
+      }
+    },
+    {
+      "h": 1,
+      "source": "multimode",
+      "draw": {
+        "split": "train",
+        "samples": 256,
+        "episodes": 207,
+        "trajectories": 207,
+        "side_phase_mode": {
+          "pull/approach_arm/free": 16,
+          "push/release/release": 14,
+          "pull/open/two_finger": 20,
+          "push/retreat_arm/release": 20,
+          "push/hold/two_finger": 8,
+          "push/grasp/free": 11,
+          "pull/release/release": 26,
+          "push/approach_arm/free": 17,
+          "push/open/loss_or_slip": 3,
+          "pull/retreat_arm/release": 22,
+          "push/open/two_finger": 28,
+          "pull/grasp/two_finger": 7,
+          "pull/post_release_hold/free": 5,
+          "push/hold/loss_or_slip": 12,
+          "push/grasp/two_finger": 4,
+          "pull/grasp/free": 21,
+          "push/grasp/first_contact": 1,
+          "pull/open/loss_or_slip": 2,
+          "pull/hold/two_finger": 6,
+          "pull/hold/recontact": 1,
+          "pull/hold/loss_or_slip": 7,
+          "push/hold/recontact": 1,
+          "pull/open/recontact": 1,
+          "push/post_release_hold/free": 2,
+          "push/grasp/loss_or_slip": 1
+        }
+      },
+      "u0": {
+        "original_weighted_loss": 0.008261371403932571,
+        "group_contributions": {
+          "root_pos": 4.2509204758384695e-05,
+          "root_ori": 0.00010336267583779186,
+          "joint_pos": 2.6777808025438004e-05,
+          "joint_vel": 0.00021968209539364187,
+          "finger_pos": 0.0040715987427486855,
+          "finger_vel": 0.003780925556296302,
+          "door_angle": 1.959687998984976e-08,
+          "door_speed": 1.6494991981627176e-05
+        },
+        "gradient_l2": 0.10602487623691559,
+        "grad_dot_actual_total_wm_delta": 0.0008987840847112238,
+        "state_abs_z_p99": 3.1947622299194336,
+        "state_abs_z_max": 10.533157348632812,
+        "action_abs_z_p99": 2.6678848266601562,
+        "action_abs_z_max": 2.7367990016937256
+      },
+      "u1": {
+        "original_weighted_loss": 0.022150658071041107,
+        "group_contributions": {
+          "root_pos": 0.0001376635614105321,
+          "root_ori": 0.0003245682226208608,
+          "joint_pos": 0.0004884922653277059,
+          "joint_vel": 0.00407543338158756,
+          "finger_pos": 0.003908327024023052,
+          "finger_vel": 0.012251918744896687,
+          "door_angle": 9.578193024366718e-07,
+          "door_speed": 0.0009632969815884866
+        },
+        "gradient_l2": 0.4915931522846222,
+        "grad_dot_actual_total_wm_delta": 0.028850164264440536,
+        "state_abs_z_p99": 3.1947622299194336,
+        "state_abs_z_max": 10.533157348632812,
+        "action_abs_z_p99": 2.6678848266601562,
+        "action_abs_z_max": 2.7367990016937256
+      }
+    },
+    {
+      "h": 1,
+      "source": "response",
+      "draw": {
+        "split": "train",
+        "samples": 256,
+        "episodes": 179,
+        "trajectories": 12,
+        "side_phase_mode": {
+          "push/hold/release": 41,
+          "pull/grasp/loss_or_slip": 39,
+          "pull/hold/release": 32,
+          "push/grasp/loss_or_slip": 29,
+          "push/grasp/other_contact": 18,
+          "push/grasp/free": 5,
+          "pull/release/release": 10,
+          "push/open/two_finger": 5,
+          "pull/grasp/two_finger": 15,
+          "pull/grasp/other_contact": 21,
+          "push/grasp/two_finger": 20,
+          "push/release/release": 10,
+          "pull/open/two_finger": 3,
+          "pull/hold/two_finger": 2,
+          "push/hold/two_finger": 1,
+          "pull/grasp/free": 5
+        }
+      },
+      "u0": {
+        "original_weighted_loss": 5.80108642578125,
+        "group_contributions": {
+          "root_pos": 0.0003294814812380214,
+          "root_ori": 0.0019417805582810205,
+          "joint_pos": 0.4006512973818086,
+          "joint_vel": 0.5793387038562592,
+          "finger_pos": 1.785059735524438,
+          "finger_vel": 3.0333226726901144,
+          "door_angle": 9.492747445246127e-07,
+          "door_speed": 0.00044146999566545405
+        },
+        "gradient_l2": 2.5253281593322754,
+        "grad_dot_actual_total_wm_delta": -0.07275121659040451,
+        "state_abs_z_p99": 9.969634056091309,
+        "state_abs_z_max": 632.3359985351562,
+        "action_abs_z_p99": 2.6865553855895996,
+        "action_abs_z_max": 3.8018910884857178
+      },
+      "u1": {
+        "original_weighted_loss": 5.7232537269592285,
+        "group_contributions": {
+          "root_pos": 0.00036277099517915745,
+          "root_ori": 0.0018243845041128694,
+          "joint_pos": 0.3977485211385834,
+          "joint_vel": 0.5794262247940162,
+          "finger_pos": 1.725970862260569,
+          "finger_vel": 3.015793331207767,
+          "door_angle": 2.7903859105537397e-06,
+          "door_speed": 0.0021246731311323178
+        },
+        "gradient_l2": 3.0913164615631104,
+        "grad_dot_actual_total_wm_delta": -0.07930881530046463,
+        "state_abs_z_p99": 9.969634056091309,
+        "state_abs_z_max": 632.3359985351562,
+        "action_abs_z_p99": 2.6865553855895996,
+        "action_abs_z_max": 3.8018910884857178
+      }
+    },
+    {
+      "h": 1,
+      "source": "online",
+      "draw": {
+        "side": {
+          "push": 109,
+          "pull": 147
+        },
+        "initial_dual": 0,
+        "initial_open_hold": 41
+      },
+      "u0": {
+        "original_weighted_loss": 10.010367393493652,
+        "group_contributions": {
+          "root_pos": 0.00052172081708587,
+          "root_ori": 0.0013111181920800346,
+          "joint_pos": 0.1792505969323458,
+          "joint_vel": 0.5504601579461935,
+          "finger_pos": 1.5657293965153756,
+          "finger_vel": 7.702802842663179,
+          "door_angle": 7.861395836255693e-06,
+          "door_speed": 0.010283112586025267
+        },
+        "gradient_l2": 5.550714492797852,
+        "grad_dot_actual_total_wm_delta": -0.23751695454120636,
+        "state_abs_z_p99": 57.80043029785156,
+        "state_abs_z_max": 496.3717346191406,
+        "action_abs_z_p99": 3.7294507026672363,
+        "action_abs_z_max": 4.315374374389648
+      },
+      "u1": {
+        "original_weighted_loss": 9.73106861114502,
+        "group_contributions": {
+          "root_pos": 0.0004980520976283926,
+          "root_ori": 0.0012286948955050085,
+          "joint_pos": 0.17596287352423512,
+          "joint_vel": 0.5488918857073961,
+          "finger_pos": 1.5053145386533993,
+          "finger_vel": 7.487070945001417,
+          "door_angle": 9.690718661341356e-06,
+          "door_speed": 0.012091773321792001
+        },
+        "gradient_l2": 6.917405128479004,
+        "grad_dot_actual_total_wm_delta": -0.3164467215538025,
+        "state_abs_z_p99": 57.80043029785156,
+        "state_abs_z_max": 496.3717346191406,
+        "action_abs_z_p99": 3.7294507026672363,
+        "action_abs_z_max": 4.315374374389648
+      }
+    },
+    {
+      "h": 7,
+      "source": "native",
+      "draw": {
+        "split": "train",
+        "samples": 256,
+        "episodes": 10,
+        "trajectories": 10,
+        "side_phase_mode": {
+          "pull/hold/two_finger": 9,
+          "pull/approach_base/free": 23,
+          "pull/open/two_finger": 15,
+          "pull/post_release_hold/free": 11,
+          "pull/pregrasp/free": 28,
+          "pull/grasp/free": 6,
+          "push/approach_arm/free": 12,
+          "pull/approach_arm/free": 18,
+          "push/hold/two_finger": 10,
+          "push/post_release_hold/free": 15,
+          "pull/release/release": 4,
+          "pull/settle/free": 8,
+          "pull/retreat_arm/release": 13,
+          "push/settle/free": 9,
+          "push/grasp/free": 9,
+          "push/release/release": 5,
+          "push/pregrasp/free": 16,
+          "push/retreat_arm/release": 6,
+          "pull/grasp/two_finger": 4,
+          "push/approach_base/free": 19,
+          "push/open/two_finger": 12,
+          "push/grasp/two_finger": 4
+        }
+      },
+      "u0": {
+        "original_weighted_loss": 0.0019489388214424253,
+        "group_contributions": {
+          "root_pos": 8.215383814096581e-05,
+          "root_ori": 6.415636538155277e-05,
+          "joint_pos": 0.00012522742846129167,
+          "joint_vel": 8.482488094387273e-05,
+          "finger_pos": 0.0005543221795557158,
+          "finger_vel": 0.0010137119510721774,
+          "door_angle": 7.651919856282635e-07,
+          "door_speed": 2.3777081350412876e-05
+        },
+        "gradient_l2": 0.22177861630916595,
+        "grad_dot_actual_total_wm_delta": -0.000915565702598542,
+        "state_abs_z_p99": 2.3509271144866943,
+        "state_abs_z_max": 5.248587608337402,
+        "action_abs_z_p99": 2.319167375564575,
+        "action_abs_z_max": 2.5602288246154785
+      },
+      "u1": {
+        "original_weighted_loss": 0.08781519532203674,
+        "group_contributions": {
+          "root_pos": 0.000776352910560813,
+          "root_ori": 0.0014820395130476344,
+          "joint_pos": 0.03986616821719273,
+          "joint_vel": 0.007649061819839266,
+          "finger_pos": 0.020964555167137727,
+          "finger_vel": 0.01204353456775988,
+          "door_angle": 0.00015833322281341865,
+          "door_speed": 0.00487514208221147
+        },
+        "gradient_l2": 7.520517349243164,
+        "grad_dot_actual_total_wm_delta": 0.13729512691497803,
+        "state_abs_z_p99": 2.3509271144866943,
+        "state_abs_z_max": 5.248587608337402,
+        "action_abs_z_p99": 2.319167375564575,
+        "action_abs_z_max": 2.5602288246154785
+      }
+    },
+    {
+      "h": 7,
+      "source": "grip",
+      "draw": {
+        "split": "train",
+        "samples": 256,
+        "episodes": 186,
+        "trajectories": 186,
+        "side_phase_mode": {
+          "pull/open/loss_or_slip": 17,
+          "push/open/two_finger": 105,
+          "pull/hold/two_finger": 5,
+          "pull/open/two_finger": 99,
+          "push/open/loss_or_slip": 14,
+          "push/hold/two_finger": 6,
+          "pull/open/recontact": 2,
+          "pull/hold/recontact": 1,
+          "push/open/recontact": 3,
+          "push/release/release": 1,
+          "push/hold/loss_or_slip": 2,
+          "pull/hold/loss_or_slip": 1
+        }
+      },
+      "u0": {
+        "original_weighted_loss": 0.012413357384502888,
+        "group_contributions": {
+          "root_pos": 5.79417047674724e-05,
+          "root_ori": 5.837129489438461e-05,
+          "joint_pos": 0.00011776547037903406,
+          "joint_vel": 7.82674805977754e-05,
+          "finger_pos": 0.00896011351136211,
+          "finger_vel": 0.0030555627158572593,
+          "door_angle": 2.8304631094996954e-06,
+          "door_speed": 8.25054749223073e-05
+        },
+        "gradient_l2": 0.37831249833106995,
+        "grad_dot_actual_total_wm_delta": -0.005584409926086664,
+        "state_abs_z_p99": 2.675710678100586,
+        "state_abs_z_max": 10.527426719665527,
+        "action_abs_z_p99": 2.32256817817688,
+        "action_abs_z_max": 2.6696367263793945
+      },
+      "u1": {
+        "original_weighted_loss": 0.11086396872997284,
+        "group_contributions": {
+          "root_pos": 0.0008613298977281609,
+          "root_ori": 0.0018187037011880274,
+          "joint_pos": 0.037863759714509206,
+          "joint_vel": 0.007384500290054474,
+          "finger_pos": 0.03229728639369921,
+          "finger_vel": 0.023603319160399896,
+          "door_angle": 0.00021176540080273108,
+          "door_speed": 0.006823295787457496
+        },
+        "gradient_l2": 18.329627990722656,
+        "grad_dot_actual_total_wm_delta": 0.06483083218336105,
+        "state_abs_z_p99": 2.675710678100586,
+        "state_abs_z_max": 10.527426719665527,
+        "action_abs_z_p99": 2.32256817817688,
+        "action_abs_z_max": 2.6696367263793945
+      }
+    },
+    {
+      "h": 7,
+      "source": "multimode",
+      "draw": {
+        "split": "train",
+        "samples": 256,
+        "episodes": 203,
+        "trajectories": 203,
+        "side_phase_mode": {
+          "push/grasp/free": 17,
+          "push/open/two_finger": 19,
+          "pull/release/release": 21,
+          "push/open/loss_or_slip": 5,
+          "push/grasp/two_finger": 8,
+          "push/approach_arm/free": 27,
+          "push/retreat_arm/release": 19,
+          "pull/open/two_finger": 25,
+          "push/release/release": 15,
+          "pull/hold/loss_or_slip": 6,
+          "pull/approach_arm/free": 20,
+          "pull/grasp/free": 14,
+          "pull/grasp/two_finger": 9,
+          "pull/post_release_hold/free": 2,
+          "pull/retreat_arm/release": 20,
+          "pull/hold/two_finger": 10,
+          "push/hold/loss_or_slip": 7,
+          "push/hold/two_finger": 10,
+          "pull/open/loss_or_slip": 1,
+          "push/post_release_hold/free": 1
+        }
+      },
+      "u0": {
+        "original_weighted_loss": 0.015650857239961624,
+        "group_contributions": {
+          "root_pos": 0.0001286385363821483,
+          "root_ori": 0.00010387521552590237,
+          "joint_pos": 0.0001943553049767938,
+          "joint_vel": 0.00011646467865451751,
+          "finger_pos": 0.009425122933011622,
+          "finger_vel": 0.005652668375161385,
+          "door_angle": 8.98886438928026e-07,
+          "door_speed": 2.883437358128327e-05
+        },
+        "gradient_l2": 0.4646715223789215,
+        "grad_dot_actual_total_wm_delta": -0.0012142742052674294,
+        "state_abs_z_p99": 3.1351523399353027,
+        "state_abs_z_max": 10.610292434692383,
+        "action_abs_z_p99": 2.6641931533813477,
+        "action_abs_z_max": 2.7366421222686768
+      },
+      "u1": {
+        "original_weighted_loss": 0.1183944046497345,
+        "group_contributions": {
+          "root_pos": 0.001201087174664398,
+          "root_ori": 0.00213846773579374,
+          "joint_pos": 0.04201818843402208,
+          "joint_vel": 0.00817803686605823,
+          "finger_pos": 0.038554034173073654,
+          "finger_vel": 0.020934360462331,
+          "door_angle": 0.0001731215867643305,
+          "door_speed": 0.005197109684588447
+        },
+        "gradient_l2": 15.03386402130127,
+        "grad_dot_actual_total_wm_delta": 0.1031157523393631,
+        "state_abs_z_p99": 3.1351523399353027,
+        "state_abs_z_max": 10.610292434692383,
+        "action_abs_z_p99": 2.6641931533813477,
+        "action_abs_z_max": 2.7366421222686768
+      }
+    },
+    {
+      "h": 7,
+      "source": "response",
+      "draw": {
+        "split": "train",
+        "samples": 256,
+        "episodes": 115,
+        "trajectories": 12,
+        "side_phase_mode": {
+          "pull/grasp/other_contact": 50,
+          "pull/grasp/free": 30,
+          "push/grasp/free": 12,
+          "push/grasp/other_contact": 43,
+          "pull/grasp/two_finger": 26,
+          "pull/release/release": 18,
+          "push/grasp/two_finger": 48,
+          "push/release/release": 9,
+          "push/hold/two_finger": 6,
+          "push/grasp/loss_or_slip": 1,
+          "pull/hold/two_finger": 3,
+          "push/open/two_finger": 5,
+          "pull/open/two_finger": 3,
+          "pull/hold/release": 1,
+          "push/hold/loss_or_slip": 1
+        }
+      },
+      "u0": {
+        "original_weighted_loss": 38.83426284790039,
+        "group_contributions": {
+          "root_pos": 0.022114543225466004,
+          "root_ori": 0.03678883683366416,
+          "joint_pos": 13.314645136556315,
+          "joint_vel": 1.4634398654836307,
+          "finger_pos": 18.232013849962144,
+          "finger_vel": 5.76236363380186,
+          "door_angle": 8.398424094474339e-05,
+          "door_speed": 0.002814356928631182
+        },
+        "gradient_l2": 71.9263916015625,
+        "grad_dot_actual_total_wm_delta": -5.28438138961792,
+        "state_abs_z_p99": 40.881832122802734,
+        "state_abs_z_max": 805.32373046875,
+        "action_abs_z_p99": 2.2791106700897217,
+        "action_abs_z_max": 3.8018910884857178
+      },
+      "u1": {
+        "original_weighted_loss": 34.635215759277344,
+        "group_contributions": {
+          "root_pos": 0.032200516744201345,
+          "root_ori": 0.02366416640964622,
+          "joint_pos": 12.511525423296034,
+          "joint_vel": 1.4708641121848485,
+          "finger_pos": 15.320143692435757,
+          "finger_vel": 5.260719022443217,
+          "door_angle": 0.00048668306611779897,
+          "door_speed": 0.015611386287116233
+        },
+        "gradient_l2": 77.16996002197266,
+        "grad_dot_actual_total_wm_delta": -1.5776991844177246,
+        "state_abs_z_p99": 40.881832122802734,
+        "state_abs_z_max": 805.32373046875,
+        "action_abs_z_p99": 2.2791106700897217,
+        "action_abs_z_max": 3.8018910884857178
+      }
+    },
+    {
+      "h": 7,
+      "source": "online",
+      "draw": {
+        "side": {
+          "pull": 242,
+          "push": 14
+        },
+        "initial_dual": 0,
+        "initial_open_hold": 0
+      },
+      "u0": {
+        "original_weighted_loss": 9.565298080444336,
+        "group_contributions": {
+          "root_pos": 0.01594480519059054,
+          "root_ori": 0.04325060452233189,
+          "joint_pos": 4.625943639586048,
+          "joint_vel": 0.6088446547632657,
+          "finger_pos": 3.0887090214227717,
+          "finger_vel": 1.1809376939650502,
+          "door_angle": 6.400161046114745e-05,
+          "door_speed": 0.0016035448249068951
+        },
+        "gradient_l2": 35.07563400268555,
+        "grad_dot_actual_total_wm_delta": -3.756977081298828,
+        "state_abs_z_p99": 46.31596374511719,
+        "state_abs_z_max": 971.9462890625,
+        "action_abs_z_p99": 3.8777835369110107,
+        "action_abs_z_max": 4.416414260864258
+      },
+      "u1": {
+        "original_weighted_loss": 7.160272598266602,
+        "group_contributions": {
+          "root_pos": 0.013859080647835658,
+          "root_ori": 0.020641186452966424,
+          "joint_pos": 4.0674505214537335,
+          "joint_vel": 0.5240045004906709,
+          "finger_pos": 1.5034159831327176,
+          "finger_vel": 1.0194660194458498,
+          "door_angle": 0.0004477111747650348,
+          "door_speed": 0.010987885686899384
+        },
+        "gradient_l2": 22.603439331054688,
+        "grad_dot_actual_total_wm_delta": -0.8091514706611633,
+        "state_abs_z_p99": 46.31596374511719,
+        "state_abs_z_max": 971.9462890625,
+        "action_abs_z_p99": 3.8777835369110107,
+        "action_abs_z_max": 4.416414260864258
+      }
+    }
+  ],
+  "interpretation": "Each source/horizon uses one frozen, train-only, 256-window diagnostic draw, matched across u0/u1. These are not the original update's sampled row indices. Gradient projections are local in parameter space, not isolated causal effects. Historical online data and response have the pre-correction solver/cache identity; no data from this script enter training.",
+  "official_loss": "sum over group (MSE*group width/total width/nominal_error^2), scored at every original 20 ms successor",
+  "parameter_updates": 0,
+  "original_u1_order": [
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    7,
+    1,
+    1
+  ],
+  "grad_clip": 1.0
+}
