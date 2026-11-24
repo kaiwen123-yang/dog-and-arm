@@ -147,8 +147,8 @@ class RegisteredWM:
                 parts.append(batch)
                 counts["online"]=replay.last_draw
             else:
-                # Keep all-Warp H1 and the 50:50 native/Warp H7 fallback.
-                extra_native=online//2 if h==7 else 0
+                # Backfill the unavailable online share using the inherited offline rule.
+                extra_native=online//2 if h==7 else online
                 warp+=online-extra_native
                 native+=extra_native
         eligible=[name for name in self.recipe["sources"] if (name,h) in self.pools]

@@ -107,17 +107,16 @@ def register_solver(plant, lane=0):
     return {name:value[lane].cpu().numpy().copy() for name,value in fields.items()}
 
 
-def judge_trace(model,row,initial_q,initial_v,records,formal_frame):
+def judge_trace(model,row,initial_q,initial_v,records):
     """Feed solved Warp measurements to the unchanged event state machine."""
-    side, phase = row["side"], row["phase"]
+    side = row["side"]
     cfg = settings("push" if side=="push" else "mobile",1)
     ref = FrozenDoorReference.from_episode(row["formal_ref"],model)
-    formal_phase = "grasp" if phase=="grasp" else phase
-    event_phases = list(SEGMENTS[row["segment"]][1])
-    event_phases = event_phases[event_phases.index(formal_phase):]
-    base = ref.phase_bounds[formal_phase][0]//10*10
+    event_phases = SEGMENTS[row["segment"]][1]
+    base = row["formal_start"]
+    end = ref.phase_bounds[event_phases[-1]][1]
     judges = [ContactEvents(model,cfg,side,ref,phases=event_phases,hold_seconds=3.,
-        start_step=base+formal_frame*10) for _ in range(records["qpos_post"].shape[1])]
+        start_step=base,score_until_step=end-base) for _ in range(records["qpos_post"].shape[1])]
     event = np.full(records["qpos_post"].shape[:3],-1,dtype=np.int8)
     data = mujoco.MjData(model)
     for j in range(len(event)):
@@ -137,11 +136,39 @@ def judge_trace(model,row,initial_q,initial_v,records,formal_frame):
                 wheel = records["wheel_load_N"][j,b,k]
                 slip = records["wheel_slip_m_s"][j,b,k]
                 contact = SimpleNamespace(finger_normal=finger,normal=wheel,both=bool((finger>cfg["contact_threshold_n"]).all()),
-                    supported=wheel>cfg["wheel_threshold_n"],door_force=records["door_robot_force_N"][j,b,k],
+                    supported=wheel>=cfg["wheel_threshold_n"],door_force=records["door_robot_force_N"][j,b,k],
                     force_norm_sum=records["door_force_norm_sum_N"][j,b,k],slip_long=np.atleast_1d(slip),
                     slip_lat=np.zeros(1),unexpected=["unregistered_pair"] if records["unexpected_contact_N"][j,b,k]>cfg["contact_threshold_n"] else [])
                 judge.observe(data,contact,q0,v0)
     return event,[dict(failure=j.failure,events=j.events) for j in judges]
+
+
+def integrate_branches(folder,row,off,t,g,plant,side,solver,first,ref,labels,labs,rep,mapping,attempts,start_time):
+    n=len(labels)
+    model=plant.model
+    records,states,actions,fails,valid={},[],[],[],[]
+    for j in range(32):
+        states.append(contact_state(plant.data.qpos[:],plant.data.qvel[:]).cpu().numpy())
+        cmd=first if j==0 else ref[j].expand(n,-1)
+        actions.append(cmd.cpu().numpy())
+        ev=plant.step_contact(cmd,side,torch.as_tensor(labs[(t+j)*10:(t+j+1)*10],device=DEVICE).expand(n,-1),record=True)
+        for key,value in ev["substeps"].items():
+            records.setdefault(key,[]).append(value.cpu().numpy())
+        fails.append(ev["first_fail_substep"].cpu().numpy())
+        valid.append(ev["valid_full_interval"].cpu().numpy())
+    states.append(contact_state(plant.data.qpos[:],plant.data.qvel[:]).cpu().numpy())
+    records={k:np.stack(v) for k,v in records.items()}
+    events,judges=judge_trace(model,row,solver["qpos"],solver["qvel"],records)
+    np.savez_compressed(folder/"substeps.npz",**records,event_phase=events,training_phase=labs[10*t:10*(t+32)].reshape(32,10))
+    failed=np.stack(fails)
+    valid=np.stack(valid)
+    live=valid & np.concatenate([np.ones((1,n),bool),np.logical_and.accumulate(valid & (failed==0),axis=0)[:-1]])
+    np.savez(folder/"dynamics.npz",state=states,action=actions,valid=live,fail=failed,
+             physical=(first.cpu().numpy()*mapping.scale+mapping.offset),
+             fixed_effort=((first-rep.reward_home)/rep.reward_unit).cpu().numpy())
+    dump(folder/"receipt.json",dict(row=row,offset=off,attempts=attempts,labels=labels,judges=judges,
+         frame=t,goal_frame=g,legal_h1=int(live.sum()),wall_s=time.monotonic()-start_time))
+    return int(live.sum())
 
 
 @torch.no_grad()
@@ -221,29 +248,8 @@ def collect(args):
         np.savez(folder/"start.npz",**solver,history=history.cpu().numpy(),clean_history=torch.stack(clean[-10:],1).cpu().numpy(),
             goal=motion.cpu().numpy(),clock=frame.cpu().numpy(),previous=previous.cpu().numpy(),
             reference=ref.cpu().numpy(),**{name:value.cpu().numpy() for name,value in raw.items()})
-        records,states,actions,fails,valid={},[],[],[],[]
-        for j in range(32):
-            states.append(contact_state(plant.data.qpos[:],plant.data.qvel[:]).cpu().numpy())
-            cmd=first if j==0 else ref[j].expand(n,-1)
-            actions.append(cmd.cpu().numpy())
-            ev=plant.step_contact(cmd,side,phase_at(t+j),record=True)
-            for key,value in ev["substeps"].items():
-                records.setdefault(key,[]).append(value.cpu().numpy())
-            fails.append(ev["first_fail_substep"].cpu().numpy())
-            valid.append(ev["valid_full_interval"].cpu().numpy())
-        states.append(contact_state(plant.data.qpos[:],plant.data.qvel[:]).cpu().numpy())
-        records={k:np.stack(v) for k,v in records.items()}
-        events,judges=judge_trace(model,row,solver["qpos"],solver["qvel"],records,off)
-        np.savez_compressed(folder/"substeps.npz",**records,event_phase=events,training_phase=labs[10*t:10*(t+32)].reshape(32,10))
-        failed=np.stack(fails)
-        valid=np.stack(valid)
-        live=valid & np.concatenate([np.ones((1,n),bool),np.logical_and.accumulate(valid & (failed==0),axis=0)[:-1]])
-        np.savez(folder/"dynamics.npz",state=states,action=actions,valid=live,fail=failed,
-                 physical=(first.cpu().numpy()*mapping.scale+mapping.offset),
-                 fixed_effort=((first-rep.reward_home)/rep.reward_unit).cpu().numpy())
-        dump(folder/"receipt.json",dict(row=row,offset=off,attempts=attempts,labels=labels,judges=judges,
-             frame=t,goal_frame=g,legal_h1=int(live.sum()),wall_s=time.monotonic()-start_time))
-        print(row["id"],off,int(live.sum()),flush=True)
+        count=integrate_branches(folder,row,off,t,g,plant,side,solver,first,ref,labels,labs,rep,mapping,attempts,start_time)
+        print(row["id"],off,count,flush=True)
     dump(OUT/"collection.json",dict(wall_s=time.monotonic()-begin,entries=[json.loads((RAW/r["id"]/"receipt.json").read_text()) for r in rows]))
 
 

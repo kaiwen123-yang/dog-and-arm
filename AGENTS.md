@@ -2,7 +2,7 @@
 
 ## 2026-11-24 接续状态
 
-先完成 SuperMimic 标准迁移并冻结独立结果，再做算法开发。最新实验 27284e2 已完成逐 lane 采集、多模式 WM 预热和 seed0 u200，六节点各 0/10、完整回报 NA，仍在 B0-04。现已审查出新 lanes_modes_v1 只进预热未进联训池、首动作夹口响应误差和训练/正式 phase 判定差别；未证明唯一失败因果。当前执行 docs/B0_CONTACT_RESPONSE_PLAN_20261124.md，读 reports/B0_LANES_ROUND_REVIEW_20261124.md、prompts/NEXT_RUN.txt、PROJECT_STATE 顶部与最新独立结果。旧 7180672 的八条链、230 案另计。已完成逐 lane 等实现直接继承，已结束任务不重开。
+先完成标准迁移并冻结独立结果，再开发算法。首动作响应与 WM 数据贯通计划已执行，当前读 reports/B0_CONTACT_RESPONSE_RESULTS_20261124.md、results/b0/standard_response_20261124/baseline_manifest.json、PROJECT_STATE.md 顶部及 prompts/NEXT_RUN.txt。新 seed0 u200 六节点各 0/10，完整回报 NA，仍在 B0-04。已结束的 27284e2 与本轮分别记账。下文旧轮数字保留其历史身份。
 
 ## 当前目标与授权
 

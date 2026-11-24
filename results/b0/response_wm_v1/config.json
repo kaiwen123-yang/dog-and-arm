@@ -1,0 +1,78 @@
+{
+  "initializer": "results/b0/lanes_wm_v1/wm_001000.pt",
+  "fixed_statistics": true,
+  "optimizers": "fresh Muon/Adam",
+  "native": [
+    "pull_0_train",
+    "pull_0_train_grip",
+    "pull_15_train",
+    "pull_5_train",
+    "pull_5_train_drop",
+    "push_0_train",
+    "push_0_train_grip",
+    "push_15_train",
+    "push_5_train",
+    "push_5_train_drop"
+  ],
+  "inventory": {
+    "native": {
+      "episodes": 10,
+      "horizons": {
+        "1": 13640,
+        "7": 13580
+      }
+    },
+    "grip": {
+      "episodes": 512,
+      "horizons": {
+        "1": 14396,
+        "7": 11644
+      }
+    },
+    "multimode": {
+      "episodes": 512,
+      "horizons": {
+        "1": 18223,
+        "7": 15242
+      }
+    },
+    "response": {
+      "episodes": 300,
+      "horizons": {
+        "1": 3696,
+        "7": 2718
+      }
+    }
+  },
+  "recipe": {
+    "sources": {
+      "grip": {
+        "directory": "results/b0/recovery_b_grip_challenge_r1"
+      },
+      "multimode": {
+        "directory": "results/b0/lanes_modes_v1"
+      },
+      "response": {
+        "registration": "results/b0/standard_response_20261124/registration.json",
+        "raw": "results/raw_large/b0/response_entries_v1"
+      }
+    },
+    "warm": {
+      "h1_native": 32,
+      "h1_warp": 224,
+      "h7_native": 32,
+      "h7_warp": 224
+    },
+    "joint": {
+      "h1_native": 0,
+      "h1_warp": 64,
+      "h7_native": 32,
+      "h7_warp": 32
+    },
+    "split": "train",
+    "allocation": "eligible Warp sources equal, remainder rotates by absolute minibatch index",
+    "offline_order": "lane uniformly then legal starting age uniformly, native retains window-uniform sampling",
+    "selection": "earliest bilateral first-action improvement with held-grip and multimode validation retention"
+  },
+  "seed": 0
+}
