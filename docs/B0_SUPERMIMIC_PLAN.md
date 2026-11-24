@@ -1,8 +1,8 @@
 # B0：SuperMimic 在 M1＋Piper H 上的迁移与基线验证
 
-> 当前更新（2026-11-24）：用户明确先专注迁移，成功后再开发算法。最新7180672八条seed0链、230条正式接触均失败，完整回报NA；当前执行 [11月24日计划](B0_STANDARD_TRANSFER_PLAN_20261124.md)、[指标协议](B0_PAPER_BASELINE_PROTOCOL.md)与[本轮审查](../reports/B0_STANDARD_ROUND_REVIEW_20261124.md)。独立成绩见[标准结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md)，差距见[GOAL_GAP](GOAL_GAP_20261124.md)。
+> 当前更新（2026-11-24）：先专注迁移，成功后再开发算法。最新27284e2完成逐lane采集、多模式WM预热与seed0 u200；六节点各0/10，完整双侧回报NA。当前执行[首动作与WM数据计划](B0_CONTACT_RESPONSE_PLAN_20261124.md)、[指标协议](B0_PAPER_BASELINE_PROTOCOL.md)与[本轮审查](../reports/B0_LANES_ROUND_REVIEW_20261124.md)。独立成绩见[标准结果](../reports/B0_STANDARD_TRANSFER_BASELINE.md)，差距见[GOAL_GAP](GOAL_GAP_20261124.md)。
 
-当前阶段为B0-04。动作率/ReturnSampler/Ratio/clip末帧/lane-age等已有实训，下一轮集中对齐终止后逐lane采集生命周期、接触训练数据覆盖、原H1/H7 WM预热和一条标准配方的真实H32联训。u500是单位配对，最完整整合组仅u50；不把两者预算混称。网络、GenCoord、tracking/softdone与Actor/Critic保留固定官方机制，所有新算法后置。
+当前仍为B0-04。已有单位/采样/调度/末帧/逐lane实现不重做。新确认multimode数据只进预热未进联训离线池；下一轮核对训练身份首动作响应、持续接入必要H1/H7数据、分解原目标梯度，再按一条固定seed0配方真实联训。原网络、GenCoord、tracking/softdone与Actor/Critic保留，数据源变化单列为平台配方，所有新算法后置。
 
 P1–P6和B0-03 seed0继续继承。标准Actor锚点是results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt，门WM以results/b0/contact_s0_wm_held_r2/wm_002000.pt接续明确登记的预热。R/J的参考前馈、15,000动作BC、解析补偿成绩作为历史对照，不作标准Actor起点。完整任务、独立seed与H按原门槛推进，迁移未完成不进入R1–R8。
 

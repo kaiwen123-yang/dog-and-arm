@@ -2,7 +2,7 @@
 
 本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先按开源SuperMimic完成标准迁移，以达到或接近论文指标为目标，单独保留结果供后续比较；迁移成功并冻结基线后才开发新算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
-**11 月 24 日，标准迁移已完成新采集生命周期、多模式世界模型预热与单配方 seed0 联训到 u200。** 六个冻结更新节点正式十项均为 0/10。逐 lane 复位提高有效采集率，预热改善双侧开环误差；真实策略仍在握持首 2ms 超门力。完整双侧回报 NA，下一轮集中检查实际夹口/臂首命令附近的动力学覆盖。[独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [新轮 manifest](results/b0/standard_lanes_20261124/baseline_manifest.json) · [逐案评分](results/b0/standard_lanes_20261124/nominal_segments.csv) · [下一入口](prompts/NEXT_RUN.txt)
+**11 月 24 日最新实验 27284e2 已审查，标准迁移仍在 B0-04。** 逐 lane 采集、原损失 WM 预热与 seed0 u200 已完成，六节点各 0/10、完整双侧回报 NA。新多模式数据只参加预热，未进入联训离线池；现有首动作分支还显示明显夹口响应误差。下一轮按[首动作与数据贯通计划](docs/B0_CONTACT_RESPONSE_PLAN_20261124.md)处理必要适配并真实联训，详见[本轮审查](reports/B0_LANES_ROUND_REVIEW_20261124.md)。[独立结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [新轮 manifest](results/b0/standard_lanes_20261124/baseline_manifest.json) · [逐案评分](results/b0/standard_lanes_20261124/nominal_segments.csv) · [下一入口](prompts/NEXT_RUN.txt)
 
 P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000动作BC和解析补偿的有效成绩单列保留，不替代标准主线。当前状态以[PROJECT_STATE.md](PROJECT_STATE.md)顶部为准。
 
@@ -30,7 +30,7 @@ P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000�
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_STANDARD_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_LANES_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 
@@ -40,9 +40,9 @@ P1–P6工程与B0-03无接触学习继续继承；540/546参考前馈、15,000�
 
 ## 用户现在需要做什么
 
-在已有工作区检查 git status 并正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给 Codex。以已审查实验7180672和随后发布的文档为起点，执行 [11月24日标准迁移计划](docs/B0_STANDARD_TRANSFER_PLAN_20261124.md)：对齐终止lane重新采集、补接触数据、原损失WM预热、单一标准配方真实联合训练。已有动作率/采样/调度修复直接继承，保留负结果与R/J混合包的独立身份；迁移成功并冻结结果后再开发算法。
+在已有工作区检查 git status 并正常拉取，将 [B0_START.txt](prompts/B0_START.txt) 交给 Codex。以已审查实验27284e2和随后发布的文档为起点，执行 [首动作与WM数据计划](docs/B0_CONTACT_RESPONSE_PLAN_20261124.md)：在训练身份核对真实动作响应，持续接入必要数据，核验原目标梯度并按单一标准配方真实联合训练。已有动作率/采样/调度修复直接继承，保留负结果与R/J混合包的独立身份；迁移成功并冻结结果后再开发算法。
 
-历史实验现场为 AutoDL /root/autodl-tmp/dog-and-arm-b0-pair-v1。实际启动前核对工作树、进程、退出回执与完整恢复文件，不重开已回收任务，不覆盖其他树的未提交修改。继续独立仿真环境，不重复B0-03 seed0/P6，不提前打开H；本轮范围仅仿真。具体入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
+最新实验现场为 AutoDL /root/autodl-tmp/dog-and-arm-b0-lanes-v1。实际启动前核对工作树、进程、退出回执与完整恢复文件，不重开已回收任务，不覆盖其他树的未提交修改。继续独立仿真环境，不重复B0-03 seed0/P6，不提前打开H；本轮范围仅仿真。具体入口见 [NEXT_RUN](prompts/NEXT_RUN.txt)。
 
 ## H0：相机和机械臂联合运行
 
@@ -120,8 +120,10 @@ view_model.py 默认只做静态显示和 mj_forward，不运行无控制的整�
 | AGENTS.md | Codex 项目规则与用户偏好 |
 | PROJECT_STATE.md | 当前完成情况、验证范围及下一步 |
 | DAILY_WORK_LOG.md | 北京时间逐日详细工作、问题处理、实验结果与交接记录 |
-| docs/B0_STANDARD_TRANSFER_PLAN_20261124.md | 当前单一标准主线：采集生命周期、接触数据、WM预热与真实联合训练 |
-| reports/B0_STANDARD_ROUND_REVIEW_20261124.md | 7180672轮逐案/成本复算、代码语义、剩余问题与结论 |
+| docs/B0_CONTACT_RESPONSE_PLAN_20261124.md | 当前计划：训练首动作响应、WM数据持续保留、原目标诊断与真实联合训练 |
+| reports/B0_LANES_ROUND_REVIEW_20261124.md | 27284e2轮逐案/预算复算、数据断点、首响应与判定身份审查 |
+| docs/B0_STANDARD_TRANSFER_PLAN_20261124.md | 已执行逐lane轮的历史计划与回执 |
+| reports/B0_STANDARD_ROUND_REVIEW_20261124.md | 7180672轮历史审查 |
 | docs/GOAL_GAP_20261124.md | 最新B0、论文参考指标与长期目标的逐项差距 |
 | results/b0/standard_review_20261124/audit_summary.json | 最新230案、15训练过程去重预算与覆盖复核；不含新仿真 |
 | docs/B0_RECOVERY_PLAN_20261123.md、reports/B0_REVIEW_20261123.md | 前一恢复计划与审查，作为历史保留 |

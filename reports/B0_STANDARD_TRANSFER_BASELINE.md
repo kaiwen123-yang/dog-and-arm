@@ -1,5 +1,15 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-24｜27284e2 审查与下一步，实验成绩保持原快照
+
+**标准迁移未完成，B0-04，最终候选为空，完整双侧物理回报 NA。** 逐案和预算已独立复算：六节点各 0/10、60 案/36 案首 2 ms 超门力/0 阶段事件；200 H32、219,677 有效策略区间。本次没有新增训练/仿真，没有重新读取 AutoDL 大数组，原实验 manifest 与结果均保留。
+
+审查新确认：`lanes_modes_v1` 参加了预热，未参加后续联训的离线 WM 抽样；open/hold 在线区间只有 1,087（0.4948%）且全部 terminal。预热出口同窗 H32 TCP P95 15.65/16.45 mm，在 u10 为 127.19/149.47 mm。现有 u50 首动作分支满 20 ms 真实开度 68.35/66.51 mm，预热/联训 WM 预测约 22–26 mm，显示首步响应误差；尚不能证明数据断点或夹口是唯一失败原因。
+
+解释更正：22.04/22.47 mm 是持续双指 open/hold 子集的条件最大命令，整个新多模式训练覆盖到 100 mm；现有分支诊断在失败后积分，并按教师子步 phase 判定，与正式 stable_grip 从首步按 hold 检查不同。原公式也已显著惩罚 u200 的首命令张口，不能直接转向新增奖励。详见[完整审查](B0_LANES_ROUND_REVIEW_20261124.md)和[复算证据](../results/b0/lanes_review_20261124/audit_summary.json)。
+
+下一轮按[首动作响应与数据贯通计划](../docs/B0_CONTACT_RESPONSE_PLAN_20261124.md)，完成必要适配后真实联训和原正式评分；先迁移成功、冻结独立结果，再开发算法。[启动词](../prompts/B0_START.txt) · [目标差距](../docs/GOAL_GAP_20261124.md)。下文是实验执行回执及历史结果，各轮预算独立。
+
 ## 2026-11-24 11:33 北京时间｜逐 lane 采集、动力学预热与 u200 正式实测
 
 **B0-04，seed0 单配方未通过，完整双侧物理回报 NA。** 新轮从 ee41ee3 开始，实现提交 54e8aa9。保持官方双源、标准 B0-03 Actor、原奖励、GenCoord 和 H32。训练和评分在 AutoDL RTX PRO 6000 Blackwell 上实际运行。以下只统计这一条新链，7180672 的八条链与 230 案在历史快照另计。[新轮 manifest](../results/b0/standard_lanes_20261124/baseline_manifest.json) · [逐案物理与回报](../results/b0/standard_lanes_20261124/nominal_segments.csv) · [正式逐案分项和事件](../results/b0/standard_lanes_20261124/nominal_score_details.jsonl)

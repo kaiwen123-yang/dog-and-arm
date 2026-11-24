@@ -986,3 +986,49 @@ Windows 默认 Tailscale SSH 在密钥交换前关闭。用 `ssh dev2-ubuntu-lan
 - `python -m scripts.b0.inventory_lane_data` 按来源/身份/侧/相位盘点原生与两套 Warp 数据；新训练512 lanes/18223有效/68终止，新验证192/6925/22。冻结采集对照和所有联训块均按实际十个子步的指载荷统计；联训219677个有效区间中两侧都没有一次持续整段双指。u200正式十项0/10，六个稳定握持/开门首2ms超力；背推接近耗尽参考、门力0且就绪0，背推释放3001子步超时、就绪0。六个节点共60个正式案、36个首2ms、完成阶段事件0。完整物理回报和距0.88/0.90为NA；暂不进入D/C/native、独立seed或H。
 - 首次 Warp 两档扰动诊断发现同批独立前缀的前拉状态分量最大差0.00834（混合单位），不足以解释微小中心差分。保留初稿在云端 entry_response_u50.json。改为把同一个实际积分所得前缀的 qpos/qvel/act（如有）/ctrl/time/solver warm-start 及接触计数传给每个分支，forward 后确认分支起始状态差0，并加同命令重复分支。`python -m scripts.b0.measure_lane_response --run lanes_s0_v1 --update 50 --wm results/b0/lanes_wm_v1/wm_001000.pt results/b0/lanes_s0_v1/checkpoint_000050.pt --output results/b0/standard_lanes_20261124/entry_response_matched_u50.json` 实际完成。第一动作采用u50、其后全用相同参考命令的H32记录动作误差，预热18.91/19.20mm，联训u50为582.12/69.76mm；这是两处状态的失败后诊断，正式首失效时间仍看原正式入口。两套Warp训练中整段双指open/hold夹口命令最大22.04/22.47mm，而实测u50策略首命令43.07/69.63mm，u200为42.29/54.64mm。未证明它是失败唯一原因。
 - `scripts.b0.index_standard_returns`、`scripts.b0.index_grip_commands` 与 `scripts.b0.index_lane_round` 汇总同包分母、来源、原坐标和固定effort分项、首失效、各侧/相位数据及恢复账本。两个扩展节点仍无阶段事件、无持续双指，暂停同配方。下一轮优先测训练身份下真实策略首命令邻域的动作响应和 joint WM 抽样覆盖。保持原损失与标准Actor，完整成果索引见 reports/B0_STANDARD_TRANSFER_BASELINE.md 和 results/b0/standard_lanes_20261124/。大权重和原数组在独立AutoDL工作树，原主树修改、旧训练现场均保留。
+
+
+## 2026-11-24｜27284e2轮结束后的审查与下一计划：首动作响应、WM数据贯通
+
+### 范围、时间与接续事实
+
+用户提供了11:40的最新轮交付，继续既定要求：仔细审查，更新下一轮计划和启动提示词，推送GitHub；保持“标准迁移成功并冻结独立结果后，再开发算法”。本次没有启动训练、仿真评分或硬件，没有重新加载AutoDL大checkpoint/原始NPY，也没有把当前不可访问的全部历史对话声称已逐字读过。审查时钟核对为北京时间16:20、16:30；这些是本次审查时刻，不是上午实验起止。
+
+GitHub main已回读确认27284e2e7792d17376410a0d7459398f7ca1927b，tree abf718e56fd2d2f6961b40b75d6568fbeeb1bc04。相对ee41ee39170e5695f34cf62aa150328c000fb09c共279文件变更，两次实验提交为54e8aa9（11:26）和27284e2（11:39）。本机旧临时checkout本次已不存在，首次旧工作目录命令未启动；检查工作区后用 `git clone --filter=blob:none --depth 32 https://github.com/kaiwen123-yang/dog-and-arm.git dog-and-arm` 重建只含正常仓库的工作树，HEAD与origin/main一致且clean，未清理或覆盖用户现场修改。随后均用明确/bin/bash和正确工作目录。几处旧文档/结果路径查找未命中后用rg定位实际路径，没有据此虚构文件或结果。
+
+### 实际复核与数值结论
+
+并行完成逐案/预算复算、采集与WM接口审查、原目标与下一计划评审，主任务集成。读取最新AGENTS/状态/每日记录/报告/manifest/配置及相关代码，回读固定abc124c官方tracking_reward、world_model_env、policy_learner、models等；仍锁定abc124c/dd51a9f。源码取回是本次审查，不是新算法升级。
+
+- 直接复算60条正式评分，0通过、36首2ms门力失败、0阶段事件；canonical与fixed-effort共120分项闭合，最大回报残差1.11e-16，分母浮点差7.11e-15。首失败后的吸收余长闭合。u200十片段均值0.181801只属片段，不可与0.90/0.88相减。
+- 三段updates分别50/50/100，共200H32；54个cohort，219677有效策略+56803前缀=276480控制区间，1638400想象步，4793个failed lanes，25868个已包含于完整区间内的失败后2ms诊断子步。联训进程310.127秒不含全轮采集/预热/评分，更非共享GPU独占时间。u200的2次Ratio pending不算执行。
+- 匹配collector为3135→7593有效区间，24.49%→59.32%，2.422倍；双方完整20ms双指均0。最新联训open625/hold462，共1087（0.4948%），pull591/push496，全部terminal。其他相位及独立分母存入审查JSON；首次失败区间已能进H1/Actor，未发现“全部被过滤”。
+- 固定双指验证412窗/51lanes、450窗/56lanes：warm1000 15.65/16.45mm，jointu10 127.19/149.47，u50 54.07/37.96，u100 79.26/52.48，u200 26.65/19.91。新multimode双指warm20.83/15.60→u20024.71/23.06；自由起点warm19.45/24.01→u20050.65/38.49。
+
+### 已查明的问题与解释更正
+
+代码和actual_config共同确认：新lanes_modes_v1的512训练lanes/18223有效H1/15242 H7只进入fit_contact_model预热。standard_lanes_v1只替换WM初始化，train_contact.add_grip_windows仍加载旧recovery_b_grip_challenge_r1，ContactRun.update在线足够时2个H1均256在线、8个H7各192在线+32native+32旧grip。新multimode没有联训入口。断点是已证事实，是否导致全部退化/首步失败仍是待验证因果。
+
+既有entry_response_matched_u50复算：policy中心满20ms真实夹口pull68.3545/push66.5100mm，warm预测22.4102/25.9767，jointu50预测22.0420/25.9503，第一段峰力51.08/33.19N。真实与WM同用两指q29−q30，单位一致，读数属于两处u50失败后诊断。它不等于u200，也不是正式首2ms。warm H32 TCP18.91/19.20mm不能掩盖首步张夹误差；后31步是公共参考动作，不是Actor自主闭环。
+
+measure_lane_response借用正式保存的clipped_action，没有在重建training history/clock重新查询Actor；还把push v2参考目录写成旧contact_held_r1。v2登记old_prefix_identical，所以不能单凭目录断言短前缀物理错误。失败tick4/5与正式tick1主要有明确判定身份差别：源8750入口前三子步仍grasp，8753才hold，正式stable_grip从第一子步按hold判6N。此前考虑批量重积分可能改变状态，但不能把这两个时刻的差异全归数值漂移。下一轮分别保存training phase/formal eventphase并现场算Actor，正式裁判不改。
+
+22.04/22.47mm是open/hold且持续整段双指的条件命令最大值。全相位native覆盖10–90mm，multimode约9.79–100mm，旧grip最大36.12/50.82mm。不能认定WM从未见过42–55mm，也不把22mm转成夹口限制。前缀最后目标10mm、真实起点21.44/21.74mm分别记录。
+
+主任务用grip_commands.csv及action_units.json复算原固定effort罚：u200夹口20ms为−0.1876728164/−0.3586282466，J2为−0.7422522091/−0.0105749885，六正tracking总上界+0.1。此为代数值而非新仿真或正式2ms回报。故“缺握持reward所以必张口”没有证据；下一轮分解实际replay batch的tracking、rate、survival及Critic路径。未发现gain32遗漏、总/单指双倍错误或train模式暗改固定统计的确定问题；手指速度尺度0.02也不是输出硬上限，不凭猜测改积分器。
+
+### 已写下一轮计划与明确实施范围
+
+新增reports/B0_LANES_ROUND_REVIEW_20261124.md、docs/B0_CONTACT_RESPONSE_PLAN_20261124.md、results/b0/lanes_review_20261124/audit_summary.json。审查JSON来自已提交结果的复算，保留来源与未加载原数组的限制；原standard_lanes实验manifest/代码/配置/结果均未改。
+
+计划按训练身份首动作分支→必要数据持续接入原H1/H7→原目标梯度解释→单一标准seed0实际H32/正式评分执行。起步12训练/6独立验证状态，Actor现场查询B0-03/u0与u200，臂/夹口2×2加参考中心/重复。仅训练身份动力学数据可进WM，验证/D/C/H不进；教师/干预不进Actor。新增平台固定数据配方：2H1每批192online+64Warp，8H7每批192online+32native+32Warp；Warp旧grip/newmultimode/newresponse按登记来源固定等份，窗口仍须合法episode。旧全在线H1与新配方区别透明登记，原网络/损失/H32/Critic不改。
+
+从warm1000接续原损失WM，新增0/200/1000检查，选点看实际首响应与独立误差；不要求任意新导数准确率，也不以H32 TCP一项替代夹口。至多一个冻结Actor/Critic的WM数据保留对照。适配有效后必须用B0-03标准Actor与选定WM新开真实seed0链，u0/1/10/50正式十项；有物理改善再延长u100/u200。连续后续节点无物理改善则不盲目追加预算。所有新算法/VLA/硬件后置，原D/完整WarpC/native/独立seed/冻结H和0.90/0.88协议保持。
+
+更新AGENTS、PROJECT_STATE、README、总路线、B0总计划、指标协议当前入口、目标差距、独立结果顶部及B0_START/NEXT_RUN；旧逐lane计划增加执行完成与新入口，历史实验原文保留。当前仍B0-04、candidate为空、完整回报NA，不将计划写成完成。
+
+### 一致性检查与发布
+
+检查相对文件链接/引用路径、JSON解析、git diff --check、最新与历史入口、预算和评分分母。独立复核新审查的数值与下一计划的标准边界。文档修改不新增训练测试或通用防御框架。普通发布仅包含本次明确文档与审查JSON；远端按expected_sha检查后更新，不强推，随后回读main/计划/提示词/报告并同步本地核对内容。27284e2实验提交已确认；本次文档自身提交随本次提交保存，实际提交号在聊天交付，不为写入自己的SHA制造循环提交。
+
+本次发布前实际检查：15个明确变更文件、321个相对文件链接均存在，审查JSON可解析，git diff --check无错误。独立复审未发现数值或阶段边界阻塞；已补预热误差的直接来源链接，并将下一计划对训练起始phase的描述改为逐案记录，避免把单条参考的三个子步推广。

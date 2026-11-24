@@ -1,7 +1,31 @@
-继续 B0-04 SuperMimic 标准迁移。先 git status、fetch main，在独立工作树保留已有修改。读 PROJECT_STATE 顶部、北京时间 DAILY_WORK_LOG 最近记录、reports/B0_STANDARD_TRANSFER_BASELINE.md 顶部和 results/b0/standard_lanes_20261124/baseline_manifest.json。最新单配方 seed0 已完成新增 1000 个 WM 预热 minibatch、200 次 H32 与六个节点正式十项，60/60 失败。前一轮 7180672 的 230 案另计。完整双侧回报 NA。
+继续 dog-and-arm 的 B0-04 SuperMimic 标准迁移。先完成迁移并冻结独立结果，再做算法开发。最新已结束实验为 27284e2e7792d17376410a0d7459398f7ca1927b；从随后已推送的审查/计划提交接续。这一轮要实际实施、采集、原损失 WM 训练、H32 联训和正式物理评分，不只重复审计或生成计划。
 
-先查 AutoDL /root/autodl-tmp/dog-and-arm-b0-lanes-v1。三次训练和六次正式评分均已退出，最终恢复文件 results/b0/lanes_s0_to200_v1/cohort_state.pt 含2次 Ratio 待更新。跨进程为显式行政截断和重建真实前缀。保留原任务、原奖励、H32、B0-03 Actor、固定官方双源、参考/身份和逐 lane 采集。不要重启已回收任务或把 u200 直接续到 u500。
+一、接续与必读
+先 git status、正常 fetch main；保留已有修改，必要时用独立工作树，不 reset、clean、强推或制作本机压缩归档。读 AGENTS.md、PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最近记录、reports/B0_LANES_ROUND_REVIEW_20261124.md、docs/B0_CONTACT_RESPONSE_PLAN_20261124.md、docs/B0_PAPER_BASELINE_PROTOCOL.md、reports/B0_STANDARD_TRANSFER_BASELINE.md 顶部，以及 results/b0/standard_lanes_20261124/baseline_manifest.json 和 results/b0/lanes_review_20261124/audit_summary.json。不要把7180672旧轮或历史540/546混合包当作当前标准结果。
 
-下一轮的具体问题是标准 Actor 从真实握持状态发出的第一个臂/夹口组合是否得到足够的训练动力学覆盖。先读 held_action_support.json、entry_response_matched_u50.json、grip_commands.csv。用训练身份的同侧同相位实际状态，测量覆盖该命令区间的真实恒动作 20ms 分支，保留失败；分别统计首失效时刻、夹口/臂动作、双指、门力和后继。验证和 H 不入训练；教师只用于 WM。对比已有预热出口和联训出口在这些状态动作上的 H1/H7 误差与同一冻结验证集，并检查同等 joint WM 预算内训练样本的来源和覆盖。在数据与前缀映射确有改善后，再从标准来源按一条固定配方做真实 H32 与正式评分。不能用动作 BC、参考直通、解析补偿、新奖励/风险头/phase-TD、课程、VLA、双门或硬件替代本阶段。
+核实 AutoDL /root/autodl-tmp/dog-and-arm-b0-lanes-v1、第二平台独立工作树、进程/退出回执和大资产。上轮已完成 1000 个新增 WM 预热 minibatch、200 H32、2000 联合 WM、4000 Critic；219677有效策略区间，u0/1/10/50/100/200各0/10，共60案、36案首2ms超力、0阶段事件。完整双侧物理回报NA，无最终候选。u200恢复有2次Ratio待更新，不能算已执行或机械续到u500。
 
-正式入口 bash scripts/b0/evaluate_standard_contact.sh <run> <update> warp。逐案检查后再从同一候选十项 10/10 → 每项 D≥18/20 → 连续双侧 Warp nominal、C 每侧≥18/20 及同包 native 完整 nominal → 独立 seed1/2 → 三 seed 全冻结后 H 每 seed/侧≥40/50。完整回报目标0.90、接近带0.88，同时满足物理门槛。按北京时间继续唯一 DAILY_WORK_LOG，更新独立结果、状态与下一入口，普通 commit/push 后从 GitHub 回读。
+二、固定边界
+保留 SuperMimic abc124c1bd5976341034668af3d12c087f2f1f55 与 mjlab_research dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd、原主要网络、GenCoord、tracking/softdone、Muon＋Adam、H32 Actor/Critic。继承已实测的fixed effort/reset、ReturnSampler、实际Ratio、clip末帧、lane/age、固定WM统计、逐lane真实200ms前缀；不重做P1–P6/B0-03 seed0/G1。当前只做仿真。动作BC、参考直通、解析补偿、新奖励/风险头/phase-TD、课程、新网络、VLA、双门和硬件后置。
+
+三、先处理已证的数据衔接与真实首动作
+新 lanes_modes_v1 的512训练lanes、18223有效区间已进入WM预热，却没有进入随后联训的离线池。当前在线足够时H1为256全在线；H7为192在线+32旧native+32旧Warpgrip。此断点已证实，但尚未证明是全部失败的原因。联训open/hold仅1087/219677区间且全部terminal；不能根据总数据量宣称接触覆盖，也不能声称首失败数据全被过滤。
+
+复用并修正 measure_lane_response.py 的身份记录。在训练自己的实际prefix、history、previous action、normalizer、goal clock上现场查询B0-03/u0与u200冻结Actor，不能借正式保存命令冒充现场查询。按计划先登记12训练/6独立验证起点，覆盖两侧接触前沿、稳定握持/推拉、释放。保持相同真实初态/求解器状态，首20ms做臂/夹口2×2及完整参考中心/重复分支；参考动作只用于WM诊断与数据，不能作为Actor控制或BC。
+
+保存23路动作的canonical/physical/fixed-effort坐标，真实每2ms门力、双指、夹口、臂、TCP、门角与首次失败；同时保存训练reference phase和独立正式event phase。现有诊断tick4/5与正式tick1有判定时钟差别，不能改裁判来延长存续。训练source从配置读，正式source从run_spec读。22.04/22.47mm只是持续双指open/hold条件范围，不是全训练上限或新clamp。现有u50分支20ms真实开度68.35/66.51mm、WM约22–26mm，必须复核真实首响应，不能只看H32 TCP。必要的原GenCoord积分残差诊断使用真实端点速度，不先改积分器或尺度。
+
+四、让必要训练数据持续进入原H1/H7
+按计划把单个H7离线数据接口扩展成明确登记的多个训练来源，接入旧grip、新multimode和本轮首动作响应。默认每次H32前仍2个H1+8个H7/batch256：H1=192在线+64登记Warp；H7=192在线+32native+32登记Warp。Warp各合格来源固定等份、源内lane/age，无合法H7的来源记0并按预登记规则回填。禁止跨episode/终止补窗。首次失败的完整数值有效20ms按既有规则进入H1，失败后更长积分只作明确标记的诊断。教师/干预只用于WM，Actor起点仍取当前在线replay；验证/D/C/H不进训练或统计。
+
+保留输入统计，从 lanes_wm_v1/wm_001000.pt 用原H1/H7损失预热，新增0/200/1000 minibatch检查；初始优化器来源和全部继承成本写清。按两侧实际首命令H1夹指/开度响应、H7误差和原独立验证保留情况选点，不只按训练loss/H32 TCP。实际记录每batch来源/相位/模式/独立episode/H1H7和Ratio分母。若需要保留对照，至多一个同起点、同预算、冻结Actor/Critic的WM数据配方对照，不扩展算法变体。
+
+五、解释原目标并实际联训
+在真实将采样的同一online replay batch和相同噪声上，诊断原tracking、动作率、限位、survival与Critic bootstrap对首夹口/J2的梯度；按乘积法则核对分项之和，不修改原目标或detach机制。u200仅夹口20ms动作率已为-0.18767/-0.35863，而六正项上界+0.1；不能直接归因缺少握持奖励。正常u1后核对实际动作变化，u10复查。没有物理真值的Critic不能把自预测当证据。
+
+适配经实际响应验证后，新开一条固定seed0主链：Actor/normalizer从B0-03 free_s0_cloud_servo_r2/checkpoint_001000.pt，WM从本轮选点，Critic沿标准初始化规则，优化器/RNG/replay/Ratio登记。保留u0/1/10/50，并用 bash scripts/b0/evaluate_standard_contact.sh <new_run> <update> warp 逐节点正式十项。真实首动作改善、阶段事件、首次失败前双指持续或门力/几何改善支持后再到u100/u200；u50后连续两个检查点无物理改善则停止同配方追加，不机械延长。若必要响应仍未改善，保存可复查残差并处理已定位的问题；不得以一份诊断表宣布迁移结束。
+
+六、验收与交付
+同一候选十项10/10 → 每项D≥18/20 → 连续完整双侧Warp nominal、C每侧≥18/20及同包native3.3双侧完整nominal和持续H32 → 独立seed1/2各自通过B0-03/后续门槛 → 三seed配方/选模/候选全冻结后H每seed/侧≥40/50。完整归一化回报按原全长分母/首失败吸收/真实dt/固定effort，目标0.90或项目0.88接近带，同时过物理门槛。不用片段分数、想象return或失败后积分代填。
+
+新轮结果与旧standard_lanes_20261124分目录保存，形成独立manifest/逐案结果/误差/预算/恢复与必要视频。每个有意义节点按北京时间详细追加唯一DAILY_WORK_LOG.md，写实际命令、问题证据、已证原因或假设、修复/复测、失败/未执行和下一步。更新PROJECT_STATE、独立结果与NEXT_RUN，普通commit/push到kaiwen123-yang/dog-and-arm并从GitHub回读main和关键文件。既有发布授权继续有效，无需再次询问。充分使用可用资源并行独立采集/验证，不设强制墙钟终止。

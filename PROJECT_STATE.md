@@ -1,5 +1,17 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-24 北京时间｜已审查 27284e2，下一轮处理首动作响应与 WM 数据贯通
+
+**仍在 B0-04：六节点各 0/10，完整双侧物理回报 NA，没有最终候选。先完成标准迁移并冻结独立结果，再做算法开发。** 本次只核读代码/已提交结果、独立复算并发布计划，没有新训练或仿真，也未重新加载 AutoDL 的大权重/原始 NPY。
+
+新增明确发现：新 `lanes_modes_v1` 数据进入 WM 预热，却未进入后续联训离线池；在线 open/hold 仅 1,087/219,677 区间且全部 terminal。同窗双指 H32 P95 在预热 15.65/16.45 mm 后，u10 回退到 127.19/149.47 mm。现有 u50 两状态首命令诊断满 20 ms 真实夹口 68.35/66.51 mm，两套 WM 只预测约 22–26 mm；该诊断含失败后积分，且训练 phase 与正式 event phase 不同，不能混成正式首 2 ms 的成绩。
+
+下一轮执行 [首动作与 WM 数据计划](docs/B0_CONTACT_RESPONSE_PLAN_20261124.md)：补齐训练身份现场 Actor 查询及臂/夹口分支，持续接入新训练数据到原 H1/H7，分解原目标梯度，再从标准 B0-03 Actor 与选定 WM 新开一条固定 seed0 主链，实际 H32 与正式评分。旧 u200 不无依据机械续长。22 mm 条件范围不是动作安全上限，不加新奖励/BC/参考直通/解析补偿；其他算法与 VLA 后置。
+
+[本轮审查](reports/B0_LANES_ROUND_REVIEW_20261124.md) · [只读复算](results/b0/lanes_review_20261124/audit_summary.json) · [独立实验结果](reports/B0_STANDARD_TRANSFER_BASELINE.md) · [最新实验 manifest](results/b0/standard_lanes_20261124/baseline_manifest.json) · [完整启动词](prompts/B0_START.txt) · [下一入口](prompts/NEXT_RUN.txt) · [目标差距](docs/GOAL_GAP_20261124.md)
+
+现场接续 AutoDL `/root/autodl-tmp/dog-and-arm-b0-lanes-v1`，先核实进程、回执与资产。u200 恢复有 2 次 Ratio 待更新，不算已执行；已有修改保留。按北京时间维护唯一 [DAILY_WORK_LOG](DAILY_WORK_LOG.md)。以下保留本轮执行回执与更早快照，历史“下一轮”不覆盖本节。
+
 ## 2026-11-24 11:33 北京时间｜单配方逐 lane 迁移已实训至 u200
 
 **B0-04 未通过，最终候选为空，完整双侧回报 NA。** 从 ee41ee3 接续，逐 lane 真实前缀/复位与跨块 episode 内 H7 已实现并实测。相同冻结策略、同等 128,000 个物理子步下，有效策略转移由旧采集的 3,135 条增至 7,593 条。新采训练/验证分别 512/192 lanes；原 H1/H7 预热新增 1,000 minibatch，冻结握持集 H32 TCP P95 由 50.53/40.36 降到 15.65/16.45 mm，选为出发权重。教师只参与世界模型动力学监督。

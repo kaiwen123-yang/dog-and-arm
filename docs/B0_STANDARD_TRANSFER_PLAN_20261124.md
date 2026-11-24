@@ -1,8 +1,8 @@
 # B0 下一轮：集中完成 SuperMimic 标准迁移
 
-执行回执（11月24日北京时间）。本计划的逐 lane 实现、采集对照、接触补采、原损失预热、H32 联训与正式十项已实跑至 u200。六个节点各 0/10，后续门槛未开启。[实测与停止依据](../reports/B0_STANDARD_TRANSFER_BASELINE.md) · [下一入口](../prompts/NEXT_RUN.txt)。下文保留开工前计划。
+执行回执（11月24日北京时间）。本计划的逐 lane 实现、采集对照、接触补采、原损失预热、H32 联训与正式十项已实跑至 u200。六个节点各 0/10，后续门槛未开启。[实测与停止依据](../reports/B0_STANDARD_TRANSFER_BASELINE.md) · [下一入口](../prompts/NEXT_RUN.txt)。下文保留开工前计划；当前下一轮执行 [首动作响应与WM数据贯通计划](B0_CONTACT_RESPONSE_PLAN_20261124.md)，审查截止27284e2。
 
-日期：2026-11-24（Asia/Shanghai）。实验起点为 [7180672](https://github.com/kaiwen123-yang/dog-and-arm/commit/71806725b66e1aec0ac03536737edf31e669ac40)。本次交付是已结束轮审查、下一计划和启动提示词，没有执行新训练、仿真评测或硬件动作。11 月 23 日计划保留为历史，当前执行本文件。
+日期：2026-11-24（Asia/Shanghai）。实验起点为 [7180672](https://github.com/kaiwen123-yang/dog-and-arm/commit/71806725b66e1aec0ac03536737edf31e669ac40)。本次交付是已结束轮审查、下一计划和启动提示词，没有执行新训练、仿真评测或硬件动作。本段为当时开工前的范围；本计划现已执行，当前入口以上方回执链接为准。
 
 ## 1. 阶段决定与成功定义
 

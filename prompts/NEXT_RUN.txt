@@ -1,7 +1,11 @@
-继续 B0-04 SuperMimic 标准迁移。先 git status、fetch main，在独立工作树保留已有修改。读 PROJECT_STATE 顶部、北京时间 DAILY_WORK_LOG 最近记录、reports/B0_STANDARD_TRANSFER_BASELINE.md 顶部和 results/b0/standard_lanes_20261124/baseline_manifest.json。最新单配方 seed0 已完成新增 1000 个 WM 预热 minibatch、200 次 H32 与六个节点正式十项，60/60 失败。前一轮 7180672 的 230 案另计。完整双侧回报 NA。
+继续 B0-04 SuperMimic 标准迁移，先成功迁移并冻结独立结果，再开发算法。最新实验27284e2，随后审查/计划提交为当前入口。完整启动词prompts/B0_START.txt，执行docs/B0_CONTACT_RESPONSE_PLAN_20261124.md，审查reports/B0_LANES_ROUND_REVIEW_20261124.md。先git status/fetch并保留已有修改，读PROJECT_STATE顶部和北京时间DAILY_WORK_LOG最近记录。当前完整双侧回报NA、无最终候选。
 
-先查 AutoDL /root/autodl-tmp/dog-and-arm-b0-lanes-v1。三次训练和六次正式评分均已退出，最终恢复文件 results/b0/lanes_s0_to200_v1/cohort_state.pt 含2次 Ratio 待更新。跨进程为显式行政截断和重建真实前缀。保留原任务、原奖励、H32、B0-03 Actor、固定官方双源、参考/身份和逐 lane 采集。不要重启已回收任务或把 u200 直接续到 u500。
+逐lane采集、原损失预热和seed0 u200已完成；六节点各0/10，60案/36首2ms超力/0事件，旧7180672的230案另计。现场AutoDL /root/autodl-tmp/dog-and-arm-b0-lanes-v1，先核实进程、退出回执和资产，不重开已回收任务、不机械续u500。已完成fixed effort、ReturnSampler、Ratio、clip末帧、lane/age/逐lane前缀等直接继承。
 
-下一轮的具体问题是标准 Actor 从真实握持状态发出的第一个臂/夹口组合是否得到足够的训练动力学覆盖。先读 held_action_support.json、entry_response_matched_u50.json、grip_commands.csv。用训练身份的同侧同相位实际状态，测量覆盖该命令区间的真实恒动作 20ms 分支，保留失败；分别统计首失效时刻、夹口/臂动作、双指、门力和后继。验证和 H 不入训练；教师只用于 WM。对比已有预热出口和联训出口在这些状态动作上的 H1/H7 误差与同一冻结验证集，并检查同等 joint WM 预算内训练样本的来源和覆盖。在数据与前缀映射确有改善后，再从标准来源按一条固定配方做真实 H32 与正式评分。不能用动作 BC、参考直通、解析补偿、新奖励/风险头/phase-TD、课程、VLA、双门或硬件替代本阶段。
+下一步先做训练身份的实际首命令响应：现场查询B0-03/u0与u200 Actor，固定真实prefix/history/previous/clock/solver，臂夹口分组对照，记录每2ms物理量及训练phase/正式eventphase。22mm是持续双指条件统计，不能当全局动作上限或夹口限制。现有u50诊断20ms真实开度68.35/66.51mm、WM约22–26mm，且与正式评分判定时钟不同；不得直接当u200正式复现。
 
-正式入口 bash scripts/b0/evaluate_standard_contact.sh <run> <update> warp。逐案检查后再从同一候选十项 10/10 → 每项 D≥18/20 → 连续双侧 Warp nominal、C 每侧≥18/20 及同包 native 完整 nominal → 独立 seed1/2 → 三 seed 全冻结后 H 每 seed/侧≥40/50。完整回报目标0.90、接近带0.88，同时满足物理门槛。按北京时间继续唯一 DAILY_WORK_LOG，更新独立结果、状态与下一入口，普通 commit/push 后从 GitHub 回读。
+已证新lanes_modes_v1只进WM预热、没有进入联训离线池；联训open/hold仅1087/219677区间且全terminal。按新计划让旧grip/新multimode/真实首动作训练数据持续进入原H1/H7，保持原损失与固定统计，验证完全隔离；记录实际抽样。诊断原tracking/动作率/survival/Critic梯度，不能先加奖励、BC、参考直通、解析补偿或风险头。
+
+适配实际改善后，从B0-03 Actor＋本轮选定WM新开一条固定seed0链，u0/1/10/50真实训练与正式十项；有物理改善再延长至u100/u200。最多一个冻结Actor/Critic的WM数据保留对照。正式入口bash scripts/b0/evaluate_standard_contact.sh <new_run> <update> warp。十项10/10后按既定D、完整Warp/C/native、独立seed、三seed冻结后H顺序推进，完整回报目标0.90或项目0.88接近带并过物理门槛。详细计划不是已执行结果。
+
+新轮独立目录/manifest，按北京时间持续唯一DAILY_WORK_LOG；更新标准结果、状态和下一入口，普通commit/push后从GitHub回读。当前只做仿真，算法/VLA/双门/硬件后置，不重做P1–P6/B0-03 seed0/G1。
