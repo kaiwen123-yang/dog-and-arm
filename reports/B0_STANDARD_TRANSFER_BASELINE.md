@@ -1,5 +1,11 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-24｜870796a只读审查与下一计划
+
+**当前B0-04、最终候选null、完整双侧回报NA；标准迁移尚未完成。** 最新原正式50案/0通过/0事件、30案首2ms超力和20H32/200联合WM/400Critic的预算已复算。48案开发闭环不是48个独立泛化初态，均未在裁判停止前建立双指。报告的一处u1/u10在线损失时点已注明更正，原机器成绩不变。本次新增训练/仿真为零。
+
+下一轮按[联合WM与接触闭环计划](../docs/B0_JOINT_CONTACT_PLAN_20261124.md)，优先解决实际联合更新后的长窗保留和命令到真实伺服力的对应，原网络/损失与正式门槛保持。独立迁移成功冻结后才开发算法。[审查](B0_DYNAMICS_ROUND_REVIEW_20261124.md) · [复算](../results/b0/dynamics_review_20261124/audit_summary.json) · [启动词](../prompts/B0_START.txt) · [目标差距](../docs/GOAL_GAP_20261124.md)。以下历史计划不覆盖此入口。
+
 ## 2026-11-24｜新物理身份的标准 seed0 开发对照
 
 **B0-04，候选 null，完整双侧物理归一化回报 NA。** Warp 0.25 ms 训练、原 2 ms Warp 正式评分。两臂离线预热各 1,000 WM 批，六项预登记替代条件通过，唯一实验 WM 为重标 +1000，控制为同身份 C20 +0。独立结果协议原接触门槛保持。两臂各 u10，预算共 20 H32、200 联合 WM、400 Critic；共同 u0、两支 u1/u10 共 50 个新正式案例，0 通过、0 阶段事件。实验 u10 的前拉存续改善同时伴随背推接近从 1.154 s 降至 0.036 s，闭环开发复查 48 案停止前均无双指。原先 response u200 的 60 案及 ff2d1e8 的冻结 u0 另记。[实验报告](B0_DYNAMICS_TRANSFER_RESULTS_20261124.md) · [本轮清单](../results/b0/standard_dynamics_20261124/baseline_manifest.json) · [按案结果](../results/b0/standard_dynamics_20261124/h32/pilot_summary.json)

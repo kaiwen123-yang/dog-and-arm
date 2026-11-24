@@ -1,9 +1,9 @@
-继续 SuperMimic-M1Piper-standard-v1 标准迁移。先读取 PROJECT_STATE.md 顶部、reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md、results/b0/standard_dynamics_20261124/baseline_manifest.json 和 DAILY_WORK_LOG.md 最近记录。先正常 fetch main，保留工作树及旧实验。
+继续 dog-and-arm 的 SuperMimic-M1Piper-standard-v1。先正常fetch main并保留已有修改，读AGENTS.md、PROJECT_STATE.md顶部、reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md、docs/B0_JOINT_CONTACT_PLAN_20261124.md、prompts/B0_START.txt和DAILY_WORK_LOG.md最近记录，直接按新集中计划连续执行。
 
-已完成 11 窗步长核验、0.25 ms Warp 三源重采、一套 train-only C20 函数保持重标及两臂原 H32 u10。物理身份 warp_250us_servo2ms_continuous_v1，N=80、c=.50625，Actor 20 ms，servo 2 ms 并保留上一周期起点 bias。六项替代条件均满足，pilot 实验 WM 为重标+1000，控制为C20+0。旧轮 selected_wm=null。两支实际新增合计20 H32、200联合WM、400 Critic，离线预热另计2000。新原正式名义五组共50案全部失败；48个同状态闭环复测停止前零次双指同时接触、零事件。两臂u10均伴随显著的另一侧退化。B0-04、最终候选null、完整双侧回报NA，T2配方继续封存。
+870796a已结束：两支各u10，原正式50案全失败、30案首2ms超力；48个开发闭环组合停止前均无双指。仍B0-04、候选null、完整回报NA。首10批联合WM造成明显关节/长程漂移，u0→u1 Actor统计未变；两支各15360在线H7中open/hold与双指均为0。321个open/hold抽样初态在失效之前，不能当失败后污染删除。u1/u10损失叙述已更正，原成绩不变。
 
-恢复现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1。大资产 results/raw_large/b0/dynamics_20261124/；h32/control 和 h32/experiment 内各有 checkpoint_000010.pt 和 cohort_state.pt，各 pending=2。只读复核可执行 bash scripts/b0/env.sh python -m scripts.b0.index_dynamics_h32、bash scripts/b0/env.sh python -m scripts.b0.index_dynamics_actor_state，以及 bash scripts/b0/env.sh python scripts/b0/index_dynamics_round.py --decision results/b0/standard_dynamics_20261124/round_decision.json。
+并行完成真实首十批复演＋一个顺序对照（共30WM批）、同参数坐标源梯度，以及现有真实伺服力/边界核对；缺覆盖才补最多112条短轨迹。随后原联合配方单链预适配，首段≤500、证据支持累计≤1000（含两个10批交界预演和一次有据调整），采用第二块真实末点及连续WM优化器接H32。固定E0开发保留线和独立online改善按计划执行，不展开网格。
 
-下一次从物理缺口出发。现有两侧已有的合法 open/hold Actor 抽样全部来自首区间即终止的状态，10 个联合 WM 批后独立双指 H32 TCP P95 一度达到 0.54–0.93 m。先以冻结的真实训练四源、在线首批、开发入口和 u0/u1/u10 的实际命令核对两件事：哪些接触前状态能在标准策略闭环下跨过首个20ms并进入第二个合法区间；能否将实际首批的关节后继误差定位到具体状态、源和原优化环节。登记任何新一轮的单一修复假设、单位、对照和有物理意义的出口后再训练。本轮 u10 的待执行 Ratio 留作诊断恢复；u50 的延长条件已检查并未达到。原门力6N、网络/GenCoord/损失/tracking/softdone、双源abc124c/dd51a9f和原正式后端按协议继承。算法开发、VLA和硬件保持后置。
+一条标准seed0主链首段目标u50，u1/u10为检查点，不因u10零通过提前收工；WM明确失稳则处理原因。有真实双侧接触进展自动继续u100/u200及必要后续，同包十项通过当轮接D、完整Warp/C/native、独立seed和三seed冻结H。只认每20ms从真实后继重出动作的Actor闭环；参考尾段不计。算法/VLA仍在标准迁移成功冻结后。
 
-原十项同包10/10后，依次进入每项D≥18/20、连续双侧Warp名义和每侧C≥18/20、同包原native3.3双侧名义及持续H32，再推进独立seed1/2；三seed冻结后才开H，每seed/侧≥40/50。D/C/H个案独立于训练，H不用来选模。历史response u200的60案另记。
+现场/root/autodl-tmp/dog-and-arm-b0-temporal-v1；原大资产results/raw_large/b0/dynamics_20261124/，两支u10各pending=2只留诊断。训练0.25ms、servo2ms、Actor20ms、c=.50625；原2msWarp/native3.3、6N和完整回报保持。不重复已解决基础修复，不加BC/参考直通/解析反馈/新loss/新网络/T2。新结果独立保存，唯一日志按北京时间详细续写；普通推送GitHub并回读，给真实目标差距和接续入口。

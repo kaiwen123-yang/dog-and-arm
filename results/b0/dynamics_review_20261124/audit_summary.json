@@ -1,0 +1,1193 @@
+{
+  "reviewed_commit": "870796a52aaab5cef307d5c2d455377094e5d056",
+  "scope": "Read-only review; no new simulation, model inference, training or checkpoint reload.",
+  "evidence_levels": {
+    "locally_recomputed": "Arithmetic/reconciliation from committed CSV/JSONL/NPZ indexes. Physical observations and model scores remain source measurements; not newly simulated or rescored.",
+    "source_recorded": "A committed receipt read and cross-linked; original AutoDL raw arrays/weights were not accessed in this review."
+  },
+  "formal": {
+    "control_u10": {
+      "cases": 10,
+      "passed": 0,
+      "phase_events": 0,
+      "first_2ms_overforce": 6,
+      "judged_physics_substeps": 126,
+      "prefix_substeps": 1000,
+      "stable_grip_first_force_N": {
+        "pull": 51.04010252346665,
+        "push": 33.14224912217369
+      },
+      "approach_failure_time_s": {
+        "pull": 0.08,
+        "push": 0.038
+      },
+      "effort_return_mean": -0.14481068489792787
+    },
+    "control_u1": {
+      "cases": 10,
+      "passed": 0,
+      "phase_events": 0,
+      "first_2ms_overforce": 6,
+      "judged_physics_substeps": 1948,
+      "prefix_substeps": 1000,
+      "stable_grip_first_force_N": {
+        "pull": 51.06729288760929,
+        "push": 33.14774083466942
+      },
+      "approach_failure_time_s": {
+        "pull": 1.064,
+        "push": 1.754
+      },
+      "effort_return_mean": -0.14344951443120224
+    },
+    "experiment_u10": {
+      "cases": 10,
+      "passed": 0,
+      "phase_events": 0,
+      "first_2ms_overforce": 6,
+      "judged_physics_substeps": 3437,
+      "prefix_substeps": 1000,
+      "stable_grip_first_force_N": {
+        "pull": 51.03862317303574,
+        "push": 33.178911982764674
+      },
+      "approach_failure_time_s": {
+        "pull": 2.72,
+        "push": 0.036000000000000004
+      },
+      "effort_return_mean": -0.08076163112841284
+    },
+    "experiment_u1": {
+      "cases": 10,
+      "passed": 0,
+      "phase_events": 0,
+      "first_2ms_overforce": 6,
+      "judged_physics_substeps": 2182,
+      "prefix_substeps": 1000,
+      "stable_grip_first_force_N": {
+        "pull": 51.06354481286072,
+        "push": 33.14898861239508
+      },
+      "approach_failure_time_s": {
+        "pull": 1.1360000000000001,
+        "push": 2.108
+      },
+      "effort_return_mean": -0.13734780867888824
+    },
+    "shared_u0": {
+      "cases": 10,
+      "passed": 0,
+      "phase_events": 0,
+      "first_2ms_overforce": 6,
+      "judged_physics_substeps": 1629,
+      "prefix_substeps": 1000,
+      "stable_grip_first_force_N": {
+        "pull": 51.06700911837773,
+        "push": 33.1508751513966
+      },
+      "approach_failure_time_s": {
+        "pull": 1.046,
+        "push": 1.154
+      },
+      "effort_return_mean": -0.15824386316573363
+    }
+  },
+  "closedloop": {
+    "formal_2ms": {
+      "cases": 24,
+      "unique_start_policy_pairs": 12,
+      "starts": [
+        "pull_0_validation_grip_grasp",
+        "pull_0_validation_grip_release",
+        "push_0_validation_grip_grasp",
+        "push_0_validation_grip_release"
+      ],
+      "passed_original_gate": 0,
+      "dual_contact_cases": 0,
+      "full_dual_20ms_intervals": 0,
+      "phase_events": 0,
+      "actor_calls": 194,
+      "judged_microsteps": 1858,
+      "post_failure_microsteps_excluded": 662,
+      "max_repeat_force_delta_N": 0.02510833740234375,
+      "max_repeat_stop_time_delta_s": 0.0,
+      "max_first_command_error": 0.0
+    },
+    "training": {
+      "cases": 24,
+      "unique_start_policy_pairs": 12,
+      "starts": [
+        "pull_0_validation_grip_grasp",
+        "pull_0_validation_grip_release",
+        "push_0_validation_grip_grasp",
+        "push_0_validation_grip_release"
+      ],
+      "passed_original_gate": 0,
+      "dual_contact_cases": 0,
+      "full_dual_20ms_intervals": 0,
+      "phase_events": 0,
+      "actor_calls": 408,
+      "judged_microsteps": 32396,
+      "post_failure_microsteps_excluded": 244,
+      "max_repeat_force_delta_N": 0.0012969970703125,
+      "max_repeat_stop_time_delta_s": 0.0,
+      "max_first_command_error": 0.0
+    }
+  },
+  "budgets": {
+    "control": {
+      "H32": 10,
+      "joint_WM": 100,
+      "Critic_from_cumulative_counter": 200,
+      "joint_H1": 20,
+      "joint_H7": 80,
+      "WM_successors": 148480,
+      "imagined_policy_steps": 81920,
+      "valid": 13044,
+      "simulated_intervals": 20480,
+      "prefix_intervals": 7436,
+      "post_failure_diagnostic_substeps_included_in_simulated": 22822,
+      "last_cumulative_steps": {
+        "wm": 100,
+        "actor": 10,
+        "critic": 200
+      },
+      "last_ratio": {
+        "previous_clock": 11968.0,
+        "pending": 2,
+        "cohorts": 4
+      }
+    },
+    "experiment": {
+      "H32": 10,
+      "joint_WM": 100,
+      "Critic_from_cumulative_counter": 200,
+      "joint_H1": 20,
+      "joint_H7": 80,
+      "WM_successors": 148480,
+      "imagined_policy_steps": 81920,
+      "valid": 12963,
+      "simulated_intervals": 20480,
+      "prefix_intervals": 7517,
+      "post_failure_diagnostic_substeps_included_in_simulated": 21764,
+      "last_cumulative_steps": {
+        "wm": 100,
+        "actor": 10,
+        "critic": 200
+      },
+      "last_ratio": {
+        "previous_clock": 11968.0,
+        "pending": 2,
+        "cohorts": 4
+      }
+    },
+    "unique": {
+      "H32": 20,
+      "joint_WM": 200,
+      "Critic": 400,
+      "valid": 23921,
+      "simulated_intervals": 35840,
+      "prefix_intervals": 11919,
+      "post_failure_diagnostic_substeps_included_in_simulated": 34494,
+      "training_physical_microsteps": 2867200
+    },
+    "common_subtracted_once": {
+      "valid_transitions": 2086,
+      "simulated_lane_intervals": 5120,
+      "prefix_intervals": 3034,
+      "post_failure_diagnostic_substeps": 10092
+    },
+    "offline": {
+      "C20": {
+        "WM": 1000,
+        "H1": 200,
+        "H7": 800,
+        "sampled_windows": 256000,
+        "supervised_successors": 1484800,
+        "nonfinite_loss_or_grad_rows": 0,
+        "preclip_grad_gt_1": 96
+      },
+      "rebase": {
+        "WM": 1000,
+        "H1": 200,
+        "H7": 800,
+        "sampled_windows": 256000,
+        "supervised_successors": 1484800,
+        "nonfinite_loss_or_grad_rows": 0,
+        "preclip_grad_gt_1": 71
+      }
+    }
+  },
+  "actor_starts": {
+    "control": {
+      "totals": {
+        "samples": 2560,
+        "open_hold": 161,
+        "open_hold_terminal": 161,
+        "open_hold_two_finger": 0,
+        "terminal": 526
+      },
+      "phase_samples": {
+        "approach_arm": 681,
+        "grasp": 338,
+        "open": 86,
+        "hold": 75,
+        "release": 254,
+        "retreat_arm": 669,
+        "post_release_hold": 457
+      },
+      "unique_replay_index_triples_all_phases": 1996,
+      "level": "locally_recomputed_aggregates_of_source_recorded_raw_classification",
+      "u0_to_u1_normalizer_fields_unchanged": true
+    },
+    "experiment": {
+      "totals": {
+        "samples": 2560,
+        "open_hold": 160,
+        "open_hold_terminal": 160,
+        "open_hold_two_finger": 0,
+        "terminal": 546
+      },
+      "phase_samples": {
+        "approach_arm": 688,
+        "grasp": 318,
+        "open": 86,
+        "hold": 74,
+        "release": 249,
+        "retreat_arm": 667,
+        "post_release_hold": 478
+      },
+      "unique_replay_index_triples_all_phases": 2002,
+      "level": "locally_recomputed_aggregates_of_source_recorded_raw_classification",
+      "u0_to_u1_normalizer_fields_unchanged": true
+    },
+    "combined_open_hold_sample_instances": 321,
+    "interpretation": "321 are repeated sampled initial states before the first physical failure, whose ensuing first 20 ms real intervals terminate; not 321 independent starts and not evidence of sampling post-failure initial states. Legitimate finite first failure intervals remain H1/Actor-eligible under inherited contract."
+  },
+  "wm_actual_draws": {
+    "control": {
+      "window_draws_by_horizon_source": {
+        "H1/grip": 427,
+        "H1/multimode": 426,
+        "H1/online": 3840,
+        "H1/response": 427,
+        "H7/grip": 853,
+        "H7/multimode": 854,
+        "H7/native": 2560,
+        "H7/online": 15360,
+        "H7/response": 853
+      },
+      "online_phase_counts": {
+        "7": {
+          "pull/release": 1816,
+          "pull/grasp": 2634,
+          "pull/post_release_hold": 3194,
+          "pull/approach_arm": 2539,
+          "pull/retreat_arm": 4377,
+          "push/approach_arm": 779,
+          "push/grasp": 7,
+          "push/post_release_hold": 13,
+          "push/retreat_arm": 1
+        },
+        "1": {
+          "pull/grasp": 463,
+          "push/approach_arm": 533,
+          "pull/post_release_hold": 598,
+          "pull/approach_arm": 437,
+          "pull/hold": 73,
+          "pull/retreat_arm": 755,
+          "push/release": 73,
+          "push/retreat_arm": 267,
+          "pull/release": 262,
+          "push/open": 73,
+          "pull/open": 61,
+          "push/hold": 40,
+          "push/post_release_hold": 154,
+          "push/grasp": 51
+        }
+      },
+      "online_mode_counts": {
+        "7": {
+          "release": 6194,
+          "free": 9028,
+          "other_contact": 138
+        },
+        "1": {
+          "free": 1859,
+          "other_contact": 360,
+          "loss_or_slip": 260,
+          "release": 1361
+        }
+      },
+      "level": "locally_recomputed_from_recorded_classification"
+    },
+    "experiment": {
+      "window_draws_by_horizon_source": {
+        "H1/grip": 427,
+        "H1/multimode": 426,
+        "H1/online": 3840,
+        "H1/response": 427,
+        "H7/grip": 853,
+        "H7/multimode": 854,
+        "H7/native": 2560,
+        "H7/online": 15360,
+        "H7/response": 853
+      },
+      "online_phase_counts": {
+        "7": {
+          "pull/release": 1800,
+          "pull/grasp": 2581,
+          "pull/post_release_hold": 3263,
+          "pull/approach_arm": 2522,
+          "pull/retreat_arm": 4376,
+          "push/approach_arm": 808,
+          "push/grasp": 2,
+          "push/post_release_hold": 6,
+          "push/retreat_arm": 2
+        },
+        "1": {
+          "pull/grasp": 451,
+          "push/approach_arm": 545,
+          "pull/post_release_hold": 573,
+          "pull/approach_arm": 432,
+          "pull/hold": 72,
+          "pull/retreat_arm": 777,
+          "push/release": 74,
+          "push/retreat_arm": 269,
+          "pull/release": 268,
+          "push/open": 70,
+          "pull/open": 60,
+          "push/hold": 43,
+          "push/post_release_hold": 144,
+          "push/grasp": 62
+        }
+      },
+      "online_mode_counts": {
+        "7": {
+          "release": 6178,
+          "free": 9070,
+          "other_contact": 112
+        },
+        "1": {
+          "free": 1829,
+          "other_contact": 362,
+          "loss_or_slip": 257,
+          "release": 1392
+        }
+      },
+      "level": "locally_recomputed_from_recorded_classification"
+    }
+  },
+  "joint_fixed_source_loss": {
+    "control": {
+      "0": {
+        "H1": {
+          "online": {
+            "sample_draws": 384,
+            "sample_weighted_mean_loss": 5.878846168518066,
+            "fraction_of_sample_weighted_loss": 0.9666568496249132
+          },
+          "grip": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 0.023739150270473127,
+            "fraction_of_sample_weighted_loss": 0.0004371018426010022
+          },
+          "multimode": {
+            "sample_draws": 42,
+            "sample_weighted_mean_loss": 0.004887061077170074,
+            "fraction_of_sample_weighted_loss": 8.789133664995252e-05
+          },
+          "response": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 1.782365319340728,
+            "fraction_of_sample_weighted_loss": 0.03281815719583584
+          }
+        },
+        "H7": {
+          "online": {
+            "sample_draws": 1536,
+            "sample_weighted_mean_loss": 4.964847058057785,
+            "fraction_of_sample_weighted_loss": 0.997578238275802
+          },
+          "native": {
+            "sample_draws": 256,
+            "sample_weighted_mean_loss": 0.001669301258516498,
+            "fraction_of_sample_weighted_loss": 5.590164172059126e-05
+          },
+          "grip": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.005180023454458398,
+            "fraction_of_sample_weighted_loss": 5.759708817895612e-05
+          },
+          "multimode": {
+            "sample_draws": 86,
+            "sample_weighted_mean_loss": 0.008896276901671014,
+            "fraction_of_sample_weighted_loss": 0.00010008214843957828
+          },
+          "response": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.19859386880279464,
+            "fraction_of_sample_weighted_loss": 0.0022081808458588458
+          }
+        }
+      },
+      "1": {
+        "H1": {
+          "online": {
+            "sample_draws": 384,
+            "sample_weighted_mean_loss": 5.657108306884766,
+            "fraction_of_sample_weighted_loss": 0.9656007928897831
+          },
+          "grip": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 0.032623129788526266,
+            "fraction_of_sample_weighted_loss": 0.0006235423786140854
+          },
+          "multimode": {
+            "sample_draws": 42,
+            "sample_weighted_mean_loss": 0.011770632117986679,
+            "fraction_of_sample_weighted_loss": 0.00021974599705374103
+          },
+          "response": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 1.7556129777154257,
+            "fraction_of_sample_weighted_loss": 0.03355591873454905
+          }
+        },
+        "H7": {
+          "online": {
+            "sample_draws": 1536,
+            "sample_weighted_mean_loss": 2.54774971306324,
+            "fraction_of_sample_weighted_loss": 0.9893393945356024
+          },
+          "native": {
+            "sample_draws": 256,
+            "sample_weighted_mean_loss": 0.0513984146527946,
+            "fraction_of_sample_weighted_loss": 0.0033264960690576433
+          },
+          "grip": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.05203531029469827,
+            "fraction_of_sample_weighted_loss": 0.0011181868998088114
+          },
+          "multimode": {
+            "sample_draws": 86,
+            "sample_weighted_mean_loss": 0.06434201384179813,
+            "fraction_of_sample_weighted_loss": 0.0013989120997412142
+          },
+          "response": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.2241616590934641,
+            "fraction_of_sample_weighted_loss": 0.004817010395790007
+          }
+        }
+      },
+      "10": {
+        "H1": {
+          "online": {
+            "sample_draws": 384,
+            "sample_weighted_mean_loss": 3.814477801322937,
+            "fraction_of_sample_weighted_loss": 0.9592885330440721
+          },
+          "grip": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 0.024683382795300593,
+            "fraction_of_sample_weighted_loss": 0.0006951140566033404
+          },
+          "multimode": {
+            "sample_draws": 42,
+            "sample_weighted_mean_loss": 0.022212042473256588,
+            "fraction_of_sample_weighted_loss": 0.0006109711769919842
+          },
+          "response": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 1.3992784522300543,
+            "fraction_of_sample_weighted_loss": 0.03940538172233258
+          }
+        },
+        "H7": {
+          "online": {
+            "sample_draws": 1536,
+            "sample_weighted_mean_loss": 1.2423173189163208,
+            "fraction_of_sample_weighted_loss": 0.9865824788869768
+          },
+          "native": {
+            "sample_draws": 256,
+            "sample_weighted_mean_loss": 0.029923752415925264,
+            "fraction_of_sample_weighted_loss": 0.003960642661712241
+          },
+          "grip": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.03291360779720194,
+            "fraction_of_sample_weighted_loss": 0.0014464521070170744
+          },
+          "multimode": {
+            "sample_draws": 86,
+            "sample_weighted_mean_loss": 0.04896887863964536,
+            "fraction_of_sample_weighted_loss": 0.002177350038024875
+          },
+          "response": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.13272999836241497,
+            "fraction_of_sample_weighted_loss": 0.005833076306268961
+          }
+        }
+      }
+    },
+    "experiment": {
+      "0": {
+        "H1": {
+          "online": {
+            "sample_draws": 384,
+            "sample_weighted_mean_loss": 4.469541907310486,
+            "fraction_of_sample_weighted_loss": 0.9718169233795725
+          },
+          "grip": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 0.018039611666355024,
+            "fraction_of_sample_weighted_loss": 0.0004392237945495674
+          },
+          "multimode": {
+            "sample_draws": 42,
+            "sample_weighted_mean_loss": 0.004138101474381983,
+            "fraction_of_sample_weighted_loss": 9.841032050951512e-05
+          },
+          "response": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 1.135441780090332,
+            "fraction_of_sample_weighted_loss": 0.027645442505368413
+          }
+        },
+        "H7": {
+          "online": {
+            "sample_draws": 1536,
+            "sample_weighted_mean_loss": 2.4665987342596054,
+            "fraction_of_sample_weighted_loss": 0.9990986586047003
+          },
+          "native": {
+            "sample_draws": 256,
+            "sample_weighted_mean_loss": 0.0015342262195190415,
+            "fraction_of_sample_weighted_loss": 0.00010357334958373665
+          },
+          "grip": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.0027720751802382225,
+            "fraction_of_sample_weighted_loss": 6.213589897067244e-05
+          },
+          "multimode": {
+            "sample_draws": 86,
+            "sample_weighted_mean_loss": 0.006388664345776792,
+            "fraction_of_sample_weighted_loss": 0.0001448862521529044
+          },
+          "response": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.026355006676578127,
+            "fraction_of_sample_weighted_loss": 0.0005907458945924141
+          }
+        }
+      },
+      "1": {
+        "H1": {
+          "online": {
+            "sample_draws": 384,
+            "sample_weighted_mean_loss": 4.2511796951293945,
+            "fraction_of_sample_weighted_loss": 0.9698808129591607
+          },
+          "grip": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 0.02143728975639787,
+            "fraction_of_sample_weighted_loss": 0.0005476662955125126
+          },
+          "multimode": {
+            "sample_draws": 42,
+            "sample_weighted_mean_loss": 0.008845513686537743,
+            "fraction_of_sample_weighted_loss": 0.00022072423988785743
+          },
+          "response": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 1.1488775818846946,
+            "fraction_of_sample_weighted_loss": 0.02935079650543892
+          }
+        },
+        "H7": {
+          "online": {
+            "sample_draws": 1536,
+            "sample_weighted_mean_loss": 1.481665015220642,
+            "fraction_of_sample_weighted_loss": 0.9827507196754274
+          },
+          "native": {
+            "sample_draws": 256,
+            "sample_weighted_mean_loss": 0.06587519310414791,
+            "fraction_of_sample_weighted_loss": 0.007282223350849486
+          },
+          "grip": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.07210923389476888,
+            "fraction_of_sample_weighted_loss": 0.0026467439897969545
+          },
+          "multimode": {
+            "sample_draws": 86,
+            "sample_weighted_mean_loss": 0.08066358079397401,
+            "fraction_of_sample_weighted_loss": 0.002995560372088052
+          },
+          "response": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.11782575074364157,
+            "fraction_of_sample_weighted_loss": 0.004324752611838117
+          }
+        }
+      },
+      "10": {
+        "H1": {
+          "online": {
+            "sample_draws": 384,
+            "sample_weighted_mean_loss": 3.301897883415222,
+            "fraction_of_sample_weighted_loss": 0.961755779604958
+          },
+          "grip": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 0.018536491882662442,
+            "fraction_of_sample_weighted_loss": 0.0006045969382469439
+          },
+          "multimode": {
+            "sample_draws": 42,
+            "sample_weighted_mean_loss": 0.0061494882684201,
+            "fraction_of_sample_weighted_loss": 0.0001959107243400933
+          },
+          "response": {
+            "sample_draws": 43,
+            "sample_weighted_mean_loss": 1.1479963480040085,
+            "fraction_of_sample_weighted_loss": 0.03744371273245501
+          }
+        },
+        "H7": {
+          "online": {
+            "sample_draws": 1536,
+            "sample_weighted_mean_loss": 0.8476647362112999,
+            "fraction_of_sample_weighted_loss": 0.9914568164291947
+          },
+          "native": {
+            "sample_draws": 256,
+            "sample_weighted_mean_loss": 0.008075110497884452,
+            "fraction_of_sample_weighted_loss": 0.0015741528862638248
+          },
+          "grip": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.009001247710822259,
+            "fraction_of_sample_weighted_loss": 0.0005826129183429037
+          },
+          "multimode": {
+            "sample_draws": 86,
+            "sample_weighted_mean_loss": 0.01606986659773907,
+            "fraction_of_sample_weighted_loss": 0.0010523717798634458
+          },
+          "response": {
+            "sample_draws": 85,
+            "sample_weighted_mean_loss": 0.08240989465266466,
+            "fraction_of_sample_weighted_loss": 0.005334045986335181
+          }
+        }
+      }
+    }
+  },
+  "wm_validation": {
+    "control": {
+      "0": {
+        "grip/pull": {
+          "p95_mm": 16.640488147735596,
+          "scored": 386,
+          "nonfinite": 0
+        },
+        "grip/push": {
+          "p95_mm": 16.512001037597656,
+          "scored": 446,
+          "nonfinite": 0
+        },
+        "multimode/pull": {
+          "p95_mm": 20.75267276763916,
+          "scored": 199,
+          "nonfinite": 0
+        },
+        "multimode/push": {
+          "p95_mm": 15.436987781524659,
+          "scored": 199,
+          "nonfinite": 0
+        }
+      },
+      "1": {
+        "grip/pull": {
+          "p95_mm": 546.8625640869141,
+          "scored": 386,
+          "nonfinite": 0
+        },
+        "grip/push": {
+          "p95_mm": 541.4323425292969,
+          "scored": 446,
+          "nonfinite": 0
+        },
+        "multimode/pull": {
+          "p95_mm": 577.2434997558594,
+          "scored": 199,
+          "nonfinite": 0
+        },
+        "multimode/push": {
+          "p95_mm": 539.5434265136719,
+          "scored": 199,
+          "nonfinite": 0
+        }
+      },
+      "10": {
+        "grip/pull": {
+          "p95_mm": 68.68099594116211,
+          "scored": 386,
+          "nonfinite": 0
+        },
+        "grip/push": {
+          "p95_mm": 91.42062377929688,
+          "scored": 446,
+          "nonfinite": 0
+        },
+        "multimode/pull": {
+          "p95_mm": 115.45739974975585,
+          "scored": 199,
+          "nonfinite": 0
+        },
+        "multimode/push": {
+          "p95_mm": 94.5466178894043,
+          "scored": 199,
+          "nonfinite": 0
+        }
+      }
+    },
+    "experiment": {
+      "0": {
+        "grip/pull": {
+          "p95_mm": 17.85285186767578,
+          "scored": 386,
+          "nonfinite": 0
+        },
+        "grip/push": {
+          "p95_mm": 14.690392017364502,
+          "scored": 446,
+          "nonfinite": 0
+        },
+        "multimode/pull": {
+          "p95_mm": 17.573172760009765,
+          "scored": 199,
+          "nonfinite": 0
+        },
+        "multimode/push": {
+          "p95_mm": 18.647431564331054,
+          "scored": 199,
+          "nonfinite": 0
+        }
+      },
+      "1": {
+        "grip/pull": {
+          "p95_mm": 888.9537353515625,
+          "scored": 386,
+          "nonfinite": 0
+        },
+        "grip/push": {
+          "p95_mm": 734.4554138183594,
+          "scored": 446,
+          "nonfinite": 0
+        },
+        "multimode/pull": {
+          "p95_mm": 927.3864501953125,
+          "scored": 199,
+          "nonfinite": 0
+        },
+        "multimode/push": {
+          "p95_mm": 735.5941101074219,
+          "scored": 199,
+          "nonfinite": 0
+        }
+      },
+      "10": {
+        "grip/pull": {
+          "p95_mm": 88.60872268676758,
+          "scored": 386,
+          "nonfinite": 0
+        },
+        "grip/push": {
+          "p95_mm": 55.248148918151855,
+          "scored": 446,
+          "nonfinite": 0
+        },
+        "multimode/pull": {
+          "p95_mm": 97.33594970703125,
+          "scored": 199,
+          "nonfinite": 0
+        },
+        "multimode/push": {
+          "p95_mm": 55.23718185424804,
+          "scored": 199,
+          "nonfinite": 0
+        }
+      }
+    }
+  },
+  "normalization": {
+    "control": {
+      "level": "source_recorded",
+      "source": "results/b0/standard_dynamics_20261124/h32/control/normalization_replay.json",
+      "initial_count_and_all_buffers_match_free_u0_u1": true,
+      "all_final_checkpoint_and_recovery_actor_tensors_exact": true,
+      "reproduced_draw_updates": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "rng_final_equal": true,
+      "actual_final_tensor_count": 68,
+      "valid_after": 10958,
+      "by_block": {
+        "history": {
+          "initial_count": 1089050,
+          "final_count": 1100008,
+          "new_samples": 10958,
+          "fp32_checkpoint_max_abs": 0.0,
+          "fp64_checkpoint_max_abs": 6.795929119451927e-07,
+          "largest_updated_scale_ratio": 1.9544000625610352
+        },
+        "goal": {
+          "initial_count": 1089050,
+          "final_count": 1100008,
+          "new_samples": 10958,
+          "fp32_checkpoint_max_abs": 9.313225746154785e-10,
+          "fp64_checkpoint_max_abs": 4.1091030551498875e-06,
+          "largest_updated_scale_ratio": 11.971353530883789
+        }
+      },
+      "held_validation_abs_z": {
+        "u0": {
+          "history": {
+            "p95": 26.076072692871094,
+            "max": 58.70644760131836
+          },
+          "goal": {
+            "p95": 77.9443359375,
+            "max": 152.66275024414062
+          }
+        },
+        "u10": {
+          "history": {
+            "p95": 19.311927795410156,
+            "max": 30.01449966430664
+          },
+          "goal": {
+            "p95": 10.755810737609863,
+            "max": 18.8029842376709
+          }
+        }
+      },
+      "eps": 0.01,
+      "normalized_rows": "only last observation (each of 10 frame history still normalized in forward); exactly one update per valid 20ms row"
+    },
+    "experiment": {
+      "level": "source_recorded",
+      "source": "results/b0/standard_dynamics_20261124/h32/experiment/normalization_replay.json",
+      "initial_count_and_all_buffers_match_free_u0_u1": true,
+      "all_final_checkpoint_and_recovery_actor_tensors_exact": true,
+      "reproduced_draw_updates": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "rng_final_equal": true,
+      "actual_final_tensor_count": 68,
+      "valid_after": 10877,
+      "by_block": {
+        "history": {
+          "initial_count": 1089050,
+          "final_count": 1099927,
+          "new_samples": 10877,
+          "fp32_checkpoint_max_abs": 0.0,
+          "fp64_checkpoint_max_abs": 5.058945209412968e-07,
+          "largest_updated_scale_ratio": 1.958796501159668
+        },
+        "goal": {
+          "initial_count": 1089050,
+          "final_count": 1099927,
+          "new_samples": 10877,
+          "fp32_checkpoint_max_abs": 4.656612873077393e-10,
+          "fp64_checkpoint_max_abs": 4.176042542658465e-06,
+          "largest_updated_scale_ratio": 11.937914848327637
+        }
+      },
+      "held_validation_abs_z": {
+        "u0": {
+          "history": {
+            "p95": 26.076072692871094,
+            "max": 58.70644760131836
+          },
+          "goal": {
+            "p95": 77.9443359375,
+            "max": 152.66275024414062
+          }
+        },
+        "u10": {
+          "history": {
+            "p95": 19.405054092407227,
+            "max": 29.95049476623535
+          },
+          "goal": {
+            "p95": 10.759276390075684,
+            "max": 18.844934463500977
+          }
+        }
+      },
+      "eps": 0.01,
+      "normalized_rows": "only last observation (each of 10 frame history still normalized in forward); exactly one update per valid 20ms row"
+    }
+  },
+  "limitations": [
+    "No new read of AutoDL raw solver arrays, physical logs, dataset tensors or model/optimizer checkpoints. All physical values are source records; only committed row arithmetic/index equivalence was independently recomputed.",
+    "The validation response starts derive from reused development trajectories, not a blind independent H set; repeated starts/overlapping H32 windows are correlated. No new held-out seed or success probability inference.",
+    "Report source-loss mixture fractions are scalar loss contributions, not parameter-gradient fractions or causal attributions.",
+    "Full bilateral return remains NA; nominal segment returns cannot yield a distance to0.88/0.90. Prior historical rounds retain their own case denominators and phase events.",
+    "Formal original2ms and training0.25ms clocks remain separate. Partial first terminal interval and post-failure integration retain inherited data eligibility/accounting semantics."
+  ],
+  "formal_total": {
+    "cases": 50,
+    "passed": 0,
+    "phase_events": 0,
+    "first_2ms_overforce": 30,
+    "judged_substeps": 9322,
+    "prefix_substeps": 5000,
+    "cross_file_mismatches": [],
+    "level": "locally_recomputed",
+    "historical_response_u200_cases_included": false
+  },
+  "closedloop_total": {
+    "cases": 48,
+    "independent_unseen_initial_conditions": false,
+    "design": "4 repeatedly used development starts x 3 policies x 2 clocks x 2 repeats",
+    "level": "locally_recomputed",
+    "not_formal_protocol_cases": true
+  },
+  "first_update_indices": {
+    "checks": {
+      "preflight_draws.npz": {
+        "groups": 49,
+        "same_names": true,
+        "all_arrays_exact": true,
+        "total_index_rows": 2816
+      },
+      "u1_actual_wm_draws.npz": {
+        "groups": 48,
+        "same_names": true,
+        "all_arrays_exact": true,
+        "total_index_rows": 2560
+      },
+      "draws_u01.npz": {
+        "groups": 49,
+        "same_names": true,
+        "all_arrays_exact": true,
+        "total_index_rows": 2816
+      }
+    },
+    "raw_256_state_history_command_identity": "source_recorded in h32/actual_u1_pair.json, not newly checked from raw arrays",
+    "raw_first_collect_record": "shared_collection.json",
+    "level": "locally_recomputed_indices_only"
+  },
+  "status": {
+    "reviewed_plan_commit": "781cd1d4e45fa7acb61dad0f76fb13e72fcb68b7",
+    "current_stage": "B0-04",
+    "round_status": "completed_bounded_comparison",
+    "final_candidate": null,
+    "complete_bilateral_normalized_return": null,
+    "complete_bilateral_normalized_return_status": "NA, complete original bilateral physical task was not scored.",
+    "single_chain_selected": null,
+    "continuation_eligible": false
+  },
+  "findings": [
+    {
+      "id": "report_h7_node_mislabel",
+      "severity": "correction_required",
+      "source": "reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md / h32/matched_joint_source_losses.csv",
+      "finding": "Text describes first joint update but its 4.965→1.242 and 2.467→.848 are u0→u10 values. u1 means are control 2.547750 and experiment 1.481665. Raw CSV is correctly labeled."
+    },
+    {
+      "id": "gradient_cosines_not_measured",
+      "severity": "plan_gap",
+      "source": "docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md section 4.1 / scripts/b0/dynamics_h32_source_vjp.py",
+      "finding": "Plan requested WM parameter-gradient source inner products/cosines on fixed probes. Existing diagnostic differentiates only physical input x and action a; loss shares and VJPs do not establish parameter-gradient conflict."
+    },
+    {
+      "id": "joint_first_ten_block",
+      "severity": "next_action",
+      "finding": "u0→u1 both branches experience large held H32 WM error after first actual ten joint WM batches while Actor normalizers are unchanged. Replay exact initial model/optimizers/RNG and saved batches individually to localize onset, preserve original losses and labels. Current end-of-block checkpoints do not isolate 8 H7 vs trailing 2 H1."
+    },
+    {
+      "id": "online_contact_support",
+      "severity": "next_action",
+      "finding": "All online complete 20 ms dual-load counts are zero; sampled open/hold initial states terminate during first 20 ms. Need physical precontact→first alive transition→second policy decision evidence, with original Actor recomputing every20 ms. Reference tails are diagnostic, not closed-loop gain."
+    },
+    {
+      "id": "no_normalizer_bug_proven",
+      "severity": "causality_limit",
+      "finding": "Recorded FP64 and ordered replay explain running moments; u0/u1 normalizers identical. Later Actor and normalizer both change. Statistics changing alone or goal scale ratios do not prove normalization error or explain WM u1 collapse."
+    }
+  ],
+  "data_inventory": {
+    "level": "locally_recomputed_from_recorded_window_counts",
+    "splits": {
+      "grip": {
+        "calibration": {
+          "lanes": 128,
+          "nonempty": 128,
+          "h1": 3650,
+          "h7": 2947,
+          "h32": 765,
+          "terminal_h1": 43
+        },
+        "train": {
+          "lanes": 512,
+          "nonempty": 512,
+          "h1": 13873,
+          "h7": 11170,
+          "h32": 2907,
+          "terminal_h1": 189
+        },
+        "validation": {
+          "lanes": 192,
+          "nonempty": 192,
+          "h1": 4664,
+          "h7": 3687,
+          "h32": 954,
+          "terminal_h1": 86
+        }
+      },
+      "multimode": {
+        "train": {
+          "lanes": 512,
+          "nonempty": 512,
+          "h1": 18479,
+          "h7": 15495,
+          "h32": 4068,
+          "terminal_h1": 60
+        },
+        "validation": {
+          "lanes": 192,
+          "nonempty": 192,
+          "h1": 6978,
+          "h7": 5871,
+          "h32": 1548,
+          "terminal_h1": 20
+        }
+      },
+      "response": {
+        "train": {
+          "lanes": 300,
+          "nonempty": 300,
+          "h1": 4487,
+          "h7": 3510,
+          "h32": 135,
+          "terminal_h1": 165
+        },
+        "validation": {
+          "lanes": 150,
+          "nonempty": 150,
+          "h1": 2135,
+          "h7": 1664,
+          "h32": 64,
+          "terminal_h1": 86
+        }
+      }
+    },
+    "native_train": {
+      "episodes": 10,
+      "horizons": {
+        "1": 13640,
+        "7": 13580
+      }
+    },
+    "mismatches": [],
+    "train_totals": {
+      "episodes_or_branches": 1334,
+      "H1": 50479,
+      "H7": 43755
+    },
+    "rules_source_recorded": "H1 includes a finite complete first failed policy interval, H7 and H32 stop at lane termination. Records after the first terminal are diagnostics.",
+    "validation_use_source_recorded": "model scoring only"
+  },
+  "selection": {
+    "level": "receipt_read_with_scalar_comparison_recomputed",
+    "locked_at_bjt": "2026-11-24T19:16:36+08:00",
+    "new_h32_updates_at_lock_source_recorded": 0,
+    "six_metrics_noninferior_recomputed": true,
+    "original_selected_wm": null,
+    "original_gate_passed": false,
+    "pilot_wm": "results/raw_large/b0/dynamics_20261124/offline_wm/rebase/wm_001000.pt"
+  },
+  "plan_compliance": {
+    "781cd1d_plan_body_unchanged": "git diff found only an executed-status banner added to docs/B0_DYNAMICS_TRAINING_PLAN_20261124.md",
+    "same_new_identity_offline_budget": "Two arms1000 each,200H1+800H7 each; no extra T2; scalar logs reconcile.",
+    "pre_H32_selection": "Six metrics satisfy substitution arithmetic; lock receipt says0 priorH32, with19:16:36BJT timestamp; raw lock chronology not independently reproduced.",
+    "first_pair": "49 index groups locally exact;256 state/history/command tensors only source-recorded.",
+    "limited_two_arm_pilot": "Exactly20H32/200jointWM/400Critic; one sharedu0 formal plus four updated policies yields50 unique nominal cases.",
+    "extension": "No formal successes/events; reference-tail improvements contradicted by48 repeatedly sampled development closed-loop cases; no qualifying two-sided progress foru50.",
+    "remaining_gap": "WM parameter-gradient source inner products/cosines fromplan4.1 not found; existing x,a VJP does not replace them."
+  },
+  "review_date_beijing": "2026-11-24",
+  "review_artifact_kind": "read_only_round_review_and_prospective_plan",
+  "next_plan": "docs/B0_JOINT_CONTACT_PLAN_20261124.md",
+  "new_experiment_budget_executed_in_this_review": {
+    "simulation_steps": 0,
+    "wm_minibatches": 0,
+    "actor_updates": 0,
+    "critic_minibatches": 0
+  },
+  "additional_code_findings": {
+    "joint_boundary_order": {
+      "offline": "2 H1 then 8 H7",
+      "joint": "8 H7 then 2 H1",
+      "causal_status": "difference_verified_causality_unresolved",
+      "sources": [
+        "scripts/b0/dynamics_c20_pair.py",
+        "learning/b0/contact_training.py"
+      ]
+    },
+    "joint_distribution": {
+      "H1": {
+        "online": 192,
+        "warp": 64,
+        "native": 0
+      },
+      "H7": {
+        "online": 192,
+        "native": 32,
+        "warp": 32
+      },
+      "warmup_each_horizon": {
+        "native": 32,
+        "warp": 224
+      }
+    },
+    "optimizer_reset": "explicit pre-registered empty common optimizer initialization; not a proven load bug",
+    "physical_saturation": "historical hold/u0 J2 saturated10/10; ±.01rad probes remained saturated; latestu1/u10 raw servo force identity requires AutoDL arrays",
+    "collection_noise_units": {
+      "J2_sigma_rad": 0.0025,
+      "full_jaw_sigma_m": 0.0003333333333333333,
+      "gain32_expands_exploration": false
+    },
+    "parameter_source_gradient": "previous plan requirement remains incomplete; loss-input VJP is not parameter gradient",
+    "prospective_wm_gate": "fixed four E0 values; max(1.25E0,E0+2mm) after each of two actual joint blocks; development engineering criterion only"
+  }
+}

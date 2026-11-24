@@ -1,6 +1,6 @@
 # B0 下一集中轮：物理时间尺度、C20 训练适配与真实 H32
 
-**执行回执已归档。** 本页保存 781cd1d 的预登记计划。[实际实验、原成绩和延长决定](../reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md) · [接续入口](../prompts/NEXT_RUN.txt)
+**执行回执已归档。** 本页保存 781cd1d 的预登记计划，正文“下一轮/尚未执行”为当时语境。现接 [870796a审查](../reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md) 和 [联合WM与接触闭环计划](B0_JOINT_CONTACT_PLAN_20261124.md)。[实际实验、原成绩和延长决定](../reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md) · [接续入口](../prompts/NEXT_RUN.txt)
 
 日期：2026-11-24，北京时间。接续实验提交 [ff2d1e8](https://github.com/kaiwen123-yang/dog-and-arm/commit/ff2d1e8af6a287cbad106fb88c557a080d7ade0a)，审查见 [B0_TEMPORAL_ROUND_REVIEW_20261124.md](../reports/B0_TEMPORAL_ROUND_REVIEW_20261124.md)。本文件是**下一轮执行计划，以下实验尚未执行**。
 

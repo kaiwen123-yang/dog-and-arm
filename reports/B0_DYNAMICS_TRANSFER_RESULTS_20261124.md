@@ -1,5 +1,7 @@
 # SuperMimic-M1Piper-standard-v1｜0.25 ms 训练与原 H32 开发对照
 
+> 后续只读审查与下一计划：[870796a审查](B0_DYNAMICS_ROUND_REVIEW_20261124.md) · [联合WM与接触闭环计划](../docs/B0_JOINT_CONTACT_PLAN_20261124.md)。本页只更正一处u1/u10文字时点；以下物理成绩和原始预算保持。
+
 **标准迁移仍停在 B0-04。** 重标 C20 达到唯一实验 WM 的预登记替代条件。两支各完成 10 次真实 H32；5 组原正式 Warp 十项、50 案全部失败。冻结策略的 48 个闭环开发复测在停止前均无双指接触。本轮没有达到单链延长条件，最终候选为空，完整双侧物理归一化回报为 NA。[机器清单](../results/b0/standard_dynamics_20261124/baseline_manifest.json)
 
 集中轮从 GitHub main `781cd1d` 开始。现场固定 SuperMimic `abc124c` 和 mjlab_research `dd51a9f`，使用 front60_v2 单门场景。正式 Warp 保持 2 ms，原生正式后端保持 MuJoCo 3.3.0，门力上限为 6 N。开发对照共用 seed0 的 B0-03 Actor。原协议中的独立 seed1/2 与 H 另有冻结条件。[预登记](../results/b0/standard_dynamics_20261124/pilot_registration.json) · [正式协议](../docs/B0_PAPER_BASELINE_PROTOCOL.md)
@@ -80,7 +82,9 @@
 
 ## 联合学习后的世界模型
 
-首个真实联合更新改善了训练首批在线 H7 原损失（控制 4.965→1.242，实验 2.467→0.848），相同节点在独立验证的双指长窗退化。下表为终点 TCP 误差的 P95，单位 mm。
+首个真实联合更新 u0→u1 改善了训练首批在线 H7 原损失：控制 4.964847→2.547750，实验 2.466599→1.481665；到 u10 才分别降至 1.242317／0.847665。独立验证的双指长窗在 u1 明显退化。下表为终点 TCP 误差的 P95，单位 mm。
+
+**2026-11-24 审查更正：** 原文把 u10 的 1.242／0.848 误写为“首个真实联合更新”终点；现依据 [原始同批损失表](../results/b0/standard_dynamics_20261124/h32/matched_joint_source_losses.csv) 按 samples 加权更正。CSV、原 manifest 和旧提交未改；不影响正式 0/50、预算及停止决定。源参数梯度内积/夹角仍未交付，已有输入/动作 VJP 不作替代，见 [独立审查](B0_DYNAMICS_ROUND_REVIEW_20261124.md)。
 
 | 独立开发验证 | 控制 u0 → u1 → u10 | 实验 u0 → u1 → u10 |
 | --- | --- | --- |

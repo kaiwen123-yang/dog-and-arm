@@ -1,6 +1,6 @@
 # dog-and-arm 项目指令
 
-当前标准迁移入口为 PROJECT_STATE.md 顶部、reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md、results/b0/standard_dynamics_20261124/baseline_manifest.json 与 prompts/NEXT_RUN.txt。11月24日细步 C20/H32 集中轮已结束，仍在 B0-04。重标 +1000 在六项开发 WM 条件上获选；两支各 u10，正式 50 案全失败，48 案同状态闭环在停止前均无双指。最终候选 null、完整双侧回报 NA。 之前启动计划已执行。
+当前标准迁移入口为 PROJECT_STATE.md 顶部、reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md、docs/B0_JOINT_CONTACT_PLAN_20261124.md 与 prompts/NEXT_RUN.txt。已审查870796a：B0-04、最终候选null、完整双侧物理回报NA。原正式50案全失败，30案首2ms超力；48个反复开发起点组合的纯Actor闭环均未在停止前建立双指。下一轮执行首十批WM定位、真实伺服饱和辨识、原联合分布预适配和单条seed0主链，首段目标u50，有物理收益继续并当轮接后续验收。 本次仅审查/计划发布，未新增实验；旧计划的已执行事项直接继承。
 
 ## 2026-11-24 计划提交 b5831d7 的接续状态（历史）
 
@@ -11,7 +11,7 @@
 - 项目仓库：https://github.com/kaiwen123-yang/dog-and-arm 。用户已授权将本项目代码、配置、阶段结果和下一步计划提交并推送到这里。保留已有修改，普通提交，不强推；不创建本机压缩归档。
 - 硬件：智身铜锤 M1 四轮轮足（ZGWS）＋松灵 Piper H＋官方平行夹爪＋官方腕部支架＋Orbbec DaBai DC1。
 - 保留 MuJoCo 物理体系与原生模型，不安装智身 UE/GENISOM 仿真。B0 允许在独立环境使用官方 mjlab_research／MuJoCo-Warp 训练后端；原 native MuJoCo 3.3.0 工程保留为物理与任务基准。P0–P3 模型回合不操作真实机器人；用户新增授权的 H0 单独进行 Piper H＋DC1 实机联调，允许复用现有 SDK 的状态读取和现场启动的有限低速已验证动作。H0 不运动 M1。
-- 用户明确当前是**根据 SuperMimic 迁移的标准阶段**。先在固定官方核心网络与学习机制下完成 B0，再进入多模态/VLA。世界模型、可微动力学和 H32 Actor/Critic 学习本来就在当前 B0 中实现，不后置到视觉语言阶段。用户新增要求以达到或接近论文指标为目标，单独形成迁移结果供后续比较。按 docs/B0_PAPER_BASELINE_PROTOCOL.md 评分。物理时间尺度集中计划已执行，当前结果和接续见 reports/B0_DYNAMICS_TRANSFER_RESULTS_20261124.md、prompts/NEXT_RUN.txt；11月23日官方源码审查保留为历史依据，其中已完成修复以新审查为准。独立结果入口 reports/B0_STANDARD_TRANSFER_BASELINE.md。总路线和目标差距见 docs/RESEARCH_ROADMAP.md、docs/B0_SUPERMIMIC_PLAN.md、docs/GOAL_GAP_20261124.md。
+- 用户明确当前是**根据 SuperMimic 迁移的标准阶段**。先在固定官方核心网络与学习机制下完成 B0，再进入多模态/VLA。世界模型、可微动力学和 H32 Actor/Critic 学习本来就在当前 B0 中实现，不后置到视觉语言阶段。用户新增要求以达到或接近论文指标为目标，单独形成迁移结果供后续比较。按 docs/B0_PAPER_BASELINE_PROTOCOL.md 评分。物理时间尺度集中计划已执行，当前审查和接续见 reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md、docs/B0_JOINT_CONTACT_PLAN_20261124.md、prompts/NEXT_RUN.txt；11月23日官方源码审查保留为历史依据，其中已完成修复以新审查为准。独立结果入口 reports/B0_STANDARD_TRANSFER_BASELINE.md。总路线和目标差距见 docs/RESEARCH_ROADMAP.md、docs/B0_SUPERMIMIC_PLAN.md、docs/GOAL_GAP_20261124.md。
 - P1–P6工程和B0-03 seed0无接触学习已通过。11月23日的历史标准接触轮结束于638fddc：五条seed0配置链，gain32-u200自身345,268有效转移、Warp/native正式十项均0/10，另四组u50 Warp均0/10；415条nominal/55run全部失败，D、完整任务、seed1/2、H本轮未执行。旧r3 u1000两端0/10保留。23c9068恢复轮的540/546包继承15,000动作BC与参考前馈，546另有解析补偿，u1三端双侧nominal及Warp C各9/20属于有效混合对照，不能填入标准成绩。
 - 最终目标仍是腕部 RGB-D＋语言＋本体历史的多模态/VLA 与世界模型、可微动力学联合，实现腿臂协同并上实机验证；先完成当前标准迁移。当前先单扇普通被动铰链门；双门是后续扩展，不是 B0 前置。门无闭门器、初版无锁舌，使用固定 U 形把手。
 - 用户明确将手眼标定、标定板采购、相机/支架净重和惯量测量后置。这些不是当前开工条件，不要因此暂停或反复提问。
@@ -64,8 +64,8 @@
 - 参考运动、教师交互与当前策略 replay 分开；Actor、WM、Critic 的可见信息分开。学习策略评测禁止教师接管、状态重置或门驱动；固定物理伺服与独立评估器可以保留。
 - B0 默认先状态/参考条件学习，腕相机资产继续保留；视觉语言训练、RoboMIND 支线与实机适配按后续阶段推进。当前名义手眼/载荷假设不冒充实测，但不阻塞 B0 仿真。
 - 数据与模型细节按 docs/B0_DATA_MODEL_CONTRACT.md 落实。真实学习/物理评测没有执行时明确写未执行；不以计算图接通、预测误差下降或片段成功替代完整任务通过。
-- 用户要求唯一详细北京时间每日记录、审查结束轮/推送下一计划/启动词/目标差距，并于11月24日要求一次性多推进。本次ff2d1e8审查没有新训练/仿真。下一轮按新集中计划执行有限物理核验、一套C20适配、前瞻登记的两支u1/u10原H32，再按真实改善持续单链；检查点不默认收工，已过门槛当轮接后续验收，无效配方关闭后处理已证问题。P1–P6/B0-03及已有单位/采样/数据/solver修复直接继承。
-- 标准Actor为results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt。C20继承基准WM为response_wm_v1/wm_000000.pt（源lanes_wm_v1/wm_001000.pt），已有held_r2 2000＋lanes1000批；response未选1000批和temporal C20/T2各1000批仍计历史成本。旧response u200完整恢复仅诊断，Ratio pending=1未执行。新有限pilot的WM按计划4.4在H32前锁定；不把pilot_wm写成原selected_wm已通过。物理/schema改变时同身份重建配对，旧权重只作历史锚点，不伪装兼容恢复。540/546混合包不作标准Actor起点。
+- 用户要求唯一详细北京时间每日记录、审查结束轮/推送下一计划/启动词/目标差距，并要求一次性多推进。最新870796a已审查，本次无新训练/仿真。下一轮按联合WM与接触闭环计划执行两条并行定位、一次登记原训练适配、实际H32单主链首段目标u50，再按物理收益持续推进；符合门槛当轮接D/完整/native/独立seed/H。不能以预热结束、u10或修一项接口默认收工。已证基础修复直接继承。
+- 标准Actor为results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt。最新物理身份warp_250us_servo2ms_continuous_v1：N80、c=.50625、servo2ms缓存语义保持。新主链WM默认接dynamics_20261124/offline_wm/rebase/wm_001000.pt，须经真实联合分布预适配和更新后保留验证。原两支u10各pending=2、旧response u200 pending=1均保留诊断，不机械消费。旧ff2d1e8 selected_wm=null和所有未选训练预算不改写；540/546不作标准起点。
 - 成绩分别标明参考姿态前馈、分阶段 BC 继承、实际 H32 更新、解析反馈、参考协议、训练/评测后端。540/546 全程包的 BC 链为接触→前拉→背推→native 双侧→Warp 双侧，各 3,000 次；最新 H32 更新中 BC loss=0 不会抹去此前 15,000 次监督。包内存在 WM、原 tracking 更新或同包三端通过，都不能替代标准迁移验收。
 - 标准候选继承既定门槛：主后端十项接触 nominal 与每项 D01–D20≥18/20、同一候选双侧完整 C 各≥18/20、同包原 native 3.3.0 双侧 nominal 实际通过及真实 H32 学习链证据。CPU3.16 按需要诊断/回归，结果或未执行明确，不增加为正式出口门槛。达到后再按原协议训练独立 seed1/2；新链各自通过 B0-03，三 seed 配方/选模/候选全部冻结后再开 H，每 seed/侧目标≥40/50。
 - 本轮保留已冻结的完整任务规则、参考版本、物理阈值、时限及 C/H 身份；片段已登记的 hold-margin v2 继续按原身份使用。任务定义或参考存在具体冲突时先保存证据并报告对标准迁移的限制，不能自动改成对象相对新任务、追加自研任务奖励/风险头或解析反馈后换一个通过结论；标准迁移未完成则如实报告未完成，不自动进入多模态/VLA。
@@ -73,10 +73,10 @@
 
 ## 论文指标与独立标准结果
 
-- 目标方法ID为SuperMimic-M1Piper-standard-v1，独立入口reports/B0_STANDARD_TRANSFER_BASELINE.md；最新实验manifest为results/b0/standard_temporal_20261124/baseline_manifest.json，审查摘要为results/b0/temporal_review_20261124/audit_summary.json。ff2d1e8仍未完成、无最终候选。保存负结果不等于标准阶段完成，各历史轮分别记账。
+- 目标方法ID为SuperMimic-M1Piper-standard-v1，独立入口reports/B0_STANDARD_TRANSFER_BASELINE.md；最新实验manifest为results/b0/standard_dynamics_20261124/baseline_manifest.json，审查为results/b0/dynamics_review_20261124/audit_summary.json。870796a仍未完成、无最终候选。保存负结果不等于标准阶段完成，各历史轮分别记账。
 - 对照论文v3与固定官方源，分别记原论文G1 benchmark、迁移场景的完整归一化tracking/WM误差/训练成本、原物理成功门槛。回报目标0.90、接近数值带0.88（本项目预登记0.02容差），每最终seed/侧/split分别报告且须过物理门槛；0.90是论文SONIC参照线，不是SuperMimic最佳值。缺完整轨迹记NA，不用Policy/reward、单步tracking或失败后诊断积分冒充。
 - 已完成并实训：固定基础effort动作率/reset哨兵、ReturnSampler、实际Ratio、逐clip夹末帧和逐样本lane/age。gain32的优化参数化不改变固定正则单位；固定统计、H1/H7混合和离线WM数据是登记平台配方，不是官方默认。standard_lanes_v1 已在终止后按 lane 复位，运行真实 200ms 前缀，跨记录块保留独立 history/clock 和 episode。进程恢复显式截断未完成物理片段并重建前缀。旧同步 collector 保留作冻结采集对照。首次物理失败的完整数值有效20ms已可进入H1/Actor，不预设Actor初态池过滤错误。
-- 数据贯通已在753f1bc真实联训，连续solver bias已在ff2d1e8修复并重采；继承preserve_continuous_bias=true，不再重复包装已解决问题。当前T2递推失稳配方封存，不追加微步监督/新loss/截断BPTT。下一轮在实际训练Warp内11窗2/1/0.5ms同外部ctrl与bias缓存时钟核验，必要数值适配单列身份，原2msWarp/native3.3正式门槛保持。复用现有首层函数保持重标作C20原损失对照，step0物理函数/导数相同不等于后续优化相同，跨重标参数梯度范数不可直接判稳。
+- 数据贯通、solver连续bias和细步身份已完成。当前训练0.25ms、外部servo2ms、Actor20ms；原2msWarp/native3.3正式评分保持。T2递推失稳配方封存，不加微步监督/新loss/截断BPTT。下一轮不重做整套步长扫描；首十批联合WM定位与实际伺服饱和记录并行，补数据只按原资格，原联合loss预适配后继续H32。step0函数/导数保持不等于后续优化相同，输入VJP不能冒充WM参数源梯度。
 - 固定官方8storedframes实际7scoredtransitions，不盲改H7为H8；官方Muon＋Adam和论文表中的Adam分开记录；fixed mjlab约0.2s全局timeline bins与论文1s分开。论文0.007–0.011不能与TCP毫米误差直接比较。
 - 迁移成功并冻结独立结果前，不添加Actor动作BC、参考动作直通、解析补偿、新任务奖励/风险头/phase-TD、自研课程、新网络或对象相对新任务；后续多模态/VLA和算法开发统一后置。有据的数据/接口/采集/数值适配及原损失WM预热属于当前迁移，必须实际训练和物理评分，不只反复审计。
 - 独立基线最终保存唯一候选/seed、代码与任务版本、全部继承预算、数据资格和测试身份、逐案分母/失败与必要视频。后续方法同seed/case配对，额外视觉/数据/BC/解析控制及成本单列。未达当前目标不自动切到多模态或新方法。
