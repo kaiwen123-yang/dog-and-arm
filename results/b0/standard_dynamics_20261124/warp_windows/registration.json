@@ -1,0 +1,195 @@
+{
+  "items": [
+    {
+      "start": "pull_5_train_grasp",
+      "split": "train",
+      "side": "pull",
+      "joint": "piper_joint6",
+      "peak_rad_s": 90.09111022949219,
+      "transition": 7,
+      "lane": 23,
+      "branch": [
+        "u200",
+        "delta",
+        22,
+        -0.00025
+      ],
+      "trace_id": "pull_5_train_grasp/t7/b23"
+    },
+    {
+      "start": "pull_0_validation_grip_grasp",
+      "split": "validation",
+      "side": "pull",
+      "joint": "piper_joint4",
+      "peak_rad_s": -70.34259033203125,
+      "transition": 7,
+      "lane": 23,
+      "branch": [
+        "u200",
+        "delta",
+        22,
+        -0.00025
+      ],
+      "trace_id": "pull_0_validation_grip_grasp/t7/b23"
+    },
+    {
+      "start": "pull_0_validation_grip_grasp",
+      "split": "validation",
+      "side": "pull",
+      "joint": "piper_joint6",
+      "peak_rad_s": 88.376953125,
+      "transition": 7,
+      "lane": 13,
+      "branch": [
+        "u200",
+        "actor",
+        0,
+        0.0
+      ],
+      "trace_id": "pull_0_validation_grip_grasp/t7/b13"
+    },
+    {
+      "start": "push_0_train_grip_grasp",
+      "split": "train",
+      "side": "push",
+      "joint": "piper_joint4",
+      "peak_rad_s": -15.234906196594238,
+      "transition": 0,
+      "lane": 1,
+      "branch": [
+        "u0",
+        "ref_jaw",
+        0,
+        0.0
+      ],
+      "trace_id": "push_0_train_grip_grasp/t0/b1"
+    },
+    {
+      "start": "push_5_train_grasp",
+      "split": "train",
+      "side": "push",
+      "joint": "piper_joint6",
+      "peak_rad_s": 18.26845359802246,
+      "transition": 4,
+      "lane": 8,
+      "branch": [
+        "u0",
+        "delta",
+        17,
+        -0.01
+      ],
+      "trace_id": "push_5_train_grasp/t4/b8"
+    },
+    {
+      "start": "push_0_validation_grip_grasp",
+      "split": "validation",
+      "side": "push",
+      "joint": "piper_joint4",
+      "peak_rad_s": -15.30158805847168,
+      "transition": 0,
+      "lane": 1,
+      "branch": [
+        "u0",
+        "ref_jaw",
+        0,
+        0.0
+      ],
+      "trace_id": "push_0_validation_grip_grasp/t0/b1"
+    },
+    {
+      "start": "push_0_validation_grip_grasp",
+      "split": "validation",
+      "side": "push",
+      "joint": "piper_joint6",
+      "peak_rad_s": 22.05455780029297,
+      "transition": 6,
+      "lane": 12,
+      "branch": [
+        "u0",
+        "delta",
+        22,
+        -0.001
+      ],
+      "trace_id": "push_0_validation_grip_grasp/t6/b12"
+    },
+    {
+      "start": "pull_0_validation_grip_hold",
+      "split": "validation",
+      "side": "pull",
+      "transition": 0,
+      "lane": 0,
+      "branch": [
+        "u0",
+        "actor",
+        0,
+        0.0
+      ],
+      "diagnostic": "registered first hold command",
+      "trace_id": "pull_0_validation_grip_hold/t0/b0"
+    },
+    {
+      "start": "pull_0_validation_grip_hold",
+      "split": "validation",
+      "side": "pull",
+      "transition": 0,
+      "lane": 2,
+      "branch": [
+        "u0",
+        "ref_arm",
+        0,
+        0.0
+      ],
+      "diagnostic": "registered first hold command",
+      "trace_id": "pull_0_validation_grip_hold/t0/b2"
+    },
+    {
+      "start": "push_0_validation_grip_hold",
+      "split": "validation",
+      "side": "push",
+      "transition": 0,
+      "lane": 0,
+      "branch": [
+        "u0",
+        "actor",
+        0,
+        0.0
+      ],
+      "diagnostic": "registered first hold command",
+      "trace_id": "push_0_validation_grip_hold/t0/b0"
+    },
+    {
+      "start": "push_0_validation_grip_hold",
+      "split": "validation",
+      "side": "push",
+      "transition": 0,
+      "lane": 2,
+      "branch": [
+        "u0",
+        "ref_arm",
+        0,
+        0.0
+      ],
+      "diagnostic": "registered first hold command",
+      "trace_id": "push_0_validation_grip_hold/t0/b2"
+    }
+  ],
+  "h_s": [
+    0.002,
+    0.001,
+    0.0005
+  ],
+  "critical_refinement_s": [
+    0.00025,
+    0.000125
+  ],
+  "replicates_per_condition": 2,
+  "full_state": "All nonempty Warp Data arrays recursively, counters, original 28 worlds",
+  "source": "Seven unique archived nonterminal selections; bilateral original u0 actor/b0 and u0 ref_arm/b2, also measured in solver_retest. Native wrist file's reference/reference b26 is different.",
+  "dynamics": "original mjlab Simulation and ContactPlant force audit; every integration solve recomputes all internal forces and mass",
+  "clocks": "force/site at interval start, q/v at interval end; event observer called at end. External servo at t uses device qfrc_bias of preceding 2ms interval first solve (sample t-2ms), then holds full ctrl for 2ms. Initial live reset uses normal forward-derived cache, continuous prefix has no extra forward.",
+  "versions": {
+    "mujoco": "3.16.0",
+    "mujoco_warp": "3.16.0",
+    "warp": "1.18.0"
+  }
+}
