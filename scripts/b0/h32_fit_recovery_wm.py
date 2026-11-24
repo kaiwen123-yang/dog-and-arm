@@ -43,6 +43,11 @@ def load_cohorts(rows,paths,bank,model,device):
         from learning.b0.physics import settings
         fg=arr("sub_finger_load_N") > settings("mobile",1)["contact_threshold_n"]
         ids=ph[arr("frame")]
+        if fg.shape[-2] != ids.shape[-1]:
+            stride, remainder = divmod(fg.shape[-2], ids.shape[-1])
+            if remainder or stride < 1:
+                raise ValueError("Incompatible phase and measured force sample times")
+            ids = np.repeat(ids, stride, axis=-1)
         gripping=np.isin(ids,[PHASE_ID["open"],PHASE_ID["hold"]])
         releasing=np.isin(ids,[PHASE_ID["release"],PHASE_ID["retreat_arm"]])
         terminal=arr("first_fail_substep")

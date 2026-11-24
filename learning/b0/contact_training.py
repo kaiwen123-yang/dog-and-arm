@@ -210,6 +210,7 @@ class ContactRun:
         from .contact_warp import ContactPlant, PHASE_ID
         self.device,self.cfg = device,cfg
         self.model = model = make_model()
+        model.opt.timestep = cfg.get('physics_dt', model.opt.timestep)
         mapping = ActionMap(model)
         self.h32_teacher_batches = 2 if cfg.get('long_horizon_tcp_wm') else 0
         self.seven_batches = 8 - self.h32_teacher_batches
@@ -318,7 +319,7 @@ class ContactRun:
         if cfg.get("contact_reset_sampling") == "official_return":
             from .contact_sampling import EligibleReturnSampler, SamplerReference
             self.sampler = EligibleReturnSampler(bank, eligible, self.n, cfg["policy_dt"], env.max_step_reward, device)
-            self.sampler_reference = SamplerReference(refs, bank, device)
+            self.sampler_reference = SamplerReference(refs, bank, device, self.plant.clock)
         elif cfg.get("contact_reset_sampling", "uniform_motion") != "uniform_motion":
             raise ValueError("Unknown contact_reset_sampling")
         self.schedule = None

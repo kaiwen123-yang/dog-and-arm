@@ -9,7 +9,9 @@ from .model import full_state, tensor
 
 class SamplerReference:
     """The real reference on its 2 ms clock, used only for partial physical terminals."""
-    def __init__(self, paths, bank, device):
+    def __init__(self, paths, bank, device, clock=None):
+        from .contact_clock import ContactClock
+        self.clock = ContactClock(.002) if clock is None else clock
         q, v, starts = [], [], []
         offset = 0
         self.bank = bank
@@ -26,13 +28,30 @@ class SamplerReference:
         self.v = tensor(np.concatenate(v), device)
 
     def rewards(self, rep, full_reward, frames, valid, fail_tick, stop_q, stop_v, action, previous):
-        partial = valid & (fail_tick > 0) & (fail_tick < 10)
+        partial = valid & (fail_tick > 0) & (fail_tick < self.clock.policy_steps)
         if not partial.any():
             return full_reward
         clip = torch.searchsorted(self.bank.motion_ends, frames[partial], right=True)
         tick = fail_tick[partial].long()
-        query = self.starts[clip] + (frames[partial] - self.bank.motion_starts[clip]) * 10 + tick
+        stride = self.clock.servo_stride
+        query = self.starts[clip] + (frames[partial] - self.bank.motion_starts[clip]) * 10 + tick // stride
         q, v = self.q[query], self.v[query]
+        if stride > 1:
+            # The frozen reference is sampled every 2 ms. At intermediate endpoints
+            # interpolate positions and velocities, using shortest-arc SLERP for the base.
+            remainder = tick % stride
+            other = query + (remainder > 0).long()
+            fraction = remainder[:, None].to(q.dtype) / stride
+            q0, q1 = q[:,3:7], self.q[other,3:7]
+            dot = (q0*q1).sum(-1,keepdim=True)
+            q1 = torch.where(dot < 0, -q1, q1)
+            angle = dot.abs().clamp(max=1.).acos()
+            den = angle.sin().clamp_min(1e-8)
+            rot = torch.where(angle < 1e-4, q0.lerp(q1,fraction),
+                              ((1-fraction)*angle).sin()/den*q0 + (fraction*angle).sin()/den*q1)
+            q = q.lerp(self.q[other], fraction)
+            q[:,3:7] = torch.where(remainder[:,None] > 0, torch.nn.functional.normalize(rot), q0)
+            v = v.lerp(self.v[other], fraction)
         ref_state = full_state(q, v)
         target = rep.fk(q[:, :3], q[:, 3:7], q[:, 7:31], ref_state[:, 31:34], ref_state[:, 34:37], v[:, 6:30])
         state = contact_state(stop_q[partial], stop_v[partial])
@@ -40,7 +59,7 @@ class SamplerReference:
         measured = rep.compute_wm_reward_from_reference(observed, state[:, :7], rep.joint_state(observed),
                                                   action[partial], previous[partial], *target)
         score = full_reward.clone()
-        score[partial] = measured * (tick / 10)
+        score[partial] = measured * (tick / self.clock.policy_steps)
         return score
 
 

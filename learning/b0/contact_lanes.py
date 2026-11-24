@@ -129,5 +129,6 @@ def collect_lanes(run, raw_path=None):
                 simulated_lane_intervals=n*run.steps,starts_per_motion=starts.tolist(),
                 prefix_intervals=int(arrays['prefix'].sum()),prefix_invalid=int(arrays['rejected_prefix'].sum()),
                 failed_lanes=int(((arrays['fail']>0)&~arrays['prefix']).sum()),
-                post_failure_diagnostic_substeps=int(np.where((arrays['fail']>0)&~arrays['prefix'],10-arrays['fail'],0).sum()),
+                post_failure_diagnostic_substeps=int(np.where((arrays['fail']>0)&~arrays['prefix'],
+                    plant.clock.policy_steps-arrays['fail'],0).sum()),
                 waiting_intervals=0,last_episode=run.last_episode)

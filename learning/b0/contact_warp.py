@@ -10,6 +10,7 @@ import mujoco_warp as mjw
 
 from .physics import LIMBS, settings
 from .research_env import ResearchPlant
+from .contact_clock import ContactClock
 
 PHASES = ('approach_base', 'settle', 'pregrasp', 'approach_arm', 'grasp', 'open', 'hold',
           'release', 'retreat_arm', 'post_release_hold', 'stow', 'retreat_base', 'final')
@@ -70,6 +71,11 @@ class ContactPlant(ResearchPlant):
     def __init__(self, model, count, device, preserve_continuous_bias=False):
         self.preserve_continuous_bias = preserve_continuous_bias
         super().__init__(model, count, device)
+        self.clock = ContactClock(float(model.opt.timestep))
+        # At a refined step the last internal solve is newer than the external
+        # controller's sample. Store its own delayed input across policy calls.
+        self.servo_bias = (torch.zeros_like(self.data.qfrc_bias[:])
+                           if self.clock.servo_stride > 1 else None)
         cfg = settings('mobile', 1)
         self.cfg = cfg
         self.count_limits = {key: round(cfg[key]/model.opt.timestep) for key in
@@ -119,6 +125,8 @@ class ContactPlant(ResearchPlant):
         if keep is not None:
             bias[keep] = old_bias
         chosen = slice(None) if ids is None else ids
+        if self.servo_bias is not None:
+            self.servo_bias[chosen] = self.data.qfrc_bias[chosen]
         for counter in (self.load_ticks, self.lost_ticks, self.slip_ticks, self.sat_ticks):
             counter[chosen] = 0
 
@@ -140,7 +148,8 @@ class ContactPlant(ResearchPlant):
                      capture_first_failure_state=False, measure_grip=False):
         if actions.shape != (self.count, 23):
             raise ValueError('Expected one clipped action per world with 23 channels')
-        if side_bits.shape != (self.count,) or phase_ids.shape not in ((self.count,), (self.count, 10)):
+        if side_bits.shape != (self.count,) or phase_ids.shape not in (
+                (self.count,), (self.count, self.clock.reference_ticks)):
             raise ValueError('Side and phase must identify each world')
         side_bits = side_bits.to(device=self.device, dtype=torch.int32).contiguous()
         phase_ids = phase_ids.to(self.device)
@@ -167,13 +176,19 @@ class ContactPlant(ResearchPlant):
         records = {}
         cfg, data = self.cfg, self.data
         limits = self.count_limits
-        for substep in range(10):
-            phase = phase_ids if phase_ids.ndim == 1 else phase_ids[:,substep]
+        stride = self.clock.servo_stride
+        for substep in range(self.clock.policy_steps):
+            phase = phase_ids if phase_ids.ndim == 1 else phase_ids[:,substep // stride]
             # MuJoCo contact forces/site positions after step describe this
             # solve's interval-start pose. Signed arm margins check integrated q.
             q0 = data.qpos[:, 3:7].clone()
-            data.ctrl[:, self.actuator_ids] = target + data.qfrc_bias[:, self.dof] * self.bias_gain
+            servo_tick = substep % stride == 0
+            if servo_tick:
+                bias = data.qfrc_bias if self.servo_bias is None else self.servo_bias
+                data.ctrl[:, self.actuator_ids] = target + bias[:, self.dof] * self.bias_gain
             self.sim.step()
+            if servo_tick and self.servo_bias is not None:
+                self.servo_bias.copy_(data.qfrc_bias[:])
             self._contacts(side_wp)
             m = self.metrics
             grip = (phase == PHASE_ID['open']) | (phase == PHASE_ID['hold'])
@@ -228,7 +243,7 @@ class ContactPlant(ResearchPlant):
                 for key, value in fields.items():
                     records.setdefault(key, []).append(value.clone())
         result = dict(first_fail_substep=first, reason=reason, overflow=overflow,
-                      valid_full_interval=finite, physics_steps=torch.full_like(first,10))
+                      valid_full_interval=finite, physics_steps=torch.full_like(first,self.clock.policy_steps))
         if measure_grip:
             result.update(finger_min=finger_min,finger_max=finger_max,dual_prefix=dual_prefix)
         if capture_first_failure_state:

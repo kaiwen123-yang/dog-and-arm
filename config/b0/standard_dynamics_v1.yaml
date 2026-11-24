@@ -1,0 +1,32 @@
+base: config/b0/standard_temporal_v1.yaml
+physics_dt: 0.00025
+policy_dt: 0.02
+temporal_id: C20
+training_physics_id: warp_250us_servo2ms_continuous_v1
+preserve_continuous_bias: true
+wm_data_recipe:
+  sources:
+    grip:
+      directory: results/b0/standard_dynamics_20261124/grip
+    multimode:
+      directory: results/b0/standard_dynamics_20261124/multimode
+    response:
+      registration: results/b0/standard_dynamics_20261124/response/registration.json
+      raw: results/raw_large/b0/dynamics_20261124/response
+  warm:
+    h1_native: 32
+    h1_warp: 224
+    h7_native: 32
+    h7_warp: 224
+  joint:
+    h1_native: 0
+    h1_warp: 64
+    h7_native: 32
+    h7_warp: 32
+  split: train
+  allocation: eligible Warp sources equal, remainder rotates by absolute minibatch
+    index
+  offline_order: lane uniformly then legal starting age uniformly, native retains
+    window-uniform sampling
+  selection: Development H32 pilot only. Compare same-physics C20+1000 with rebased+1000
+    on all six registered items before any H32 result.

@@ -51,6 +51,8 @@ class ContactRepresentation(RobotRepresentation):
 
     def __init__(self, model, device):
         super().__init__(model, device)
+        from .contact_clock import ContactClock
+        self.substep_coeff = ContactClock(float(model.opt.timestep)).substep_coeff
         self.reward_coordinates = 'canonical'
         home, unit = base_servo_coordinates(model, ActionMap(model), device)
         self.register_buffer('reward_home', home, persistent=False)

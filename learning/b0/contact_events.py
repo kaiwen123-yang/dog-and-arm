@@ -1,4 +1,4 @@
-"""Read-only B0 physical events. One call per solved 2 ms interval, before FK refresh.
+"""Read-only B0 physical events. One call per solved interval, before FK refresh.
 
 Native and Warp callers must supply the same interval-start q/v and solved contact
 sample (including the active side's two finger loads). Only the judge's counters
@@ -12,6 +12,7 @@ import mujoco as mj
 import numpy as np
 
 from .physics import ARM, FINGERS, ContactMeter
+from .contact_clock import ContactClock
 
 
 @dataclass(frozen=True)
@@ -66,9 +67,9 @@ class ContactEvents:
         if not self.phases or any(p not in reference.phase_bounds for p in self.phases):
             raise ValueError('missing reference phases')
         self.dt = float(model.opt.timestep)
-        if abs(self.dt - .002) > 1.e-12:
-            raise ValueError('B0 contact events require 2 ms physics')
-        self.offset = (reference.phase_bounds[self.phases[0]][0] if start_step is None else start_step)
+        self.reference_stride = ContactClock(self.dt).servo_stride
+        self.offset = self.reference_stride * (
+            reference.phase_bounds[self.phases[0]][0] if start_step is None else start_step)
         self.hold_seconds = .5 if hold_seconds is None else float(hold_seconds)
         self.meter = ContactMeter(model, 'preview_floor', 'back' if side == 'push' else 'front',
                                   cfg['contact_threshold_n'], cfg['wheel_threshold_n'])
@@ -91,7 +92,7 @@ class ContactEvents:
         self.parking = self.nominal_xy - cfg['travel_m'] * np.array([np.cos(yaw), np.sin(yaw)])
         self.phase_start = self.i = self.step = self.good = self.lost = self.sliding = self.unloaded = 0
         self.events, self.failure = [], None
-        self.score_until_step = score_until_step
+        self.score_until_step = None if score_until_step is None else score_until_step * self.reference_stride
         self.terminal_event_step = None
         self.last_not_ready = {}
         self.peak_ready_steps, self.latest = {}, None
@@ -179,6 +180,7 @@ class ContactEvents:
         # Fixed clock and phase endpoints come only from the given nominal reference.
         # No future physical state, teacher inverse kinematics or controller is called.
         begin, end = self.reference.phase_bounds[phase]
+        begin, end = begin*self.reference_stride, end*self.reference_stride
         ramp = k >= begin + self.ticks(cfg['phase_ramp_s'].get(phase, 0))
         if phase in ('approach_base', 'retreat_base'):
             ready, seconds = in_zone and drift < .010 and heading < 1., .06

@@ -54,8 +54,10 @@ def main():
         config=yaml.safe_load(path.read_text())
         return resolved(Path(config['base'])) | config if 'base' in config else config
     cfg=resolved(args.config)
-    if cfg['actor_horizon']!=32 or cfg['physics_dt']!=.002 or cfg['policy_dt']!=.02:
-        raise ValueError('Contact schema requires H32 and 10 x 2 ms')
+    from learning.b0.contact_clock import ContactClock
+    clock = ContactClock(cfg['physics_dt'])
+    if cfg['actor_horizon']!=32 or cfg['policy_dt']!=clock.policy_dt:
+        raise ValueError('Contact schema requires a 20 ms policy and H32')
     torch.manual_seed(0)
     np.random.seed(0)
     torch.set_float32_matmul_precision('high')
@@ -72,6 +74,10 @@ def main():
     wm=torch.load(cfg['wm_checkpoint'],weights_only=False,map_location='cpu')
     if wm['schema']!=SCHEMA or wm['seed']!=0:
         raise ValueError('Unexpected contact WM initializer')
+    if wm.get('physics_dt',wm.get('cfg',{}).get('physics_dt',.002)) != clock.physics_dt:
+        raise ValueError('WM training physics disagrees with collector')
+    if wm.get('substep_coeff',.55) != clock.substep_coeff:
+        raise ValueError('WM GenCoord coefficient disagrees with collector')
     paths=Path(cfg['reference_directory'])
     refs=[paths/n for n in cfg['references']]
     teachers=refs+[paths/n for n in cfg['additional_teacher_episodes']]
@@ -88,7 +94,7 @@ def main():
     out.mkdir(exist_ok=False)
     raw.mkdir(exist_ok=False)
     metadata=dict(cfg=cfg,run=args.run,seed=0,git_revision=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
-                  physics='MuJoCo Warp; exact 10 x 2 ms held targets',device=torch.cuda.get_device_name(),
+                  physics='MuJoCo Warp, 20 ms actions and 2 ms external servo',contact_clock=clock.metadata(),device=torch.cuda.get_device_name(),
                   migration='Actor incl. normalizers strict load; critic input layer initialized, shape-compatible hidden and output restored; door WM initialized from explicitly listed pretraining checkpoint. Joint optimizers fresh unless --resume.',
                   initialization=dict(actor=str(cfg.get('calibrated_actor',cfg['actor_checkpoint'])),wm=str(cfg['wm_checkpoint']),resume=str(args.resume) if args.resume else None),
                   max_step_reward=run.policy.wm_env.max_step_reward,max_critic_value=run.policy._v_max,
@@ -122,7 +128,8 @@ def main():
     (out/'actual_config.json').write_text(json.dumps(metadata,indent=2)+'\n')
     def save(count):
         state=dict(actor=run.actor.state_dict(),critic=run.critic.state_dict(),dyn=run.dyn.state_dict(),
-                   cfg=cfg,updates=count,collected=run.total,seed=0,schema=SCHEMA)
+                   cfg=cfg,updates=count,collected=run.total,seed=0,schema=SCHEMA,
+                   physics_dt=clock.physics_dt,substep_coeff=clock.substep_coeff)
         torch.save(state,out/f'checkpoint_{count:06}.pt')
         state.update(optimizers=[o.state_dict() for o in run.optimizer_list()],
                      replay=list(run.replay.chunks),simulated=run.simulated,

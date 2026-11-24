@@ -110,6 +110,10 @@ def register_solver(plant, lane=0):
     if plant.preserve_continuous_bias:
         bias.copy_(previous_bias.expand_as(bias))
         fields["qfrc_bias"] = bias
+    if plant.servo_bias is not None:
+        held = plant.servo_bias[lane].clone()
+        plant.servo_bias.copy_(held.expand_as(plant.servo_bias))
+        fields["servo_bias"] = plant.servo_bias
     return {name:value[lane].cpu().numpy().copy() for name,value in fields.items()}
 
 
@@ -127,7 +131,7 @@ def judge_trace(model,row,initial_q,initial_v,records):
     data = mujoco.MjData(model)
     for j in range(len(event)):
         for b,judge in enumerate(judges):
-            for k in range(10):
+            for k in range(records["qpos_post"].shape[2]):
                 if judge.failure or judge.passed:
                     break
                 event[j,b,k] = PHASE_ID[judge.phase]
@@ -165,7 +169,9 @@ def integrate_branches(folder,row,off,t,g,plant,side,solver,first,ref,labels,lab
     states.append(contact_state(plant.data.qpos[:],plant.data.qvel[:]).cpu().numpy())
     records={k:np.stack(v) for k,v in records.items()}
     events,judges=judge_trace(model,row,solver["qpos"],solver["qvel"],records)
-    np.savez_compressed(folder/"substeps.npz",**records,event_phase=events,training_phase=labs[10*t:10*(t+32)].reshape(32,10))
+    phase = labs[10*t:10*(t+32)].reshape(32,10)
+    np.savez_compressed(folder/"substeps.npz",**records,event_phase=events,
+                        training_phase=np.repeat(phase,plant.clock.servo_stride,axis=1))
     failed=np.stack(fails)
     valid=np.stack(valid)
     live=valid & np.concatenate([np.ones((1,n),bool),np.logical_and.accumulate(valid & (failed==0),axis=0)[:-1]])
@@ -193,6 +199,12 @@ def collect(args):
         spec["solver_schema"] = "continuous_bias_v1"
         if out == OUT or raw_root == RAW:
             raise ValueError("A new solver identity requires independent output directories")
+    from learning.b0.contact_clock import ContactClock
+    clock = ContactClock(getattr(args,"physics_dt",.002))
+    if clock.servo_stride > 1:
+        if not args.preserve_continuous_bias or out in (OUT,BASE/"standard_temporal_20261124"):
+            raise ValueError("Refined physics requires an isolated new dataset with continuous servo bias")
+        spec.update(contact_clock=clock.metadata(),prefix_ticks=10*clock.policy_steps)
     reg=out/"registration.json"
     if reg.exists() and json.loads(reg.read_text())!=spec:
         raise ValueError("Changed registered matrix")
@@ -200,6 +212,7 @@ def collect(args):
     if args.register_only:
         return
     model=make_model()
+    model.opt.timestep=clock.physics_dt
     rep=ContactRepresentation(model,DEVICE)
     robot=RobotRepresentation(model,DEVICE)
     mapping=ActionMap(model)
@@ -270,4 +283,5 @@ if __name__=="__main__":
     p.add_argument("--output",type=Path,default=OUT)
     p.add_argument("--raw",type=Path,default=RAW)
     p.add_argument("--preserve-continuous-bias",action="store_true")
+    p.add_argument("--physics-dt",type=float,default=.002)
     collect(p.parse_args())

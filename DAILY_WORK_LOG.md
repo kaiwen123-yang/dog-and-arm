@@ -1191,3 +1191,11 @@ B只做一次train-only重标后固定，原索引/原loss，新原优化器；�
 末轮事实复核修正：目标差距表明确保留历史pair canonical u350的release阶段事件（随后retreat_arm参考耗尽、回报0.971913），本轮/response轮的零事件不扩大成所有历史零事件。审查中806/790仅称归一化z值，实际分母std+0.01，避免误称严格标准差倍数；数值本身不变。
 
 历史事件补链后的最终相对文件链接数为392，全部存在；交付仍为16个文件。
+
+## 2026-11-24 北京时间 18:55 起｜固定物理时钟与 C20 有限 H32 集中轮
+
+从 AutoDL 的 ff2d1e8 现场正常执行 `git fetch origin main`，与 GitHub API 独立回读均为 `781cd1d4e45fa7acb61dad0f76fb13e72fcb68b7`。原工作树无已跟踪修改，六项环境链接和历史日志保留。新分支 `codex/b0-dynamics-20261124`，新小结果在 `results/b0/standard_dynamics_20261124/`，大结果在 `results/raw_large/b0/dynamics_20261124/`。远端 partial clone 按需取文档时出现 HTTP2/TLS 故障；用 16 个审查提交变更 blob 的 Git 对象 ID 复核内容并导入同一对象库，补齐未检出路径，复查 HEAD 与跟踪文件均一致。原 2 ms 和 native3.3 正式判据依旧。先比较固定 11 窗和原单位 q/v 分量；待数据资格确定后固定统计、实验 WM 与初始批次，再执行有限 H32。分项命令和实际预算随本条目追加。
+
+**19:06 数据资格与重采。** `scripts/b0/dynamics_warp_windows.py` 已完成 11 个登记窗、固定全 23 路 ctrl、2/1/0.5 ms 各两次，另在四个影响决定的窗口复测 0.25/0.125 ms 和真实前缀的同相位 held 路径。前拉训练 grasp/t7/b23 在前三档门力峰为 0/44.60/14.14 N。细档双侧 hold/u0 峰 51.31/33.09 N（0.25 ms），0.125 ms 为 51.32/33.10 N，同样在起点超过 6 N。登记训练数值身份 `warp_250us_servo2ms_continuous_v1`，N=80、c=0.50625。绝对归档状态、重放状态及首次求解的差异随回执保留；细时刻的个别接触峰值仍不宜解释为力真值。原生四源之一已查过实际 native 抽样，继承原 native 教师；三套受影响 Warp 数据按原注册 split 与相同采集器重采。
+
+统一 ContactPlant、C20 representation、采集/前缀/phase、部分终止回报、判定与记录：2 ms 缓存取前一外部周期起点的 bias，内部每步求解。20 ms 边界不改；部分终止点的冻结 2 ms 参考用线性坐标/速度和基座四元数 SLERP 求值。原始细步力、作用时刻、两指和首次失效均保留。实际命令 `scripts/b0/check_dynamics_clock.py --dt .002 .0005`、`--dt .00025`，三档双侧真实前缀均通过，23 路保持与延迟重算最大差为 0，旁 lane reset 后缓存逐位一致。19:06:21 并行启动 `scripts/b0/h32_contact_challenge.py --physics-dt .00025 --run dynamics_v1_grip`、同命令 `--multimode`、`scripts/b0/training_entry_response.py --physics-dt .00025 --preserve-continuous-bias`；每条显式输出目录分别是新轮的 grip、multimode、response。实际输出/日志在新轮 raw 的 logs/collect_*.log。原 2 ms 执行 `scripts/b0/dynamics_component_tradeoff.py`，76,719 个合法 H1，固定 hold/u0 两侧原损失折中和实测 C20 数据已单列。TorchScript 对 vmap 原单位 Jacobian 的数据指针操作报错，改逐输出反传保存四源结果；该探针没有优化器步。

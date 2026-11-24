@@ -94,12 +94,15 @@ def collect(run,folder,seed, strata=None):
 def main(a):
     anchor=torch.load(a.anchor,map_location="cpu",weights_only=False)
     cfg=dict(anchor["cfg"],cohort_steps=40,worlds=64,actor_batch=64,wm_batch=64,reference_directory=str(a.references))
+    cfg.update(physics_dt=a.physics_dt)
+    if a.physics_dt != .002:
+        cfg["preserve_continuous_bias"] = True
     cfg.pop("physical_action_prior",None)
     paths=[a.references/x for x in cfg["references"]]
     run=ContactRun(cfg,paths,paths,anchor,anchor,"cuda:0")
     run.actor.eval()
-    out=Path("results/b0")/a.run
-    raw=Path("results/raw_large/b0")/a.run
+    out=a.output or Path("results/b0")/a.run
+    raw=a.raw or Path("results/raw_large/b0")/a.run
     out.mkdir(exist_ok=False)
     raw.mkdir(exist_ok=False)
     folds=[("train",71200+i) for i in range(8)]+[("calibration",71300+i) for i in range(2)]+[("validation",71400+i) for i in range(3)]
@@ -108,7 +111,8 @@ def main(a):
         strata = [('approach_arm',), ('grasp',), ('open',), ('hold',), ('release',), ('retreat_arm',)]
         folds = [('train', 84100+i) for i in range(8)] + [('validation', 84200+i) for i in range(3)]
     write(out/"registration.json",dict(anchor=str(a.anchor),reference_directory=str(a.references),allocation=folds,
-        worlds=64,steps=40,strata=strata or [("open","hold")],design="Each lane: independent RSI in the listed strata, 100 real prefix substeps, 1/3/5/10 x 20ms perturbed learned feedback then return to unperturbed feedback. Total jaw width additions Uniform[0,14] mm; arm vector random direction, norm Uniform[0,25] mrad, every fourth lane zero arm or zero jaw. Validity stops after first hard terminal. All attempts retained; no case references."))
+        worlds=64,steps=40,strata=strata or [("open","hold")],contact_clock=run.plant.clock.metadata(),
+        design="Each lane uses an independent RSI in the listed strata, a 200 ms physical prefix, and 1/3/5/10 x 20 ms perturbed feedback followed by unperturbed feedback. Width additions Uniform[0,14] mm. Arm perturbation direction random, norm Uniform[0,25] mrad. Every fourth lane has zero arm or zero jaw perturbation. Replay ends after the first physical terminal."))
     rows=[]
     for split,seed in folds:
         name=f"{split}_{seed}"
@@ -125,6 +129,9 @@ if __name__=="__main__":
     p.add_argument("--references",type=Path,default=Path("results/raw_large/b0/full_warp_hold_park_r1"))
     p.add_argument("--anchor",type=Path,default=Path("results/b0/full_s0_joint_warp_prior_r1/checkpoint_000000.pt"))
     p.add_argument("--multimode",action="store_true")
+    p.add_argument("--physics-dt",type=float,default=.002)
+    p.add_argument("--output",type=Path)
+    p.add_argument("--raw",type=Path)
     a=p.parse_args()
     if Path(a.run).name!=a.run or a.run in ("", ".", ".."):
         p.error("Select a fresh directory")
