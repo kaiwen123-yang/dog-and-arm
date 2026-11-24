@@ -1282,3 +1282,15 @@ AutoDL 命令以 bash scripts/b0/env.sh 为前缀。python -u -m scripts.b0.join
 每个新冻结采集块各5120物理策略区间，训练新增3429 H1 /3096 H7，其中156个完整首terminal；独立开发1816 H1 /1149 H7，176个完整首terminal。验证逐个合法起点评分。运行 python -m scripts.b0.joint_adapt register，将原联合比例、原损失/裁剪和双优化器、实际重标+1000四项E0、固定开发分母及每连续两块更新末点的资格检查写入 registration.json。为分别覆盖共同/新增实采，在相邻十批间交替使用两个实采块。资格训练与原Ratio分开记账。启动 train 0 200 时发现导入torch的顺序先于固定环境开关，触发了Inductor，第一次反向编译中断，日志0行、未到优化器step。把TORCH_COMPILE_DISABLE提前到torch导入前，从原零点复测；保留中断日志和新的eager运行记录。
 
 20:21 首次 eager 运行在第一个 WM 更新后的记账遇到重复键 h；优化器已走一步，训练状态未写出。修复记录器并单列 discarded_optimizer_steps=1，合计上限内最多保留490/990批整块末点。未消费 u10 包。正常发布先记录可复算诊断与新采数据身份，后续追加真实跨界成绩。
+
+### 20:22–20:31 单链完成、五个节点复测与恢复
+
+在 D57 的 /root/autodl-tmp/dog-and-arm-b0-temporal-v1，依次运行 bash scripts/b0/env.sh python -u -m scripts.b0.joint_adapt train 0 200、train 200 490 和 train 490 990 --adjust 0.00005。各段真实结束北京时间分别为 20:22:58、20:24:18、20:26:26，退出码均为 0。小结果 standard_joint_contact_20261124，实际大状态在 results/raw_large/b0/joint_contact_20261124，各保留十批末点的 dyn/双优化器/RNG 和有序抽样索引均存在。两条旧 u10 没有新增更新。
+
+每十批均复评完整四项窗口及独立在线全部合法 H1/H7，包括首次失败的完整首区间。+50（本段实际留存批数）四长窗126.61/134.24/125.26/134.77 mm，+200为66.88/75.25/79.94/80.53；+490为21.73/22.09/46.45/21.46。预适配前10块与首段后9块的四个长窗中位数均下降，独立H7的J2 q/v中位数从0.0767rad/1.1599rad/s降至0.0258rad/0.3161rad/s；同时末九块各项极差69–92mm。首段已计491批，有继续验证的实测依据。先记录extension.json 与 adjustment.json，再唯一一次把两个WM优化器学习率从2e-4降至5e-5。保持同一个+490权重、两组动量、RNG和样本顺序、固定统计、loss及数据源。没有回滚或更换采样配方。
+
+最终99个真实块中，99块独立在线六指标优于E0；只有+850四项长窗同时合格。+840/850/860 前拉multimode 37.60/21.89/37.96mm，+860另外两项背推也越线。+990终点四项31.94/52.16/49.48/58.55mm；末点H1/H7原损失0.7491/0.2306，H7 J2 q/v RMSE 0.01490rad/0.19887rad/s。两块连续资格0/98，991批已计费、余额9不足新十批。已部署的条件执行器因无qualified.json退出，新主链H32=0、联合WM=0、Critic=0。u1/u10/u50、D、完整Warp/C/native和独立seed/H未启动；无完整回报。
+
+实际运行 joint_coverage、joint_endpoint 850 / 990、joint_index、joint_verify 和 joint_relapse。共990个保存步裁剪605，P95=6.6938，最大24.5499，无两块梯度报警。边界H1 175次实抽，online H1 38016次中3173个open/hold，online H7 152064次中open/hold=0，两时域two_finger均0。38/66的原差分方向在+850和+990均为47/66，其中两个训练起点26/36，两个验证起点21/30；物理短轨迹只算原112条。独立进程重新载入+840/850/860/980/990，逐项长窗和独立online分数绝对差为0；+990恢复包有限、Adam/Muon状态条目12/2，Adam步数990，CPU/CUDA/NumPy RNG实际装载。最后再以固定完整双指窗分解+850→860的TCP基座/关节分量，未新增优化或物理轨迹。观察支持长窗在相邻更新间失去保留；多源梯度、两实采块样本组成、长期动力学和接触饱和尚无单一充分因果解释。
+
+普通推送中间提交816f1aa至GitHub main，正常fetch与回读确认replay/summary.json、registration.json和SHA。第二开发平台HTTPS读权限可用，写入未配置凭据；从独立工作树通过git pack-objects直接传输这次提交的新Git对象，在Windows利用已认证gh的Git凭据执行普通push，无强推。独立报告 reports/B0_JOINT_CONTACT_RESULTS_20261124.md，机器清单 baseline_manifest.json、逐案原result/return、前拉/背推纯Actor视频均在本轮小结果目录。末次提交与线上关键文件回读在聊天交付。原开发主树未经checkout/reset/stash，原四个修改和P5未跟踪目录均在。

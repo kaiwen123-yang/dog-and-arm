@@ -1,0 +1,299 @@
+{
+  "method": "SuperMimic-M1Piper-standard-v1",
+  "review_commit": "528a9d7ac1ddbf399a125a93b9ee21bc1af6fd9b",
+  "diagnostics_commit": "816f1aaeeaf96cb73a49dec6a09d9f06235296ca",
+  "created_beijing": "2026-11-24T20:27:33.007575+08:00",
+  "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+  "mjlab": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd",
+  "stage": "B0-04",
+  "final_candidate": null,
+  "full_bilateral_return": null,
+  "return_status": "NA",
+  "training": {
+    "physics_id": "warp_250us_servo2ms_continuous_v1",
+    "dt": 0.00025,
+    "servo_dt": 0.002,
+    "policy_dt": 0.02,
+    "coefficient": 0.50625
+  },
+  "gate": {
+    "qualification": null,
+    "passing_block_ends": [
+      850
+    ],
+    "consecutive_pairs": [],
+    "full_fixed_window_denominators": {
+      "pull_grip": 386,
+      "push_grip": 446,
+      "pull_multimode": 199,
+      "push_multimode": 199
+    },
+    "limits": {
+      "pull_grip": 22.316064834594727,
+      "push_grip": 18.362990021705627,
+      "pull_multimode": 21.966465950012207,
+      "push_multimode": 23.30928945541382
+    },
+    "e0": {
+      "step": 0,
+      "pull_grip": 17.85285186767578,
+      "push_grip": 14.690392017364502,
+      "pull_multimode": 17.573172760009765,
+      "push_multimode": 18.647431564331054,
+      "H1_loss": 2.9386967735668637,
+      "H1_j2_q_rmse": 0.030877790866327828,
+      "H1_j2_v_rmse": 2.9223588008760215,
+      "H7_loss": 2.415448093227556,
+      "H7_j2_q_rmse": 0.4991902568063432,
+      "H7_j2_v_rmse": 3.3229042795541526,
+      "worst_multiple_of_limit": 0.8,
+      "above_limit": "",
+      "passes_all": false
+    },
+    "nearest_by_worst_ratio": {
+      "step": 850,
+      "pull_grip": 20.7222957611084,
+      "push_grip": 14.492429733276367,
+      "pull_multimode": 21.8904878616333,
+      "push_multimode": 18.51168155670166,
+      "H1_loss": 0.7845830035104625,
+      "H1_j2_q_rmse": 0.005234024048958721,
+      "H1_j2_v_rmse": 0.26976414235766644,
+      "H7_loss": 0.2583865213513478,
+      "H7_j2_q_rmse": 0.015086505664200953,
+      "H7_j2_v_rmse": 0.16397837124208217,
+      "worst_multiple_of_limit": 0.9965411783328367,
+      "above_limit": "",
+      "passes_all": true
+    },
+    "last": {
+      "step": 990,
+      "pull_grip": 31.937443256378174,
+      "push_grip": 52.16218948364258,
+      "pull_multimode": 49.4792984008789,
+      "push_multimode": 58.55259628295898,
+      "H1_loss": 0.7490938198198831,
+      "H1_j2_q_rmse": 0.005225553737471391,
+      "H1_j2_v_rmse": 0.2639451474220433,
+      "H7_loss": 0.23062133137704083,
+      "H7_j2_q_rmse": 0.014900017305997526,
+      "H7_j2_v_rmse": 0.1988680052990865,
+      "worst_multiple_of_limit": 2.8406152495854564,
+      "above_limit": "pull_grip|push_grip|pull_multimode|push_multimode",
+      "passes_all": false
+    },
+    "budget_remaining": 9
+  },
+  "training_budget": {
+    "diagnostic_WM": 30,
+    "adapt_retained": 990,
+    "adapt_discarded": 1,
+    "adapt_charged": 991,
+    "qualified_seed0_H32": 0,
+    "qualified_seed0_joint_WM": 0,
+    "qualified_seed0_critic": 0,
+    "previous_u10_pending": [
+      2,
+      2
+    ],
+    "source_checkpoint_inherited_offline_WM": 1000,
+    "actor_B003_inherited_updates": 1000,
+    "actor_B003_collected": 1088000
+  },
+  "formal": {
+    "backend": "original 2ms Warp",
+    "force_limit_N": 6,
+    "new_shared_u0_cases": 10,
+    "shared_u0_passed": 0,
+    "shared_u0_events": 0,
+    "first_substep_overforce": 6,
+    "observed_microsteps": 1628,
+    "prefix_microsteps": 1000
+  },
+  "development_closedloop": {
+    "formal_2ms": {
+      "runs": 12,
+      "trajectories": 2,
+      "registration_starts": 6,
+      "actor_calls": 86,
+      "prefix_microsteps": 1200,
+      "integrated_microsteps": 860,
+      "observed_microsteps": 796,
+      "physically_accepted_first20": 8,
+      "second_queries": 8,
+      "any_dual": 0,
+      "phase_events": 0,
+      "segment_passes": 0
+    },
+    "training": {
+      "runs": 12,
+      "trajectories": 2,
+      "registration_starts": 6,
+      "actor_calls": 140,
+      "prefix_microsteps": 9600,
+      "integrated_microsteps": 11200,
+      "observed_microsteps": 10790,
+      "physically_accepted_first20": 8,
+      "second_queries": 8,
+      "any_dual": 0,
+      "phase_events": 0,
+      "segment_passes": 0
+    }
+  },
+  "boundary_budget": {
+    "branches": 112,
+    "physics_microsteps": 5040,
+    "new_prefix_microsteps": 0,
+    "eligible_train_h1": 14,
+    "eligible_train_h7": 0
+  },
+  "source_draws": [
+    {
+      "h": 1,
+      "source": "grip",
+      "samples": 4224
+    },
+    {
+      "h": 1,
+      "source": "multimode",
+      "samples": 4224
+    },
+    {
+      "h": 1,
+      "source": "online",
+      "samples": 38016
+    },
+    {
+      "h": 1,
+      "source": "response",
+      "samples": 4224
+    },
+    {
+      "h": 7,
+      "source": "grip",
+      "samples": 8448
+    },
+    {
+      "h": 7,
+      "source": "multimode",
+      "samples": 8448
+    },
+    {
+      "h": 7,
+      "source": "native",
+      "samples": 25344
+    },
+    {
+      "h": 7,
+      "source": "online",
+      "samples": 152064
+    },
+    {
+      "h": 7,
+      "source": "response",
+      "samples": 8448
+    }
+  ],
+  "actual_boundary_H1_draws": 175,
+  "new_collection": {
+    "train": {
+      "seed": 112401,
+      "collector": {
+        "valid_transitions": 3429,
+        "cumulative_valid_transitions": 5515,
+        "simulated_lane_intervals": 5120,
+        "starts_per_motion": [
+          5,
+          44,
+          6,
+          71,
+          12,
+          10
+        ],
+        "prefix_intervals": 1691,
+        "prefix_invalid": 0,
+        "failed_lanes": 156,
+        "post_failure_diagnostic_substeps": 3804,
+        "waiting_intervals": 0,
+        "last_episode": 479
+      },
+      "h1": 3429,
+      "h7": 3096,
+      "terminal_first": 156
+    },
+    "development": {
+      "seed": 112402,
+      "collector": {
+        "valid_transitions": 1816,
+        "cumulative_valid_transitions": 1816,
+        "simulated_lane_intervals": 5120,
+        "starts_per_motion": [
+          36,
+          53,
+          46,
+          109,
+          60,
+          52
+        ],
+        "prefix_intervals": 3304,
+        "prefix_invalid": 52,
+        "failed_lanes": 176,
+        "post_failure_diagnostic_substeps": 7362,
+        "waiting_intervals": 0,
+        "last_episode": 356
+      },
+      "h1": 1816,
+      "h7": 1149,
+      "terminal_first": 176
+    }
+  },
+  "additional_stages": {
+    "D": null,
+    "full_Warp_nominal": null,
+    "C": null,
+    "native_3_3_full": null,
+    "independent_seeds": null,
+    "H": null
+  },
+  "actual_package_recovery": {
+    "host": "autodl-d57",
+    "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1",
+    "wm": "results/raw_large/b0/joint_contact_20261124/adapt/wm_000990.pt",
+    "wm_optimizer_entries": [
+      12,
+      2
+    ],
+    "exact_rng_loaded": true,
+    "finite_weights_and_optimizer_state": true,
+    "wm_index": 990,
+    "online_train": "results/raw_large/b0/joint_contact_20261124/collection/train/state.pt",
+    "live_train_solver": "results/raw_large/b0/joint_contact_20261124/collection/train/solver.npz",
+    "validation_only": "results/raw_large/b0/joint_contact_20261124/collection/development/state.pt",
+    "shared_actor_and_critic": "results/raw_large/b0/dynamics_20261124/h32_shared/first.pt",
+    "replay": "results/raw_large/b0/joint_contact_20261124/replay",
+    "physics": "results/raw_large/b0/joint_contact_20261124/physics",
+    "logs": "results/raw_large/b0/joint_contact_20261124/logs"
+  },
+  "files": {
+    "registration": "results/b0/standard_joint_contact_20261124/registration.json",
+    "reviewed_replay": "results/b0/standard_joint_contact_20261124/replay/summary.json",
+    "block_scores": "results/b0/standard_joint_contact_20261124/adapt/all_nodes.csv",
+    "per_case": "results/b0/standard_joint_contact_20261124/h32/seed0_u0_formal.csv",
+    "original_judgements": "results/b0/standard_joint_contact_20261124/formal",
+    "closedloop": "results/b0/standard_joint_contact_20261124/physics/pure_actor_shared_u0_cases.csv",
+    "policy_videos": [
+      "results/b0/standard_joint_contact_20261124/physics/pull_shared_u0_actor.mp4",
+      "results/b0/standard_joint_contact_20261124/physics/push_shared_u0_actor.mp4"
+    ],
+    "signed_servo": "results/b0/standard_joint_contact_20261124/physics/archived_servo_rows.csv",
+    "eligible": "results/b0/standard_joint_contact_20261124/collection/eligible_windows.csv",
+    "draw_accounting": "results/b0/standard_joint_contact_20261124/adapt/draw_accounting.json",
+    "endpoint_directions": "results/b0/standard_joint_contact_20261124/adapt/node_000990/derivative_summary.json"
+  },
+  "main_pause": null,
+  "score_reference": {
+    "paper_SONIC": 0.9,
+    "project_near": 0.88,
+    "full_return_available": false
+  }
+}

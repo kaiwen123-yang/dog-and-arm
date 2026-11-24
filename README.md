@@ -1,5 +1,7 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
+2026-11-24 最新标准迁移实测见[联合接触实验](reports/B0_JOINT_CONTACT_RESULTS_20261124.md)和[恢复清单](results/b0/standard_joint_contact_20261124/baseline_manifest.json)。实际预适配 991 批，仅 +850 单点达到开发保留线，完整双侧回报 NA。
+
 本仓库使用M1四轮轮足、Piper H、官方夹爪与DaBai DC1腕相机。**当前先完成开源SuperMimic标准迁移，以达到或接近论文指标为目标，独立保存结果；迁移成功并冻结基线后才开发算法、多模态/VLA与实机联合系统。** WM、可微动力学和H32 Actor–Critic属于当前B0。
 
 **已审查870796a：B0-04、最终候选null、完整双侧物理回报NA。原正式50案全失败，30案首2ms超力；48个反复开发起点组合的纯Actor闭环均未在停止前建立双指。下一轮执行首十批WM定位、真实伺服饱和辨识、原联合分布预适配和单条seed0主链，首段目标u50，有物理收益继续并当轮接后续验收。** [本轮审查](reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md) · [下一集中计划](docs/B0_JOINT_CONTACT_PLAN_20261124.md) · [实验清单](results/b0/standard_dynamics_20261124/baseline_manifest.json)

@@ -1,5 +1,7 @@
 # dog-and-arm 项目指令
 
+当前接续入口为 [本轮独立报告](reports/B0_JOINT_CONTACT_RESULTS_20261124.md)、[恢复 manifest](results/b0/standard_joint_contact_20261124/baseline_manifest.json) 和 prompts/NEXT_RUN.txt。联合接触计划已执行至预算边界。B0-04，标准候选为 null，完整双侧回报为 NA。新增 30 个诊断 WM 批和 991 个预适配批（990 个留存、1 个计费中断步）。99 个十批块仅 +850 单点通过，+860 即有三项长窗重新越线；连续两块通过为 0/98。共同 u0 原 2 ms Warp 十项 0/10，六项首微步超 6 N。新 seed0 H32 更新为 0。 下面关于 528a9d7、870796a 及更早轮的未来时段落按各自历史时点阅读。
+
 当前标准迁移入口为 PROJECT_STATE.md 顶部、reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md、docs/B0_JOINT_CONTACT_PLAN_20261124.md 与 prompts/NEXT_RUN.txt。已审查870796a：B0-04、最终候选null、完整双侧物理回报NA。原正式50案全失败，30案首2ms超力；48个反复开发起点组合的纯Actor闭环均未在停止前建立双指。下一轮执行首十批WM定位、真实伺服饱和辨识、原联合分布预适配和单条seed0主链，首段目标u50，有物理收益继续并当轮接后续验收。 本次仅审查/计划发布，未新增实验；旧计划的已执行事项直接继承。
 
 ## 2026-11-24 计划提交 b5831d7 的接续状态（历史）

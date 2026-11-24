@@ -16,6 +16,10 @@ from scripts.b0.joint_validation import Validation
 
 def load_training(run):
     state,_=get_train(run)
+    common=torch.load(pilot.SHARED/"first.pt",map_location="cpu",weights_only=False)
+    for name in ("actor","critic"):
+        for key,value in getattr(run,name).state_dict().items():
+            assert torch.equal(value.cpu(),common[name][key])
     run.replay.chunks.extend(state["chunks"])
     run.replay.tail=state["tail"]
     run.lanes=state["lanes"]
@@ -25,7 +29,9 @@ def load_training(run):
     with patch.object(pilot,"SHARED",RAW/"collection/train"):
         pilot.solver_snapshot(run,True)
     for k,v in state["counters"].items():
-        getattr(run.plant,k).copy_(v)
+        target=getattr(run.plant,k,None)
+        if target is None:setattr(run.plant,k,v)
+        else:target.copy_(v)
 
 def train(stop):
     reg=pilot.read(REG)

@@ -1,27 +1,7 @@
-继续 dog-and-arm 的 SuperMimic-M1Piper-standard-v1 标准迁移，按当前 main 中 docs/B0_JOINT_CONTACT_PLAN_20261124.md 连续执行。
+继续 dog-and-arm 的 SuperMimic-M1Piper-standard-v1。正常 fetch main 并保留工作树。读 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_JOINT_CONTACT_RESULTS_20261124.md、results/b0/standard_joint_contact_20261124/baseline_manifest.json 和 DAILY_WORK_LOG.md 最新记录。
 
-先正常 fetch main，核对工作树并保留已有修改。读取 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md、results/b0/dynamics_review_20261124/audit_summary.json、最新实验 manifest 和 DAILY_WORK_LOG.md 最近记录。先标准迁移成功、冻结独立结果，再开发算法。不要重做P1–P6/B0-03，不以诊断、预热或u10默认结束整轮。
+B0-04，标准候选为 null，完整双侧回报为 NA。新增 30 个诊断 WM 批和 991 个预适配批（990 个留存、1 个计费中断步）。99 个十批块仅 +850 单点通过，+860 即有三项长窗重新越线；连续两块通过为 0/98。共同 u0 原 2 ms Warp 十项 0/10，六项首微步超 6 N。新 seed0 H32 更新为 0。 原训练数值身份 0.25 ms / 外部 servo 2 ms / Actor 20 ms / c=.50625、原 2 ms Warp 与 native3.3 正式协议和 6 N 保持。共同 u0 两身份共 24 个独立执行的开发组合，分别 8/12 有第二动作、0/12 见双指、0 事件。旧两支 pending=2 保留。
 
-已封存实验870796a52aaab5cef307d5c2d455377094e5d056：两支各u10，原2ms Warp正式50案/0通过/0事件，30案首2ms超6N；48个开发组合的纯Actor闭环停止前都无双指。B0-04、候选null、完整双侧回报NA。两支实际新增20H32/200联合WM/400Critic、去重23921有效区间；旧response60案及历史轮分开。报告把u10在线H7损失当u1的文案已注明更正，原机器成绩保持。
+D57 现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1；本轮大资产 results/raw_large/b0/joint_contact_20261124/。末点 adapt/wm_000990.pt 和 train 采集的 solver、lane、replay、Sampler、Ratio 与共同 u0 包分别定位于 manifest.actual_package_recovery。复核关键末点运行 bash scripts/b0/env.sh python -u -m scripts.b0.joint_verify。只读评分不消耗 WM 优化预算。
 
-继承双源abc124c/dd51a9f，原网络/GenCoord/H1-H7损失/tracking/softdone/H32和Muon+Adam。训练身份warp_250us_servo2ms_continuous_v1：0.25ms物理、20ms策略、N80、c=.50625，外部servo仍原2ms相位/上一外部周期起点bias。原2ms Warp/native3.3正式评分、6N和任务/参考/完整回报规则保持。单位/reset、ReturnSampler/Ratio、lane-age、逐lane真实前缀/复位、数据贯通和solver修复直接继承；T2封存。
-
-现场/root/autodl-tmp/dog-and-arm-b0-temporal-v1；原资产results/raw_large/b0/dynamics_20261124/。读取h32_shared、两支实际首10批索引与u1的WM后Actor前快照、原240条同状态动作记录。两份u10恢复包各pending=2只作诊断，不机械续长。标准Actor权重追溯到results/b0/free_s0_cloud_servo_r2/checkpoint_001000.pt，现场采用h32_shared标准u0完整Actor/归一化及Critic共同包保持一致；新冻结采集同时冻结Actor参数与全部统计，旧replay保持实际来源身份。新主链WM默认本轮offline_wm/rebase/wm_001000.pt。新结果另开results/b0/standard_joint_contact_20261124/及results/raw_large/b0/joint_contact_20261124/，不覆盖旧轮。
-
-同一轮并行推进：
-1. 精确重放原两支各10个WM批，保存0到10逐批状态，定位8H7阶段还是末两批H1造成关节漂移。以真实首块全部样本补同参数坐标的WM源参数梯度内积/夹角，输入VJP与loss份额不能替代。最多一个同样本2H1→8H7顺序对照10批，初始诊断共30WM批。源比例/动量边界不是已证bug，不做多因素网格。
-2. 先读已有原数组，按solve前q/v、实际ctrl和外部缓存bias复算未裁力/裁后force/饱和区。gain32未放大J2和jaw物理噪声。缺覆盖才按计划四个原hold起点×7边界点×两步长×两遍，最多112条20ms短轨迹，前缀另计；必要train_open扩展先登记。解析边界只作一次性WM辨识，不进Actor控制律。仅细步训练起点数据入response H1，原2ms和开发起点只诊断；独立20ms分支不拼H7，首失败后尾段不训练。
-
-随后锁定一份原训练适配清单，用真实冻结u0在线replay＋原离线源、原联合比例和原loss进行单链WM预适配。首段≤500批，证据支持累计≤1000，调整前后及所有资格预演均计入；最多一次有据配方修正。独立真实u0开发采集不入训练。WM优化器/RNG连续接H32，不再无说明重置。
-
-以固定开发窗和本轮重标+1000的四项E0，在连续两个真实联合10批块后检查max(1.25E0,E0+2mm)，独立online H1/H7及高误差J2也须有可复算改善。预演最迟480/980批开始，通过后从第二块实际末点接H32；不回滚到更新前，不必耗满预算。25%是工程开发容差，不是论文/正式条件。完整梯度区间记录，非有限/明显递推失稳先定位；不为避免Actor=0再试已知坏WM的u10。
-
-通过即启动一条标准seed0主链，首段目标u50＝50H32/500联合WM/1000Critic，预适配另计。u0/u1/u10/u50检查，u10零通过本身不结束；数值/恢复问题或明确WM失稳则保存并解决原因。正常u1原目标分解tracking/action-rate/softdone/末端当前Critic对臂和jaw的贡献，不加新target网络或奖励。
-
-物理交付必须每20ms用真实后继重新查询Actor，完整记录接触前→首20ms存续→第二次动作→持续双指/登记事件，并核对真实H1/H7/H32覆盖。首动作后接参考尾段不算策略改善。有可重复双侧接触进展自动继续u100/u200及必要后续；物理停滞规则最早用于u10→u50，不用u1/u10零事件提前结束正常首段。两次后续检查无接触/力/事件改善才停止该配方，在本轮处理仍可按原机制解决的已证问题。
-
-同包原十项10/10后，当轮接每项D≥18/20、连续双侧Warp名义/C每侧≥18/20、同包原native3.3完整双侧名义与持续H32；再独立seed1/2各自B0-03，三seed配方/候选冻结后H每seed/侧≥40/50。D/C/H个案不入训练，H不选模。完整物理回报用原整段分母/失败吸收/实际dt/固定effort；未完成继续NA。0.90为论文SONIC参照，0.88为项目接近带，不冒充同G1 benchmark。
-
-不加动作BC、参考直通、解析反馈、新奖励/风险头/phase-TD、新网络、T2微步监督、截断BPTT或新任务；算法/VLA/新硬件任务后置。若预算内最终无稳定出口，具体报告因果证据和实际预算，不虚构通过、不自行开发新算法。保留历史canonical u350释放事件、旧selected_wm=null和R/J混合身份。
-
-唯一DAILY_WORK_LOG.md按北京时间详细持续记录实际命令、问题、修复、复测、已证/未证原因、预算与恢复。交独立报告、manifest、逐案表/原判定、双侧纯Actor视频和恢复路径；普通推送GitHub并回读main及关键文件，不强推、不创建本机压缩归档。满足前置条件就在本轮继续下一阶段，不停在一项修复完成处。
+本轮990个连续步加1个未留存实步，+490后唯一调整为两个现有 WM 优化器学习率降低四倍。旧额度尚有9批，不足另一个完整十批资格块。+850前后的窗口、逐源梯度、真实边界原数组、全节点分层误差及逐案闭环可直接复用。下一轮新增更新须独立登记预算和可区分的原因；先取得单链连续真实块资格，再从第二末点连同 optimizer/RNG 进入 H32。保留所有历史原数、任务与完整回报规则。标准迁移成功冻结后再开发算法。

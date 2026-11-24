@@ -1,5 +1,7 @@
 # B0 下一集中轮：联合 WM 保留与真实接触闭环
 
+本计划原始登记保留如下。执行结果见[本轮报告](../reports/B0_JOINT_CONTACT_RESULTS_20261124.md)，991 批预算已计费，未取得连续两个通过块。
+
 日期：2026-11-24，北京时间。接续实验 [870796a](https://github.com/kaiwen123-yang/dog-and-arm/commit/870796a52aaab5cef307d5c2d455377094e5d056)，审查见 [B0_DYNAMICS_ROUND_REVIEW_20261124.md](../reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md)。**本文件为前瞻计划，下列新实验尚未执行。**
 
 ## 1. 本轮交付与继承边界

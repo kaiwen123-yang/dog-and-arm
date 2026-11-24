@@ -1,9 +1,7 @@
-继续 dog-and-arm 的 SuperMimic-M1Piper-standard-v1。先正常fetch main并保留已有修改，读AGENTS.md、PROJECT_STATE.md顶部、reports/B0_DYNAMICS_ROUND_REVIEW_20261124.md、docs/B0_JOINT_CONTACT_PLAN_20261124.md、prompts/B0_START.txt和DAILY_WORK_LOG.md最近记录，直接按新集中计划连续执行。
+继续 dog-and-arm 的 SuperMimic-M1Piper-standard-v1。正常 fetch main 并保留工作树。读 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_JOINT_CONTACT_RESULTS_20261124.md、results/b0/standard_joint_contact_20261124/baseline_manifest.json 和 DAILY_WORK_LOG.md 最新记录。
 
-870796a已结束：两支各u10，原正式50案全失败、30案首2ms超力；48个开发闭环组合停止前均无双指。仍B0-04、候选null、完整回报NA。首10批联合WM造成明显关节/长程漂移，u0→u1 Actor统计未变；两支各15360在线H7中open/hold与双指均为0。321个open/hold抽样初态在失效之前，不能当失败后污染删除。u1/u10损失叙述已更正，原成绩不变。
+B0-04，标准候选为 null，完整双侧回报为 NA。新增 30 个诊断 WM 批和 991 个预适配批（990 个留存、1 个计费中断步）。99 个十批块仅 +850 单点通过，+860 即有三项长窗重新越线；连续两块通过为 0/98。共同 u0 原 2 ms Warp 十项 0/10，六项首微步超 6 N。新 seed0 H32 更新为 0。 原训练数值身份 0.25 ms / 外部 servo 2 ms / Actor 20 ms / c=.50625、原 2 ms Warp 与 native3.3 正式协议和 6 N 保持。共同 u0 两身份共 24 个独立执行的开发组合，分别 8/12 有第二动作、0/12 见双指、0 事件。旧两支 pending=2 保留。
 
-并行完成真实首十批复演＋一个顺序对照（共30WM批）、同参数坐标源梯度，以及现有真实伺服力/边界核对；缺覆盖才补最多112条短轨迹。随后原联合配方单链预适配，首段≤500、证据支持累计≤1000（含两个10批交界预演和一次有据调整），采用第二块真实末点及连续WM优化器接H32。固定E0开发保留线和独立online改善按计划执行，不展开网格。
+D57 现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1；本轮大资产 results/raw_large/b0/joint_contact_20261124/。末点 adapt/wm_000990.pt 和 train 采集的 solver、lane、replay、Sampler、Ratio 与共同 u0 包分别定位于 manifest.actual_package_recovery。复核关键末点运行 bash scripts/b0/env.sh python -u -m scripts.b0.joint_verify。只读评分不消耗 WM 优化预算。
 
-一条标准seed0主链首段目标u50，u1/u10为检查点，不因u10零通过提前收工；WM明确失稳则处理原因。有真实双侧接触进展自动继续u100/u200及必要后续，同包十项通过当轮接D、完整Warp/C/native、独立seed和三seed冻结H。只认每20ms从真实后继重出动作的Actor闭环；参考尾段不计。算法/VLA仍在标准迁移成功冻结后。
-
-现场/root/autodl-tmp/dog-and-arm-b0-temporal-v1；原大资产results/raw_large/b0/dynamics_20261124/，两支u10各pending=2只留诊断。训练0.25ms、servo2ms、Actor20ms、c=.50625；原2msWarp/native3.3、6N和完整回报保持。不重复已解决基础修复，不加BC/参考直通/解析反馈/新loss/新网络/T2。新结果独立保存，唯一日志按北京时间详细续写；普通推送GitHub并回读，给真实目标差距和接续入口。
+本轮990个连续步加1个未留存实步，+490后唯一调整为两个现有 WM 优化器学习率降低四倍。旧额度尚有9批，不足另一个完整十批资格块。+850前后的窗口、逐源梯度、真实边界原数组、全节点分层误差及逐案闭环可直接复用。下一轮新增更新须独立登记预算和可区分的原因；先取得单链连续真实块资格，再从第二末点连同 optimizer/RNG 进入 H32。保留所有历史原数、任务与完整回报规则。标准迁移成功冻结后再开发算法。
