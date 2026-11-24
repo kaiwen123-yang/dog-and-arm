@@ -64,7 +64,12 @@ class OfficialReplay:
         for page in torch.unique(page_ids).tolist():
             mask = page_ids == page
             for key in keys:
-                values = self.pages[page][key][offsets[mask], lane[mask]]
+                field = self.pages[page][key]
+                if field.device == lane.device:
+                    values = field[offsets[mask], lane[mask]]
+                else:
+                    # File-backed observation history on a shared GPU node.
+                    values = field[offsets[mask].cpu(), lane[mask].cpu()].to(lane.device)
                 if key not in result:
                     result[key] = values.new_empty((*times.shape, *values.shape[1:]))
                 result[key][mask] = values

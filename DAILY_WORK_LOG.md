@@ -1399,3 +1399,13 @@ u200/u500双后端双侧full都完成驶近+停车且实际/参考均pregrasp后
 22:50 已完成发布前检查：20个明确交付文件、464个相对Markdown链接全部存在，4份审查/登记JSON严格解析通过，两份启动词逐字节一致。根任务独立复核134案分组/事件及1000条连续优化计数，结果与审查一致；git diff --check通过。原学习代码、cfg和standard_official_flow_20261124原始结果/报告无改动。技术复核确认新增/累计预算、恢复状态、原子保存、环覆盖留档与统计四格解释相互一致，无需额外重复实验。
 
 发布前物理入口复核补充两项执行约束：新OUT/RAW必须贯通eval/free/servo/coverage/恢复与索引，不能只改训练CLI后让评测回写旧轮；训练0.25ms完整诊断须映射80微步Actor、8微步servo、原参考起止步×8和实际秒/原训练bias行为，不能只改eval的model.dt（旧路径每动作10步/frame除10/每步servo会改变身份）。已同步计划、两份启动词和机器登记；没有实际修改或运行这些训练/仿真入口。
+
+### 23:03–23:19｜official_flow_s0_v1 同链续训与冻结诊断（北京时间）
+
+从 GitHub main `bdb72d8f7019688b6e51ba0cd2d083a5bef90532` 建立独立工作树；开发平台原 main 上的改动未被纳入。AutoDL 运行目录 `/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8`，读原现场数据、资产与环境。源码实读为 SuperMimic abc124c1、mjlab dd51a9fc。原 u1000 的 10,255,490 有效转移及 1,000 Actor / 10,000 WM / 20,000 Critic、直接 WM 祖先 14,850 批分别记账。任务与学习 cfg 沿用父包。
+
+独立轻结果 `results/b0/standard_official_flow_continuation_20261124/`，大资产 `results/raw_large/b0/official_flow_continuation_20261124/`。恢复命令以 `B0_FLOW_SEGMENT=continuation bash scripts/b0/env.sh python -u -m scripts.b0.official_flow --parent-recovery results/b0/standard_official_flow_20261124/recovery.json --host-history results/raw_large/b0/official_flow_continuation_20261124/history_transport --host-activation-gib 20 --stop 3000` 运行。恢复核对的 136 个 solver 数组、162 个优化器状态张量、采样器/RNG、4,096 条 lane 的物理状态与上一动作通过。父 Ratio pending=0，上一时钟 10,250,240，距下阈值 4,990。权重、统计和 replay 在同一边界加载。40 页 history 按原 dtype 逐页复制、回读一致；抽样索引与计算仍使用 CUDA。
+
+共享 GPU 其余任务占用约 66 GiB。首试完成 10 批 WM 后分配激活张量失败；第二次完整恢复后完成 u1001（累计 10010/1001/20020，即 WM/Actor/Critic），下次 Warp reset/forward 图分配失败。两次回滚已执行、未保留合计 WM 20 / Actor 1 / Critic 20。每次均有 3 个收集 tick、11,047 有效转移、12,288 个实际 lane 区间。故障回执与回滚行分别保留。运行时增加可逆的 autograd 原 dtype 主存往返、在更新后释放 PyTorch 空闲缓存给 Warp，并在 u1001 同步冻结完整状态。第三次恢复的首新更新再现相同有效转移数；同一更新只计一次入保留主链。
+
+前拉 native3.3 u1000 在原裁判首失败时 XY 18.80315 mm，航向误差 2.00118973°，触发 2° 航向线。原轨迹中两侧首个 0.1 effort 命令差均为第 206 帧的轮通道 12。原双后端四案、训练细步两案按独立输出运行。冻 WM 四格的两个原配对已重现；前拉双指 H32 TCP P95 按 W0/S0、W0/S1、W1/S0、W1/S1 为 20.7223、246.7625、52.8406、498.5850 mm，新增优化为零。首次读取首批数据时 lane/tick 索引顺序错误，未运行优化；按原 replay 的 tick×lane 排列更正后重跑。跟踪固定窗只从 u500/u1000 的共同 20 ms 端点生成，登记于首个 u1001 尝试后、u1500 及以后全部物理结果产生前。保留该时序偏差。当前仍为 B0-04，后续节点评测、延长决定与完整成功视频以当轮后续记录为准。

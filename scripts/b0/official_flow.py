@@ -1,7 +1,7 @@
 """Pinned SuperMimic online seed-zero run with the M1/Piper physical interfaces."""
 import argparse
 import fcntl
-from contextlib import ExitStack
+from contextlib import ExitStack, nullcontext
 import json
 import os
 from pathlib import Path
@@ -22,8 +22,13 @@ from scripts.b0.dynamics_h32_probe import rng_state, restore_rng
 
 OUT = Path("results/b0/standard_official_flow_20261124")
 RAW = Path("results/raw_large/b0/official_flow_20261124")
+PARENT_OUT, PARENT_RAW = OUT, RAW
+CONTINUATION = os.environ.get("B0_FLOW_SEGMENT") == "continuation"
+if CONTINUATION:
+    OUT = Path("results/b0/standard_official_flow_continuation_20261124")
+    RAW = Path("results/raw_large/b0/official_flow_continuation_20261124")
 CONFIG = Path("config/b0/official_flow_s0_v1.yaml")
-NODES = (0, 1, 10, 50, 100, 200, 500, 1000)
+NODES = (0, 1, 10, 50, 100, 200, 500, 1000, 1500, 2000, 3000, 4000, 5000)
 
 
 def stats(run):
@@ -96,9 +101,11 @@ def save(run, u):
     if run.simulated:
         with patch.object(io,'SHARED',directory):
             io.solver_snapshot(run,False)
-    io.write(OUT/'recovery.json',dict(update=u, checkpoint=str(RAW/f"checkpoint_{u:06}.pt"),
+    receipt = dict(update=u, checkpoint=str(RAW/f"checkpoint_{u:06}.pt"),
         state=str(directory), clock=run.replay.clock, simulated=run.simulated, valid=run.total,
-        steps=io.optimizer_steps(run), stats=stats(run), ratio=run.schedule.state_dict()))
+        steps=io.optimizer_steps(run), stats=stats(run), ratio=run.schedule.state_dict())
+    io.write(OUT/f'node_{u:06}.json', receipt)
+    io.write(OUT/'recovery.json', receipt)
 
 
 def restore(run, receipt=None):
@@ -126,6 +133,8 @@ def restore(run, receipt=None):
             getattr(run.plant,key).copy_(value)
     restore_rng(data['rng'])
     assert io.optimizer_steps(run) == receipt['steps'] and stats(run) == receipt['stats']
+    assert run.schedule.state_dict() == receipt['ratio']
+    assert (run.total, run.simulated, run.replay.clock) == (receipt['valid'], receipt['simulated'], receipt['clock'])
     return receipt['update']
 
 
@@ -140,6 +149,11 @@ def observer(original, norms):
 def retain_interrupted_rows(update, tick):
     # Keep post-checkpoint work inspectable when restarting from an older saved node.
     archive=OUT/'interrupted'/f'{time.time_ns()}_after_u{update:06}'
+    for file in RAW.glob('countclock_*.pt'):
+        if int(file.stem.split('_')[1])>tick:
+            dest=RAW/'interrupted'/archive.name
+            dest.mkdir(parents=True,exist_ok=True)
+            file.rename(dest/file.name)
     for filename,field,limit in (('updates.jsonl','update',update),('collection.jsonl','tick',tick),
                                  ('readiness.jsonl','tick',tick)):
         path=OUT/filename
@@ -160,13 +174,65 @@ def retain_interrupted_rows(update, tick):
             temp.replace(path)
 
 
-def train(stop, resume):
+def map_observation_history(run, scratch):
+    # Relocate the physical storage of already populated history pages. The
+    # current episode, ring indices and all CUDA random draws stay on device.
+    scratch.mkdir(parents=True, exist_ok=True)
+    size=0
+    for page, fields in sorted(run.replay.pages.items()):
+        src=fields['history']
+        file=scratch/f'history_{page:03}.bin'
+        host=torch.from_file(str(file),shared=True,size=src.numel(),dtype=src.dtype).reshape(src.shape)
+        host.copy_(src)
+        if not torch.equal(host.to(src.device),src):
+            raise RuntimeError(f'Observation history copy mismatch on page {page}')
+        fields['history']=host
+        size+=host.nbytes
+    torch.cuda.empty_cache()
+    return dict(pages=len(run.replay.pages),bytes=size,dtype=str(src.dtype),each_page_exact=True,
+                scope="storage only; all sampled observations transferred losslessly to original CUDA device")
+
+
+def host_saved_activations(limit):
+    # Byte-preserving transport for autograd's saved inputs on a shared device.
+    # RNG, forward/backward kernels, parameters, losses and optimizer calls stay on CUDA.
+    moved=0
+    def pack(tensor):
+        nonlocal moved
+        if (tensor.device.type=='cuda' and tensor.ndim>=2 and tensor.shape[0]==4096
+                and tensor.nbytes>=4*1024**2 and moved<limit):
+            moved+=tensor.nbytes
+            return tensor.device,tensor.detach().to('cpu',copy=True)
+        return tensor.detach()
+    def unpack(saved):
+        return saved[1].to(saved[0]) if isinstance(saved,tuple) else saved
+    return torch.autograd.graph.saved_tensors_hooks(pack,unpack)
+
+
+def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
+    from scripts.b0.official_flow_coverage import save_counting_fields
+    if parent is not None and (not CONTINUATION or resume or (OUT/'recovery.json').exists()):
+        raise ValueError('A parent receipt is only valid on entry to a new continuation')
+    if CONTINUATION and not (resume or parent):
+        raise ValueError('An exact recovery is required for this segment')
     cfg = yaml.safe_load(CONFIG.read_text())
     run, info = build(cfg)
     OUT.mkdir(parents=True,exist_ok=True)
     RAW.mkdir(parents=True,exist_ok=True)
-    if resume:
-        u=restore(run)
+    if resume or parent:
+        receipt = io.read(parent or OUT/'recovery.json')
+        if parent and (receipt != io.read(PARENT_OUT/'recovery.json') or receipt['update'] != 1000):
+            raise ValueError('Expected the registered u1000 parent')
+        u=restore(run, receipt)
+        if host_history is not None:
+            io.write(OUT/f'history_storage_from_u{u:06}.json',map_observation_history(run,host_history))
+        if parent:
+            from scripts.b0.official_flow_restore_check import verify_loaded
+            verify_loaded(run, receipt)
+            io.write(OUT/'parent.json', receipt)
+            io.write(OUT/'interface.json', io.read(PARENT_OUT/'interface.json'))
+        if CONTINUATION:
+            save_counting_fields(run, u)
         retain_interrupted_rows(u,run.replay.clock)
     else:
         if (OUT/'recovery.json').exists():
@@ -178,6 +244,8 @@ def train(stop, resume):
     while u < stop:
         try:
             cohort = run.collect()
+            if CONTINUATION and run.replay.clock % 500 == 0:
+                save_counting_fields(run, u)
             if run.replay.clock <= 20 or run.replay.clock % 10 == 0 or run.schedule.pending:
                 io.append(OUT/'collection.jsonl',dict(tick=run.replay.clock, **cohort,
                     ratio=run.schedule.state_dict(), statistics=stats(run), wall_s=time.monotonic()-started))
@@ -199,7 +267,9 @@ def train(stop, resume):
                     wm=run.learners[7].update(run.replay.windows(7,run.b) for _ in range(10))
                     if not torch.stack(list(wm.values())).isfinite().all():
                         raise FloatingPointError('nonfinite WM optimizer result')
-                    policy=run.policy.update()
+                    with (host_saved_activations(host_activation_gib*1024**3)
+                          if host_activation_gib else nullcontext()):
+                        policy=run.policy.update()
                 metrics={k:float(v) for k,v in (wm|policy).items()}
                 if not all(np.isfinite(list(metrics.values()))):
                     raise FloatingPointError(str(metrics))
@@ -221,15 +291,23 @@ def train(stop, resume):
                         draw_columns=['lane','absolute_first_tick_zero_based'], online_only=True))
                 io.append(OUT/'updates.jsonl',row)
                 print(f"u{u} valid={run.total} actual_steps={steps}",flush=True)
+                if CONTINUATION and u==1001:
+                    io.write(OUT/'first_resumed_update.json', row)
                 if u==750:
-                    from scripts.b0.official_flow_coverage import save_counting_fields
                     save_counting_fields(run,u)
-                if u in NODES or u==stop:
+                if host_activation_gib:
+                    # Warp's captured forward/reset graphs allocate outside the PyTorch cache.
+                    torch.cuda.empty_cache()
+                if u in NODES or u==stop or (host_activation_gib and u==1001):
+                    if CONTINUATION:
+                        save_counting_fields(run, u)
                     save(run,u)
-        except Exception as exc:
+        except BaseException as exc:
             io.write(OUT/f'failure_at_{run.replay.clock:06}_u{u:06}.json',
                 dict(error=repr(exc), completed=u,steps=io.optimizer_steps(run),tick=run.replay.clock,
                      valid=run.total,gpu_free_total=torch.cuda.mem_get_info(), peak=torch.cuda.max_memory_allocated()))
+            if CONTINUATION:
+                save_counting_fields(run, u)
             raise
 
 
@@ -237,8 +315,11 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--stop',type=int,default=200)
     parser.add_argument('--resume',action='store_true')
+    parser.add_argument('--parent-recovery',type=Path)
+    parser.add_argument('--host-history',type=Path)
+    parser.add_argument('--host-activation-gib',type=int,default=0)
     args=parser.parse_args()
     RAW.mkdir(parents=True,exist_ok=True)
     with (RAW/'.training.lock').open('a') as stream:
         fcntl.flock(stream,fcntl.LOCK_EX | fcntl.LOCK_NB)
-        train(args.stop,args.resume)
+        train(args.stop,args.resume,args.parent_recovery,args.host_history,args.host_activation_gib)

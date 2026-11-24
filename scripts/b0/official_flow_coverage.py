@@ -4,13 +4,16 @@ from collections import Counter
 from pathlib import Path
 import numpy as np
 import torch
-from scripts.b0.official_flow import OUT, RAW, io
+from scripts.b0.official_flow import OUT, RAW, CONTINUATION, io
 
 
 def save_counting_fields(run,u):
     # Retain just the fields required to count visits and measure arm/jaw support
     # in the part of a long continuation that will roll out of the final ring.
     ring=run.replay
+    dest = RAW/(f'countclock_{ring.clock:08}.pt' if CONTINUATION else f'counting_{u:06}.pt')
+    if dest.exists() and CONTINUATION:
+        return
     pages={}
     for page,arrays in ring.pages.items():
         part={k:arrays[k].cpu() for k in ('valid','terminated','truncated','episode','motion_time')}
@@ -19,7 +22,6 @@ def save_counting_fields(run,u):
         pages[page]=part
     small=dict(clock=ring.clock,capacity=ring.capacity,page_size=ring.page_size,lanes=ring.lanes,
                arm_only=True,pages=pages)
-    dest=RAW/f'counting_{u:06}.pt'
     io.atomic_torch(dict(replay=small),dest)
 
 
@@ -45,13 +47,18 @@ def coverage(u):
     right=clock
     files={int(p.name.split('_')[1]):p/'state.pt' for p in RAW.glob('resume_*')}
     files.update({int(p.stem.split('_')[1]):p for p in RAW.glob('counting_*.pt')})
+    parent=io.read(OUT/'parent.json') if CONTINUATION else None
+    first_tick=parent['clock'] if parent else 0
+    if parent:
+        files={int(p.stem.split('_')[1]):p for p in RAW.glob('countclock_*.pt')}
+        files={k:p for k,p in files.items() if first_tick<=k<=clock}
     for node,state_file in sorted(files.items(),reverse=True):
-        if node>u or right==0:
+        if (not parent and node>u) or right==first_tick:
             continue
         if not state_file.is_file():
             continue
         candidate=torch.load(state_file,map_location='cpu',weights_only=False,mmap=True)['replay']
-        begin=max(0,candidate['clock']-candidate['capacity'])
+        begin=max(first_tick,candidate['clock']-candidate['capacity'])
         if begin<right<=candidate['clock']:
             ranges.append((begin,right,state_file))
             right=begin
@@ -59,7 +66,18 @@ def coverage(u):
     ranges.reverse()
     counts=Counter()
     starts=Counter()
-    previous=None
+    if parent:
+        assert left==first_tick, ('missing counting ticks',left,first_tick)
+        inherited=torch.load(RAW/f'countclock_{first_tick:08}.pt',map_location='cpu',weights_only=False,mmap=True)['replay']
+        page,off=divmod((first_tick-1)%inherited['capacity'],inherited['page_size'])
+        previous=inherited['pages'][page]['episode'][off].numpy()
+        # Recover exact capped episode age from the inherited suffix.
+        age=np.zeros(previous.shape,dtype=np.int32)
+        for lag in range(1,11):
+            p,j=divmod((first_tick-1-lag)%inherited['capacity'],inherited['page_size'])
+            age+=(previous==inherited['pages'][p]['episode'][j].numpy())
+    else:
+        previous=None
     amin=np.full(7,np.inf)
     amax=-amin.copy()
     qmin=np.full(7,np.inf)
@@ -103,6 +121,9 @@ def coverage(u):
             name=cfg['reference_paths'][m].split('/')[-1]
             ph,ns=np.unique(labels[frames[ix & (motion==m)]],return_counts=True)
             counts.update({name+'/'+p:int(n) for p,n in zip(ph,ns)})
+    if parent:
+        assert valid==dump['total']-parent['valid']
+        assert (clock-left)*replay['lanes']==dump['simulated']-parent['simulated']
     if left==0:
         assert valid==dump['total'] and clock*replay['lanes']==dump['simulated']
     sc=np.array([x['scale'] for x in info['actions']])
@@ -122,7 +143,7 @@ def coverage(u):
             lower_gap_over_span=float(low/span) if span else None,upper_gap_over_span=float(high/span) if span else None))
     io.write(OUT/f'coverage_u{u:06}.json',dict(first_tick_zero_based=left,clock=clock,
         recovery_ranges=[(a,b,str(p)) for a,b,p in ranges],full_chain=left==0,valid=valid,complete_terminal_rows=term,complete_clip_end_rows=trunc,
-        prefix_lane_intervals=prefix if left==0 else None,simulated_intervals=(clock-left)*replay['lanes'],
+        parent_tick=first_tick,segment_covered=left==first_tick,prefix_lane_intervals=prefix if left==first_tick else None,simulated_intervals=(clock-left)*replay['lanes'],
         training_by_reference_phase=counts,starts_by_reference=starts,measured_command_support=bounds))
 
 

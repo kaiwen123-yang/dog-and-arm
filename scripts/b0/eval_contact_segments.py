@@ -41,6 +41,10 @@ class WarpSingleWorld:
         p = self.plant
         p.data.ctrl[:,p.actuator_ids] = self.tensor(servo)[None] + p.data.qfrc_bias[:,p.dof] * p.bias_gain
         p.sim.step()
+        self.read_solve(data)
+
+    def read_solve(self,data):
+        p=self.plant
         source = p.sim.wp_data
         self.mjw.get_data_into(data,self.m,source,world_id=0)
         bits = int(p.contact_audit.overflow_bits[0])
@@ -99,12 +103,16 @@ def continuous_initial(model, cfg, integrator):
 
 def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, output=None, *,
                      model=None, integrator=None, device='cuda:0', raw_dir=None, video=False,
-                     action_source='frozen Actor raw output then clamp', paper_score=False):
+                     action_source='frozen Actor raw output then clamp', paper_score=False, trace=False, trace_windows=None, fine_clock=False):
+    from scripts.b0.official_flow_trace import FineServo, ServoTrace, WARNING_CONTEXT
+    from learning.b0.contact_clock import ContactClock
+    trace_log=ServoTrace(trace_windows) if trace else None
     begun = perf_counter()
     path=Path(episode_path)
     meta=json.loads((path/'metadata.json').read_text())
     side = meta['task']
     full = segment == 'full'
+    WARNING_CONTEXT.update(side=side,case=segment)
     stage = 'mobile' if side=='pull' else 'push'
     case = int(perturbation['p6_case']) if full else 1
     cfg = settings(stage,case)
@@ -115,6 +123,11 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
         raise ValueError(f'expected successful training reference for {segment}: {path}')
     cfg['target_angle_deg']=goal
     model = build(cfg) if model is None else model
+    if fine_clock:
+        assert full and backend=='warp' and not paper_score and integrator is None
+        model.opt.timestep=.00025
+        integrator=FineServo(model,device)
+    clock=ContactClock(model.opt.timestep)
     if backend not in ('warp','native'):
         raise ValueError(f'unknown backend {backend}')
     if backend == 'warp' and integrator is None:
@@ -124,7 +137,7 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
     end=ref.phase_bounds[phases[-1]][1]
     # The recorded segment has an exact terminal substep. No extension into
     # later phases or repeated final frame can supply extra holding time.
-    max_step=end
+    max_step=end*clock.servo_stride
     judge=ContactEvents(model,cfg,side,ref,phases=phases,hold_seconds=.5 if full else 3.,start_step=start,
                         score_until_step=end-start if paper_score else None)
     mapping=ActionMap(model)
@@ -151,12 +164,12 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
     ticks=[0]
     raw_log, clipped_log=[],[]
     audit=[]
-    while result['first_failure'] is None and not judge.passed and start+judge.step < max_step:
+    while result['first_failure'] is None and not judge.passed and start*clock.servo_stride+judge.step < max_step:
         current_q, current_v=d.qpos.copy(),d.qvel.copy()
         hq=np.concatenate((hq[1:],current_q[None]))
         hv=np.concatenate((hv[1:],current_v[None]))
         ha=np.concatenate((ha[1:],previous[None]))
-        frame=(start+judge.step)//10
+        frame=(start*clock.servo_stride+judge.step)//clock.policy_steps
         raw=np.asarray(policy_fn(path,frame,hq,hv,ha),dtype=np.float64)
         if raw.shape!=(23,) or not np.isfinite(raw).all():
             result['first_failure']=dict(reason='invalid_policy_action',phase=judge.phase)
@@ -165,7 +178,9 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
         servo=(mapping.offset+mapping.scale*previous)*mapping.finger_factor
         raw_log.append(raw.copy())
         clipped_log.append(previous.copy())
-        for _ in range(min(10,max_step-start-judge.step)):
+        if fine_clock:
+            integrator.command(previous)
+        for _ in range(min(clock.policy_steps,max_step-start*clock.servo_stride-judge.step)):
             q0,v0=d.qpos.copy(),d.qvel.copy()
             if integrator is None:
                 d.ctrl[mapping.actuator_ids]=servo+d.qfrc_bias[mapping.dof]*mapping.bias_gain
@@ -173,6 +188,8 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
             else:
                 integrator.step(d,servo)
             failure=judge.observe(d,None,q0,v0)
+            if trace_log and ((judge.step-1)%clock.servo_stride==0 or failure or judge.passed):
+                trace_log.record(judge.step-1,q0,v0,d,judge,mapping.offset+mapping.scale*previous,mapping,model)
             net_force = judge.latest['net_door_force_n']
             peak_net_force = net_force if peak_net_force is None else max(peak_net_force, net_force)
             if full and raw_dir is not None:
@@ -203,17 +220,23 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
                       score_first_failure=result['first_failure'])
         if judge.terminal_event_step is not None:
             result.update(passed=True, first_failure=None)
+    if fine_clock:
+        result.update(clock=clock.metadata(),reference_end_2ms=end,physics_seconds=judge.step*clock.physics_dt,
+                      final_partial_substeps=judge.step%clock.policy_steps,training_clock_diagnostic=True)
     if integrator is not None:
         result['warp_capacity']=integrator.capacity()
     if raw_dir is not None:
         raw_dir=Path(raw_dir)
         raw_dir.mkdir(parents=True,exist_ok=False)
+        if trace_log:
+            trace_log.save(raw_dir)
         for name,values in dict(qpos=qlog,qvel=vlog,physics_step=ticks,
                                 raw_action=np.asarray(raw_log).reshape(-1,23),
                                 clipped_action=np.asarray(clipped_log).reshape(-1,23)).items():
             np.save(raw_dir/(name+'.npy'),np.asarray(values),allow_pickle=False)
         if full:
-            np.save(raw_dir/'physical_events_2ms.npy',np.asarray(audit),allow_pickle=False)
+            np.save(raw_dir/('physical_events_025ms.npy' if fine_clock else 'physical_events_2ms.npy'),
+                    np.asarray(audit),allow_pickle=False)
             result['physical_event_columns'] = ['step','phase_id','door_deg','finger1_n','finger2_n',
                 'resultant_n','tcp_handle_error_m','jaw_width_m','station_error_m','tilt_deg',
                 'speed_m_s','yaw_rate_deg_s','continuous_ready_steps']
@@ -245,6 +268,8 @@ def actor_worker(args):
         policy=load_policy(args.checkpoint,[Path(p) for p in request['paths']],args.device)
         for line in sys.stdin:
             req=json.loads(line)
+            from scripts.b0.official_flow_trace import WARNING_CONTEXT
+            WARNING_CONTEXT.update(side=Path(req['path']).name,case='actor_worker')
             action=policy(Path(req['path']),req['frame'],np.array(req['q']),np.array(req['v']),np.array(req['a']))
             print(json.dumps(np.asarray(action).tolist(),allow_nan=False),file=stream,flush=True)
 
@@ -446,7 +471,8 @@ def main(args):
         if args.backend=='warp':
             raise ValueError('use the pinned B0 interpreter for Warp')
         process=subprocess.Popen(['bash',str(ROOT/'scripts/b0/env.sh'),'python','-u',__file__,'--actor-worker',
-                                 '--checkpoint',str(args.checkpoint),'--device',args.device],
+                                 '--checkpoint',str(args.checkpoint),'--device',args.device,
+                                 *(['--warning-log',str(args.warning_log)] if args.warning_log else [])],
                                  text=True,stdin=subprocess.PIPE,stdout=subprocess.PIPE,bufsize=1)
         process.stdin.write(json.dumps(dict(paths=list(map(str,paths))))+'\n')
         process.stdin.flush()
@@ -495,7 +521,10 @@ def main(args):
                         r=evaluate_segment(policy,directory/group['episode'],segment,case['perturbation'],args.backend,
                                            output/folder,model=model,integrator=integrator,device=args.device,
                                            raw_dir=raw_root/folder,video=args.video and not development,
-                                           paper_score=args.paper_score)
+                                           paper_score=args.paper_score, trace=args.record_servo, fine_clock=args.fine_clock,
+                                           trace_windows=(next(r['targeted_2ms_windows'] for r in
+                                               json.loads(args.trace_windows.read_text())['sides'] if r['side']==side)
+                                               if args.trace_windows else None))
                     row=dict(side=side,segment=segment,case=case['id'],passed=r['passed'],physics_steps=r['physics_steps'],
                              policy_calls=r['policy_calls'],final_door_deg=r['final_door_deg'],
                              failure=r['first_failure']['reason'] if r['first_failure'] else None)
@@ -546,7 +575,14 @@ if __name__=='__main__':
     parser.add_argument('--side',nargs='+',choices=('pull','push'))
     parser.add_argument('--segment',nargs='+',choices=SEGMENTS)
     parser.add_argument('--actor-worker',action='store_true',help=argparse.SUPPRESS)
+    parser.add_argument('--record-servo',action='store_true')
+    parser.add_argument('--fine-clock',action='store_true')
+    parser.add_argument('--trace-windows',type=Path)
+    parser.add_argument('--warning-log',type=Path)
     args=parser.parse_args()
+    if args.warning_log:
+        from scripts.b0.official_flow_trace import capture_warnings
+        capture_warnings(args.warning_log)
     if args.actor_worker:
         actor_worker(args)
     elif args.run:

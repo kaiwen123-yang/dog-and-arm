@@ -224,7 +224,7 @@ class ContactEvents:
         self.peak_ready_steps[phase] = max(self.good, self.peak_ready_steps.get(phase, 0))
         self.latest = dict(phase=phase, door_deg=float(angle), width_m=float(jaw),
                            finger_n=c.finger_normal.tolist(), net_door_force_n=float(net),
-                           tcp_handle_error_m=float(error), station_error_m=float(drift),
+                           tcp_handle_error_m=float(error), station_error_m=float(drift), heading_error_deg=float(heading),
                            tilt_deg=float(tilt), speed_m_s=float(speed), yaw_rate_deg_s=float(yaw_rate),
                            continuous_ready_steps=self.good, required_ready_steps=self.ticks(seconds))
         if self.terminal_event_step is not None:

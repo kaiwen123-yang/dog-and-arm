@@ -1,5 +1,6 @@
 """Reload the actual optimizer, replay, sampler, RNG and live physical boundary."""
 import argparse
+from pathlib import Path
 import json
 import numpy as np
 import torch
@@ -15,9 +16,14 @@ def check(u):
              if r['update']==u)
     directory=RAW/f'resume_{u:06}'
     receipt=dict(checkpoint=str(RAW/f'checkpoint_{u:06}.pt'),state=str(directory),
-                 steps=row['steps'],stats=row['statistics'],update=u)
+                 steps=row['steps'],stats=row['statistics'],update=u,ratio=row['ratio'],clock=row['tick'],valid=row['valid'],simulated=row['simulated'])
     assert restore(run,receipt)==u
-    assert run.total==row['valid'] and run.schedule.state_dict()==row['ratio']
+    verify_loaded(run,receipt)
+
+
+def verify_loaded(run,receipt):
+    u=receipt['update']
+    directory=Path(receipt['state'])
     lanes=torch.arange(run.n,device=run.device)
     last=run.replay.get(lanes,torch.full_like(lanes,run.replay.clock-1),('next_state','action','episode'))
     physical=contact_state(run.plant.data.qpos[:],run.plant.data.qvel[:])

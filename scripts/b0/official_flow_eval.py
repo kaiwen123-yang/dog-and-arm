@@ -18,7 +18,7 @@ from learning.b0.physics import ActionMap, make_model
 from learning.b0.temporal_dynamics import make_dynamics
 from scripts.b0 import dynamics_h32_pilot as io
 from scripts.b0.joint_validation import Validation
-from scripts.b0.official_flow import OUT, RAW
+from scripts.b0.official_flow import CONTINUATION, OUT, RAW
 
 
 def evaluate(u, backend, kind):
@@ -36,6 +36,8 @@ def evaluate(u, backend, kind):
                '--checkpoint',str(checkpoint),'--backend',backend,'--run',run,
                '--round',str(OUT.relative_to('results/b0')/'physics'),
                str(RAW.relative_to('results/raw_large/b0')/'physics'),'--paper-score']
+        if CONTINUATION:
+            cmd += ['--record-servo','--warning-log',str(OUT/'backend'/'node_warnings.jsonl')]
         if protocol=='full':
             cmd += ['--full-task','--side','pull','push','--references','results/raw_large/b0/full_warp_hold_park_r1']
         else:
