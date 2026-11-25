@@ -1,21 +1,16 @@
-dog-and-arm 下一执行轮：RefXY2 独立迁移适配配对（北京时间 2026-11-25 登记）。
+dog-and-arm 当前入口：查看已有完整成功视频，停止自动推进标准迁移（北京时间2026-11-25）。
 
-请实际实施并完成本轮，不只审查或再写计划。先 fetch GitHub main，保留现有工作树修改，必要时建独立工作树。读取 AGENTS.md 与 PROJECT_STATE.md 顶部、reports/B0_PREGRASP_ROUND_REVIEW_20261125.md、docs/B0_REFXY2_TRANSFER_PLAN_20261125.md、results/b0/pregrasp_review_20261125/next_registration.json、docs/GOAL_GAP_20261125.md 和 DAILY_WORK_LOG.md 最新条目；再按计划读取原 u10000 恢复路径与 787d5e38 实测证据。不要重做已完成的 A–D。
+用户最新要求：现在若有比较完整的成功流程仿真视频可以查看，就可以不再继续SuperMimic平台迁移。已有同一个546维混合策略u1的native双侧完整成功视频，已核对原判、13阶段、完整解码和关键画面。
 
-目标顺序保持：先完成固定官方 SuperMimic 的平台迁移并形成独立可比较结果，首次原裁判完整成功立即交同一回合连续原速 V0；之后才开发算法/VLA。原 SuperMimic-M1Piper-standard-v1 封存于 official_flow_s0_v1/u10000，B0-04、候选 null、合格双侧回报 NA、V0=0。原四个 full 已完成驶近/停车但预抓位置 0 拍合格。RefXY2 是独立输入适配假设，不是已证明根因，不回填原标准成绩，不自动续原 u15000。
+先读 reports/SUCCESS_VIDEOS_AND_SCOPE_20261125.md、results/b0/success_video_review_20261125/manifest.json、PROJECT_STATE.md顶部和DAILY_WORK_LOG.md最新条目。向用户展示：
+1. results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/episode.mp4（74.28秒）
+2. results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/episode.mp4（54.44秒）
+两条都有同目录原result.json，passed=true、start_substep=0、prefix_physics_steps=0、13事件和最终3秒停稳。允许原速查看，不需要新训练或重新仿真。
 
-实现一个因子：两支都将 Actor motion goal 从540扩为542。measured支仅附加当前参考根减当前自身根的水平差，经当前根yaw转机体系再除以0.05m；zero支两维恒零。当前时刻不是reward的t+1。处理支ID SuperMimic-M1Piper-RefXY2-v1，控制支ID SuperMimic-M1Piper-RefXY2-zero-v1；实验refxy2_pair_s0_v1。cfg.execution_recipe必须保留official_flow_s0_v1，新身份用独立字段，避免落回旧H1混合路径。WM表示75/目标570/context5、Critic输入与loss均不变。
+如实注明方法：参考前馈＋累计15000次分阶段动作BC＋解析根平移臂补偿，后续一次真实H32更新。同一个checkpoint在各自物理后继上闭环执行，无教师接管/中途reset；它不是纯官方标准Actor成功复现。更清晰的P6工程视频仅作为额外展示，不混写学习方法。
 
-从同一个u10000完整包显式迁移。首层2048×540→2048×542，旧列/bias/其余网络复制，新两列为零。首层属于Adam，旧exp_avg/exp_avg_sq保留、新列零，保留实际共享step、betas、eps、lr；Muon和其他优化器不变。原540目标及77本体统计/计数和在线规则保留，新2维只做固定物理缩放。一次性白名单转换后继续严格恢复，不删除cfg断言。完整恢复replay/live lanes/history/上一动作/servo/solver/RNG/sampler/时钟/Ratio，构造后还原父RNG。不得重建Actor或清空优化器。
+停止自动推进旧SuperMimic迁移计划，不启动RefXY2、不续u15000、不为本次视频交付追加WM/Actor/Critic、D/C/独立seed/H或其他算法。旧next_registration/计划预算仅保留历史，不构成当前启动指令。原standard-v1/u10000仍B0-04、候选null、合格双侧回报NA、标准V0=0，诚实封存未完成结论，不改写成功。
 
-共享特征实现必须覆盖真采、replay、每一步想象、contact/full/free、导出及恢复。想象由当前预测aux重算并保留XY/yaw导数；FreeRun.actor_obs绕过DoorMotions.goals，必须单独贯通。+0新列零导致Actor对XY导数零是正常，检查feature坐标AD，不随机初始化来制造梯度。用既有真实历史核对旧540和两个542的稳定推理，留迁移及实际首更新回执；不额外做未计费优化。保持原全Actor梯度裁剪，披露新列可能影响旧列缩放。
+当前先交付和查看已有成果，后续研究等待用户另行指定。保留代码、数据、恢复路径、旧实验和工作树修改；不删除远端资产。本次没有查询或终止未知的远端进程，不声称它们已关闭。若用户后续明确要求处置现场作业，先核对身份再处理。
 
-两支各先执行+200 Actor/+2000 H7 WM/+4000 Critic，原4096环境、2048 WM batch、4096 Actor batch、在线统计/Ratio/10H7→1H32→20Critic、原八参考与物理时钟保持。保存+0/+1/+10/+50/+100/+200和不超过10更新间隔的滚动完整恢复包。共同扩维+0只评一套，+200两支各评一套；每套为原Warp十项+native3.3十项+双侧双后端frame0 full4案+原free60案，主段共252案。按原平台全部76拍统计P95/ready及root/arm分解，原实际事件窗口另报，不删失败样本、不暂停参考、不拼片段。
-
-按登记第4.2节判断+200延长：双侧Warp对共同+0和零控制有原事件/P95/连续ready的可复测增益，native两侧无可区分退化；候选成立再做三包四案的12条逆序复测。条件满足两支同步到+1000，+500各四条full，+1000各完整评分。全延长合计100 contact/40 full/300 free=440案；资格评测另列。训练主段实付上限420/4200/8400，延长后总上限2020/20200/40400，全轮唯一共享回滚预留20/200/400不重置，各组件实际失败优化分别计账。不得从旧轮借预算；不以单侧、reward、WM误差或新列非零延长。没有收益则如实结案，不推断XY永远无用。
-
-并行完成一次原540/u10000冻结FP64模型内检查：四旧细步锚点、原z0/噪声/三归档方向，eta=.02*2^-k，k=0..10；264正负WM rollout，另4预热/8baseline/12JVP/4reverse AD，0新物理、0优化。全部浮点链路升64，保存32步分项和Taylor/缩步结果。原H32有9组同WM AD-FD反号仍未闭合；不把无开关变化当光滑证明。该检查不作WM放行门。若证明真实核心bug，封存受影响配对、另立修复身份，不能混入XY干预；未闭合如实保留。
-
-保持原3mm/150ms、参考、接触/D/C/native/free/seed/H与0.88/0.90回报口径。任一同包真的十项通过，按原协议继续可执行的D/C/native/free，身份一致的已测案例按ID复用，不重复收费。首个原裁判frame0完整成功立即生成交付同回合原速连续视频，标明新方法/分支/节点，不冒充standard-v1。独立seed新增训练预算待seed0配方冻结后具体登记，不能拖延已有V0交付。
-
-独立保存两支完整恢复与实际预算/分母/失败/延长决定/视频，更新唯一北京时间DAILY_WORK_LOG.md、报告、PROJECT_STATE、目标差距及两份同文启动词。普通推送GitHub main并从固定提交逐文件回读；保留旧标准/原A-D/其他平台已有修改。没有执行的工作明确写未执行，不以计算图或诊断视频代替学习成功。
+有新的说明或交付更新唯一北京时间DAILY_WORK_LOG.md，普通推送GitHub并固定提交回读；不做本机压缩归档，不生成伪造视频或拼接成功结论。

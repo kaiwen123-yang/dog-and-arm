@@ -1,5 +1,13 @@
 # B0 完整任务视频与参数比例比较
 
+## 2026-11-25｜最新用户范围：已有完整成功视频，停止自动推进标准迁移
+
+用户现在以“能查看比较完整的成功流程仿真视频”为当前收束依据。已核对同一个546维混合策略u1的native双侧原视频：前拉74.28s、背推54.44s，均从frame0连续完成13阶段，原判passed=true。方法含参考前馈、累计15000动作BC及解析补偿；原官方标准链仍未完成，不能混写身份。
+
+[立即查看视频与说明](../reports/SUCCESS_VIDEOS_AND_SCOPE_20261125.md) · [视频核验清单](../results/b0/success_video_review_20261125/manifest.json) · [当前入口](../prompts/NEXT_RUN.txt)
+
+**停止继续自动安排SuperMimic标准迁移；RefXY2计划保留但不启动，原u10000封存。** 原B0-04/null/NA/标准V0=0作为未完成结论保留，不再为本次视频交付追加训练或D/C/seed/H。当前先交付并查看已有成果，后续研究待用户另行指定。本次新增训练/仿真0，没有检查或终止远端未知作业。下方旧“下一轮执行”属于历史，不能覆盖本节。
+
 ## 2026-11-25｜当前适配登记与原标准边界
 
 原 A–D 实测提交787d5e38已完成，下一执行轮见[RefXY2计划](B0_REFXY2_TRANSFER_PLAN_20261125.md)、[最新审查](../reports/B0_PREGRASP_ROUND_REVIEW_20261125.md)和[机器登记](../results/b0/pregrasp_review_20261125/next_registration.json)。本次新增训练/仿真0；原standard-v1/u10000仍B0-04、候选null、合格双侧回报NA、V0=0。

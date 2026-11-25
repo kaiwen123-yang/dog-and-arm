@@ -1,5 +1,7 @@
 # RefXY2 独立迁移适配：配对训练、原物理评分与完整视频
 
+> **当前不启动。** 用户后续把可查看完整成功流程视频作为收束依据；已有混合策略双侧完整视频已核对并交付。此计划保留为未执行的历史登记，不自动消耗预算。见[视频与当前范围](../reports/SUCCESS_VIDEOS_AND_SCOPE_20261125.md)。
+
 状态：**下一轮执行登记，尚未执行**。本计划接续固定实测提交 `787d5e38b9fc6cca99c1322aae22f1321e9c8dee`；原 `official_flow_s0_v1/u10000` 与 `SuperMimic-M1Piper-standard-v1` 保持封存。本次只发布审查与计划，没有新增优化、仿真或 V0。
 
 [本轮审查](../reports/B0_PREGRASP_ROUND_REVIEW_20261125.md) · [机器登记](../results/b0/pregrasp_review_20261125/next_registration.json) · [原提案](../results/b0/standard_pregrasp_compatibility_20261125/adaptation_proposal.json) · [启动词](../prompts/NEXT_RUN.txt)
