@@ -2,7 +2,7 @@
 
 日期：2026-11-25，北京时间。用户已明确：桌面 Piper 部署由用户根据时间安排，**当前直接推进完整多模态算法**。本计划是现在的主入口，不等待桌面实机成功、手眼标定或旧 B0 资格。
 
-本次完成执行范围、源码接口与任务登记；尚未在 AutoDL 启动本轮训练，尚无新多模态模型或物理成绩。上轮两期串行安排保留在[原固定提交](https://github.com/kaiwen123-yang/dog-and-arm/blob/f6dfa4bef94c3d9972ab9c316453837936405c02/results/planning/two_phase_20261125/registration.json)，当前由[MM-01登记](../results/planning/multimodal_mm01_20261125/registration.json)覆盖调度。
+本文件保留 21:08 的执行登记。随后已在 AutoDL 完成训练和从初态开始的物理评测，监督 0/12、模型式 0/12。[实测报告与接续](../reports/MULTIMODAL_MM01_RESULTS.md)。上轮两期串行安排保留在[原固定提交](https://github.com/kaiwen123-yang/dog-and-arm/blob/f6dfa4bef94c3d9972ab9c316453837936405c02/results/planning/two_phase_20261125/registration.json)，当前由[MM-01登记](../results/planning/multimodal_mm01_20261125/registration.json)覆盖调度。
 
 ## 1. 本轮必须贯通的主线
 
