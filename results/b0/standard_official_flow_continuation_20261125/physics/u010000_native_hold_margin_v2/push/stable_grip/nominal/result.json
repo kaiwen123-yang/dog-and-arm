@@ -1,0 +1,176 @@
+{
+  "episode": "push_0_train_grip",
+  "side": "push",
+  "segment": "stable_grip",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 10775,
+  "reference_last_substep": 10775,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.021737306009255837,
+    "grasp_error_m": 0.001866297589006309,
+    "supported": true,
+    "finger_n": [
+      3.4074541891564327,
+      2.4609004708197126
+    ],
+    "door_force_sum_n": 5.917999679831472,
+    "prefix_start_target_penetration_m": 0.000989694673660637,
+    "nominal_prefix_start_target_penetration_m": 0.000989694673660637,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "lost_grip",
+    "phase": "hold",
+    "first_failure_substep": 1586,
+    "interval_start_s": 3.17,
+    "interval_end_s": 3.172,
+    "door_deg": 1.0952263695897484,
+    "finger_load_n": [
+      0.0,
+      0.5234767213427766
+    ],
+    "wheel_load_n": [
+      98.74509511667011,
+      120.32214192976306,
+      103.61572410060677,
+      104.35732608812779
+    ],
+    "door_net_force_n": 0.7403078789095562,
+    "door_contact_sum_n": 0.7403078789095562,
+    "tcp_handle_error_m": 0.0010932578701388735,
+    "min_arm_margin_rad": 0.78060087395299
+  },
+  "events": [],
+  "policy_calls": 159,
+  "physics_steps": 1586,
+  "score_initial_previous_action": [
+    4.692527012155731e-05,
+    2.8057359741571834e-05,
+    -4.6465176600309276e-05,
+    4.6927973394321675e-05,
+    -2.8058684219559436e-05,
+    4.646829528783972e-05,
+    -4.6927973394321675e-05,
+    2.8058684219559436e-05,
+    -4.646829528783972e-05,
+    -4.6922593337643736e-05,
+    -2.8056037767930168e-05,
+    4.6462067342061584e-05,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.5197285714203694,
+    -0.11258552743180707,
+    0.48188451527416043,
+    0.6474739896808617,
+    -0.4933595340101474,
+    -0.3869481198453926,
+    -0.8000000000000002
+  ],
+  "score_initial_previous_action_valid": true,
+  "final_door_deg": 1.095224162972321,
+  "final_partial_substeps": 6,
+  "longest_ready_steps": {
+    "hold": 1391
+  },
+  "last_physical_observation": {
+    "phase": "hold",
+    "door_deg": 1.0952263695897484,
+    "width_m": 0.02350256107097702,
+    "finger_n": [
+      0.0,
+      0.5234767213427766
+    ],
+    "net_door_force_n": 0.7403078789095562,
+    "tcp_handle_error_m": 0.0010932578701388735,
+    "station_error_m": 0.0028724007045444126,
+    "heading_error_deg": 0.0704555068176236,
+    "tilt_deg": 0.4499630962054053,
+    "speed_m_s": 0.00020079711162662836,
+    "yaw_rate_deg_s": 0.021644555209639066,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 1500,
+    "ramp": true,
+    "ready": false,
+    "wheel_load_n": [
+      98.74509511667011,
+      120.32214192976306,
+      103.61572410060677,
+      104.35732608812779
+    ],
+    "tcp_goal_distance_m": null,
+    "tcp_goal_rotation_error_rad": null
+  },
+  "readiness": {
+    "phase": "hold",
+    "episode_age_s": 3.172,
+    "reference_phase": "hold",
+    "current": 0,
+    "best": 1391,
+    "required": 1500,
+    "ramp": true,
+    "tcp_goal_distance_m": null,
+    "tcp_goal_rotation_error_rad": null,
+    "last_not_ready": {
+      "hold": {
+        "reference_substep": 10335,
+        "ramp": true,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": false,
+        "gripped": false,
+        "detached": false,
+        "door_speed_rad_s": -1.928182878735062e-05,
+        "planar_speed_m_s": 0.00020079711162662836,
+        "yaw_rate_deg_s": 0.021644555209639066,
+        "tcp_handle_error_m": 0.0010932578701388735,
+        "width_m": 0.02350256107097702
+      }
+    },
+    "peak_ready_steps": {
+      "hold": 1391
+    }
+  },
+  "physical_gate_pass_step": null,
+  "measured_peak_net_force_n": 4.240088768649313,
+  "physical_wall_seconds": 3.476003462448716,
+  "score_first_failure": {
+    "reason": "lost_grip",
+    "phase": "hold",
+    "first_failure_substep": 1586,
+    "interval_start_s": 3.17,
+    "interval_end_s": 3.172,
+    "door_deg": 1.0952263695897484,
+    "finger_load_n": [
+      0.0,
+      0.5234767213427766
+    ],
+    "wheel_load_n": [
+      98.74509511667011,
+      120.32214192976306,
+      103.61572410060677,
+      104.35732608812779
+    ],
+    "door_net_force_n": 0.7403078789095562,
+    "door_contact_sum_n": 0.7403078789095562,
+    "tcp_handle_error_m": 0.0010932578701388735,
+    "min_arm_margin_rad": 0.78060087395299
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-20261125-be398cc/results/raw_large/b0/official_flow_continuation_20261125/physics/u010000_native_hold_margin_v2/push/stable_grip/nominal"
+}

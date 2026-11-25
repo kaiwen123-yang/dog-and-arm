@@ -1,0 +1,62 @@
+{
+  "checkpoint": "results/raw_large/b0/official_flow_continuation_20261125/checkpoint_010000.pt",
+  "backend": "native",
+  "mujoco": "3.3.0",
+  "manifest": "config/b0/contact_dev_hold_margin_v2.json",
+  "requested_dev": false,
+  "source": "results/raw_large/b0/contact_held_margin_v2",
+  "passed": 0,
+  "evaluated": 5,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06934543305353036,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06934543305353036,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "stable_grip",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1586,
+      "policy_calls": 159,
+      "final_door_deg": 1.095224162972321,
+      "failure": "lost_grip"
+    },
+    {
+      "side": "push",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1647,
+      "policy_calls": 165,
+      "final_door_deg": 3.747456318117675,
+      "failure": "lost_grip"
+    },
+    {
+      "side": "push",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1864,
+      "policy_calls": 187,
+      "final_door_deg": 3.731744670159488,
+      "failure": "lost_grip"
+    }
+  ]
+}

@@ -1,5 +1,21 @@
 # 固定官方 SuperMimic 向 M1＋Piper 迁移，11 月 25 日续训
 
+## 最终结果：在 u10000 收束
+
+北京时间 14:15:17 完成最后一次优化，14:18:28 写完 u10000 一致恢复点，14:29:11 完成端点评测、独立重载及计数归档，14:35:01 在补做同包短入口复测后决定不延长至 u15000。仍为 B0-04，候选 null，合格双侧完整回报 NA，V0=0。[预算决定](../results/b0/standard_official_flow_continuation_20261125/budget_decision.json) · [物理依据](../results/b0/standard_official_flow_continuation_20261125/decision_u010000.json) · [正式运行清单](../results/b0/standard_official_flow_continuation_20261125/baseline_manifest.json)
+
+| 节点 | Warp 原接触 | native 原接触 | frame0 双侧双后端 | free |
+|---|---:|---:|---:|---:|
+| 父 u4991 | 2/10 | 2/10 | 0/4 | 0/60 |
+| u7500 | 1/10 | 未安排 | 0/4 | 0/60 |
+| u10000 | 0/10 | 0/10 | 0/4 | 0/60 |
+
+本轮两次主要节点评测合计 Warp 1/20、native 0/10、完整 0/8、free 0/120，常规纯 Actor 入口 12 案。另有父包诊断四案和终点逆序复测六案，分别记账。u10000 四个完整回合都完成驶近、停车；前拉/背推的末拍冻结端点距离在 Warp 上为 80.77/113.25 mm，native 上为 79.01/110.74 mm。末拍姿态误差均低于 0.02 rad；位置要求为 3 mm，最佳连续就绪均为 0/75 拍，全部预抓超时。u10000 的 native 背推已能完成父包本案未完成的停车。[逐案](../results/b0/standard_official_flow_continuation_20261125/physical_cases.csv) · [就绪量](../results/b0/standard_official_flow_continuation_20261125/readiness_u010000.json)
+
+前拉短 grasp 入口在三节点的前缀末拍两指载荷均为 0 N。其后纯 Actor 闭环产生的最长连续双指接触依次为 0、460、362 ms。用 u10000 冻结包将六入口顺序反转重算，前拉 grasp 再现 181 个连续 2 ms 拍，32 次 Actor 查询，原裁判无完成事件。这表明该入口上已能从无双指载荷建立短时接触。另一侧出现持续退化：父包背推 open_5 和 stable_grip 均在双后端通过，u7500 Warp 仅保留 open_5，u10000 两后端两项均失去。终点 20 个原接触片段没有完成任何阶段事件。两个新节点的四个预登记失效窗均未覆盖全部要求的实际阶段，不能据部分窗口认定双侧跟踪改善。综合两侧结果，主段收束。[逆序复测](../results/b0/standard_official_flow_continuation_20261125/repeat_u010000.json) · [分侧证据](../results/b0/standard_official_flow_continuation_20261125/extension_review_u010000.json)
+
+u10000 独立开发块 16,384 区间中有效 10,947、有效 terminal 298、有效双指 1,985。H32 全体合法窗前拉/背推分别 1,631/1,424 个，TCP P95 为 3.230/3.900 mm；整窗双指分别 12/14 个，P95 为 1.349/1.359 mm。开发数据未回流。正式末包独立回读通过，4,096 条 lane、136 个 solver 数组、162 个优化器张量以及采样器/RNG 已核对。计数档最大间隔 500 tick，逐字段核对 64,159,744 条重叠 lane 记录。本轮保留与实付均为 5,009 Actor / 50,090 WM / 100,180 Critic，回滚为零；新增有效转移 51,290,043。父包、正式节点和最新两代临时包保留。u12500/u15000、D/C、独立 seed1/2、冻结 H 和成功视频均未执行。[末点恢复](../results/b0/standard_official_flow_continuation_20261125/restored_u010000.json) · [开发评分](../results/b0/standard_official_flow_continuation_20261125/current_policy/u010000/scores.json) · [覆盖归档](../results/b0/standard_official_flow_continuation_20261125/coverage_archive.json)
+
 ## 14:19 主段已保存到 u10000，u7500 已完成原物理评分
 
 主段 5,009 个新更新 u4992–u10000 连续，新增 50,090 批 H7 WM、100,180 批 Critic，新增有效转移 51,290,043。u10000 完整保存点为 tick 26,988，累计有效转移 102,414,758。u10000 原物理评测正在 tmux 中运行，尚无本节点完整评分或延长决定。[u10000 回执](../results/b0/standard_official_flow_continuation_20261125/node_010000.json)
