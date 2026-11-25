@@ -1,12 +1,14 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-## 2026-11-25｜u4991 已审查，下一轮继续同一官方主链
+## 2026-11-25｜u10000 已审查，下一轮集中查明预抓失败
 
-**先完成固定官方 SuperMimic 的 M1＋Piper 标准迁移并冻结独立结果，再开发算法、多模态/VLA。** u4991 同一包在原2ms Warp与native3.3均通过背推5°开门保持、稳定握持，各2/10；成功片段从原真实前缀后已有抓持的入口开始。完整从头0/20，驶近20次、停车9次、预抓取0次；新Actor free0/300。仍B0-04、候选null、合格完整双侧回报NA、V0=0。[最新审查](reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md) · [原实训](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md) · [实际差距](docs/GOAL_GAP_20261125.md)
+固定79fd3cf的official_flow_s0_v1已结案于u10000，不延长u15000。末点原Warp/native接触各0/10，frame0完整0/4、free0/60；候选null、合格完整双侧回报NA、V0=0，仍B0-04。主链累计10000 Actor/100000 WM/200000 Critic、102414758有效转移。先完成固定官方标准迁移冻结，再开发算法/VLA。
 
-下一轮完整恢复u4991，主段累计至u10000，有物理依据至u15000。u5000作中途保存；主段新增5009 Actor/50090 WM/100180 Critic，延长后整轮新增10009/100090/200180，另单列一次回滚预留100/1000/2000。保持当前官方核心、八参考、在线统计与原物理任务，有限ready诊断并行，不重启Actor或设置WM门。[完整计划](docs/B0_OFFICIAL_FLOW_NEXT_PLAN_20261125.md) · [机器预算](results/b0/official_flow_review_20261125/next_registration.json) · [启动词](prompts/NEXT_RUN.txt)
+[最新审查](reports/B0_U10000_REVIEW_20261125.md) · [下一集中轮](docs/B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md) · [机器登记](results/b0/official_u10000_review_20261125/next_registration.json) · [目标差距](docs/GOAL_GAP_20261125.md) · [启动词](prompts/NEXT_RUN.txt)
 
-首次标准Actor从frame0真实完整成功即交同episode连续视频，并继续另一侧及原D/C/native/free/独立seed/H资格。旧P6教师和混合策略成绩独立保留；WM直接祖先14850批及各轮实付分列。本次只审查和发布计划，没有新增训练或成功视频。当前实绩以[PROJECT_STATE](PROJECT_STATE.md)顶部为准。
+预抓末拍79–113mm是到冻结端点的距离；同时TCP距把手7.84–11.51mm，参考已到grasp。下一轮围绕原平台期一次完成既有12轨迹分解、冻结输入/原目标核对、有限动作响应及4条完整参考钟诊断。默认0优化；仅有具体实现错误时同轮最小修复、control/fix各200原更新，另列一次回滚预留。原主链结案、旧结果与预算保持，不自动换观测/奖励、暂停参考或重开WM门。
+
+本次是仓库审查与计划发布，未新增训练/仿真。后续首次原裁判完整成功立即交同episode连续原速V0；失败后延续诊断视频不能代替成功视频。下方旧“当前/下一轮”按相应日期的历史记录阅读，以本节和新登记为当前入口。
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 

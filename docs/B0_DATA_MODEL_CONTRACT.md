@@ -1,5 +1,13 @@
 # B0 数据、动作、观测与模型约定
 
+## 2026-11-25｜u10000接口审查与下一轮边界
+
+当前实绩和新入口为[审查](../reports/B0_U10000_REVIEW_20261125.md)、[预抓兼容性计划](B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md)。原链已结案，不执行旧u15000延长；本次没有修改学习/数据接口。
+
+Actor维持77×10本体历史、goal540；删除的30维是未来参考根相对平移，不是TCP目标。固定官方make_motion_task取compute_wm_goal第二返回值，切rep_state也不补回30维。本项目ContactRepresentation75包含机器人58之外的门角/门速2和几何15，直接喂75给Actor会新增17维门真值，不是无语义变化的官方默认切换。详见[源码审查](../results/b0/official_u10000_review_20261125/model_audit.json)。
+
+下一轮现有2ms正式轨迹与0.25ms重建状态分别标识，禁止跨步长复用solver缓存；actual_event_phase、reference_phase、端点误差与当前参考误差分别记。被冻结正式裁判在首败后不复活；诊断续段使用独立物理时钟，并保持在途动作直到原20ms边界。原u10000恢复包是唯一父入口，旧段配置/路径按日期阅读。
+
 ## 2026-11-25｜当前接口不变，完整恢复 u4991
 
 官方在线主链已连续执行至u4991；Actor仍proprio/history10/goal540，WM状态75、WM/Critic目标570、context5；训练.25ms/servo2ms/策略20ms/c=.50625，正式原2ms身份不变。下一轮按[新段计划](B0_OFFICIAL_FLOW_NEXT_PLAN_20261125.md)恢复全部状态，cfg全等，不从u1000或+850重建。

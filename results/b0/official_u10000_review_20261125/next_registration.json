@@ -1,0 +1,301 @@
+{
+  "registration_id": "official_pregrasp_compatibility_s0_v1",
+  "status": "planned_not_executed",
+  "registered_date_beijing": "2026-11-25",
+  "parent_commit": "79fd3cf876c126e74d862e34e2638495705098e7",
+  "parent_chain": "official_flow_s0_v1",
+  "parent_update": 10000,
+  "method_id": "SuperMimic-M1Piper-standard-v1",
+  "scope": "One concentrated source-and-physics compatibility experiment around the original pregrasp readiness interval; no unconditional continuation of the closed chain.",
+  "objective_unchanged": {
+    "official_standard_transfer_before_new_algorithms": true,
+    "successful_full_task_video_V0": true,
+    "qualified_bilateral_return_required": true,
+    "reference_return": 0.9,
+    "near_band": 0.88,
+    "candidate": null,
+    "stage": "B0-04"
+  },
+  "official_sources": {
+    "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+    "mjlab_research": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd"
+  },
+  "outputs": {
+    "light": "results/b0/standard_pregrasp_compatibility_20261125",
+    "large": "results/raw_large/b0/pregrasp_compatibility_20261125",
+    "report": "reports/B0_PREGRASP_COMPATIBILITY_RESULTS_20261125.md",
+    "plan": "docs/B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md"
+  },
+  "parent_recovery": {
+    "receipt": "results/b0/standard_official_flow_continuation_20261125/recovery.json",
+    "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-20261125-be398cc",
+    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261125/checkpoint_010000.pt",
+    "resume": "results/raw_large/b0/official_flow_continuation_20261125/resume_010000",
+    "clock": 26988,
+    "valid": 102414758,
+    "ratio_pending": 0,
+    "valid_to_next_ratio_threshold": 5722,
+    "cumulative_steps": {
+      "actor": 10000,
+      "wm": 100000,
+      "critic": 200000
+    }
+  },
+  "invariants": {
+    "actor_sensor_per_frame": 77,
+    "actor_history": 10,
+    "actor_goal": 540,
+    "wm_state": 75,
+    "wm_and_critic_goal": 570,
+    "context": 5,
+    "actions": 23,
+    "training_physics_dt_s": 0.00025,
+    "servo_dt_s": 0.002,
+    "policy_dt_s": 0.02,
+    "gencoord_coefficient": 0.50625,
+    "formal_physics_dt_s": 0.002,
+    "native_formal_version": "3.3.0",
+    "original_reference_library": true,
+    "original_formal_rules": true,
+    "original_learning_core": true
+  },
+  "default_new_optimization": {
+    "actor": 0,
+    "wm": 0,
+    "critic": 0
+  },
+  "old_extension_executed_or_reopened": false,
+  "work_packages": {
+    "A": {
+      "existing_full_traces": 12,
+      "updates": [
+        4991,
+        7500,
+        10000
+      ],
+      "new_physics": 0,
+      "primary_outputs": [
+        "readiness_predicates",
+        "clock_alignment",
+        "endpoint_vectors",
+        "root_translation_rotation_joint_vectors",
+        "two_registered_window_systems"
+      ],
+      "keep_failed_original_results": true
+    },
+    "B": {
+      "max_anchors": 4,
+      "selection": "Per side, first eligible 20ms boundary after original pregrasp ramp, and final eligible boundary before that reference phase ends; actual event must still be pregrasp. Deduplicate identical frames; missing remains missing.",
+      "variants_per_anchor": 7,
+      "max_frozen_inferences": 28,
+      "xy_offsets_m": [
+        0.05,
+        -0.05
+      ],
+      "positive_controls": {
+        "yaw_delta_deg": 0.5,
+        "J2_delta_rad": 0.001
+      },
+      "new_physics": 0,
+      "source_formula_prediction_not_yet_runtime_tested": true
+    },
+    "C": {
+      "max_training_identity_frame0_replays": 2,
+      "state_replay_stop": "After last registered anchor plus one 20ms interval, or earlier existing physical termination",
+      "no_cross_timestep_solver_restore": true,
+      "max_snapshot_reload_checks": 4,
+      "snapshot_reload_duration_s": 0.02,
+      "max_response_states": 4,
+      "directions": [
+        "original_H32_return_first_effort_action_gradient_Linf_normalized",
+        "J2_unit_effort",
+        "four_wheel_same_body_translation_using_axle_sign"
+      ],
+      "effort_amplitudes": [
+        0.02,
+        0.04,
+        0.08
+      ],
+      "physical_amplitudes": {
+        "J2_rad": [
+          0.0005,
+          0.001,
+          0.002
+        ],
+        "wheel_rad_s": [
+          0.01,
+          0.02,
+          0.04
+        ]
+      },
+      "branches_per_state": 19,
+      "max_response_branches": 76,
+      "max_policy_steps_per_branch": 32,
+      "max_duration_per_branch_s": 0.64,
+      "score_horizons_from_same_branch": [
+        1,
+        7,
+        32
+      ],
+      "diagnostic_rng_seed": 825251,
+      "common_sensor_noise_per_state": true,
+      "collector_action_noise": false,
+      "perturb_first_action_only": true,
+      "closed_loop_requery_after_first_action": true,
+      "stop_on_existing_physical_termination": true,
+      "missing_horizons": "NA",
+      "record_nonsmooth_branches": true,
+      "frozen_weights_statistics": true,
+      "first_action_variable": "independent raw-effort z0, through original home/unit and canonical clamp",
+      "freeze_parameters_but_keep_input_autodiff": true,
+      "no_detach_in_future_actor_requeries": true,
+      "h1_h7_comparison": "state outputs and original accumulated reward prefixes, without invented early bootstrap",
+      "j32_comparison_requires_all_baseline_plus_minus_complete": true,
+      "objective_terms": [
+        "six_original_tracking_terms",
+        "action_rate",
+        "joint_limit",
+        "soft_termination",
+        "terminal_critic",
+        "auxiliary_loss_separately"
+      ],
+      "auxiliary_loss_note": "Original latent BC constraint; current motion=1/velocity=0 chain value is zero.",
+      "physical_difference_interpretation": "closed-loop response difference, including policy feedback; does not uniquely isolate the dynamics Jacobian",
+      "reload_validation_noise_identity": "same as continuous frame0 replay, separately from the paired sensor-noise response experiment",
+      "cross_physics_state_pairing": "same registered reference anchors, different actually reached states; identical initial state only within each physics identity"
+    },
+    "D": {
+      "max_frame0_trajectories": 4,
+      "backends": [
+        "warp_2ms",
+        "native_mujoco_3.3.0_2ms"
+      ],
+      "sides": [
+        "pull",
+        "push"
+      ],
+      "formal_judge_sealed_at_first_failure": true,
+      "continuation_only_failure_prefix": "timeout:",
+      "parallel_reference_phase_physical_monitor_from_frame0": true,
+      "independent_monotonic_physical_clock_after_formal_failure": true,
+      "stop_at_original_reference_tail": true,
+      "can_count_post_failure_as_V0_or_formal_success": false,
+      "diagnostic_videos_required": true,
+      "preserve_inflight_action_to_next_policy_boundary": true,
+      "history_only_at_policy_boundaries": true,
+      "continue_only_if_reference_monitor_unterminated": true,
+      "stop_on_reference_phase_physical_termination": true
+    }
+  },
+  "conditional_fix_pair": {
+    "enabled_only_after": "Documented reproducible implementation mismatch against fixed official or already registered platform semantics; source location, counterexample and minimal same-contract fix required.",
+    "not_triggers": [
+      "missing useful observation by intentional official design",
+      "Gaussian reward kernel wider than task tolerance",
+      "missed task readiness window without wrong mapping",
+      "poor WM derivative fidelity alone without an implementation defect"
+    ],
+    "max_fixes": 1,
+    "branches": [
+      "control",
+      "fix"
+    ],
+    "same_full_parent_package": true,
+    "retain_actor_info_reward_reference_judge": true,
+    "retained_per_branch": {
+      "actor": 200,
+      "wm": 2000,
+      "critic": 4000
+    },
+    "retained_total": {
+      "actor": 400,
+      "wm": 4000,
+      "critic": 8000
+    },
+    "one_pair_rollback_reserve": {
+      "actor": 20,
+      "wm": 200,
+      "critic": 400
+    },
+    "charged_total_cap": {
+      "actor": 420,
+      "wm": 4200,
+      "critic": 8400
+    },
+    "old_budget_carryover": false,
+    "save_interval_actor_max": 10,
+    "rolling_generations": 2,
+    "process_save_nodes": [
+      50
+    ],
+    "formal_pair_nodes": [
+      0,
+      200
+    ],
+    "original_update_ratio": {
+      "wm": 10,
+      "actor": 1,
+      "critic": 20
+    },
+    "no_new_wm_error_gate": true,
+    "no_automatic_extension_after_200": true,
+    "evaluation": {
+      "control_0": "reuse fixed original results only with identical identity",
+      "new_packages_max": 3,
+      "per_package": {
+        "contact_warp": 10,
+        "contact_native": 10,
+        "full_bilateral_two_backends": 4,
+        "free": 60
+      },
+      "new_max": {
+        "contact": 60,
+        "full": 12,
+        "free": 180
+      }
+    },
+    "conditional_existing_qualification": {
+      "trigger": "same package original Warp contact 10/10; each subsequent original protocol condition must hold",
+      "max_D_cases": 200,
+      "max_C_full_cases": 40,
+      "max_native_full_nominal": 2,
+      "new_optimizer_updates": 0,
+      "max_cases_total": 242,
+      "independent_seed_training_in_this_short_pair": false
+    }
+  },
+  "no_implementation_bug_outcome": {
+    "required": "Specific supported compatibility conclusion or precisely bounded unresolved issue, plus at most one concrete separately identified adaptation proposal.",
+    "no_automatic_goal_translation_addition": true,
+    "no_automatic_contact75_actor": true,
+    "no_new_reward_or_reference_pause": true,
+    "no_false_standard_transfer_success": true
+  },
+  "actual_spend": null,
+  "deliverables": [
+    "independent_results_report",
+    "mechanism_decision.json",
+    "endpoint_decomposition.csv",
+    "readiness_predicates.json",
+    "clock_alignment.json",
+    "states.json",
+    "input_alias.json",
+    "original_objective_terms.json",
+    "response_registration.json",
+    "response_branches.csv",
+    "gradient_physics_comparison.json",
+    "reference_clock_continuation_cases.csv",
+    "diagnostic_video_manifest.json",
+    "budget_and_recovery_receipts",
+    "DAILY_WORK_LOG.md",
+    "PROJECT_STATE.md",
+    "prompts/NEXT_RUN.txt",
+    "prompts/B0_START.txt"
+  ],
+  "publishing": {
+    "ordinary_fast_forward": true,
+    "force_push": false,
+    "fixed_commit_readback": true
+  },
+  "max_default_new_physical_trajectories_or_branches": 86
+}

@@ -1,0 +1,359 @@
+{
+  "audit": {
+    "repository": "kaiwen123-yang/dog-and-arm",
+    "commit": "79fd3cf876c126e74d862e34e2638495705098e7",
+    "official_commit": "abc124c1bd5976341034668af3d12c087f2f1f55",
+    "scope": "官方Actor observation/goal语义、当前真实/想象/评测数据路径及绝对端点可观测性；与主任务的奖励/WM梯度审查互补",
+    "read_only": true,
+    "new_training_steps": 0,
+    "new_physical_cases": 0,
+    "large_remote_arrays_or_weights_reloaded": false
+  },
+  "conclusion": {
+    "continue_same_recipe_5000": "不支持。原u10000收束决定已有明确跨侧退化依据，应保留。",
+    "immediate_new_robot58_repstate_actor": "不支持仅凭官方默认就重开。robot58 rep_state/history1增加root height和body linear velocity，仍不含XY平移或参考根相对位置；当前nominal已通过停车，最急需核对的是预抓平台时窗和控制目标。",
+    "most_actionable": "在同一轮一次性完成：原数组同钟精确误差分解、实际输入别名批、同状态原目标/WM梯度与真实小扰动方向核对、最多4条固定Actor原参考钟后续诊断。只有已证接口/单位/时钟错误才修复并做配对短H32；没有错误时形成明确的算法接口与任务要求兼容性结论，不能伪造修复或自行加观测/目标。"
+  },
+  "official_sources": [
+    {
+      "path": "https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/representations.py",
+      "read_sections": [
+        "GOAL constants",
+        "motion_goal_window",
+        "motion_anchor_window",
+        "assemble_anchor_window",
+        "_assemble_goal",
+        "actor_goal_dim",
+        "compute_actor_sensor",
+        "GenCoordRepresentation.compute_wm_obs"
+      ]
+    },
+    {
+      "path": "https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/tasks/task_spec.py",
+      "read_sections": [
+        "make_motion_task",
+        "build_actor_obs_td"
+      ]
+    },
+    {
+      "path": "https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/runners/supermimic_runner.py",
+      "read_sections": [
+        "BaseRunnerCfg",
+        "build_world_model",
+        "build_actor",
+        "_build_sim_obs_td",
+        "step"
+      ]
+    },
+    {
+      "path": "https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/envs/world_model_env.py",
+      "read_sections": [
+        "reset",
+        "_synth_sensor",
+        "_critic_obs",
+        "_update_goal",
+        "_warmstart_past_sensors"
+      ]
+    },
+    {
+      "path": "https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/models.py",
+      "read_sections": [
+        "MultiEncoderAE.forward",
+        "Dynamics.forward",
+        "normalizers"
+      ]
+    }
+  ],
+  "goal_layout": {
+    "wm_goal_570": [
+      {
+        "range": "0:480",
+        "semantics": "10 future reference frames, each concatenates 24 joint positions then 24 joint velocities; frames at t,t+5,...,t+45 clipped independently at each reference last frame."
+      },
+      {
+        "range": "480:510",
+        "semantics": "10 reference ROOT positions expressed relative to current robot root (root-body XYZ), 3 per frame."
+      },
+      {
+        "range": "510:570",
+        "semantics": "10 reference ROOT orientations expressed relative to current root, rotation6d, 6 per frame."
+      }
+    ],
+    "actor_goal_540": [
+      {
+        "range": "0:480",
+        "semantics": "same joint position/velocity target window"
+      },
+      {
+        "range": "480:540",
+        "semantics": "same 10 relative root orientations"
+      }
+    ],
+    "critical_facts": [
+      "Deleted30 are relative reference ROOT translations, not TCP positions, not 30 arbitrary privileged channels.",
+      "make_motion_task always returns compute_wm_goal second item. Switching actor_obs from proprio to rep_state does not add these30 back.",
+      "Goal has no independent event phase, no explicit pregrasp frozen endpoint, no measured door angle or TCP-handle relative displacement. Reference joint/root-orientation sequence supplies intended movement implicitly.",
+      "At 20ms control and stride5 the 10-frame goal window spans current through +0.9s. Actor observes advancing reference clock, not independently stalled event stage."
+    ],
+    "project_sources": [
+      "learning/b0/contact_policy.py:DoorMotions.goals",
+      "learning/b0/contact_policy.py:build_actor",
+      "learning/b0/contact_training.py:DoorImagination._update_goal",
+      "config/b0/official_flow_s0_v1.yaml"
+    ]
+  },
+  "observation_modes": {
+    "current_P10": {
+      "dimensions": "77 per frame ×10 frames; motion goal540; latent32 then decoder",
+      "fields": [
+        "projected gravity3",
+        "root angular velocity in body3",
+        "24 joint positions minus home",
+        "24 joint velocities",
+        "23 previous canonical actions"
+      ],
+      "not_directly_present": [
+        "root world XYZ",
+        "root body linear velocity",
+        "root height",
+        "door angle/speed",
+        "door/hinge/handle relative geometry",
+        "actual event phase/ready verdict"
+      ],
+      "source": "RobotRepresentation.actor_obs_mode=proprio, build_actor hardcoded77/history10; official compute_wm_obs deliberately deletes aux and v_b."
+    },
+    "official_GenCoord_robot_R1": {
+      "dimensions": "58 robot representation ×1 frame plus same540 goal",
+      "fields": [
+        "root height1",
+        "gravity3",
+        "body linear velocity3",
+        "body angular velocity3",
+        "joint positions24",
+        "joint velocities24"
+      ],
+      "differences": [
+        "adds directly measured height and linear velocity",
+        "removes previous_action as explicit observation",
+        "removes9 predecessor frames",
+        "no proprio jitter in official rep_state mode"
+      ],
+      "does_not_fix": "Still no world/root reference XY translation and no TCP/door landmark geometry."
+    },
+    "naive_Contact75_R1": {
+      "dimensions": "75×1; same540 goal",
+      "adds_beyond_robot58": [
+        "door angle and speed2",
+        "hinge in base frame3",
+        "front handle center in TCP frame3",
+        "back handle center in TCP frame3",
+        "hinge axis in TCP3",
+        "front face normal in TCP3"
+      ],
+      "warning": "Would expose17 currently privileged door/geometry coordinates to Actor. It is not merely an official-default robot-state switch and must not be introduced silently or described as preserving current information access."
+    },
+    "official_constraints": "Fixed runner default rep_state/history1; it also explicitly supports proprio/history10. It rejects history_length>1 when actor_obs is not proprio. Thus present optional configuration is a source-supported selection, not by itself an implementation bug.",
+    "local_runtime_blocks": [
+      "learning/b0/model.py hardcodes proprio",
+      "learning/b0/contact_policy.py build_actor hardcodes77 and10; load_policy constructs RobotRepresentation and requires10×77",
+      "learning/b0/contact_training.py DoorImagination.sample_initial_states unflattens(10,77), constructs env history10",
+      "learning/b0/contact_lanes.py histories/noisy are10×77",
+      "free evaluation uses RobotRepresentation and oldFreeRun observation factory"
+    ],
+    "interpretation": "A true R1 experiment requires coherent mapping in collect, imagination, replay and every eval loader, new Actor input layer/normalizers and separate run identity. Cannot resume the old decoder weights as an unchanged cfg merely by adding a YAML toggle."
+  },
+  "proven_input_invariance_and_its_limits": {
+    "status": "Analytical consequence of directly inspected source; not a new numerical physical experiment or frozen-weight inference run.",
+    "translation": "For a fixed reference frame, preserve all10 history joint/velocity/angular/gravity/action fields and current root orientation, but translate root XYZ of each history sample by a common delta. Current77×10 proprio and540goal are unchanged: proprio ignores root position, goal retains relative orientations but drops relative positions. Any fixed Actor/normalizers therefore returns exactly the same command for those identical inputs.",
+    "linear_velocity": "Changing only root body linear velocity while holding angular/joint/history sensor fields fixed is also invisible to the current proprio sensor. Robot58 would distinguish it; robot58 height distinguishes vertical position but neither cures XY aliasing.",
+    "critic_difference": "WM representation75 and Critic input75+570+5 include object geometry and relative reference translations. They can distinguish states that Actor aliases. Better WM state prediction and differentiated per-state gradients cannot alone grant Actor missing information; conflicting control requirements can be averaged at a common Actor input. The presence and size of such actual conflicts remains to be measured.",
+    "ground_symmetry": "scripts/p6_scene.py uses one plane and fixed passive door. Before door contact, translating an otherwise identical robot trajectory over a homogeneous floor preserves proprio dynamics in ideal exact arithmetic. This supports a structural absolute-position observability concern, but current real solver trajectories and actual required success rates still need measured checks.",
+    "C_case_evidence": {
+      "source": "scripts/p6_scene.py:CASES; scripts/b0/eval_contact_segments.py:continuous_initial",
+      "facts": "C02/C03 set initial dx=+/-0.05m; C04/C05 dy=+/-0.05m. Initial joint/home/previous-action history and reference remain fixed; only rootXY changes in these four cases. No reference alignment occurs."
+    },
+    "must_not_claim": [
+      "Missing30 is accidental bug in local goal assembly; official source removes it deliberately.",
+      "All u10000 nominal endpoint error is caused by rootXY aliasing.",
+      "Current strictC pass rate ceiling is proved by the instantaneous invariance alone.",
+      "Adding the30 to Actor is an unchanged official default or harmless unit fix.",
+      "Switching robot58 immediately solves task observability."
+    ]
+  },
+  "new_results_and_clock_caution": {
+    "sources": [
+      "results/b0/standard_official_flow_continuation_20261125/readiness_u010000.json",
+      "results/b0/standard_official_flow_continuation_20261125/current_policy/u010000/scores.json",
+      "results/b0/standard_official_flow_continuation_20261125/decision_u010000.json",
+      "results/b0/standard_official_flow_continuation_20261125/tracking_u010000.json"
+    ],
+    "terminal_full": [
+      {
+        "backend": "warp",
+        "side": "pull",
+        "reference_phase": "grasp",
+        "actual_phase": "pregrasp",
+        "endpoint_distance_m": 0.08076870027818206,
+        "endpoint_rotation_rad": 0.0017726492705071877,
+        "tcp_handle_error_m": 0.007835665785350414,
+        "best_ready_steps": 0
+      },
+      {
+        "backend": "warp",
+        "side": "push",
+        "reference_phase": "grasp",
+        "actual_phase": "pregrasp",
+        "endpoint_distance_m": 0.11325203678820346,
+        "endpoint_rotation_rad": 0.002851674418525607,
+        "tcp_handle_error_m": 0.01151452763476444,
+        "best_ready_steps": 0
+      },
+      {
+        "backend": "native",
+        "side": "pull",
+        "reference_phase": "grasp",
+        "actual_phase": "pregrasp",
+        "endpoint_distance_m": 0.07900746298061545,
+        "endpoint_rotation_rad": 0.002115959987946267,
+        "tcp_handle_error_m": 0.009252174171407038,
+        "best_ready_steps": 0
+      },
+      {
+        "backend": "native",
+        "side": "push",
+        "reference_phase": "grasp",
+        "actual_phase": "pregrasp",
+        "endpoint_distance_m": 0.11074290117659953,
+        "endpoint_rotation_rad": 0.002711265052481867,
+        "tcp_handle_error_m": 0.010134567756662192,
+        "best_ready_steps": 0
+      }
+    ],
+    "interpretation": "All4 terminal event phases are pregrasp but reference phase is grasp. Endpoint error79–113mm is to an earlier frozen pregrasp endpoint; actual TCP-handle distance is only7.84–11.51mm. These are different targets. It is unsupported to read endpoint distance as80–113mm error to the Actor current reference or to the WM next-state target. Bestready0 remains real failure, but why no earlier3mm plateau occurred requires same-clock old-array analysis.",
+    "wm_summary": "u10000 all-legalH32 P95 pull/push3.230/3.900mm,1631/1424windows; entire-dualH32 12/14windows,1.349/1.359mm. This is improved value prediction on supplied actions, not proof of action-Jacobian correctness, phase readiness, or policy objective optimization."
+  },
+  "prioritized_one_round_batch": [
+    {
+      "id": "A",
+      "name": "Exact same-clock endpoint decomposition on existing traces",
+      "new_actor_updates": 0,
+      "new_simulation": 0,
+      "inputs": "Existing u4991/u7500/u10000 full traces, original20ms/reference2ms arrays, named pre/post boundaries and reference endpoint transforms; prioritize u10000 fourcases, retain earlier nodes comparison.",
+      "compute": [
+        "e_endpoint(t)=p_actual_TCP(t)-p_endpoint",
+        "e_tracking(t)=p_actual_TCP(t)-p_reference_TCP(t)",
+        "e_clock(t)=p_reference_TCP(t)-p_endpoint, verify e_endpoint=e_tracking+e_clock vectorwise",
+        "For e_tracking use exact telescoping: root_translation_delta + (R_actual-R_ref)*f(q_ref) + R_actual*(f(q_actual)-f(q_ref)), with registered FK/root frame.",
+        "Score full original pregrasp plateau and the last150ms required before official reference phase exits; log min/quantiles, continuous3mm position ready, .02rad orientation ready, their intersection and ramp.",
+        "Do not sum norms as if components additive; report vector cancellation and exact residual. Do not substitute lategrasp endpoints for prior pregrasptracking."
+      ],
+      "deliverable": "single endpoint_decomposition table with alltimesteps and separate reference/event clocks, dominant term and smallest attained plateau error per side/backend/node"
+    },
+    {
+      "id": "B",
+      "name": "Frozen policy input alias batch and clean-path parity",
+      "new_actor_updates": 0,
+      "new_simulation": 0,
+      "inputs": "Six original states: two full references × three predetermined original pregrasp-platform instants. Use frozen u10000 Actor and its exact normalizers/history.",
+      "variants": "Baseline; rootX/Y +/-50mm matching C02-C05; rootZ +/-10mm diagnostic; root bodyVx/Vy +/-0.01m/s diagnostic; yaw +/-1deg and J2 +/-0.01rad as positive sensitivity controls. Shift everyhistory position consistently. These are input-function diagnostics, not validtask rollouts.",
+      "compute": [
+        "Raw and normalized history/goal widths and per-field deltas; Actor raw/canonical/physical action deltas.",
+        "Expected currentP10 input/action deltas exactlyzero for translation and pure root linear velocity; yaw/J2 controls demonstrate the instrumentation detects visible changes.",
+        "Record robot58 and Contact75 raw observation deltas analytically/numerically without training newActors.",
+        "Compare clean observation tensors across collector construction, replay/imagination synthesis, eval loader for the exact same physicalstate/history/previous action/referenceframe. Then add the same explicit noise realization only to intentionally noisy paths."
+      ],
+      "deliverable": "field-level visibility/parity ledger; distinguish proven field omission, any true train/eval mapping mismatch, and merely hypothesized performance cause"
+    },
+    {
+      "id": "C",
+      "name": "Same-state original target gradients versus physical short responses",
+      "new_actor_updates": 0,
+      "inputs": "Small fixed training-identity states in both pregrasp plateaus plus closed-loop contact states; use originalActor/WM/Critic and allnormalizers frozen; no chosen state discarded after seeing sign.",
+      "compute": [
+        "Autograd directional derivatives for original tracking terms, action rate, soft-survival and currentCritic bootstrap separately, plus physical TCP/reference metric as diagnostic only.",
+        "Use physical command units through originalcanonical/effort mappings and multiple small central-difference radii; compare WM response Jacobian to actual physics short responses from identical solver/servo snapshots.",
+        "Original objective direction may correctly improve a broad/reanchored reward while worsening frozenendpoint metric; that is target mismatch, not autodiff bug.",
+        "Small forward RMSE does not prove derivative fidelity. At unilateral contact/saturation non-smooth intervals report one-sided/change-point behavior rather than force a unique derivative.",
+        "Keep original2ms formal and .25ms training identities separate; any response carried past originalfirstfailure is postfailurediagnostic only."
+      ],
+      "deliverable": "one batched derivative-direction matrix with perstate/source/physicalunit, finite-difference stability and root/arm/clock contribution; no newloss or optimization from diagnostic gradients"
+    },
+    {
+      "id": "D",
+      "name": "At most4 fixedActor continuation diagnostics if stored coverage insufficient",
+      "max_new_physical_cases": 4,
+      "identity": "sameu10000 Actor, two sides×twooriginalbackends, original20ms policy and originalreferenceclock; preserve firstformal failure.",
+      "purpose": "Observe later reference progression after pregrasp judge timeout, only when needed to determine whether the sameActor follows laterreference poses aftermissing an earlierstrictendpoint.",
+      "constraints": [
+        "no endpointclock clamp/pause",
+        "no teacher/actionreference injection",
+        "no eventphase reset",
+        "no new success/V0/formalreturn claim",
+        "no replaytrainingfeedback",
+        "retain originalfirstfailure and clearly mark allfurther samples diagnostic-only"
+      ]
+    }
+  ],
+  "decision_after_batch": {
+    "confirmed_interface_error": "If a concrete wrongunit/frame/timestep/history/goalfield parity error is proved, fix that interface once, retain old results, and compare corrected versus uncorrected runs from matched originalfullpackages with a preregistered shortH32 budget and sameoriginalformal evaluation. Avoid accumulating independent speculative changes.",
+    "no_error_target_or_information_conflict": "Produce a compatibility report identifying the exact source-supported information/target assumptions conflicting with the frozenabsolute task; preserve B0-04/failure and no success claims. A later actorinput or target adaptation must be explicitly registered as a changedinformation/target variant, not an unalteredresume or automaticfix.",
+    "when_robot58_test_becomes_justified": "Only if batchA/B show height/linearvelocity state information is a material unresolved driver and code parity is sound. Then officialrobot58/H1 versus currentP10 may be a configuration study, using fresh matched initialization/warmstart provenance, separate identity and equalbudget. Do not start it now because it is the default, and do not silently feed Contact75 doorgeometry instead.",
+    "do_not_do": [
+      "another unconditional5000sameformula continuation",
+      "newActor pair before identifying whatit canresolve",
+      "newreward/BC/relativeobjecttask/goal30 injection labeled asstandardbugfix",
+      "WMaccuracythreshold to gate Actor",
+      "referencepause or endpointtimeextension counted asofficialsuccess"
+    ]
+  },
+  "root_review_of_original_reward": {
+    "source": "https://github.com/HybridRobotics/supermimic/blob/abc124c1bd5976341034668af3d12c087f2f1f55/src/supermimic/utils/tracking_reward.py",
+    "read_directly_by_root": true,
+    "terms": [
+      {
+        "name": "root_position",
+        "weight": 0.5,
+        "std": 0.3,
+        "unit": "m"
+      },
+      {
+        "name": "root_orientation",
+        "weight": 0.5,
+        "std": 0.4,
+        "unit": "rad"
+      },
+      {
+        "name": "reanchored_body_position",
+        "weight": 1.0,
+        "std": 0.3,
+        "unit": "m"
+      },
+      {
+        "name": "reanchored_body_orientation",
+        "weight": 1.0,
+        "std": 0.4,
+        "unit": "rad"
+      },
+      {
+        "name": "body_linear_velocity",
+        "weight": 1.0,
+        "std": 1.0,
+        "unit": "m/s"
+      },
+      {
+        "name": "body_angular_velocity",
+        "weight": 1.0,
+        "std": 3.14,
+        "unit": "rad/s"
+      }
+    ],
+    "body_target_reanchoring": "Target root XY is reanchored to predicted root XY; target root Z retained; body targets rotated by predicted-to-target root yaw difference.",
+    "original_penalties": {
+      "action_rate": 0.1,
+      "joint_limits": 2.0
+    },
+    "kernel_to_endpoint_length_scale_ratio": 100.0,
+    "interpretation": "The 0.3m Gaussian kernel is not an error tolerance. The 100:1 length-scale comparison is not evidence of a bug or permission to change the reward. Root absolute tracking remains a separate positive term.",
+    "unresolved": "Derivative correctness, actual return-gradient direction and the contribution of these terms on the critical pregrasp states have not been physically tested in this review."
+  }
+}

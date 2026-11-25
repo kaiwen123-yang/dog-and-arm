@@ -1,5 +1,13 @@
 # B0：SuperMimic 在 M1＋Piper H 上的迁移与基线验证
 
+## 2026-11-25｜当前为u10000结案后的集中迁移排查
+
+79fd3cf末点u10000原Warp/native接触各0/10、full0/4、free0/60；B0-04、候选null、合格双侧回报NA、V0=0。原主链不再自动延长u15000。已实际累计10000 Actor/100000 WM/200000 Critic，新增训练0的本次审查不记为实验成绩。
+
+[当前审查](../reports/B0_U10000_REVIEW_20261125.md) · [下一集中轮计划](B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md) · [机器登记](../results/b0/official_u10000_review_20261125/next_registration.json) · [目标差距](GOAL_GAP_20261125.md)
+
+围绕同一预抓平台，复算12条旧轨迹并完成有界输入/原目标/真实响应/完整参考钟诊断；仅有具体实现错误时做同轮最小修复与原机制配对。没有错误则交付明确兼容性结论和独立适配提案，不把信息或目标变更混入旧standard-v1。原10项/D/C/native/free/独立seed/H、0.90参照/0.88接近带与V0要求保持。先迁移冻结，再开发算法。以下旧“当前/下一轮”均按历史日期读取。
+
 ## 2026-11-25｜当前实绩 u4991 与下一轮入口
 
 0124ad7 的同链 u4991 在原 Warp/native 接触各2/10，背推open_5与stable_grip满足原保持要求；成功入口已有真实抓持。20次frame0完整任务0成功，20驶近/9停车/0预抓取，free0/300均跑满7s。B0-04、候选null、合格双侧回报NA、V0=0。[最新审查](../reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md) · [目标差距](GOAL_GAP_20261125.md)

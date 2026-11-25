@@ -1,5 +1,19 @@
-固定官方 SuperMimic → M1＋Piper 同链 seed0 已完整实训并评测至 u10000，本轮在主段端点收束。先从 GitHub 最新 main 读取 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_OFFICIAL_FLOW_CONTINUATION_20261125.md、results/b0/standard_official_flow_continuation_20261125/ 的 baseline_manifest.json、decision_u010000.json、budget_decision.json、restored_u010000.json、repeat_u010000.json，以及 DAILY_WORK_LOG.md 最新北京时间条目。实际恢复入口为同目录 recovery.json，配套大包位于 AutoDL 该轮 raw 的 resume_010000 与 checkpoint_010000.pt。四舍五入显示的误差与物理阶段均以逐案回执为准。
+执行固定官方 SuperMimic → M1＋Piper 的下一集中迁移轮：查清“原参考时钟下为什么错过预抓端点连续就绪窗口”，有已证接口错误就同轮修复并完成原机制配对实训。不要仅再写一份计划；先完成已登记、可执行的工作。根本目标仍是标准迁移成功并冻结独立结果，再开发算法/VLA；首个原裁判完整成功立即交同episode连续原速V0。
 
-本轮新增保留和实付 5009 Actor、50090 H7 WM、100180 Critic，丢弃为零。u7500 Warp接触1/10；u10000 Warp/native接触均0/10，full0/4、free0/60。四个完整回合均预抓超时，连续就绪最好0/75。前拉短 grasp 入口在原前缀末拍无双指载荷，随后362 ms双指接触已经同包逆序复现，但背推原两项通过在两后端均丢失。本轮决定不延长，u12500/u15000、D/C、独立训练seed、H与V0均未执行。保持B0-04、候选null、合格回报NA。
+先fetch最新GitHub main，保留已有工作树修改。读取AGENTS.md、PROJECT_STATE.md顶部、reports/B0_U10000_REVIEW_20261125.md、docs/B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md、results/b0/official_u10000_review_20261125/next_registration.json、docs/GOAL_GAP_20261125.md和DAILY_WORK_LOG.md最新北京时间条目。本轮固定父实验为79fd3cf876c126e74d862e34e2638495705098e7的official_flow_s0_v1/u10000；原主链已结案，不自动运行u12500/u15000，不挪旧剩余回滚额度。
 
-后续以用户新指示确定工作范围。可直接复用现有四案诊断、双侧冻结物理时序、开发块和恢复包继续分析。当前登记已经结案，旧启动词、滚动中间包和剩余回滚额度均不构成新训练预算。固定官方迁移仍是目标，独立标准结果冻结前算法开发与多模态训练继续后置。
+父包以results/b0/standard_official_flow_continuation_20261125/recovery.json及restored_u010000.json为准。现场目录/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-20261125-be398cc，父权重和完整包为results/raw_large/b0/official_flow_continuation_20261125/checkpoint_010000.pt及resume_010000。累计10000 Actor/100000 WM/200000 Critic、102414758有效转移、clock26988；Ratio pending=0，距下个阈值5722有效转移。需要恢复时实载全部网络/优化器/统计/replay/RNG/sampler/lane/history/上一动作/solver/servo，不从+850重建。
+
+固定官方SuperMimic abc124c1与mjlab dd51a9fc；Actor77×10、goal540，WM75、WM/Critic goal570、context5；原23路effort、训练0.25ms/servo2ms/policy20ms/c=.50625、正式原2ms Warp/native3.3.0。保持原网络/损失/在线统计/ReturnSampler/Ratio/10H7-WM/1H32-Actor/20Critic、八参考及原物理门槛。本轮不引入H1混合、教师配额、BC动作损失、解析反馈、WM误差放行门、暂停参考或新任务奖励。
+
+建立独立light results/b0/standard_pregrasp_compatibility_20261125和raw results/raw_large/b0/pregrasp_compatibility_20261125。A–D共用登记锚点和主表，在同轮完成：
+A. 离线复算已有u4991/u7500/u10000两侧两后端12条完整轨迹，逐拍列ramp/位置/姿态/交集就绪、最小误差时刻；精确拆当前参考跟踪与冻结端点进展，再拆根平移/根旋转/关节FK，保留向量闭合。4个父实际phase窗和8个参考tracking窗分别报告。
+B. 先按计划固定双侧各最多两个预抓policy边界；每个完整10帧历史整体XY±50mm，另用yaw/J2可见变化作正控，最多28次冻结推理。核对原输入、六tracking项、动作率、joint_limit、软终止、末端Critic。删除30维根相对平移是官方语义，不直接称漏传bug；不把contact75额外17维门信息喂给Actor。
+C. 最多两条0.25ms frame0冻结Actor重播得到4个真实细步状态，不能复用2ms缓存；4条20ms恢复核验另计。每状态19响应分支，最多76条≤640ms，同一轨迹读H1/H7/H32。方向固定原J32首raw-effort梯度、J2、按axle_sign的四轮平移，effort幅值.02/.04/.08。仅首拍扰动，后续正常闭环查询，共用登记噪声；冻结参数但保留后续Actor/Critic输入AD。实际物理终止后相应时域NA，记录饱和/接触非光滑，不把闭环差分直接当纯Dynamics导数错误。
+D. 最多4条原2ms同包frame0完整诊断。原ContactEvents首败立即封存；只有任务timeout且从frame0并行维护的训练物理监测仍未终止时，继续原参考钟。使用独立physical_step，若首败在20ms拍中途保持原动作到下一绝对策略边界，不提前滚history/查询Actor。到原物理终止或参考尾即停。双侧连续诊断视频标出原首败，后段开门不记formal成功或V0。
+
+默认新增优化0。只有可复现的单位/时刻/字段/历史/样本映射实现错误，具备固定源契约、反例与最小同契约补丁，才按计划直接开展control/fix各200 Actor/2000 WM/4000 Critic。整对保留400/4000/8000，一次回滚预留20/200/400，实付上限420/4200/8400；每≤10次Actor保存两代。+50过程保存，+0/+200原物理配对评分；同包真正达原门槛按原D/C/native/free流程继续。若未发现实现错误，交付具体兼容性结论及最多一个有明确独立身份/信息差异/预算/对照的适配提案，不捏造修复或改旧standard-v1资格。
+
+原u10000仍Warp/native0/10、full0/4、free0/60，候选null、B0-04、合格双侧回报NA、V0=0；新数据覆盖和WM改善不等于完整成功。保持原失败、预算和祖先成本，记录实际执行分母而非上限。无学习部分最多4+2+4+76=86条新增物理轨迹/分支；12条离线复算和28次无物理推理另列。
+
+完成独立报告、mechanism_decision.json、逐案表、连续视频清单、实际成本/恢复回执；按北京时间详细追加唯一DAILY_WORK_LOG，更新PROJECT_STATE、独立结果、目标差距和两份同文启动词。普通快进推送GitHub并从固定提交回读。保留其他项目进程/修改，不创建本机压缩档，不设置任意墙钟终止。最终明确本轮解决了什么、还有哪一项未辨识、距完整成功及最终标准资格还缺什么。

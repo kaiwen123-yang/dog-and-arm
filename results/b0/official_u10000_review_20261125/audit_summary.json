@@ -1,0 +1,660 @@
+{
+  "review_id": "official_u10000_review_20261125",
+  "status": "repository_review_and_next_plan_only",
+  "reviewed_commit": "79fd3cf876c126e74d862e34e2638495705098e7",
+  "timezone": "Asia/Shanghai",
+  "new_execution": {
+    "actor_updates": 0,
+    "wm_minibatches": 0,
+    "critic_minibatches": 0,
+    "physics_cases": 0,
+    "remote_large_package_reloads": 0
+  },
+  "current": {
+    "method_id": "SuperMimic-M1Piper-standard-v1",
+    "chain": "official_flow_s0_v1",
+    "update": 10000,
+    "stage": "B0-04",
+    "candidate": null,
+    "qualified_bilateral_return": null,
+    "V0": 0,
+    "extend_old_chain_to_15000": false
+  },
+  "latest_round_counts": {
+    "physical_cases": 38,
+    "contact_cases": 30,
+    "contact_passes": 1,
+    "contact_events": 4,
+    "contact_first_2ms_force_failures": 6,
+    "full_cases": 8,
+    "full_successes": 0,
+    "full_phase_events": {
+      "approach_base": 8,
+      "settle": 6
+    },
+    "free_cases": 120,
+    "free_passes": 0,
+    "regular_pure_actor_entries": 12,
+    "reverse_order_entries": 6,
+    "parent_diagnostic_replays": 4,
+    "candidate": null,
+    "qualified_bilateral_return": null,
+    "V0": 0,
+    "free_full_7s": 116,
+    "free_early_physics_failures": 4
+  },
+  "budget": {
+    "parent_steps": {
+      "wm": 49910,
+      "actor": 4991,
+      "critic": 99820
+    },
+    "cumulative_steps": {
+      "wm": 100000,
+      "actor": 10000,
+      "critic": 200000
+    },
+    "retained_new_steps": {
+      "wm": 50090,
+      "actor": 5009,
+      "critic": 100180
+    },
+    "charged_new_steps": {
+      "wm": 50090,
+      "actor": 5009,
+      "critic": 100180
+    },
+    "new_valid": 51290043,
+    "cumulative_valid": 102414758,
+    "new_lane_intervals": 54624256,
+    "new_microsteps": 4369940480,
+    "prefix_intervals": 3334213
+  },
+  "coverage": {
+    "physical_counter_rows": 13336,
+    "physical_ticks_contiguous": true,
+    "physical_sum_valid": [
+      28316788,
+      22973255
+    ],
+    "physical_sum_dual": [
+      1076970,
+      599718
+    ],
+    "valid_sum_exact": true,
+    "dual_sum_exact": true,
+    "dual_within_valid_every_tick": true,
+    "phase_sum_exact": true,
+    "lane_intervals_exact": true,
+    "prefix_plus_valid_exact": true,
+    "microsteps_exact": true,
+    "per_side_dual_fraction": [
+      0.038032915315112714,
+      0.026105051286811554
+    ],
+    "dual_total": 1676688,
+    "dual_fraction": 0.032690321589319005,
+    "reference_open_hold_rows": 1389889,
+    "reference_open_hold_fraction": 0.02709861249287703,
+    "actual_event_phase_available": false
+  },
+  "terminal_full": [
+    {
+      "backend": "warp",
+      "side": "pull",
+      "failure": "timeout:pregrasp",
+      "time_s": 16.28,
+      "actual_phase": "pregrasp",
+      "reference_phase": "grasp",
+      "ramp": true,
+      "endpoint_mm": 80.76870027818205,
+      "endpoint_over_3mm": 26.922900092727353,
+      "rotation_rad": 0.0017726492705071877,
+      "rotation_over_limit": 0.08863246352535938,
+      "tcp_handle_mm": 7.835665785350414,
+      "base_station_mm": 9.167230765569403,
+      "same_clock_root_xy_error_bounds_mm": [
+        7.424337564546629,
+        10.910123966592177
+      ],
+      "root_bound_meaning": "Triangle inequality using both root distances to the same frozen station; this is not a TCP error attribution.",
+      "best_ready_ticks": 0,
+      "required_ready_ticks": 75,
+      "pregrasp_first_interval_start_s": 7.2780000000000005,
+      "raw_path": "results/b0/standard_official_flow_continuation_20261125/physics/u010000_warp_full/pull/full/nominal/result.json"
+    },
+    {
+      "backend": "warp",
+      "side": "push",
+      "failure": "timeout:pregrasp",
+      "time_s": 16.274,
+      "actual_phase": "pregrasp",
+      "reference_phase": "grasp",
+      "ramp": true,
+      "endpoint_mm": 113.25203678820345,
+      "endpoint_over_3mm": 37.750678929401154,
+      "rotation_rad": 0.002851674418525607,
+      "rotation_over_limit": 0.14258372092628036,
+      "tcp_handle_mm": 11.514527634764441,
+      "base_station_mm": 9.075243372407673,
+      "same_clock_root_xy_error_bounds_mm": [
+        7.408807632832112,
+        10.741679111983235
+      ],
+      "root_bound_meaning": "Triangle inequality using both root distances to the same frozen station; this is not a TCP error attribution.",
+      "best_ready_ticks": 0,
+      "required_ready_ticks": 75,
+      "pregrasp_first_interval_start_s": 7.272,
+      "raw_path": "results/b0/standard_official_flow_continuation_20261125/physics/u010000_warp_full/push/full/nominal/result.json"
+    },
+    {
+      "backend": "native",
+      "side": "pull",
+      "failure": "timeout:pregrasp",
+      "time_s": 15.728,
+      "actual_phase": "pregrasp",
+      "reference_phase": "grasp",
+      "ramp": true,
+      "endpoint_mm": 79.00746298061546,
+      "endpoint_over_3mm": 26.335820993538483,
+      "rotation_rad": 0.002115959987946267,
+      "rotation_over_limit": 0.10579799939731335,
+      "tcp_handle_mm": 9.252174171407038,
+      "base_station_mm": 10.17549305603281,
+      "same_clock_root_xy_error_bounds_mm": [
+        8.433550429864013,
+        11.917435682201605
+      ],
+      "root_bound_meaning": "Triangle inequality using both root distances to the same frozen station; this is not a TCP error attribution.",
+      "best_ready_ticks": 0,
+      "required_ready_ticks": 75,
+      "pregrasp_first_interval_start_s": 6.726,
+      "raw_path": "results/b0/standard_official_flow_continuation_20261125/physics/u010000_native_full/pull/full/nominal/result.json"
+    },
+    {
+      "backend": "native",
+      "side": "push",
+      "failure": "timeout:pregrasp",
+      "time_s": 15.734,
+      "actual_phase": "pregrasp",
+      "reference_phase": "grasp",
+      "ramp": true,
+      "endpoint_mm": 110.74290117659953,
+      "endpoint_over_3mm": 36.91430039219984,
+      "rotation_rad": 0.002711265052481867,
+      "rotation_over_limit": 0.13556325262409336,
+      "tcp_handle_mm": 10.134567756662191,
+      "base_station_mm": 7.9513179445552495,
+      "same_clock_root_xy_error_bounds_mm": [
+        6.285555192926471,
+        9.617080696184027
+      ],
+      "root_bound_meaning": "Triangle inequality using both root distances to the same frozen station; this is not a TCP error attribution.",
+      "best_ready_ticks": 0,
+      "required_ready_ticks": 75,
+      "pregrasp_first_interval_start_s": 6.732,
+      "raw_path": "results/b0/standard_official_flow_continuation_20261125/physics/u010000_native_full/push/full/nominal/result.json"
+    }
+  ],
+  "window_systems": {
+    "parent_actual_event_readiness": {
+      "count": 4,
+      "u7500_complete": 0,
+      "u10000_complete": 0
+    },
+    "fixed_reference_tracking": {
+      "count": 8,
+      "u7500_complete": 6,
+      "u10000_complete": 8
+    }
+  },
+  "cross_round_full": [
+    {
+      "directory": "standard_official_flow_20261124",
+      "source_commit": "51a0133802983b65602949000099e7d18fa8e835",
+      "full_cases": 24,
+      "case_keys": [
+        {
+          "update": "0",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "0",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "0",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "0",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "10",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "10",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "50",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "50",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "100",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "100",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "200",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "200",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "200",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "200",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "500",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "500",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "500",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "500",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1000",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1000",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1000",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1000",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        }
+      ]
+    },
+    {
+      "directory": "standard_official_flow_continuation_20261124",
+      "source_commit": "0124ad75b61f35224033cdfc9f445228afb89f2e",
+      "full_cases": 20,
+      "case_keys": [
+        {
+          "update": "1500",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1500",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1500",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "1500",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "2000",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "2000",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "2000",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "2000",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "3000",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "3000",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "3000",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "3000",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "4000",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "4000",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "4000",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "4000",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "4991",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "4991",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "4991",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "4991",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        }
+      ]
+    },
+    {
+      "directory": "standard_official_flow_continuation_20261125",
+      "source_commit": "79fd3cf876c126e74d862e34e2638495705098e7",
+      "full_cases": 8,
+      "case_keys": [
+        {
+          "update": "7500",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "7500",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "7500",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "7500",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "10000",
+          "backend": "warp",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "10000",
+          "backend": "warp",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "10000",
+          "backend": "native",
+          "side": "pull",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        },
+        {
+          "update": "10000",
+          "backend": "native",
+          "side": "push",
+          "protocol": "full",
+          "task": "full",
+          "passed": "False"
+        }
+      ]
+    }
+  ],
+  "cross_round_full_total": 52,
+  "qualification_claims": {
+    "same_final_policy_52_tests": false,
+    "independent_training_seeds_tested": false,
+    "formal_full_successes": 0
+  },
+  "source_scope": "Tracked source/config/reports and scalar/JSON/CSV ledgers; AutoDL raw arrays, weights and solver packages were not reloaded. Source formula deductions are labeled separately from new runtime experiments.",
+  "next_plan": "docs/B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md",
+  "next_registration": "results/b0/official_u10000_review_20261125/next_registration.json",
+  "cross_round_full_unique_keys": 52
+}
