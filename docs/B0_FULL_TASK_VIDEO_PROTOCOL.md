@@ -1,5 +1,11 @@
 # B0 完整任务视频与参数比例比较
 
+## 2026-11-25｜当前适配登记与原标准边界
+
+原 A–D 实测提交787d5e38已完成，下一执行轮见[RefXY2计划](B0_REFXY2_TRANSFER_PLAN_20261125.md)、[最新审查](../reports/B0_PREGRASP_ROUND_REVIEW_20261125.md)和[机器登记](../results/b0/pregrasp_review_20261125/next_registration.json)。本次新增训练/仿真0；原standard-v1/u10000仍B0-04、候选null、合格双侧回报NA、V0=0。
+
+独立RefXY2与等宽零控制仅改变Actor当前根XY信息，542输入不冒充固定官方原540接口。官方核心及execution_recipe、WM/Critic、原物理与裁判保持；完整u10000迁移首层Adam旧状态与原统计，各+200、有双侧原物理依据再配对至+1000。原结果与新增方法分别保存，算法/VLA后置。具体预算、固定窗/ready条件、并行FP64限额和首个完整视频交付以新登记为准；下方旧“当前/下一轮”属于历史，不恢复A–D或原u15000。
+
 ## 2026-11-25｜四条连续原速诊断视频已交付
 
 [四案视频与时间戳](../results/b0/standard_pregrasp_compatibility_20261125/diagnostic_video_manifest.json)覆盖 u10000 前拉、背推及两个正式后端，逐条标出原首败。四案均在参考开门阶段触发训练物理监测，诊断尾段双指接触 0 拍。首个正式完整成功 V0 仍待取得。

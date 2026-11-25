@@ -1,0 +1,206 @@
+{
+  "review_id": "refxy2_architecture_review_20261125",
+  "scope": {
+    "read_only": true,
+    "new_optimization_steps": 0,
+    "new_physics_cases": 0,
+    "remote_weights_or_raw_arrays_loaded": false,
+    "repository_commit": "787d5e38b9fc6cca99c1322aae22f1321e9c8dee"
+  },
+  "conclusion": {
+    "feasible": true,
+    "classification": "A separately identified observation-interface adaptation using the original SuperMimic learning core; not a same-contract bug fix and not an unchanged standard-v1 continuation.",
+    "evidence_strength": "The measured XY alias justifies a controlled information experiment. It does not establish XY absence as the dominant cause of nominal failure. The original platform arm-FK signed projection is larger than root translation, while joint error is already partly observable through reference joints plus proprioception.",
+    "recommended_next": "One matched zero-input / RefXY2 adaptation experiment, with explicit first-layer and Adam-state migration and complete collection/replay/imagination/evaluation/free feature parity. Do not silently substitute the legacy privileged-translation or reference-residual branches."
+  },
+  "directly_read_primary_sources": [
+    {
+      "repository": "HybridRobotics/supermimic",
+      "commit": "abc124c1bd5976341034668af3d12c087f2f1f55",
+      "path": "src/supermimic/models.py"
+    },
+    {
+      "repository": "HybridRobotics/supermimic",
+      "commit": "abc124c1bd5976341034668af3d12c087f2f1f55",
+      "path": "src/supermimic/learners/learner_utils.py"
+    },
+    {
+      "repository": "HybridRobotics/supermimic",
+      "commit": "abc124c1bd5976341034668af3d12c087f2f1f55",
+      "path": "src/supermimic/learners/policy_learner.py"
+    },
+    {
+      "repository": "HybridRobotics/supermimic",
+      "commit": "abc124c1bd5976341034668af3d12c087f2f1f55",
+      "path": "src/supermimic/envs/world_model_env.py"
+    },
+    {
+      "repository": "HybridRobotics/supermimic",
+      "commit": "abc124c1bd5976341034668af3d12c087f2f1f55",
+      "path": "src/supermimic/envs/multi_task_world_model_env.py"
+    }
+  ],
+  "project_sources": [
+    "config/b0/official_flow_s0_v1.yaml",
+    "learning/b0/contact_policy.py",
+    "learning/b0/contact_training.py",
+    "learning/b0/contact_lanes.py",
+    "learning/b0/model.py",
+    "learning/b0/training.py",
+    "scripts/b0/official_flow.py",
+    "scripts/b0/official_flow_free.py",
+    "results/b0/standard_pregrasp_compatibility_20261125/adaptation_proposal.json"
+  ],
+  "encoder_migration": {
+    "parameter": "encoders.motion.0.weight",
+    "old_shape": [
+      2048,
+      540
+    ],
+    "new_shape": [
+      2048,
+      542
+    ],
+    "additional_weights": 4096,
+    "other_hidden_latent_decoder_dimensions": "unchanged",
+    "initialization": "Copy all original 540 columns exactly; append two zero columns, preserve the existing first-layer bias and every other original Actor tensor. Both branches have exactly the same expanded tensor shapes.",
+    "optimizer_assignment": {
+      "expanded_weight_optimizer": "Adam",
+      "reason": "Pinned build_optimizers gives Muon only the middle Linear weights [1:-1] of each Sequential. First and last Linear weights, biases, LayerNorm and other parameters go to fused capturable Adam.",
+      "muon_shape_rescaling_concern": "Not applicable to this changed first-layer matrix; no Muon tensor changes shape.",
+      "adam_migration": "Map parameters by names and preserved group membership. Retain existing exp_avg and exp_avg_sq in the first 540 columns, append zeros in the two new columns. Preserve scalar step, lr tensor, betas and all other group settings. Do not globally reload moments by blind positional assumptions if construction order changed.",
+      "step": "Shared scalar step stays at the true parent value (normally Actor update 10000), not zero. New columns do not get independent fresh-Adam bias correction. Resetting the whole matrix step would change updates to all old columns.",
+      "new_column_first_update_effect": "Zero new moments with the preserved shared mature scalar step do not behave like an independently initialized fresh-Adam parameter. Preserve and record the actual recovered step, betas, epsilon, learning rate and other parameter-group settings; log actual new-column gradients, moments and updates. No numerical first-update multiplier is asserted here because the remote u10000 optimizer package was not loaded in this review.",
+      "other_optimizers": "All WM, Critic, Actor Muon and unaffected Actor Adam state tensors remain unchanged at migration.",
+      "beta_evidence": {
+        "helper_default": "Pinned learner_utils.build_optimizers defaults to betas=(0.9,0.999).",
+        "actor_override_in_pinned_source": "At the same pinned commit, policy_learner.BpttPolicyLearnerCfg defines beta2=0.95; BpttPolicyLearner.__init__ explicitly calls build_optimizers([self.actor], self.cfg.lr, betas=(0.9,self.cfg.beta2), device=device). ActorCriticPolicyLearnerCfg inherits this field. The Critic constructor calls the helper without that override.",
+        "project_construction": "learning/b0/contact_training.py constructs ActorCriticPolicyLearnerCfg with batch_size, horizon=32 and noise; config/b0/official_flow_s0_v1.yaml has no beta override. This supports an Actor construction value of (0.9,0.95), but is not an observation of the remote saved optimizer parameter groups.",
+        "visible_receipts": "Both standard_official_flow_continuation_20261125/restored_u010000.json and standard_pregrasp_compatibility_20261125/restored_u010000.json report actor steps=10000 and 162 equal optimizer state tensors, but do not print betas or other parameter-group values. scripts/b0/official_flow_restore_check.py verifies saved state entries; it does not independently report the parameter-group betas.",
+        "migration_requirement": "Load the actual parent optimizer state, preserve its actual parameter-group values and shared per-parameter step, and explicitly record those values before migration. Do not overwrite recovered settings merely to match either constructor default."
+      }
+    },
+    "normalization": {
+      "original_motion_goal_statistics": "Keep the original 540-column running mean/variance/std/count and their online update rule.",
+      "new_tail": "Append current yaw-horizontal relative XY / .05m after normalization of the original 540 columns; keep the 2-vector at fixed physical scale, without a new online normalizer.",
+      "implementation_option": "A small local normalizer subclass/wrapper can normalize and update only the original first540 and pass through the already-scaled tail; preserve original state_dict buffer names or explicitly map them. A generic 542-dimensional EmpiricalNormalization with invented inherited counts is not equivalent.",
+      "proprio_statistics": "Keep original 77-column online statistics and 10-frame history.",
+      "clipping": "Do not add an unregistered clip to the new features or change existing goal/proprio clipping semantics."
+    },
+    "zero_control_equivalence": {
+      "mathematical": "With exactly zero tail and zero tail weights/moments, the new columns remain inactive under the original Adam rule; in exact arithmetic the original function and old-column updates are equivalent. No Muon shape coupling affects this matrix.",
+      "numerical": "540-to542 GEMM shapes and changed parameter layout can change floating-point accumulation/kernel choices. +0 equality within tolerance does not by itself prove all future closed-loop states or optimizer steps remain bitwise identical.",
+      "identity": "Call it an equal-width zero-information control. Do not overwrite the archived original 540 standard-v1 results or silently relabel the new padded package as the exact original package.",
+      "qualification_reuse": "Any reused parent +0 formal results must be labeled archived parent reference, with recorded inference equivalence evidence. If expanded +0 differs materially, fix migration before running the experiment; a tolerance-only forward check does not create a new physical formal score.",
+      "meaningful_checks": "Compare original 540 and both 542 +0 preactivations/raw/clipped/physical commands on existing real histories including full trajectories and free cases. Record stable warmed inference rather than conflating cold/steady roundoff. If a disposable original-vs-zero optimizer-step comparison is actually executed, account for its optimizer work separately; do not call it zero training."
+    }
+  },
+  "feature_contract": {
+    "formula": "f = (1/0.05) * [[cos(yaw), sin(yaw)],[-sin(yaw),cos(yaw)]] @ (reference_root_xy[current_policy_frame] - current_root_xy)",
+    "frame": "Body yaw horizontal frame, not full roll/pitch body XYZ and not world XY.",
+    "time": "Current 20ms policy frame; do not use reward's t+1 target, future reference windows, phase endpoints or next measured state.",
+    "sign": "Reference minus current root; positive body-x feature points toward the reference in the robot's horizontal frame.",
+    "reference_scope": "Use each actual motion's root_pos_w at the current clip's frame. Preserve clip-last handling and do not cross concatenated clip boundaries.",
+    "information_access": "Physical simulation root pose is ideal self-localization. It is additional Actor information relative to standard-v1, despite already being available to WM/Critic. It is not door/handle/event truth and does not resolve real localization noise or delay.",
+    "derivative": "In imagination recompute from predicted current aux_state at every step. Preserve derivatives through root XY and yaw. Do not detach, cache the initial real feature across H32, or replace later features by real rollout truth."
+  },
+  "implementation_paths": {
+    "recipe_guard": {
+      "critical": "Keep cfg.execution_recipe == official_flow_s0_v1, or explicitly preserve every equivalent branch. Method identity belongs in separate method_id/actor_goal_schema/branch metadata.",
+      "why": "ContactRun and collect_lanes compare this exact string to select 10 H7 WM, OfficialReplay and official online normalization/Ratio semantics. Replacing it with RefXY2 would route into old mixed H1/H7 or nonofficial paths."
+    },
+    "shared_builder": "Add a single current-root XY helper usable by DoorMotions and generic free MotionBank; a DoorMotions-only edit is insufficient.",
+    "real_collection": "contact_lanes.collect_lanes calls bank.goals(rep, frame, state[:,:7], q[:,31]) before the physical action. Compute new tail here from the same current state/frame; keep reference-only 200ms prefixes and old row schema.",
+    "replay": "Current replay stores state (root pose included) and motion_time. Reconstruct the feature causally on reset from these. No raw future state field or new replay collection is required for the old buffer.",
+    "imagination": "DoorImagination._update_goal uses current motion_times and aux_state at reset and each _compute_commands step. MultiTaskWorldModelEnv._build_task_goals reuses _actor_goal_obs for the anchor. Ensure both appended values and their AD path are correct here.",
+    "contact_full_evaluation": "contact_policy.load_policy builds Actor from package cfg, and bank.goals uses last real q root at the current absolute frame. New schema/normalizer must be supported in loader, checkpoint and output identities.",
+    "free_evaluation": "official_flow_free.FreeActorEvaluation aliases FreeRun.actor_obs, which directly calls rep.compute_wm_goal and bypasses DoorMotions.goals. It must explicitly use the shared RefXY2 feature helper with generic MotionBank; otherwise it still supplies540 to a542 Actor.",
+    "task_spec_and_exports": "The motion TaskSpec width must agree with542 and every extract_training_goal/export or inference builder used must reconstruct the same current feature. Do not rely on an old make_motion_task callback that only returns540 if that callback is used outside DoorImagination.",
+    "critic_wm": "WM state75, WM/Critic goal570, context5, action23, their networks/loss/statistics and t+1 reward alignment remain unchanged.",
+    "restore_and_graphs": "The current official_flow.restore strictly checks cfg equality and exact shapes. Use an explicit one-time migration into a new package with old/new config diff receipt, then strict restore for that new schema. Do not delete cfg assertions. Rebuild optimizer parameter references and captured/compiled training graphs after shape changes; restore original RNG after construction/migration, before branch collection.",
+    "schema_labels": "Zero-input and information branches share expanded architecture and original learning recipe but have distinct branch identity and feature mode. Old standard package and proposal-only record remain immutable."
+  },
+  "proposed_evidence": {
+    "migration_receipt": [
+      "exact old tensors and copied first540 columns",
+      "exact zero tail columns and moments",
+      "original Adam scalar step and group hyperparameters",
+      "original540 statistics/count",
+      "all WM/Critic/Muon states",
+      "parent replay/lane/history/servo/solver/Ratio/RNG preservation",
+      "new config method/schema diff",
+      "first actual sampled indices and initial states"
+    ],
+    "new_information_use": [
+      "feature distributions by side/reference phase on actually sampled data",
+      "new-column gradients, moments, update norms at first update and +50/+200",
+      "same frozen checkpoint's command change when only the tail is zeroed on held-out registered states, labeled inference ablation not new training",
+      "actor conditioning gradient w.r.t. predicted XY/yaw, not only weight norm"
+    ],
+    "primary_physical": [
+      "same original full trials on both sides and both backends",
+      "original pregrasp platform position median/P95/min and ready counts/longest duration",
+      "approach/settle/pregrasp and later real events",
+      "first original failure and time",
+      "original contact/free results and complete V0 if achieved"
+    ],
+    "comparison_limits": "Each branch develops its own physical replay after the first different action. Same initial seed/package does not imply identical later visited states or training samples. Equal update budgets and branch-specific physical/valid counts are required.",
+    "hypothesis_limits": "Positive RefXY2-vs-zero effects support this added information under this package/recipe; they do not prove XY omission alone caused all old failures. A +200 null result does not prove XY information is useless."
+  },
+  "budget_and_extension_advice": {
+    "initial_pair": "The proposed +200 each is a useful bounded information-sensitivity and early physical-effect experiment, not a sufficient convergence budget or proof of complete-task ability.",
+    "possible_preregistered_extension": "Each branch first completes +200 retained Actor updates. A preregistered paired extension to +1000 per branch is reasonable if both pull and push improve reproducibly on the original fixed-window Warp physical metrics relative to both the matching zero-information control and the shared +0 reference, while native approach/settle and pregrasp-front behavior do not regress. Use +500 as an intermediate save/review and +1000 as the final cap; no unilateral extension.",
+    "basis": "Use the complete originally fixed reference-platform window, original physical stop rules, position P95 and ready duration/count, with a repeatability margin fixed before new outcomes. Require treatment-control separation on both sides and preservation of attained stages. Native is a preregistered non-regression guard, not a claim that a Warp-only gain already transfers to native.",
+    "thresholds": "If a numeric practical threshold such as10% or1mm is used, label it an experiment-specific decision rule, not an official SuperMimic or formal task gate. This review does not assert a unique threshold.",
+    "matched_budget": "Extend both branches by the same retained update amount; include all inherited and rollback costs. At any limit compare matching retained nodes. Preserve parent u10000 closure and do not transfer unused old budgets.",
+    "null_or_harm": "If no convincing bilateral original-physics benefit, finish the bounded adaptation study without changing rewards, adding more observations or opening another scan in the same identity. Report why the information test is inconclusive or negative under its tested budget.",
+    "parent_plan_assessment": {
+      "verdict": "Reasonable bounded paired information-adaptation experiment if the metric logic, tolerances, windows and budget scopes are written before running.",
+      "p95_ready_logic": "Do not leave P95/ready ambiguous. Recommended early extension rule per side: meaningful P95 decrease against both zero-control and +0 with ready non-decreasing, OR meaningful ready-duration increase against both with P95 non-worsening. Require all other predeclared preservation guards. Requiring ready to become strictly positive as well as P95 improvement would turn the original 3 mm gate into a new early extension gate and could stop a useful information test prematurely. Whichever AND/OR form is chosen must be fixed in advance.",
+      "comparability": "Use the same original full fixed platform and absolute reference clock for paired metrics. A trajectory that terminates before completing that platform is censored and cannot claim an improved P95 by dropping its missing hard frames. Preserve the original physical stop and report the incomplete window; do not continue for the purpose of claiming a qualifying metric.",
+      "native_nonregression": "Predefine native non-regression separately for pull and push: preserve original approach/settle completion, do not trigger an earlier new physical failure, and preserve fixed-window P95/ready within the registered repeatability margin. If an original platform is not reached or becomes incomplete, mark the guard as failed or inconclusive rather than computing a favorable truncated score.",
+      "repeatability": "Use unchanged frozen packages and original metrics, with a small preregistered number of repeats/order checks. Select the numerical tolerance before viewing treatment outcomes, using existing +0 repeat evidence where adequate. A deterministic repeat establishes reproducibility, not multi-seed generality.",
+      "counterfactual_limit": "By +200 both branches have causal but different collected trajectories/replay contents; identical initial state and seed do not imply identical later samples. The comparison estimates the overall effect of enabling XY under the shared recipe, not a permanently fixed-data gradient-only effect."
+    },
+    "rollback_budget": {
+      "scope": "One shared reserve for the entire paired round, including main and conditional extension; never reset at +200, +500, a process restart or between branches.",
+      "reserve_actor_wm_critic": [
+        20,
+        200,
+        400
+      ],
+      "main_retained_pair_actor_wm_critic": [
+        400,
+        4000,
+        8000
+      ],
+      "main_actual_caps_including_shared_reserve": [
+        420,
+        4200,
+        8400
+      ],
+      "extended_retained_pair_actor_wm_critic": [
+        2000,
+        20000,
+        40000
+      ],
+      "extended_actual_caps_including_shared_reserve": [
+        2020,
+        20200,
+        40400
+      ],
+      "accounting": "Log paid updates componentwise at the point they execute, including partially completed updates and work later rolled back. A discarded partial WM sequence may consume WM reserve without corresponding Actor/Critic work. Retained-node equivalence does not erase spent work. Any disposable optimization used for parity checking must also have an explicit charge and must not be reported as zero training.",
+      "exhaustion": "No extra reserve is created by extending. If any component cap would be exceeded, stop safely and preserve complete recoverable packages and honest matching-node comparisons. Do not claim authorization for leftover historical budgets or conceal non-matching endpoints."
+    }
+  },
+  "unresolved_in_this_review": [
+    "Actual u10000 tensor state and optimizer content were not loaded here; migration must verify them in the execution environment.",
+    "No new feature construction, output parity, update parity, simulator case or training was executed.",
+    "The original H32 AD/finite-secant disagreement and the dominant arm-FK error need their existing evidence limits preserved; RefXY2 is not a demonstrated fix for either."
+  ],
+  "review_correction": {
+    "issue": "The earlier first-update sentence described Actor beta2=0.95 as a recovered-parent fact and supplied a numerical multiplier without inspecting the saved parameter groups.",
+    "correction": "Removed that parent-value claim and the numerical multiplier. Added the separate helper-default, Actor-constructor override and visible-receipt evidence. Actual saved values must be loaded and retained during execution.",
+    "scope": "Only this scratch review JSON was modified. No repository edits, training, simulation, or remote checkpoint loads were performed."
+  }
+}

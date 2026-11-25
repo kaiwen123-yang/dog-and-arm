@@ -1,0 +1,376 @@
+{
+  "registration_id": "refxy2_pair_s0_v1_20261125",
+  "status": "planned_not_executed",
+  "reviewed_commit": "787d5e38b9fc6cca99c1322aae22f1321e9c8dee",
+  "parent": {
+    "run_id": "official_flow_s0_v1",
+    "node": 10000,
+    "full_state_required": true,
+    "original_standard_sealed": true,
+    "original_u15000_reopened": false,
+    "read_actual_remote_paths_from": "results/b0/standard_pregrasp_compatibility_20261125/budget_and_recovery.json"
+  },
+  "method_ids": {
+    "control": "SuperMimic-M1Piper-RefXY2-zero-v1",
+    "treatment": "SuperMimic-M1Piper-RefXY2-v1"
+  },
+  "execution_recipe": "official_flow_s0_v1",
+  "single_information_factor": {
+    "actor_goal_dim": 542,
+    "base_goal_dim": 540,
+    "feature_dims": 2,
+    "feature": "Rz(current_root_yaw).T @ (current_reference_root_xy - current_actual_or_imagined_root_xy) / 0.05m",
+    "control_mode": "zero",
+    "treatment_mode": "measured",
+    "reference_clock": "current Actor query time, not reward t+1",
+    "no_new_feature_clip": true,
+    "goal_540_normalization": "preserve original running statistics and online rule",
+    "feature_normalization": "fixed physical scale only, appended after original normalization",
+    "imagined_feature": "recompute every step with AD through current predicted root xy and yaw",
+    "new_actor_information": "ideal self-localization in simulation; real localization robustness untested"
+  },
+  "fixed_other_interfaces": {
+    "proprio_history": [
+      10,
+      77
+    ],
+    "wm_representation": 75,
+    "wm_goal": 570,
+    "context": 5,
+    "critic_inputs": "unchanged",
+    "training_physics_dt_s": 0.00025,
+    "servo_dt_s": 0.002,
+    "policy_dt_s": 0.02,
+    "formal_physics_dt_s": 0.002,
+    "worlds": 4096,
+    "wm_batch": 2048,
+    "actor_batch": 4096,
+    "actor_horizon": 32,
+    "wm_horizon": 7,
+    "per_ratio_update": {
+      "wm": 10,
+      "actor": 1,
+      "critic": 20
+    },
+    "references": "same eight parent references",
+    "noise_stats_ratio_sampling_reward_termination": "preserve original official-flow config"
+  },
+  "migration": {
+    "first_layer": "encoders.motion.0.weight",
+    "old_shape": [
+      2048,
+      540
+    ],
+    "new_shape": [
+      2048,
+      542
+    ],
+    "added_parameters": 4096,
+    "new_columns": "zero",
+    "other_actor_parameters": "exact copy",
+    "expanded_weight_optimizer": "Adam, not Muon",
+    "adam_moments": "old 540 columns copied, new two zero",
+    "adam_step": "retain parent actual shared step; no fresh per-column step",
+    "actual_param_groups": "read and retain betas/eps/lr/etc, do not override using constructor defaults",
+    "other_optimizer_states": "retain",
+    "state_boundary": "one explicit allowlisted 540-to542 conversion, strict restore afterwards",
+    "rng": "restore parent state after shape construction before branching",
+    "full_state": [
+      "WM",
+      "Actor",
+      "Critic",
+      "all optimizers",
+      "normalizers",
+      "replay",
+      "live lanes",
+      "history",
+      "previous action",
+      "servo and solver",
+      "RNG",
+      "sampler",
+      "clock",
+      "Ratio including pending"
+    ],
+    "routes": [
+      "real collection",
+      "replay",
+      "each imagination step",
+      "contact evaluation",
+      "full evaluation",
+      "free actor_obs",
+      "export and strict resume"
+    ],
+    "no_disposable_optimization": true,
+    "global_actor_gradient_clipping": "unchanged; treatment new-column gradients can alter old-column clipping scale",
+    "zero_init_ad_note": "feature coordinate Jacobian is checked at +0; Actor end-to-end derivative with respect to tail is correctly zero at zero weights"
+  },
+  "training_budget": {
+    "main_retained_per_branch": {
+      "actor": 200,
+      "wm": 2000,
+      "critic": 4000
+    },
+    "main_retained_pair": {
+      "actor": 400,
+      "wm": 4000,
+      "critic": 8000
+    },
+    "one_shared_rollback_pool": {
+      "actor": 20,
+      "wm": 200,
+      "critic": 400
+    },
+    "main_actual_cap": {
+      "actor": 420,
+      "wm": 4200,
+      "critic": 8400
+    },
+    "conditional_extended_retained_per_branch": {
+      "actor": 1000,
+      "wm": 10000,
+      "critic": 20000
+    },
+    "conditional_extended_retained_pair": {
+      "actor": 2000,
+      "wm": 20000,
+      "critic": 40000
+    },
+    "conditional_extended_actual_cap": {
+      "actor": 2020,
+      "wm": 20200,
+      "critic": 40400
+    },
+    "rollback_resets": 0,
+    "account_components_independently": true,
+    "max_actor_updates_between_rolling_restore_saves": 10,
+    "saved_main_nodes": [
+      0,
+      1,
+      10,
+      50,
+      100,
+      200
+    ],
+    "saved_extension_nodes": [
+      500,
+      1000
+    ],
+    "new_seed_training_budget_in_this_registration": 0,
+    "inherited_original_main_retained": {
+      "actor": 10000,
+      "wm": 100000,
+      "critic": 200000
+    },
+    "inherited_wm_ancestor_minibatches": 14850,
+    "effective_transitions": "actual collection, not invented in advance",
+    "old_unused_budgets_transfer": false
+  },
+  "physical_plan": {
+    "package_counts": {
+      "contact": 20,
+      "full": 4,
+      "free": 60,
+      "total": 84
+    },
+    "package_definition": {
+      "contact": "10 original Warp + 10 original native3.3",
+      "full": "2 sides x 2 backends, frame0 pure Actor original judge",
+      "free": "original three references x20"
+    },
+    "main_packages": [
+      "shared expanded +0",
+      "zero +200",
+      "measured +200"
+    ],
+    "main_counts": {
+      "contact": 60,
+      "full": 12,
+      "free": 180,
+      "total": 252
+    },
+    "conditional_extension_decision_repeats": {
+      "packages": 3,
+      "full_per_package": 4,
+      "total_full": 12,
+      "purpose": "reverse-order repeat; separate denominator, not independent seeds"
+    },
+    "main_plus_decision_repeat_cap": {
+      "contact": 60,
+      "full": 24,
+      "free": 180,
+      "total": 264
+    },
+    "extension_process_500": {
+      "branches": 2,
+      "full_per_branch": 4,
+      "total_full": 8
+    },
+    "extension_final_packages": [
+      "zero +1000",
+      "measured +1000"
+    ],
+    "whole_extended_counts": {
+      "contact": 100,
+      "full": 40,
+      "free": 300,
+      "total": 440
+    },
+    "fixed_plateau": {
+      "pull_start_k": 5872,
+      "pull_stop_exclusive_k": 5948,
+      "push_start_k": 5870,
+      "push_stop_exclusive_k": 5946,
+      "samples_per_case": 76,
+      "dt_s": 0.002,
+      "duration_ms": 152,
+      "index_semantics": "zero-based physics interval start k; q_pre/FK; readiness.step=k+1",
+      "filter_actual_phase": false,
+      "full_actual_pregrasp_window_reported_separately": true
+    },
+    "primary_outputs": [
+      "original actual completed events",
+      "full success",
+      "longest simultaneous ready",
+      "position qualifying samples",
+      "fixed platform endpoint error P50/P95/max/min",
+      "root/arm decomposition",
+      "original force/contact/failure",
+      "per-case and per-reference contact/free outcomes"
+    ],
+    "incomplete_windows": "failure/NA, not reduced-sample success; earlier completed original event prioritized",
+    "parent_result_reuse": "archived540 is reference only; shared542+0 gets one new real package after branch inference equivalence",
+    "conditional_qualification": {
+      "D_per_eligible_package": 200,
+      "C_per_eligible_package": 40,
+      "threshold": "original each item/side >=18/20",
+      "separate_from_440": true,
+      "native_and_free_reuse": "same frozen package and protocol/case ID can be reused; differing identity adds separate actual cases"
+    },
+    "new_physics_for_fp64": 0,
+    "repeat_A_D_round": false
+  },
+  "extension_rule": {
+    "joint_extension_only": true,
+    "evaluated_at_local_node": 200,
+    "target_local_node": 1000,
+    "repeat_order": "reverse the first-pass order for all 3 packages x 4 full cases only if extension is plausible",
+    "warp_required_sides": [
+      "pull",
+      "push"
+    ],
+    "preserve": [
+      "original approach",
+      "original park",
+      "already achieved qualifications"
+    ],
+    "per_warp_side_any_of": [
+      "treatment worst completed-original-event level over two runs strictly exceeds best event level of each comparator (+0 and zero)",
+      "complete fixed window: max(treatment P95) < min(+0 P95) and < min(zero P95), with simultaneous-ready and position-qualified counts not worse",
+      "min(treatment longest simultaneous-ready) > max(+0 ready) and > max(zero ready), complete fixed P95 not distinguishably worse than either comparator"
+    ],
+    "native_both_sides": "retain approach/park and original event level relative to either comparator; complete fixed window required when comparing error; same-event P95 not distinguishably worse than either comparator",
+    "distinguishable_p95_regression": "min(treatment P95 over two repeats) > max(comparator P95 over its two repeats)",
+    "failure_timing": "compare actual task stage/event regression, not absolute ending seconds; faster progression to a later failure is not earlier-stage regression",
+    "not_evidence": [
+      "new columns nonzero alone",
+      "WM error alone",
+      "training reward alone",
+      "one side alone",
+      "one best sample",
+      "FP64 completion"
+    ],
+    "negative_scope": "no demonstrated extra benefit under this parent/config/budget, not a universal claim that XY is useless",
+    "project_not_official": "budget continuation rule, not author curriculum or changed task threshold",
+    "no_extra_hyperparameter_search": true
+  },
+  "parallel_frozen_fp64": {
+    "status": "recommendation_only_not_executed",
+    "identity": "Original u10000, original540dim Actor input; separate process and artifacts from RefXY2.",
+    "fixed_inputs": [
+      "4 archived fine-step anchors",
+      "archived z0",
+      "3 archived FP32 direction vectors, cast toFP64 without reselection",
+      "archived noise at every sensor time",
+      "same reference clock/context/history/previous action"
+    ],
+    "convert_to_fp64": [
+      "WM,Actor,Critic float parameters and buffers",
+      "representation constants and statistics",
+      "aux/rep/history/previous action/context/reference and endpoint",
+      "explicit noise,z0,directions"
+    ],
+    "preserve": [
+      "discrete index/masks and temporal contracts",
+      "gamma/reward terms/bootstrap/soft survival",
+      "normalizer frozen state with no updates",
+      "frozen weights and no optimizer"
+    ],
+    "amplitudes_effort": [
+      0.02,
+      0.01,
+      0.005,
+      0.0025,
+      0.00125,
+      0.000625,
+      0.0003125,
+      0.00015625,
+      7.8125e-05,
+      3.90625e-05,
+      1.953125e-05
+    ],
+    "work_budget": {
+      "unique_signed_perturbed_wm_rollouts": 264,
+      "warmup_rollouts": 4,
+      "baseline_repeat_rollouts": 8,
+      "directional_jvp_calls": 12,
+      "reverse_grad_J32_calls_for_jvp_consistency": 4,
+      "physical_rollouts": 0,
+      "optimizer_steps": 0
+    },
+    "outputs": [
+      "H1/H7 prefix returns",
+      "H32 prefix,terminal Critic contribution,totalJ32",
+      "8 discounted reward component totals",
+      "soft survival and terminal probability",
+      "endpoint/synchronous error and selected per-step state outputs"
+    ],
+    "algebra_checks": [
+      "J32=prefix+Critic at value and directional-derivative levels",
+      "8 component sum=prefix at value and derivative levels",
+      "grad(J32,z) dot archived_direction equals JVP(J32) direction"
+    ],
+    "numerical_checks": [
+      "Rplus=F(z+h*d)-F(z)-h*AD and Rminus=F(z-h*d)-F(z)+h*AD",
+      "Record one-sided and central slopes, absolute/relative errors and adjacent-scale changes.",
+      "Look for convergence on at least3 successive scales above empirical cancellation/noise floor; do not require asymptotic order at every scale across unknown nonsmooth points.",
+      "Record duplicated-baseline variability and FP64 spacing as empirical resolution information, not rigorous total-error bounds.",
+      "If FD converges stably but not toward AD above resolution, localize earliest divergent time/operator/subterm. Do not claim a specific derivative bug until reproducible same-function counterexample is isolated.",
+      "If values become unresolved, mark unresolved. Do not count that as a pass."
+    ],
+    "consequence": "A concrete gradient/objective implementation bug requires quarantining affected evidence and handling it separately; do not silently add the fix as a second factor in the RefXY2 comparison. Otherwise retain the unresolved limitation and continue the registered information-only pair, without a new WM validation barrier.",
+    "limits": "FP64 eager mathematical-function checks do not alone validate compiledFP32 production trajectory or physical backend. No logged switches is not a smoothness certificate."
+  },
+  "fp64_extra_requirements": {
+    "save_all_32_steps_in_same_rollout": true,
+    "not_a_wm_gate": true,
+    "not_mixed_with_refxy2_factor": true,
+    "concrete_core_bug": "seal affected boundary; identify separate fix before mixing results",
+    "diagnostic_only_bug": "fix diagnostic, do not alter pair training",
+    "unresolved": "retain limitation, no automatic additional physics or optimization"
+  },
+  "outputs": {
+    "directory": "results/b0/refxy2_pair_20261125",
+    "report": "reports/B0_REFXY2_TRANSFER_RESULTS_20261125.md",
+    "work_log": "DAILY_WORK_LOG.md",
+    "video": "first true frame0 original-judge full success, continuous 1x, same episode, method/branch/package/backend identified",
+    "standard_v1_result_overwrite": false
+  },
+  "delivery": "update report/state/gap/log/two identical prompts; ordinary GitHub push and fixed-commit readback",
+  "executed_this_review": {
+    "actor": 0,
+    "wm": 0,
+    "critic": 0,
+    "physical_cases": 0,
+    "fp64_rollouts": 0
+  }
+}

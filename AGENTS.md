@@ -1,5 +1,15 @@
 # dog-and-arm 项目指令
 
+## 2026-11-25｜当前入口：RefXY2 独立配对已登记，尚未执行
+
+787d5e38 的 A–D 已完成并复核。原平台四案位置合格 0 拍、ready 0/75，最近 7.933–13.826 mm；不存在已证明可直接修复的同契约反例，但原 H32 同一 WM 的 9 组 AD–割线反号仍未闭合。原 standard-v1/u10000 保持 B0-04、候选 null、合格双侧回报 NA、V0=0，Warp/native 接触各 0/10、full 0/4、free 0/60。
+
+[当前审查](reports/B0_PREGRASP_ROUND_REVIEW_20261125.md) · [下一配对计划](docs/B0_REFXY2_TRANSFER_PLAN_20261125.md) · [机器登记](results/b0/pregrasp_review_20261125/next_registration.json) · [目标差距](docs/GOAL_GAP_20261125.md) · [启动词](prompts/NEXT_RUN.txt)
+
+下一执行轮为独立 `SuperMimic-M1Piper-RefXY2-v1` 与等宽恒零控制：完整恢复同一 u10000，仅 Actor 增当前参考根相对自身的 XY2；保留 `execution_recipe=official_flow_s0_v1` 与原 WM/Critic/损失/Ratio/H32/物理/裁判。各 +200，双侧原物理证据支持时同轮同步 +1000。主段实际优化上限 420/4200/8400，延长总上限 2020/20200/40400；全轮共享回滚20/200/400。主段三套原评分252案，完整延长440案，条件资格另列。一次冻结FP64模型内复核并行，不作WM门。
+
+本次只完成审查和计划发布，没有新增训练或仿真。新两维改变Actor信息，结果独立标识，不能改写原标准成功；先迁移冻结，再开发算法/VLA。首个原判完整成功立即交同回合原速V0。以下旧“当前/下一轮/待决定”均按历史日期及当时提交阅读，A–D和原u15000不重复启动；当前执行范围以本节、新计划及启动词为准。
+
 ## 2026-11-25｜预抓兼容性轮已执行
 
 读取[独立结果](reports/B0_PREGRASP_COMPATIBILITY_RESULTS_20261125.md)、[机制决定](results/b0/standard_pregrasp_compatibility_20261125/mechanism_decision.json)和[当前启动词](prompts/NEXT_RUN.txt)。2f75c349 登记的 A–D 已完成，历史条目中的“下一轮”指本次已执行诊断。standard-v1 仍为 B0-04、候选 null、合格双侧回报 NA、V0=0。u10000 原 Warp/native 接触各 0/10、full 0/4、free 0/60。新增优化 Actor/WM/Critic 为 0/0/0。原主链封存于 u10000。 独立适配提案 SuperMimic-M1Piper-RefXY2-v1 只增加当前参考根相对机体的两维水平偏移，以等宽恒零输入作对照；提案仍待单独决定。 完整成功首次出现仍立即保存并交付同一回合连续原速 V0，完成独立标准迁移后再开展算法/VLA。

@@ -1,5 +1,11 @@
 # B0 数据、动作、观测与模型约定
 
+## 2026-11-25｜当前适配登记与原标准边界
+
+原 A–D 实测提交787d5e38已完成，下一执行轮见[RefXY2计划](B0_REFXY2_TRANSFER_PLAN_20261125.md)、[最新审查](../reports/B0_PREGRASP_ROUND_REVIEW_20261125.md)和[机器登记](../results/b0/pregrasp_review_20261125/next_registration.json)。本次新增训练/仿真0；原standard-v1/u10000仍B0-04、候选null、合格双侧回报NA、V0=0。
+
+独立RefXY2与等宽零控制仅改变Actor当前根XY信息，542输入不冒充固定官方原540接口。官方核心及execution_recipe、WM/Critic、原物理与裁判保持；完整u10000迁移首层Adam旧状态与原统计，各+200、有双侧原物理依据再配对至+1000。原结果与新增方法分别保存，算法/VLA后置。具体预算、固定窗/ready条件、并行FP64限额和首个完整视频交付以新登记为准；下方旧“当前/下一轮”属于历史，不恢复A–D或原u15000。
+
 ## 2026-11-25｜u10000接口审查与下一轮边界
 
 当前实绩和新入口为[审查](../reports/B0_U10000_REVIEW_20261125.md)、[预抓兼容性计划](B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md)。原链已结案，不执行旧u15000延长；本次没有修改学习/数据接口。

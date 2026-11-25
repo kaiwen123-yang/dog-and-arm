@@ -1,5 +1,7 @@
 # u10000 后的集中轮：原参考时钟下预抓端点失败的闭环对照
 
+> 历史执行登记：本计划 A–D 已在787d5e38完成，实际新增优化0/0/0。下文保留当时原登记，不再当作下一轮重复执行。当前接续为[RefXY2独立配对计划](B0_REFXY2_TRANSFER_PLAN_20261125.md)及[复核报告](../reports/B0_PREGRASP_ROUND_REVIEW_20261125.md)。
+
 状态：下一执行轮登记，尚未运行。北京时间 2026-11-25。父实验固定为 79fd3cf876c126e74d862e34e2638495705098e7 的 official_flow_s0_v1/u10000；旧轮已经结束，不启动原 u12500/u15000。
 
 [本轮审查](../reports/B0_U10000_REVIEW_20261125.md) · [机器登记](../results/b0/official_u10000_review_20261125/next_registration.json) · [当前状态](../PROJECT_STATE.md) · [启动词](../prompts/NEXT_RUN.txt)

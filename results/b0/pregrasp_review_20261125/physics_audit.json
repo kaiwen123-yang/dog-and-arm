@@ -1,0 +1,457 @@
+{
+  "review_id": "pregrasp_physics_readonly_review",
+  "reviewed_commit": "787d5e38b9fc6cca99c1322aae22f1321e9c8dee",
+  "created_utc": "2026-11-25T08:51:11.807484+00:00",
+  "scope": "Read-only evidence, source-code, and 16 extracted video keyframes. No training, simulation, repository edits or physical qualification claimed.",
+  "sources": [
+    "results/b0/standard_pregrasp_compatibility_20261125/readiness_predicates.json",
+    "results/b0/standard_pregrasp_compatibility_20261125/endpoint_decomposition.csv",
+    "results/b0/standard_pregrasp_compatibility_20261125/clock_alignment.json",
+    "results/b0/standard_pregrasp_compatibility_20261125/states.json",
+    "results/b0/standard_pregrasp_compatibility_20261125/input_alias.json",
+    "results/b0/standard_pregrasp_compatibility_20261125/adaptation_proposal.json",
+    "results/b0/standard_pregrasp_compatibility_20261125/diagnostic_video_manifest.json",
+    "learning/b0/contact_events.py",
+    "scripts/b0/pregrasp_geometry.py",
+    "reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md"
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "finding": "四个 u10000 案例在原预抓平台均有 76 个满足 ramp、姿态的 2 ms 区间，位置合格为零，连续就绪为 0/75。",
+      "interpretation": "直接阻塞是原端点位置跟踪精度，而非原平台没有姿态或 ramp 资格。"
+    },
+    {
+      "id": "F2",
+      "finding": "76 个 2 ms 区间合计 152 ms；原裁判需要连续 150 ms。",
+      "qualification": "这是原参考 phase 内的窄平台；不是裁判仅允许 152 ms 的硬截止。contact_events 由实际 phase 判断冻结端点，参考 phase 后移并不停止实际 pregrasp 判定。四案 ramp 后整个实际 pregrasp 的最小距离仍为 6.962/12.618/4.683/10.587 mm，全部超过 3 mm。"
+    },
+    {
+      "id": "F3",
+      "finding": "原平台臂 FK 平均有符号投影为 7.231–10.041 mm；根平移为 −0.979–5.134 mm；参考进展为 0.02465–0.04663 mm。",
+      "qualification": "这些是沿逐拍总误差方向投影的平均值，不是各向量模长，也不是独立因果份额。native 前拉的根平移与根转动都在部分抵消臂 FK 误差。"
+    },
+    {
+      "id": "F4",
+      "finding": "同一 Actor 在正式首败后维持原参考钟继续，四案仍没有任何双指同时接触，门角与门上合力均为零。",
+      "interpretation": "排除了这四条轨迹中“只是正式评分停止掩盖了紧接着的成功抓门”这一解释。",
+      "qualification": "没有检验参考暂停/延长等不同契约；不能据此排除所有时钟或优化耦合影响，也不能判定尚未进入的保持/释放能力。"
+    },
+    {
+      "id": "F5",
+      "finding": "现有完整名义参考已以冻结裁判通过两侧各 13 阶段；预抓连续 75 拍，预抓末端距离 0.0137227/0.0168363 mm，参考结束余量各 1 s。",
+      "interpretation": "当前没有证据表明原参考与 3 mm 冻结端点要求在几何或时钟上本身不兼容；不应以此再重开教师或放宽裁判。",
+      "qualification": "这证明名义参考数组的自一致，不是父 Actor 的成功，不保证任意扰动状态可行；复用前核对当前训练资产身份。"
+    },
+    {
+      "id": "F6",
+      "finding": "同一根 XY 平移的不同绝对端点误差可能映射到相同稳态 Actor 输入，Critic 可区分；既有四锚为合成反事实而非完整可达轨迹。",
+      "interpretation": "RefXY2 是可检验的信息干预，不是已证明的唯一根因修复。"
+    },
+    {
+      "id": "F7",
+      "finding": "参考 FK 与冻结端点、20 ms bank FK、2 ms dense FK 并非定义上同一个数；现有分析已明确计算并留存相关向量、时钟。",
+      "qualification": "本次未在本地重新读取 AutoDL 原数组；投影极小不能单独用来声称参考 FK 距离模长同样极小。现成参考冻结裁判记录已有自一致通过，额外离线范数摘要只应随正常评分顺手导出，不作为新前置闸门。"
+    }
+  ],
+  "u10000_case_measurements": [
+    {
+      "backend": "warp",
+      "side": "pull",
+      "plateau_k_start": 5872,
+      "plateau_k_stop_exclusive": 5948,
+      "plateau_samples": 76,
+      "plateau_interval_duration_ms": 152,
+      "required_consecutive_samples": 75,
+      "required_duration_ms": 150,
+      "plateau_min_distance_mm": 9.62899077680096,
+      "plateau_min_distance_ratio_to_3mm": 3.2096635922669865,
+      "plateau_min_distance_excess_mm": 6.6289907768009595,
+      "plateau_counts": {
+        "ramp": 76,
+        "position": 0,
+        "orientation": 76,
+        "position_and_orientation": 0,
+        "ready": 0
+      },
+      "plateau_max_consecutive": {
+        "position": 0,
+        "orientation": 76,
+        "position_and_orientation": 0,
+        "ready": 0
+      },
+      "plateau_mean_signed_projections_mm": {
+        "total": 10.505154557353602,
+        "tracking": 10.47890507550069,
+        "reference_progress": 0.02624948185291131,
+        "root_translation": 2.4973123295126602,
+        "root_rotation": 0.7505090794928772,
+        "arm_fk": 7.23108916634102
+      },
+      "actual_after_ramp_samples": 2268,
+      "actual_after_ramp_min_distance_mm": 6.962403708790577,
+      "actual_after_ramp_position_qualifying_samples": 0,
+      "original_fk_ready_mismatches": 0
+    },
+    {
+      "backend": "warp",
+      "side": "push",
+      "plateau_k_start": 5870,
+      "plateau_k_stop_exclusive": 5946,
+      "plateau_samples": 76,
+      "plateau_interval_duration_ms": 152,
+      "required_consecutive_samples": 75,
+      "required_duration_ms": 150,
+      "plateau_min_distance_mm": 13.826077397357096,
+      "plateau_min_distance_ratio_to_3mm": 4.6086924657856985,
+      "plateau_min_distance_excess_mm": 10.826077397357096,
+      "plateau_counts": {
+        "ramp": 76,
+        "position": 0,
+        "orientation": 76,
+        "position_and_orientation": 0,
+        "ready": 0
+      },
+      "plateau_max_consecutive": {
+        "position": 0,
+        "orientation": 76,
+        "position_and_orientation": 0,
+        "ready": 0
+      },
+      "plateau_mean_signed_projections_mm": {
+        "total": 14.390643202939845,
+        "tracking": 14.344017987164161,
+        "reference_progress": 0.04662521577568479,
+        "root_translation": 5.133623501663607,
+        "root_rotation": 0.20052425070149194,
+        "arm_fk": 9.009879592624776
+      },
+      "actual_after_ramp_samples": 2267,
+      "actual_after_ramp_min_distance_mm": 12.617923174213798,
+      "actual_after_ramp_position_qualifying_samples": 0,
+      "original_fk_ready_mismatches": 0
+    },
+    {
+      "backend": "native",
+      "side": "pull",
+      "plateau_k_start": 5872,
+      "plateau_k_stop_exclusive": 5948,
+      "plateau_samples": 76,
+      "plateau_interval_duration_ms": 152,
+      "required_consecutive_samples": 75,
+      "required_duration_ms": 150,
+      "plateau_min_distance_mm": 7.932738447186546,
+      "plateau_min_distance_ratio_to_3mm": 2.644246149062182,
+      "plateau_min_distance_excess_mm": 4.932738447186546,
+      "plateau_counts": {
+        "ramp": 76,
+        "position": 0,
+        "orientation": 76,
+        "position_and_orientation": 0,
+        "ready": 0
+      },
+      "plateau_max_consecutive": {
+        "position": 0,
+        "orientation": 76,
+        "position_and_orientation": 0,
+        "ready": 0
+      },
+      "plateau_mean_signed_projections_mm": {
+        "total": 8.936856406793078,
+        "tracking": 8.912202107560974,
+        "reference_progress": 0.02465429923210171,
+        "root_translation": -0.9785318097766869,
+        "root_rotation": -0.15024890424056306,
+        "arm_fk": 10.041024024434748
+      },
+      "actual_after_ramp_samples": 1992,
+      "actual_after_ramp_min_distance_mm": 4.683291666196503,
+      "actual_after_ramp_position_qualifying_samples": 0,
+      "original_fk_ready_mismatches": 0
+    },
+    {
+      "backend": "native",
+      "side": "push",
+      "plateau_k_start": 5870,
+      "plateau_k_stop_exclusive": 5946,
+      "plateau_samples": 76,
+      "plateau_interval_duration_ms": 152,
+      "required_consecutive_samples": 75,
+      "required_duration_ms": 150,
+      "plateau_min_distance_mm": 11.179615151071037,
+      "plateau_min_distance_ratio_to_3mm": 3.7265383836903454,
+      "plateau_min_distance_excess_mm": 8.179615151071037,
+      "plateau_counts": {
+        "ramp": 76,
+        "position": 0,
+        "orientation": 76,
+        "position_and_orientation": 0,
+        "ready": 0
+      },
+      "plateau_max_consecutive": {
+        "position": 0,
+        "orientation": 76,
+        "position_and_orientation": 0,
+        "ready": 0
+      },
+      "plateau_mean_signed_projections_mm": {
+        "total": 11.614838972340646,
+        "tracking": 11.56841537276693,
+        "reference_progress": 0.04642359957371722,
+        "root_translation": 1.5500978974185526,
+        "root_rotation": 0.23444397972733597,
+        "arm_fk": 9.78385212270732
+      },
+      "actual_after_ramp_samples": 1997,
+      "actual_after_ramp_min_distance_mm": 10.587196061405022,
+      "actual_after_ramp_position_qualifying_samples": 0,
+      "original_fk_ready_mismatches": 0
+    }
+  ],
+  "reference_self_consistency": [
+    {
+      "source": "results/b0/recovery_a_teacher_r1/judge/pull_60_train.json",
+      "sha256": "42d58f01aa42f39669f400d042de44a6c8d4f6d54c7e7165438a368a36143757",
+      "frozen_judge_pass": true,
+      "events": 13,
+      "reference_margin_s": 1.0,
+      "pregrasp_event": {
+        "phase": "pregrasp",
+        "end_step": 5947,
+        "ref_end_step": 5947,
+        "ticks": 75,
+        "door_deg": 0.0,
+        "width_m": 0.08999530225992203,
+        "net_force_n": 0.0
+      },
+      "pregrasp_phase_geometry": {
+        "actual_last_physics_step": 5947,
+        "last_in_measured_phase": true,
+        "tolerance_mm": 3.0,
+        "teacher_goal_to_frozen_endpoint_mm": 0.0,
+        "actual_tcp_to_teacher_goal_mm": 0.013722739047690205,
+        "actual_tcp_to_frozen_endpoint_mm": 0.013722739047690205,
+        "actual_tcp_to_handle_mm": 80.00835441821263,
+        "actual_door_deg": 0.0,
+        "actual_force_N": 0.0,
+        "active_finger_N": [
+          0.0,
+          0.0
+        ],
+        "same_phase_substeps": 2576,
+        "same_clock_same_phase_goal_delta_mm_quantiles": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "same_clock_same_phase_goal_delta_above_3mm": 0
+      },
+      "limitation": "raw solved contact/effort, CPU FK at interval start plus recorded post-step q/v; native solver warning vector unavailable",
+      "metrics_are_policy_evaluation": false
+    },
+    {
+      "source": "results/b0/recovery_a_teacher_r1/judge/push_25_train.json",
+      "sha256": "33f13f0cab2f835ba3da2055f6b8b9fb67627ef909cd99251b1c8ab00d9957c0",
+      "frozen_judge_pass": true,
+      "events": 13,
+      "reference_margin_s": 1.0,
+      "pregrasp_event": {
+        "phase": "pregrasp",
+        "end_step": 5945,
+        "ref_end_step": 5945,
+        "ticks": 75,
+        "door_deg": 0.0,
+        "width_m": 0.09000444412231445,
+        "net_force_n": 0.0
+      },
+      "pregrasp_phase_geometry": {
+        "actual_last_physics_step": 5945,
+        "last_in_measured_phase": true,
+        "tolerance_mm": 3.0,
+        "teacher_goal_to_frozen_endpoint_mm": 0.0,
+        "actual_tcp_to_teacher_goal_mm": 0.016836263652189914,
+        "actual_tcp_to_frozen_endpoint_mm": 0.016836263652189914,
+        "actual_tcp_to_handle_mm": 104.97929600425036,
+        "actual_door_deg": 0.0,
+        "actual_force_N": 0.0,
+        "active_finger_N": [
+          0.0,
+          0.0
+        ],
+        "same_phase_substeps": 2576,
+        "same_clock_same_phase_goal_delta_mm_quantiles": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "same_clock_same_phase_goal_delta_above_3mm": 0
+      },
+      "limitation": "raw solved contact/effort, CPU FK at interval start plus recorded post-step q/v; native solver warning vector unavailable",
+      "metrics_are_policy_evaluation": false
+    }
+  ],
+  "continuation": [
+    {
+      "case": "warp_pull",
+      "source": "results/b0/standard_pregrasp_compatibility_20261125/continuation/warp_pull/continuation.json",
+      "formal_failure_s": 16.278,
+      "physical_stop_s": 17.25,
+      "after_formal_failure_duration_s": 0.972,
+      "reference_failure": "grip_handle_error",
+      "dual_contact_samples": 0,
+      "peak_door_deg": 0.0,
+      "max_net_N": 0.0,
+      "query_start_grid_exact": true,
+      "post_timeout_can_qualify": false
+    },
+    {
+      "case": "warp_push",
+      "source": "results/b0/standard_pregrasp_compatibility_20261125/continuation/warp_push/continuation.json",
+      "formal_failure_s": 16.274,
+      "physical_stop_s": 17.246,
+      "after_formal_failure_duration_s": 0.972,
+      "reference_failure": "grip_handle_error",
+      "dual_contact_samples": 0,
+      "peak_door_deg": 0.0,
+      "max_net_N": 0.0,
+      "query_start_grid_exact": true,
+      "post_timeout_can_qualify": false
+    },
+    {
+      "case": "native_pull",
+      "source": "results/b0/standard_pregrasp_compatibility_20261125/continuation/native_pull/continuation.json",
+      "formal_failure_s": 15.728,
+      "physical_stop_s": 17.398,
+      "after_formal_failure_duration_s": 1.67,
+      "reference_failure": "lost_grip",
+      "dual_contact_samples": 0,
+      "peak_door_deg": 0.0,
+      "max_net_N": 0.0,
+      "query_start_grid_exact": true,
+      "post_timeout_can_qualify": false
+    },
+    {
+      "case": "native_push",
+      "source": "results/b0/standard_pregrasp_compatibility_20261125/continuation/native_push/continuation.json",
+      "formal_failure_s": 15.734,
+      "physical_stop_s": 17.246,
+      "after_formal_failure_duration_s": 1.512,
+      "reference_failure": "grip_handle_error",
+      "dual_contact_samples": 0,
+      "peak_door_deg": 0.0,
+      "max_net_N": 0.0,
+      "query_start_grid_exact": true,
+      "post_timeout_can_qualify": false
+    }
+  ],
+  "refxy2_assessment": {
+    "answer": "可以执行已有有界配对试验，但它对主导臂 FK 误差的改善仍是假设，必须用真实闭环端点和阶段结果判定。",
+    "why_root_feature_could_help": "两维根目标偏移使 Actor 区分原先混同的绝对站位；全 Actor 仍可联动底盘和六臂，因此可以学习机体/臂补偿，不只改轮动作。",
+    "why_not_guaranteed": "它没有增加直接 TCP 误差、没有改变六项原目标的精度尺度或 WM 梯度质量；现有本体与参考关节信息已经能表达许多局部臂误差。根误差变小也可能去掉对臂误差有利的抵消。",
+    "claim_boundary": "独立方法 SuperMimic-M1Piper-RefXY2-v1 的结果不能回填标准原信息接口的 standard-v1；有界 seed0 200 更新试验不足以判定该特征永远有效或无效。"
+  },
+  "next_round_recommendations": [
+    {
+      "priority": 1,
+      "action": "直接实施已提出的同宽零输入对照与真实 XY 输入实验，各 200 Actor / 2000 WM / 4000 Critic；从同一完整 u10000 恢复，保留原训练循环、目标、物理时钟和裁判。",
+      "reason": "A–D 已无可复现同契约实现错误，应把下一轮用于真实配对训练，不再把大规模审计作为放行门。"
+    },
+    {
+      "priority": 2,
+      "action": "+0 逐查询等价和扩维优化器迁移核对一次即可；通过则复用父 +0 原物理成绩。每 50 更新保存读数，+200 做双方同套餐评分；中段可随正常固定节点输出诊断，不用 WM 误差另阻断 Actor。",
+      "reason": "隔离新增两维的信息作用，同时避免反复全部重跑。"
+    },
+    {
+      "priority": 3,
+      "action": "主要逐案记录原 full 的最后完成阶段、首次失败、pregrasp 75 连续就绪是否达成；同时记录原平台位置合格数、最长连续就绪、端点误差 min/P95/max 及两侧全部原结果。",
+      "reason": "单个最小距离改善不代表连续 150 ms 达标；平台整窗和实际事件要一起报告。"
+    },
+    {
+      "priority": 4,
+      "action": "配对效应必须同时列 treatment−control 和 treatment−parent，按后端与方向分开。四个固定名义案例不是四个独立随机 seed，单次 replay 不能做泛化显著性结论。",
+      "reason": "控制同预算普通续训带来的改善。"
+    },
+    {
+      "priority": 5,
+      "action": "使用同一个冻结节点比较双侧，并联报原根平移、根旋转、臂 FK 向量及总端点误差；根位置降低或新增权重非零只能作为机制读数。",
+      "reason": "防止把根跟踪更准而实际 TCP 更差误判为进步，尤其 native 前拉存在抵消。"
+    },
+    {
+      "priority": 6,
+      "action": "原物理资格仍完全沿用：原力、精度、稳定窗口和同包资格不放宽，标准候选不得因为 WM loss 或短时近接触改善而赋值。",
+      "reason": "项目目标是完整任务与可对比迁移，而不是优化中间代理指标。"
+    },
+    {
+      "priority": 7,
+      "action": "到 +200 按预先固定的 paired 终点收束。若原资格未过则报告有限因果差异；若进一步推进须由真实双侧新阶段/连续就绪和端点改善支持，不以一侧单点改善自动续训。不要把未达标等同于必须再开无界审计。",
+      "reason": "保证本轮能给清晰答案；后续预算和改动不暗中并入这对实验。"
+    },
+    {
+      "priority": 8,
+      "action": "首次原裁判 frame0 连续完整成功立即导出同 episode 原速视频、冻结包与完整事件表；其方法身份清晰标为 RefXY2。",
+      "reason": "达到用户新增 V0 目标，同时不把诊断续跑或拼接视频当成功。"
+    }
+  ],
+  "video_review": {
+    "method": "ffmpeg 从每个原 MP4 抽取四个关键帧，用 PIL 合成 2×2 接触表；实际逐张 view_image 检视四张。不是人工逐帧观看全部视频。",
+    "cases": [
+      {
+        "case": "warp_pull",
+        "sheet": "/workspace/scratch/bdf34e707b47/pregrasp_video_review/warp_pull_sheet.jpg",
+        "requested_times_s": [
+          0,
+          11.8,
+          16.318,
+          17.21
+        ]
+      },
+      {
+        "case": "warp_push",
+        "sheet": "/workspace/scratch/bdf34e707b47/pregrasp_video_review/warp_push_sheet.jpg",
+        "requested_times_s": [
+          0,
+          11.8,
+          16.314,
+          17.206
+        ]
+      },
+      {
+        "case": "native_pull",
+        "sheet": "/workspace/scratch/bdf34e707b47/pregrasp_video_review/native_pull_sheet.jpg",
+        "requested_times_s": [
+          0,
+          11.8,
+          15.768,
+          17.358
+        ]
+      },
+      {
+        "case": "native_push",
+        "sheet": "/workspace/scratch/bdf34e707b47/pregrasp_video_review/native_push_sheet.jpg",
+        "requested_times_s": [
+          0,
+          11.8,
+          15.774,
+          17.206
+        ]
+      }
+    ],
+    "observations": [
+      "所有四案图像均显示轮足底盘接近门后，机械臂伸向把手；门在观察关键帧中保持关闭。",
+      "上部首帧/11.8 s 帧呈现原回合，下部后续帧明确标注 FORMAL VERDICT SEALED、diagnostic observation。",
+      "关键帧的叠加门角、门上合力和两指载荷均为零；native 前拉末帧已显示 reference:open，actual:sealed/pregrasp。",
+      "背推相机中门板遮挡部分机器人与末端，无法由外观确认夹指与把手的微小间隙。"
+    ],
+    "limits": [
+      "640×448 单视角、约 25 fps 不足以检定 3 mm 阈值、2 ms 事件或 150 ms 全部接触连续性。",
+      "抓持、力和裁判真值以 2 ms 物理记录为准；叠加文字是记录展示而非独立测量。",
+      "抽取时间因关键帧/帧栅格落在实际 40 ms 输出时刻，实际图中文字时间例如 16.320、17.240。",
+      "这些视频是失败后的固定时钟诊断，不是 V0 成功视频。"
+    ]
+  },
+  "limitations": [
+    "未接入 AutoDL，也未复算缺失于本地的完整原始物理数组。",
+    "参考原判记录通过 git show 从固定 HEAD 读取；稀疏工作树本地路径未展开，不是缺失于仓库。",
+    "建议是下一轮预先登记的判读方案，不是本次执行结果或新增预算授权。"
+  ]
+}

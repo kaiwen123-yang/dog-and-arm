@@ -1,0 +1,756 @@
+{
+  "audit": {
+    "commit": "787d5e38b9fc6cca99c1322aae22f1321e9c8dee",
+    "reviewed_at_utc": "2026-11-25T08:55:00.173946+00:00",
+    "reviewer": "/root/pregrasp_evidence_review",
+    "repo": "/workspace/scratch/bdf34e707b47/dog-and-arm",
+    "read_only": true,
+    "new_physics": 0,
+    "new_optimizer_steps": 0,
+    "scope": "Read local source and lightweight JSON/CSV. Independently aggregate recorded denominators, ratios, signs and cost. Inspect objective, indexing, mode and sign-floor code. No replay of AutoDL raw .npz, solver state or weights in this review; original trajectory-level receipts remain cited evidence rather than freshly reproduced results.",
+    "overall": "Reported aggregate counts and bounded conclusions are supported. No new same-contract counterexample is established here. H32 same-WM AD-versus-finite-secant discrepancy remains unresolved; existing evidence does not exclude a derivative or implementation error."
+  },
+  "A_endpoint_readiness": {
+    "trajectories": 12,
+    "original_2ms_intervals": 85404,
+    "region_summary_rows": 48,
+    "trajectories_with_nonempty_original_plateau": 8,
+    "u10000_cases": [
+      {
+        "backend": "warp",
+        "side": "pull",
+        "eligible_ticks": 76,
+        "eligible_duration_ms": 152,
+        "required_ready_ticks": 75,
+        "required_ready_duration_ms": 150,
+        "position_eligible_ticks": 0,
+        "ready_ticks": 0,
+        "closest_distance_mm": 9.62899077680096,
+        "ratio_to_3mm": 3.2096635922669865,
+        "minimum_reduction_to_3mm_mm": 6.6289907768009595,
+        "all_actual_after_ramp_closest_mm": 6.962403708790577,
+        "signed_projection_mean_mm": {
+          "total": 10.505154557353602,
+          "tracking": 10.47890507550069,
+          "reference_progress": 0.02624948185291131,
+          "root_translation": 2.4973123295126602,
+          "root_rotation": 0.7505090794928772,
+          "arm_fk": 7.23108916634102
+        }
+      },
+      {
+        "backend": "warp",
+        "side": "push",
+        "eligible_ticks": 76,
+        "eligible_duration_ms": 152,
+        "required_ready_ticks": 75,
+        "required_ready_duration_ms": 150,
+        "position_eligible_ticks": 0,
+        "ready_ticks": 0,
+        "closest_distance_mm": 13.826077397357096,
+        "ratio_to_3mm": 4.6086924657856985,
+        "minimum_reduction_to_3mm_mm": 10.826077397357096,
+        "all_actual_after_ramp_closest_mm": 12.617923174213798,
+        "signed_projection_mean_mm": {
+          "total": 14.390643202939845,
+          "tracking": 14.344017987164161,
+          "reference_progress": 0.04662521577568479,
+          "root_translation": 5.133623501663607,
+          "root_rotation": 0.20052425070149194,
+          "arm_fk": 9.009879592624776
+        }
+      },
+      {
+        "backend": "native",
+        "side": "pull",
+        "eligible_ticks": 76,
+        "eligible_duration_ms": 152,
+        "required_ready_ticks": 75,
+        "required_ready_duration_ms": 150,
+        "position_eligible_ticks": 0,
+        "ready_ticks": 0,
+        "closest_distance_mm": 7.932738447186546,
+        "ratio_to_3mm": 2.644246149062182,
+        "minimum_reduction_to_3mm_mm": 4.932738447186546,
+        "all_actual_after_ramp_closest_mm": 4.683291666196503,
+        "signed_projection_mean_mm": {
+          "total": 8.936856406793078,
+          "tracking": 8.912202107560974,
+          "reference_progress": 0.02465429923210171,
+          "root_translation": -0.9785318097766869,
+          "root_rotation": -0.15024890424056306,
+          "arm_fk": 10.041024024434748
+        }
+      },
+      {
+        "backend": "native",
+        "side": "push",
+        "eligible_ticks": 76,
+        "eligible_duration_ms": 152,
+        "required_ready_ticks": 75,
+        "required_ready_duration_ms": 150,
+        "position_eligible_ticks": 0,
+        "ready_ticks": 0,
+        "closest_distance_mm": 11.179615151071037,
+        "ratio_to_3mm": 3.7265383836903454,
+        "minimum_reduction_to_3mm_mm": 8.179615151071037,
+        "all_actual_after_ramp_closest_mm": 10.587196061405022,
+        "signed_projection_mean_mm": {
+          "total": 11.614838972340646,
+          "tracking": 11.56841537276693,
+          "reference_progress": 0.04642359957371722,
+          "root_translation": 1.5500978974185526,
+          "root_rotation": 0.23444397972733597,
+          "arm_fk": 9.78385212270732
+        }
+      }
+    ],
+    "closure_max_mm": 0.0003166809238237314,
+    "pre_distance_alignment_max_mm": 0.0003549515530387737,
+    "post_distance_alignment_max_mm": 0.5015452076712057,
+    "ready_predicate_mismatches": 0,
+    "source_calculation": "Physical interval start k corresponds to readiness row step k+1. Geometry code uses q_pre rather than q_post. Ready is actual pregrasp & ramp & saved distance <=.003 & saved orientation <=.02; 75 consecutive 2ms ticks. Signed vector identity splits tracking into root translation, root rotation and arm FK; reference-progress vector is separate.",
+    "interpretation_limits": [
+      "76 available ticks vs75 required leaves only a 2ms margin, but all four position counts are zero; this alone cannot justify changing ramp or plateau.",
+      "Signed projections may cancel. They are geometric decomposition, not additive causal shares or proof that the arm alone causes failure.",
+      "The 3mm ratios describe nearest position, not a chance of success or percentage of task completion. Even reaching3mm once would not meet150ms readiness."
+    ]
+  },
+  "B_input_alias": {
+    "anchors": 4,
+    "variants": 28,
+    "xy_translation_variants": 16,
+    "positive_controls": 8,
+    "positive_controls_detected": 8,
+    "direct_actor_forwards": 27,
+    "physics_calls": 0,
+    "first_anchor_cold_steady_command_max": 5.960464477539063e-08,
+    "first_anchor_cold_steady_normalized_goal_max": 7.495284080505371e-06,
+    "first_anchor_recheck": {
+      "first_two_input_arrays_reproduced": true,
+      "steady_unshifted_vs_each_xy_raw_input_exact": true,
+      "extra_unique_input_forwards": 2,
+      "interpretation": "Task inputs exactly equal in steady computation, cold-vs-steady differences are also reproduced with zero translation. Two new forwards on the two distinct raw input pairs. Three redundant XY queries reuse the exact same query result."
+    },
+    "critic_xy_difference_range": [
+      0.04982296749949455,
+      0.04999963939189911
+    ],
+    "interpretation": "Steady Actor inputs alias under the synthetic global XY translations; Critic distinguishes them. This establishes lost absolute horizontal information under the fixed motion interface, not that these physically reachable states need opposite optimal motor commands.",
+    "counting_note": "28 variants are not28 independent direct calls. Final pass23 + failed first pass2 + distinct-input recheck2 =27. Three first-anchor redundant XY variants reuse exactly identical raw-input output."
+  },
+  "C_response": {
+    "anchors": 4,
+    "directions": [
+      "archived_objective_gradient",
+      "j2",
+      "wheels"
+    ],
+    "amplitudes_effort": [
+      0.02,
+      0.04,
+      0.08
+    ],
+    "branches_per_anchor": 19,
+    "physical_branches": 76,
+    "policy_intervals": 2432,
+    "microsteps_025ms": 194560,
+    "full_h32_branches": 76,
+    "first_physical_failure_count": 0,
+    "horizon_sign_aggregates": [
+      {
+        "horizon": 1,
+        "total_triplets": 36,
+        "wm_ad_fd": {
+          "same": 36
+        },
+        "wm_physics_fd": {
+          "same": 33,
+          "opposite": 3
+        },
+        "positive_objective_instances": 12,
+        "positive_real_endpoint_improvement": 0,
+        "positive_real_synchronous_improvement": 0,
+        "positive_real_both_improvement": 0,
+        "positive_real_return_improvement": 0
+      },
+      {
+        "horizon": 7,
+        "total_triplets": 36,
+        "wm_ad_fd": {
+          "same": 36
+        },
+        "wm_physics_fd": {
+          "same": 36
+        },
+        "positive_objective_instances": 12,
+        "positive_real_endpoint_improvement": 6,
+        "positive_real_synchronous_improvement": 6,
+        "positive_real_both_improvement": 6,
+        "positive_real_return_improvement": 1
+      },
+      {
+        "horizon": 32,
+        "total_triplets": 36,
+        "wm_ad_fd": {
+          "same": 25,
+          "under_resolution": 2,
+          "opposite": 9
+        },
+        "wm_physics_fd": {
+          "same": 20,
+          "under_resolution": 8,
+          "opposite": 8
+        },
+        "positive_objective_instances": 12,
+        "positive_real_endpoint_improvement": 3,
+        "positive_real_synchronous_improvement": 5,
+        "positive_real_both_improvement": 3,
+        "positive_real_return_improvement": 3
+      }
+    ],
+    "h32_ad_fd_opposites": [
+      {
+        "side": "push",
+        "frame": "587",
+        "direction": "objective",
+        "amplitude": "0.02",
+        "wm_AD_J": "0.02154451794922352",
+        "wm_central_J": "-0.0025510787963867188",
+        "wm_Dplus_J": "-0.003528594970703125",
+        "wm_Dminus_J": "-0.0015735626220703125"
+      },
+      {
+        "side": "push",
+        "frame": "587",
+        "direction": "j2",
+        "amplitude": "0.08",
+        "wm_AD_J": "-0.0008403586107306182",
+        "wm_central_J": "4.76837158203125e-05",
+        "wm_Dplus_J": "-0.0001430511474609375",
+        "wm_Dminus_J": "0.0002384185791015625"
+      },
+      {
+        "side": "push",
+        "frame": "587",
+        "direction": "wheels",
+        "amplitude": "0.02",
+        "wm_AD_J": "0.004953292664140463",
+        "wm_central_J": "-0.000762939453125",
+        "wm_Dplus_J": "9.5367431640625e-05",
+        "wm_Dminus_J": "-0.001621246337890625"
+      },
+      {
+        "side": "push",
+        "frame": "587",
+        "direction": "wheels",
+        "amplitude": "0.04",
+        "wm_AD_J": "0.004953292664140463",
+        "wm_central_J": "-0.0006556510925292969",
+        "wm_Dplus_J": "-0.0001430511474609375",
+        "wm_Dminus_J": "-0.0011682510375976562"
+      },
+      {
+        "side": "push",
+        "frame": "587",
+        "direction": "wheels",
+        "amplitude": "0.08",
+        "wm_AD_J": "0.004953292664140463",
+        "wm_central_J": "-0.0006854534149169922",
+        "wm_Dplus_J": "-0.0018835067749023438",
+        "wm_Dminus_J": "0.0005125999450683594"
+      },
+      {
+        "side": "push",
+        "frame": "594",
+        "direction": "objective",
+        "amplitude": "0.08",
+        "wm_AD_J": "0.004733390640467405",
+        "wm_central_J": "-0.00010132789611816406",
+        "wm_Dplus_J": "-0.0011324882507324219",
+        "wm_Dminus_J": "0.0009298324584960938"
+      },
+      {
+        "side": "push",
+        "frame": "594",
+        "direction": "j2",
+        "amplitude": "0.02",
+        "wm_AD_J": "-0.00022709282347932458",
+        "wm_central_J": "7.152557373046875e-05",
+        "wm_Dplus_J": "-0.0002384185791015625",
+        "wm_Dminus_J": "0.0003814697265625"
+      },
+      {
+        "side": "push",
+        "frame": "594",
+        "direction": "j2",
+        "amplitude": "0.04",
+        "wm_AD_J": "-0.00022709282347932458",
+        "wm_central_J": "0.0006914138793945312",
+        "wm_Dplus_J": "4.76837158203125e-05",
+        "wm_Dminus_J": "0.00133514404296875"
+      },
+      {
+        "side": "push",
+        "frame": "594",
+        "direction": "j2",
+        "amplitude": "0.08",
+        "wm_AD_J": "-0.00022709282347932458",
+        "wm_central_J": "3.5762786865234375e-05",
+        "wm_Dplus_J": "-0.00016689300537109375",
+        "wm_Dminus_J": "0.0002384185791015625"
+      }
+    ],
+    "h32_positive_endpoint_change_mm_range": [
+      -0.014426186680793762,
+      0.06350409239530563
+    ],
+    "mode_switch_counts": {
+      "wm_canonical_clamp_switch": {
+        "False": 108
+      },
+      "real_canonical_clamp_switch": {
+        "False": 108
+      },
+      "finger_contact_switch": {
+        "False": 108
+      },
+      "wheel_support_switch": {
+        "False": 108
+      },
+      "unexpected_contact_switch": {
+        "False": 108
+      },
+      "robot_door_contact_switch": {
+        "False": 108
+      },
+      "slip_threshold_switch": {
+        "False": 108
+      },
+      "ctrl_limit_switch": {
+        "False": 108
+      },
+      "force_limit_switch": {
+        "False": 108
+      },
+      "monitored_servo_saturation_switch": {
+        "False": 108
+      },
+      "wm_critic_clip_switch": {
+        "": 72,
+        "False": 36
+      },
+      "real_critic_clip_switch": {
+        "": 72,
+        "False": 36
+      }
+    },
+    "objective_core_source_review": {
+      "official_repo": "HybridRobotics/supermimic",
+      "official_commit": "abc124c1bd5976341034668af3d12c087f2f1f55",
+      "official_file": "src/supermimic/learners/policy_learner.py",
+      "result": "Inspected fixed source: reward prefix uses gamma^j times survival before successor termination; survival updated by1-term; terminal bootstrap at gamma^32 times survival with unchanged max-value clipping. Local Fold follows that core formula. This is a narrow formula audit, not proof that all source adapters or AD paths are correct."
+    },
+    "source_calculation": "Same frozen Actor, WM, Critic, initial state/history/action and explicit archived noise; only first decoder effort z0 changes, all later queries depend on each branch own successor. Directional AD uses torch.autograd.functional.jvp; objective direction was computed by torch.autograd.grad. H1/H7 omit terminal bootstrap; H32 includes it.",
+    "resolution": "sign_grade uses spacing(float32(abs(baseline return)))/amplitude as a display-only sign floor. It is not a bound on accumulated32-step forward/AD numerical error.",
+    "interpretation_limits": [
+      "Nine H32 self-function sign mismatches remain unresolved. Existing FP32 amplitudes do not establish finite-difference convergence as amplitude approaches zero.",
+      "No logged switches in aggregate contact/clamp/slip/force/Critic masks does not establish differentiability. Network/internal normalization and other piecewise operations are not exhaustively monitored.",
+      "36 comparisons are4 overlapping anchors x3 directions x3 amplitudes, not36 independent trials. Positive objective denominators12 are4 anchors x3 amplitudes, not12 independent experiments.",
+      "Small physical objective-direction perturbations moved endpoint at H32 by approximately -0.0144 to+0.0635mm; this is far below the original platform deficits4.933 to10.826mm. Lack of threshold crossing cannot identify RefXY2 necessity or sufficiency.",
+      "Critic contributes roughly72% of baseline J32 value, but this alone does not establish domination of the derivative; gradient terms require explicit decomposition.",
+      "Sign agreement is not gradient magnitude accuracy and cannot be treated as a pass rate for gradients or model transfer."
+    ]
+  },
+  "D_continuation": {
+    "cases": [
+      {
+        "backend": "warp",
+        "side": "pull",
+        "formal_passed": "False",
+        "formal_reason": "timeout:pregrasp",
+        "formal_step": "8139",
+        "archive_same_step": "False",
+        "archive_same_reason": "True",
+        "archive_same_event_steps": "False",
+        "archived_absorbing_score": "0.2145990344657711",
+        "measured_absorbing_score": "0.21457264355606495",
+        "absorbed_steps": "29729",
+        "next_actor_query_step": "8140",
+        "end_step": "8625",
+        "ref_end_step": "37868",
+        "end_reason": "reference_monitor_failure",
+        "ref_monitor_reason": "grip_handle_error",
+        "ref_monitor_first_step": "8625",
+        "ref_monitor_phase": "open",
+        "tail_steps": "486",
+        "tail_dual_contact_ticks": "0",
+        "tail_longest_gripped_ticks": "0",
+        "tail_min_deg": "0.0",
+        "tail_max_deg": "0.0",
+        "tail_peak_net_N": "0.0",
+        "tail_target_angle_ticks": "0",
+        "tail_gripped_at_target_ticks": "0",
+        "tail_release_after_gripped": "False",
+        "post_timeout_qualified": "False",
+        "trace": "results/raw_large/b0/pregrasp_compatibility_20261125/continuation/warp_pull/continuous.npz",
+        "seal": "results/b0/standard_pregrasp_compatibility_20261125/continuation/warp_pull/result.json"
+      },
+      {
+        "backend": "warp",
+        "side": "push",
+        "formal_passed": "False",
+        "formal_reason": "timeout:pregrasp",
+        "formal_step": "8137",
+        "archive_same_step": "True",
+        "archive_same_reason": "True",
+        "archive_same_event_steps": "True",
+        "archived_absorbing_score": "0.28970573389422877",
+        "measured_absorbing_score": "0.2897057286697648",
+        "absorbed_steps": "19891",
+        "next_actor_query_step": "8140",
+        "end_step": "8623",
+        "ref_end_step": "28028",
+        "end_reason": "reference_monitor_failure",
+        "ref_monitor_reason": "grip_handle_error",
+        "ref_monitor_first_step": "8623",
+        "ref_monitor_phase": "open",
+        "tail_steps": "486",
+        "tail_dual_contact_ticks": "0",
+        "tail_longest_gripped_ticks": "0",
+        "tail_min_deg": "0.0",
+        "tail_max_deg": "0.0",
+        "tail_peak_net_N": "0.0",
+        "tail_target_angle_ticks": "0",
+        "tail_gripped_at_target_ticks": "0",
+        "tail_release_after_gripped": "False",
+        "post_timeout_qualified": "False",
+        "trace": "results/raw_large/b0/pregrasp_compatibility_20261125/continuation/warp_push/continuous.npz",
+        "seal": "results/b0/standard_pregrasp_compatibility_20261125/continuation/warp_push/result.json"
+      },
+      {
+        "backend": "native",
+        "side": "pull",
+        "formal_passed": "False",
+        "formal_reason": "timeout:pregrasp",
+        "formal_step": "7864",
+        "archive_same_step": "True",
+        "archive_same_reason": "True",
+        "archive_same_event_steps": "True",
+        "archived_absorbing_score": "0.2073058777692017",
+        "measured_absorbing_score": "0.2073058777692017",
+        "absorbed_steps": "30004",
+        "next_actor_query_step": "7870",
+        "end_step": "8699",
+        "ref_end_step": "37868",
+        "end_reason": "reference_monitor_failure",
+        "ref_monitor_reason": "lost_grip",
+        "ref_monitor_first_step": "8699",
+        "ref_monitor_phase": "open",
+        "tail_steps": "835",
+        "tail_dual_contact_ticks": "0",
+        "tail_longest_gripped_ticks": "0",
+        "tail_min_deg": "0.0",
+        "tail_max_deg": "0.0",
+        "tail_peak_net_N": "0.0",
+        "tail_target_angle_ticks": "0",
+        "tail_gripped_at_target_ticks": "0",
+        "tail_release_after_gripped": "False",
+        "post_timeout_qualified": "False",
+        "trace": "results/raw_large/b0/pregrasp_compatibility_20261125/continuation/native_pull/continuous.npz",
+        "seal": "results/b0/standard_pregrasp_compatibility_20261125/continuation/native_pull/result.json"
+      },
+      {
+        "backend": "native",
+        "side": "push",
+        "formal_passed": "False",
+        "formal_reason": "timeout:pregrasp",
+        "formal_step": "7867",
+        "archive_same_step": "True",
+        "archive_same_reason": "True",
+        "archive_same_event_steps": "True",
+        "archived_absorbing_score": "0.28006912787999677",
+        "measured_absorbing_score": "0.28006912787999677",
+        "absorbed_steps": "20161",
+        "next_actor_query_step": "7870",
+        "end_step": "8623",
+        "ref_end_step": "28028",
+        "end_reason": "reference_monitor_failure",
+        "ref_monitor_reason": "grip_handle_error",
+        "ref_monitor_first_step": "8623",
+        "ref_monitor_phase": "open",
+        "tail_steps": "756",
+        "tail_dual_contact_ticks": "0",
+        "tail_longest_gripped_ticks": "0",
+        "tail_min_deg": "0.0",
+        "tail_max_deg": "0.0",
+        "tail_peak_net_N": "0.0",
+        "tail_target_angle_ticks": "0",
+        "tail_gripped_at_target_ticks": "0",
+        "tail_release_after_gripped": "False",
+        "post_timeout_qualified": "False",
+        "trace": "results/raw_large/b0/pregrasp_compatibility_20261125/continuation/native_push/continuous.npz",
+        "seal": "results/b0/standard_pregrasp_compatibility_20261125/continuation/native_push/result.json"
+      }
+    ],
+    "count": 4,
+    "sealed_prefix_2ms_steps": 32007,
+    "post_failure_2ms_steps": 2563,
+    "total_2ms_steps": 34570,
+    "new_qualified_successes": 0,
+    "all_post_failure_dual_contact_ticks": 0,
+    "all_post_failure_door_angle_and_force_zero": true,
+    "native_prefix_exact_to_archive": true,
+    "warp_pull_first_failure_offset_steps": -1,
+    "warp_push_first_failure_offset_steps": 0,
+    "interpretation": "Diagnostics keep original formal first failure and score sealed, preserve current action until next absolute20ms boundary, then continue same Actor/reference clock. They all terminate by original physical monitoring during reference open; hold/release/later abilities remain unobserved, not disproven. No diagnostic continuation is a V0 or a formal task success."
+  },
+  "budget": {
+    "physical_branches": 86,
+    "two_ms_steps": 34570,
+    "quarter_ms_steps": 290080,
+    "optimizer_retained": {
+      "actor": 0,
+      "wm": 0,
+      "critic": 0
+    },
+    "optimizer_charged": {
+      "actor": 0,
+      "wm": 0,
+      "critic": 0
+    },
+    "rollbacks": {
+      "actor": 0,
+      "wm": 0,
+      "critic": 0
+    },
+    "new_training_transitions": 0,
+    "formal_qualification_suite_runs": 0,
+    "parent": {
+      "update": 10000,
+      "checkpoint": "results/raw_large/b0/official_flow_continuation_20261125/checkpoint_010000.pt",
+      "state": "results/raw_large/b0/official_flow_continuation_20261125/resume_010000",
+      "clock": 26988,
+      "simulated": 110542848,
+      "valid": 102414758,
+      "steps": {
+        "wm": 100000,
+        "actor": 10000,
+        "critic": 200000
+      },
+      "stats": {
+        "wm_state": 102465237,
+        "wm_proc": 102465237,
+        "proprio": 102414758,
+        "goal": 102414758
+      },
+      "ratio": {
+        "previous_clock": 102410240.0,
+        "pending": 0,
+        "cohorts": 26988
+      }
+    },
+    "replay_pages_exact_receipt": 40,
+    "replay_field_tensors_exact_receipt": 480,
+    "solver_arrays_exact_receipt": 136,
+    "optimizer_state_tensors_exact_receipt": 162,
+    "ratio_valid_to_next": 5722,
+    "recoverability_limit": "This review read recovery receipts but did not reopen the large AutoDL package."
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "unresolved_high",
+      "issue": "H32 same-WM AD–FD is not closed",
+      "evidence": "25same/9opposite/2display-floor among36;9opposite allpush. Push587 wheels remains negative FD at all three registered amplitudes despite positive AD.",
+      "safe_wording": "未证明违反同契约的实现错误；H32自身AD与有限割线仍有未辨识差异。",
+      "unsafe_wording": "已经排除bug/导数问题，剩下只可能是XY输入不足。",
+      "next_action": "Bounded frozen WM-only FP64 multiscale Taylor audit in parallel with an independently labeled RefXY2 pair; no added physics/optimizer or WM accuracy gate."
+    },
+    {
+      "id": "F2",
+      "severity": "methodological_limit",
+      "issue": "Mode and resolution logs are weaker than a smoothness/error proof",
+      "evidence": "108rows have no monitored mask changes; signfloor exactly1float32ULP/amplitude.",
+      "next_action": "Retain raw signed changes, monitor additional actual graph branches if localizing; report unresolved/no-resolution rather than passing by sign."
+    },
+    {
+      "id": "F3",
+      "severity": "causal_limit",
+      "issue": "Input alias supports a testable adaptation hypothesis, not a proven cause",
+      "evidence": "Synthetic ±50mm translations and8positive controls; no optimal-command or reachable mirror-state test.",
+      "next_action": "Keep zero-input matched-width control and standard-v1 frozen; do not describe RefXY2 as fixing a proven bug."
+    },
+    {
+      "id": "F4",
+      "severity": "reporting_limit",
+      "issue": "Denominators are correlated and success state remains unchanged",
+      "evidence": "4anchors across nearby frames and3amplitudes;0formaloptimization,0qualifiedsuccess,0V0.",
+      "next_action": "Use exact counts with state scope; no percentages implying independent success likelihood or distance to0.88/0.90."
+    }
+  ],
+  "proposed_frozen_fp64_check": {
+    "status": "recommendation_only_not_executed",
+    "identity": "Original u10000, original540dim Actor input; separate process and artifacts from RefXY2.",
+    "fixed_inputs": [
+      "4 archived fine-step anchors",
+      "archived z0",
+      "3 archived FP32 direction vectors, cast toFP64 without reselection",
+      "archived noise at every sensor time",
+      "same reference clock/context/history/previous action"
+    ],
+    "convert_to_fp64": [
+      "WM,Actor,Critic float parameters and buffers",
+      "representation constants and statistics",
+      "aux/rep/history/previous action/context/reference and endpoint",
+      "explicit noise,z0,directions"
+    ],
+    "preserve": [
+      "discrete index/masks and temporal contracts",
+      "gamma/reward terms/bootstrap/soft survival",
+      "normalizer frozen state with no updates",
+      "frozen weights and no optimizer"
+    ],
+    "amplitudes_effort": [
+      0.02,
+      0.01,
+      0.005,
+      0.0025,
+      0.00125,
+      0.000625,
+      0.0003125,
+      0.00015625,
+      7.8125e-05,
+      3.90625e-05,
+      1.953125e-05
+    ],
+    "work_budget": {
+      "unique_signed_perturbed_wm_rollouts": 264,
+      "warmup_rollouts": 4,
+      "baseline_repeat_rollouts": 8,
+      "directional_jvp_calls": 12,
+      "reverse_grad_J32_calls_for_jvp_consistency": 4,
+      "physical_rollouts": 0,
+      "optimizer_steps": 0
+    },
+    "outputs": [
+      "H1/H7 prefix returns",
+      "H32 prefix,terminal Critic contribution,totalJ32",
+      "8 discounted reward component totals",
+      "soft survival and terminal probability",
+      "endpoint/synchronous error and selected per-step state outputs"
+    ],
+    "algebra_checks": [
+      "J32=prefix+Critic at value and directional-derivative levels",
+      "8 component sum=prefix at value and derivative levels",
+      "grad(J32,z) dot archived_direction equals JVP(J32) direction"
+    ],
+    "numerical_checks": [
+      "Rplus=F(z+h*d)-F(z)-h*AD and Rminus=F(z-h*d)-F(z)+h*AD",
+      "Record one-sided and central slopes, absolute/relative errors and adjacent-scale changes.",
+      "Look for convergence on at least3 successive scales above empirical cancellation/noise floor; do not require asymptotic order at every scale across unknown nonsmooth points.",
+      "Record duplicated-baseline variability and FP64 spacing as empirical resolution information, not rigorous total-error bounds.",
+      "If FD converges stably but not toward AD above resolution, localize earliest divergent time/operator/subterm. Do not claim a specific derivative bug until reproducible same-function counterexample is isolated.",
+      "If values become unresolved, mark unresolved. Do not count that as a pass."
+    ],
+    "consequence": "A concrete gradient/objective implementation bug requires quarantining affected evidence and handling it separately; do not silently add the fix as a second factor in the RefXY2 comparison. Otherwise retain the unresolved limitation and continue the registered information-only pair, without a new WM validation barrier.",
+    "limits": "FP64 eager mathematical-function checks do not alone validate compiledFP32 production trajectory or physical backend. No logged switches is not a smoothness certificate."
+  },
+  "source_digests": [
+    {
+      "path": "reports/B0_PREGRASP_COMPATIBILITY_RESULTS_20261125.md",
+      "sha256": "c772d1651dd0d7c949c175096367ca6ecd65f62c9d0605745b8d07dfbb1e8ce8",
+      "bytes": 12129
+    },
+    {
+      "path": "scripts/b0/pregrasp_geometry.py",
+      "sha256": "093cdf6ed3ee4a338eccd9ccc7306127ec1332c78fba3b771e9cbda2b8465774",
+      "bytes": 13948
+    },
+    {
+      "path": "scripts/b0/pregrasp_alias.py",
+      "sha256": "b944d55cf5e135d6cc8a4081af5115ad3d55c89830823a70ea9a0198fc83e747",
+      "bytes": 10513
+    },
+    {
+      "path": "scripts/b0/pregrasp_alias_readback.py",
+      "sha256": "c1cfefe5ccd5624ac9dd1823105fccdccf9620acd8fd1d126b5432b1ca870abc",
+      "bytes": 4615
+    },
+    {
+      "path": "scripts/b0/pregrasp_response.py",
+      "sha256": "71746c9171fddcdfd2c48fb458283def34e80d13ae5c9414a448ee2007cf912e",
+      "bytes": 11673
+    },
+    {
+      "path": "scripts/b0/pregrasp_response_objective.py",
+      "sha256": "a0623c06d67373cbf7e391a550a3f69982e0f853e30ba02834c08701b91dfc2f",
+      "bytes": 11693
+    },
+    {
+      "path": "scripts/b0/pregrasp_response_index.py",
+      "sha256": "80460fe20c08530ac0705dd7fd7aa6aa6165984931f2f5f9f1b6cd98c4bd7fbd",
+      "bytes": 11873
+    },
+    {
+      "path": "scripts/b0/pregrasp_response_verify.py",
+      "sha256": "1f88765638b177cea59d94dabd10c8b75fc6fb338e6ccb71d77b72cecbe56248",
+      "bytes": 2745
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/readiness_predicates.json",
+      "sha256": "d450514470bd177e8bb04ce34664a80f288797c6386c824b76317a2749bfeee5",
+      "bytes": 49122
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/endpoint_decomposition.csv",
+      "sha256": "9985e960e50bca8e4048f39014180c152402abdc51d2c0a34dbaacd9d62c5482",
+      "bytes": 12744
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/input_alias.json",
+      "sha256": "affcdfab8b3ff4e776193028ed456a320dc0110ae9c704e164be0ac9d5604abf",
+      "bytes": 20006
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/response_branches.csv",
+      "sha256": "c491a9310df371b7587e95ef6f6f60fa29235376d8629270a68670c235348472",
+      "bytes": 127926
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/response_differences.csv",
+      "sha256": "681a641a8ba72daae312646eb5d3478a1df7226e1597c42a9c6c49e250bde21e",
+      "bytes": 74178
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/gradient_physics_comparison.json",
+      "sha256": "b2a87d186e3f82e549f5300158ffdffd961eef1549bddb4c6f05cc0b2932fac5",
+      "bytes": 4930
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/reference_clock_continuation_cases.csv",
+      "sha256": "5781f733d291f73dd4f0f4e7d0ffca92c430fd08f1f61376eb7bb757445d3295",
+      "bytes": 2048
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/budget_and_recovery.json",
+      "sha256": "b54e5e0c3b285584237ad3534bdeb0080c46da3941e23eb62d9daa49b60a5cd4",
+      "bytes": 3361
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/parent_recovery.json",
+      "sha256": "c3a5f94e8493c5f2db3f251530c73b2ffabf025b6a011940b8e59ee49857f9c4",
+      "bytes": 1390
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/restored_u010000.json",
+      "sha256": "75fc774fa88df10d09f9f932a6dbcdb9c48b2c4798646b5884b288157bf922f3",
+      "bytes": 598
+    },
+    {
+      "path": "results/b0/standard_pregrasp_compatibility_20261125/mechanism_decision.json",
+      "sha256": "2b001a1627d8a6fb90d44561fe4d572f010f50372d3e5d7279481b3a4f9e23d4",
+      "bytes": 2084
+    }
+  ]
+}
