@@ -1,0 +1,184 @@
+{
+  "episode": "pull_15_train",
+  "side": "pull",
+  "segment": "open_15",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 8750,
+  "reference_phase_end_substep": 15350,
+  "reference_last_substep": 15350,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": true,
+    "width_m": 0.02142743207514286,
+    "grasp_error_m": 0.0018588004190931466,
+    "supported": true,
+    "finger_n": [
+      3.2439968585968018,
+      2.390089988708496
+    ],
+    "door_force_sum_n": 5.826009137366054,
+    "prefix_start_target_penetration_m": 0.0009854320145508287,
+    "nominal_prefix_start_target_penetration_m": 0.0009854320145508287,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "door_force_limit",
+    "phase": "open",
+    "first_failure_substep": 1,
+    "interval_start_s": 0.0,
+    "interval_end_s": 0.002,
+    "door_deg": 0.0696525415981777,
+    "finger_load_n": [
+      0.987895131111145,
+      4.720729827880859
+    ],
+    "wheel_load_n": [
+      131.83583068847656,
+      103.06498336791992,
+      109.25685691833496,
+      96.9724349975586
+    ],
+    "door_net_force_n": 6.824483326390107,
+    "door_contact_sum_n": 8.073214787420966,
+    "tcp_handle_error_m": 0.0018593648161072487,
+    "min_arm_margin_rad": 0.5519715329528809
+  },
+  "events": [],
+  "policy_calls": 1,
+  "physics_steps": 1,
+  "score_initial_previous_action": [
+    4.6925270122132245e-05,
+    2.805735974188904e-05,
+    -4.646517660094369e-05,
+    4.692797339490157e-05,
+    -2.8058684219876644e-05,
+    4.6468295288474136e-05,
+    -4.692797339490157e-05,
+    2.8058684219876644e-05,
+    -4.6468295288474136e-05,
+    -4.6922593338218675e-05,
+    -2.8056037768564582e-05,
+    4.6462067342696e-05,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    -0.35608968030501315,
+    0.6480678851872668,
+    -0.5888711645647092,
+    -0.33440873869137033,
+    -0.13330808964948362,
+    0.2615651621965486,
+    -0.8000000000000002
+  ],
+  "score_initial_previous_action_valid": true,
+  "final_door_deg": 0.06981084990849125,
+  "final_partial_substeps": 1,
+  "longest_ready_steps": {
+    "open": 0
+  },
+  "last_physical_observation": {
+    "phase": "open",
+    "door_deg": 0.0696525415981777,
+    "width_m": 0.02142743207514286,
+    "finger_n": [
+      0.987895131111145,
+      4.720729827880859
+    ],
+    "net_door_force_n": 6.824483326390107,
+    "tcp_handle_error_m": 0.0018593648161072487,
+    "station_error_m": 0.0010428985261081057,
+    "heading_error_deg": 0.019500332301172624,
+    "tilt_deg": 0.20764752518853824,
+    "speed_m_s": 0.0008066833178658519,
+    "yaw_rate_deg_s": 0.00020455786927491243,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 75,
+    "ramp": false,
+    "ready": false,
+    "wheel_load_n": [
+      131.83583068847656,
+      103.06498336791992,
+      109.25685691833496,
+      96.9724349975586
+    ],
+    "tcp_goal_distance_m": null,
+    "tcp_goal_rotation_error_rad": null
+  },
+  "readiness": {
+    "phase": "open",
+    "episode_age_s": 0.002,
+    "reference_phase": "grasp",
+    "current": 0,
+    "best": 0,
+    "required": 75,
+    "ramp": false,
+    "tcp_goal_distance_m": null,
+    "tcp_goal_rotation_error_rad": null,
+    "last_not_ready": {
+      "open": {
+        "reference_substep": 8750,
+        "ramp": false,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": false,
+        "both_fingers": true,
+        "gripped": true,
+        "detached": false,
+        "door_speed_rad_s": 0.0010405201464891434,
+        "planar_speed_m_s": 0.0008066833178658519,
+        "yaw_rate_deg_s": 0.00020455786927491243,
+        "tcp_handle_error_m": 0.0018593648161072487,
+        "width_m": 0.02142743207514286
+      }
+    },
+    "peak_ready_steps": {
+      "open": 0
+    }
+  },
+  "physical_gate_pass_step": null,
+  "measured_peak_net_force_n": 6.824483326390107,
+  "physical_wall_seconds": 1.0523759797215462,
+  "score_first_failure": {
+    "reason": "door_force_limit",
+    "phase": "open",
+    "first_failure_substep": 1,
+    "interval_start_s": 0.0,
+    "interval_end_s": 0.002,
+    "door_deg": 0.0696525415981777,
+    "finger_load_n": [
+      0.987895131111145,
+      4.720729827880859
+    ],
+    "wheel_load_n": [
+      131.83583068847656,
+      103.06498336791992,
+      109.25685691833496,
+      96.9724349975586
+    ],
+    "door_net_force_n": 6.824483326390107,
+    "door_contact_sum_n": 8.073214787420966,
+    "tcp_handle_error_m": 0.0018593648161072487,
+    "min_arm_margin_rad": 0.5519715329528809
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 56,
+    "observed_peak_ncon": 18,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-20261125-be398cc/results/raw_large/b0/official_flow_continuation_20261125/physics/u007500_warp_hold_margin_v2/pull/open_15/nominal"
+}

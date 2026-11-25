@@ -1,0 +1,222 @@
+{
+  "episode": "push_0_train_grip",
+  "side": "push",
+  "segment": "approach_grasp",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "action_source": "frozen Actor raw output then clamp",
+  "start_substep": 6070,
+  "reference_phase_end_substep": 8753,
+  "reference_last_substep": 8753,
+  "prefix_physics_steps": 100,
+  "perturbation": {
+    "dx_m": 0.0,
+    "dy_m": 0.0,
+    "dyaw_deg": 0.0
+  },
+  "initial_geometry": {
+    "unexpected": [],
+    "both": false,
+    "width_m": 0.0900021642446518,
+    "grasp_error_m": 0.10512518907884863,
+    "supported": true,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "door_force_sum_n": 0.0,
+    "prefix_start_target_penetration_m": 0.0,
+    "nominal_prefix_start_target_penetration_m": 0.0,
+    "solver_warning": false,
+    "finite": true
+  },
+  "passed": false,
+  "first_failure": {
+    "reason": "reference_exhausted",
+    "phase": "grasp",
+    "physics_steps": 2683,
+    "readiness": {
+      "current": 0,
+      "required": 100,
+      "best": 0,
+      "last_not_ready": {
+        "reference_substep": 8752,
+        "ramp": true,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": false,
+        "gripped": false,
+        "detached": true,
+        "door_speed_rad_s": 0.0,
+        "planar_speed_m_s": 0.0007237993679309927,
+        "yaw_rate_deg_s": 0.017930253484131027,
+        "tcp_handle_error_m": 0.0030498853017723276,
+        "width_m": 0.08145543187856674
+      }
+    }
+  },
+  "events": [
+    {
+      "phase": "approach_arm",
+      "end_step": 1943,
+      "ref_end_step": 8013,
+      "ticks": 75,
+      "door_deg": 0.0,
+      "width_m": 0.08397474512457848,
+      "net_force_n": 0.0
+    }
+  ],
+  "policy_calls": 269,
+  "physics_steps": 2683,
+  "score_initial_previous_action": [
+    4.692527012155731e-05,
+    2.8057359741571834e-05,
+    -4.6465176600309276e-05,
+    4.6927973394321675e-05,
+    -2.8058684219559436e-05,
+    4.646829528783972e-05,
+    -4.6927973394321675e-05,
+    2.8058684219559436e-05,
+    -4.646829528783972e-05,
+    -4.6922593337643736e-05,
+    -2.8056037767930168e-05,
+    4.6462067342061584e-05,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.6945462155930742,
+    -0.2718036240148612,
+    0.5189894496166314,
+    0.7745379735819143,
+    -0.7724291036180283,
+    -0.44594513300792116,
+    0.7999999999999998
+  ],
+  "score_initial_previous_action_valid": true,
+  "final_door_deg": 0.0,
+  "final_partial_substeps": 3,
+  "longest_ready_steps": {
+    "approach_arm": 75,
+    "grasp": 0
+  },
+  "last_physical_observation": {
+    "phase": "grasp",
+    "door_deg": 0.0,
+    "width_m": 0.08145543187856674,
+    "finger_n": [
+      0.0,
+      0.0
+    ],
+    "net_door_force_n": 0.0,
+    "tcp_handle_error_m": 0.0030498853017723276,
+    "station_error_m": 0.00416280034458676,
+    "heading_error_deg": 0.09151277171551972,
+    "tilt_deg": 0.2425828810523794,
+    "speed_m_s": 0.0007237993679309927,
+    "yaw_rate_deg_s": 0.017930253484131027,
+    "continuous_ready_steps": 0,
+    "required_ready_steps": 100,
+    "ramp": true,
+    "ready": false,
+    "wheel_load_n": [
+      88.22788190841675,
+      134.82193756103516,
+      115.26856136322021,
+      88.14318084716797
+    ],
+    "tcp_goal_distance_m": null,
+    "tcp_goal_rotation_error_rad": null
+  },
+  "readiness": {
+    "phase": "grasp",
+    "episode_age_s": 5.3660000000000005,
+    "reference_phase": "grasp",
+    "current": 0,
+    "best": 0,
+    "required": 100,
+    "ramp": true,
+    "tcp_goal_distance_m": null,
+    "tcp_goal_rotation_error_rad": null,
+    "last_not_ready": {
+      "approach_arm": {
+        "reference_substep": 7937,
+        "ramp": true,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": false,
+        "gripped": false,
+        "detached": true,
+        "door_speed_rad_s": 0.0,
+        "planar_speed_m_s": 0.0008098579776343219,
+        "yaw_rate_deg_s": -0.01580883670550955,
+        "tcp_handle_error_m": 0.0030004213553245225,
+        "width_m": 0.08415636047720909,
+        "tcp_goal_distance_m": 0.003000461812227126,
+        "tcp_goal_rotation_error_rad": 0.0030198644403071594
+      },
+      "grasp": {
+        "reference_substep": 8752,
+        "ramp": true,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": false,
+        "gripped": false,
+        "detached": true,
+        "door_speed_rad_s": 0.0,
+        "planar_speed_m_s": 0.0007237993679309927,
+        "yaw_rate_deg_s": 0.017930253484131027,
+        "tcp_handle_error_m": 0.0030498853017723276,
+        "width_m": 0.08145543187856674
+      }
+    },
+    "peak_ready_steps": {
+      "approach_arm": 75,
+      "grasp": 0
+    }
+  },
+  "physical_gate_pass_step": null,
+  "measured_peak_net_force_n": 0.0,
+  "physical_wall_seconds": 24.5715348161757,
+  "score_first_failure": {
+    "reason": "reference_exhausted",
+    "phase": "grasp",
+    "physics_steps": 2683,
+    "readiness": {
+      "current": 0,
+      "required": 100,
+      "best": 0,
+      "last_not_ready": {
+        "reference_substep": 8752,
+        "ramp": true,
+        "within_position_zone": true,
+        "stable": true,
+        "wheels_loaded": true,
+        "reached": true,
+        "both_fingers": false,
+        "gripped": false,
+        "detached": true,
+        "door_speed_rad_s": 0.0,
+        "planar_speed_m_s": 0.0007237993679309927,
+        "yaw_rate_deg_s": 0.017930253484131027,
+        "tcp_handle_error_m": 0.0030498853017723276,
+        "width_m": 0.08145543187856674
+      }
+    }
+  },
+  "warp_capacity": {
+    "nconmax": 128,
+    "njmax": 256,
+    "observed_peak_nefc": 50,
+    "observed_peak_ncon": 16,
+    "overflow_bits": 0,
+    "buffer_overflow_bits": 0
+  },
+  "raw_directory": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-20261125-be398cc/results/raw_large/b0/official_flow_continuation_20261125/physics/u007500_warp_v1/push/approach_grasp/nominal"
+}

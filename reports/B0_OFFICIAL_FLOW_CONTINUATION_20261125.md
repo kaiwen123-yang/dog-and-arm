@@ -1,5 +1,12 @@
 # 固定官方 SuperMimic 向 M1＋Piper 迁移，11 月 25 日续训
 
+## 14:19 主段已保存到 u10000，u7500 已完成原物理评分
+
+主段 5,009 个新更新 u4992–u10000 连续，新增 50,090 批 H7 WM、100,180 批 Critic，新增有效转移 51,290,043。u10000 完整保存点为 tick 26,988，累计有效转移 102,414,758。u10000 原物理评测正在 tmux 中运行，尚无本节点完整评分或延长决定。[u10000 回执](../results/b0/standard_official_flow_continuation_20261125/node_010000.json)
+
+u7500 冻结包 Warp 接触 1/10，前拉 0/5、背推 1/5。背推 open_5 通过，父包通过的背推 stable_grip 在本节点因失握失败。前拉 stable_grip 最好连续 1,469/1,500 拍（2.938/3 s），参考耗尽时仍未通过；它从原前缀后的已有抓持入口开始。双后端 frame0 完整任务 0/4。两个后端的前拉均通过驶近与停车，Warp/native 预抓终局端点分别距 73.19/69.98 mm，原限值 3 mm，连续就绪最佳均 0/75。两个后端的背推均仅完成驶近，在停车阶段因至少一轮低于 1 N 连续 100 ms 而失败。free 三类各 0/20，总计 0/60；六个纯 Actor 入口已单列评分。u7500 未安排 native 接触十项。候选 null、合格双侧回报 NA、V0=0。[逐案](../results/b0/standard_official_flow_continuation_20261125/physical_cases.csv) · [就绪复算](../results/b0/standard_official_flow_continuation_20261125/readiness_u007500.json) · [free](../results/b0/standard_official_flow_continuation_20261125/free_summary.csv) · [纯 Actor](../results/b0/standard_official_flow_continuation_20261125/pure_actor_entries.csv)
+
+
 北京时间 11:44:58，AutoDL 的 tmux 会话 `b0-official-20261125` 已持续训练至 u5102，最近完整滚动恢复点为 u5100。u5000 正式包已由另一进程完整回读。主段目标为 u10000；u7500/u10000 原物理结果、延长裁决与最终回报在交接时尚未产生。B0-04，候选 null，合格双侧回报 NA，V0=0。[现场核验](../results/b0/standard_official_flow_continuation_20261125/tmux_progress.json) · [当日日志](../DAILY_WORK_LOG.md)
 
 ## tmux 交接和本轮实付

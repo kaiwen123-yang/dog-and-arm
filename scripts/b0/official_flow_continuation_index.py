@@ -1,4 +1,5 @@
 """Independent continuation accounting, anchored to durable snapshots and individual verdicts."""
+import argparse
 import csv
 import json
 from pathlib import Path
@@ -158,3 +159,9 @@ def index(stop):
     if NEW_SEGMENT:
         result.pop('confirmed_sustained_contact',None)
     io.write(OUT/'baseline_manifest.json',result)
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('stop',type=int)
+    index(parser.parse_args().stop)
