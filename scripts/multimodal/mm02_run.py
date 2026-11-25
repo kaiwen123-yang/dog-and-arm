@@ -131,9 +131,22 @@ class Experiment:
 
     def run_all(self):
         base = self.run
-        initial = read(base/"initial/cases.json")
+        original = PARENT/"actor-common/final.pt"
+        initial = self.physics("initial",jobs(base,"initial",{"common_12000":original},TRAIN,0))
         if len(initial)!=12:
             raise ValueError("Incomplete original on-policy collection")
+        pilot_members = base/"pilot/members.json"
+        emit(pilot_members,sorted(r["raw_episode"] for r in initial))
+        with ThreadPoolExecutor(2) as pool:
+            pilots_training = []
+            for name in PILOTS:
+                out = base/"pilot"/name
+                args = ["--stage","pilot","--branch",name,"--round",0,"--members",pilot_members,
+                        "--schedule",base/"pilot/schedule.npy","--parent",original,"--output",out]
+                pilots_training.append(pool.submit(self.command,"mm02_train_actor",args,
+                                                    out/"receipt.json","pilot_"+name))
+            for future in pilots_training:
+                future.result()
         pilots = {b:base/"pilot"/b/"deploy.pt" for b in PILOTS}
         for b in PILOTS:
             receipt=read(base/"pilot"/b/"receipt.json")
@@ -252,6 +265,7 @@ if __name__=="__main__":
     p.add_argument("run",type=Path)
     p.add_argument("--workers",type=int,default=10)
     a = p.parse_args()
+    a.run.mkdir(parents=True,exist_ok=True)
     with (a.run/"experiment.lock").open("a+") as lock:
         fcntl.flock(lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
         Experiment(a.run,a.workers).run_all()

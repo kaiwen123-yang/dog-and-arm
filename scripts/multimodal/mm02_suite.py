@@ -137,7 +137,14 @@ if __name__=="__main__":
     parser.add_argument("checkpoint")
     parser.add_argument("--branch",default="common_12000")
     parser.add_argument("--workers",type=int,default=8)
+    parser.add_argument("--scene",choices=tuple(scenes()))
+    parser.add_argument("--side",choices=("pull","push"))
+    parser.add_argument("--goal",type=int,choices=(15,25))
+    parser.add_argument("--round",type=int,default=0,choices=range(7))
     args=parser.parse_args()
-    rows=run_suite(args.run,jobs(args.run,args.partition,{args.branch:args.checkpoint},TRAIN,0),
-                   args.workers)
+    case_scenes=(args.scene,) if args.scene else TRAIN
+    requests=jobs(args.run,args.partition,{args.branch:args.checkpoint},case_scenes,args.round)
+    requests=[job for job in requests if (not args.side or job["side"]==args.side)
+              and (not args.goal or job["goal"]==args.goal)]
+    rows=run_suite(args.run,requests,min(args.workers,len(requests)))
     emit(args.run/args.partition/"cases.json",rows)

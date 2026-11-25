@@ -318,6 +318,7 @@ def restored_targets(directories):
     keys, worst, phases = set(), {}, Counter()
     complete, steps, repetitions, bad_source, bad_image, illegal_parent = 0, 0, 0, 0, 0, 0
     exposure_counts = Counter()
+    complete_invalid_bc_labels = Counter()
     for directory in directories:
         branch = Path(directory)
         m = metadata(branch)
@@ -349,12 +350,15 @@ def restored_targets(directories):
         valid = arr(branch, 'valid_transition')
         if len(valid) == HORIZON and valid.all():
             complete += 1
+            labeled = arr(branch, 'expert_label_valid').astype(bool)
+            complete_invalid_bc_labels.update(arr(branch,'expert_label_reason')[~labeled].tolist())
             t, times, ix = (arr(branch,k) for k in ('t','image_t','image_index'))
             exposure_counts[int(np.isclose(t[1:], times[ix[1:]], atol=1e-6, rtol=0).sum())] += 1
         steps += int(arr(branch,'substeps').sum())
     return {'branches': len(directories), 'unique_anchor_snapshots': len(keys), 'complete_h32': complete,
             'incomplete_kept_prefixes': len(directories)-complete, 'duplicate_anchor_snapshots': repetitions,
             'actual_physics_substeps': steps, 'anchor_stages': phases, 'actual_exposures_per_complete_h32': exposure_counts,
+            'masked_bc_label_reasons_in_complete_physical_branches': complete_invalid_bc_labels,
             'parent_start_and_history_max_abs_error': worst, 'held_image_or_exposure_mismatches': bad_image,
             'source_states_without_prior_student_action': illegal_parent, 'non_teacher_intervals': bad_source}
 
