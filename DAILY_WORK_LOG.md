@@ -1458,10 +1458,12 @@ u4991 至 u5000 还需 9 Actor / 90 WM / 180 Critic，若执行会超过原登�
 
 ### 09:43–09:58｜从 be398cc3 启动 11 月 25 日同链续训，父包实载与四案诊断
 
-GitHub main 为 be398cc3c9532d90c852a7f221fbf64c2b7e4e10。开发平台主工作树有现场改动，另开 dog-and-arm-official-nov25，Windows 发布使用独立工作树，AutoDL 使用 .official-continuation-20261125-be398cc 与既有环境、物理资产。已核 vendor 的 SuperMimic abc124c1 和 mjlab dd51a9fc。父回执与登记的 state/checkpoint、计数、Ratio 对齐。新轻目录 standard_official_flow_continuation_20261125、新 raw 目录 official_flow_continuation_20261125。运行命令、环境、预算、命名恢复包的 AutoFS 背盘见新 run_manifest.json；滚动包写数据盘，两代轮换前同步写完并读回新入口。磁盘和 AutoFS 免费容量会随共享任务变化。配置及学习公式沿用父包。
+GitHub main 为 be398cc3c9532d90c852a7f221fbf64c2b7e4e10。开发平台主工作树有现场改动，另开 dog-and-arm-official-nov25，Windows 发布使用独立工作树，AutoDL 使用 .official-continuation-20261125-be398cc 与既有环境、物理资产。已核 vendor 的 SuperMimic abc124c1 和 mjlab dd51a9fc。父回执与登记的 state/checkpoint、计数、Ratio 对齐。新轻目录 standard_official_flow_continuation_20261125、新 raw 目录 official_flow_continuation_20261125。运行命令、环境、预算、命名恢复包的 AutoFS 背盘见新 run_manifest.json；滚动包写数据盘，两代轮换前同步写完并读回新入口。磁盘和 AutoFS 可用容量会随共享任务变化。配置及学习公式沿用父包。
 
 09:50 在 AutoDL 提交主段命令 bash scripts/b0/official_flow_registered_train.sh 10000，沿用原 GPU replay/反向路径与父段 46,300 MiB 启动等待条件。当时共享卡另一训练占用 66,160 MiB，可用 30,924 MiB；父训练日志的 PyTorch 分配峰值 38,005,847,552 字节，尚不含外部 CUDA 使用。此时间为排队时间。截至本条未执行新的优化步。节点作业等待 u5000 一致发布与首个后续更新，随后另进程回读与开发，继续 u7500、u10000 原物理评分。原封存成本单列。
 
 09:52–09:57 先读四案原 2 ms 事件与 servo 数组，固定四段完整窗口并记录逐案原字段。原数组没有逐拍轮法向载荷与原 last_not_ready，按登记分别补采 native/Warp 推拉共四案，未重采教师。四次诊断重放首次失败原因、裁判步数及各阶段完成步均与原案一致。native 两侧 qpos/qvel/raw_action/步号逐值相同；Warp 两侧有小幅数值差异，完整原始比较保留在 readiness_u004991.json。Warp 背推末段第 5748–5797 拍连续 50 拍有轮载低于 1 N，达到 100 ms，末拍该轮为 0 N。native 背推停车首次连续就绪被打断在第3167拍，线速5.175 mm/s超过5 mm/s，四轮仍有载荷；最佳385/500拍、末拍14/500。三条预抓末拍冻结端点距离 Warp前拉/背推 50.174/34.218 mm，native前拉56.199 mm，姿态误差0.00833/0.01018/0.00252 rad，连续最佳均0/75。各端原物理失败仍分别记账；诊断不计作新节点评测。
 
 另进程用 B0_FLOW_SEGMENT=continuation_20261125 bash scripts/b0/env.sh python -m scripts.b0.official_flow_restore_check 4991 从登记的父训练现场实载网络、优化器、四组统计、replay、调度/采样器、随机数、live lanes、history/上拍动作、solver/servo。逐项检查通过：136个solver数组、162个优化器状态张量、4096条lane与动作、RNG与采样器；累计4991/49910/99820，valid=51124715，clock=13652，新增优化步0。已登记首更新应为u4992。训练更新、当轮正式评分、是否延长，随后按真实回执追加。
+
+09:59 运行适配、四案诊断和父实载已普通推送 0fbb19354eafaf23218294d46e137793dca3884f。GitHub 固定 SHA 返回的 restored_u004991.json blob 与本地一致，第二开发平台独立工作树已快进。主训练及评测等待进程仍在。
