@@ -83,7 +83,7 @@ def build(cfg):
     state = contact_state(run.bank.qpos[:1], run.bank.qvel[:1])
     rep = run.rep.represent(state)
     wm_goal, actor_goal = run.bank.goals(run.rep,run.bank.motion_starts[:1],state[:,:7])
-    assert (state.shape[1], rep.shape[1], wm_goal.shape[1], actor_goal.shape[1]) == (63,75,570,540)
+    assert (state.shape[1], rep.shape[1], wm_goal.shape[1], actor_goal.shape[1]) == (63,75,570,542 if cfg.get("feature_mode") in ("zero", "measured") else 540)
     assert run.actor.standard_action.equal(run.rep.reward_unit)
     info = dict(config=cfg, initializer_keys=list(payload), inherited_batches=payload["batches"],
         normalizers=stats(run), context_names=CONTEXT_NAMES, pull_push_context=run.ctx.tolist(),

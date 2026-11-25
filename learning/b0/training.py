@@ -152,6 +152,10 @@ class FreeRun:
 
     def actor_obs(self, state, clock, history):
         _, goal = self.rep.compute_wm_goal(self.motion, clock, state[..., :7])
+        mode = getattr(self, "refxy2_mode", None)
+        if mode is not None:
+            from .refxy2 import append_refxy2
+            goal = append_refxy2(goal, self.motion.root_pos_w[clock], state[..., :7], mode)
         return build_actor_obs_td({'motion': goal}, history)
 
     def transition(self, s, ns, prev, a, clock, terminal, truncated, teacher):

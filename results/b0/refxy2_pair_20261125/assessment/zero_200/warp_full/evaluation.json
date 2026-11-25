@@ -1,0 +1,32 @@
+{
+  "checkpoint": "results/raw_large/b0/refxy2_pair_20261125/zero/checkpoint_000200.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.refxy2-2bbb9fec/scripts/p6_scene.py",
+  "requested_dev": false,
+  "source": "results/raw_large/b0/full_warp_hold_park_r1",
+  "passed": 0,
+  "evaluated": 2,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "full",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 8124,
+      "policy_calls": 813,
+      "final_door_deg": 0.0,
+      "failure": "timeout:pregrasp"
+    },
+    {
+      "side": "push",
+      "segment": "full",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 7588,
+      "policy_calls": 759,
+      "final_door_deg": -3.1131017958345065e-08,
+      "failure": "door_contact_outside_manipulation"
+    }
+  ]
+}

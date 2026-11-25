@@ -28,6 +28,7 @@ class FreeActorEvaluation:
         self.raw=RAW/'free'/f'u{u:06}'
         self.checkpoint=str(RAW/f'checkpoint_{u:06}.pt')
         weights=torch.load(self.checkpoint,map_location=self.device,weights_only=True)
+        self.refxy2_mode = weights['cfg'].get('feature_mode')
         self.seed=weights['seed']
         self.model=make_model()
         self.rep=RobotRepresentation(self.model,self.device)

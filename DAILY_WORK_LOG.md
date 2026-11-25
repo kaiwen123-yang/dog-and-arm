@@ -1563,3 +1563,20 @@ GitHub main 为 be398cc3c9532d90c852a7f221fbf64c2b7e4e10。开发平台主工作
 建立SUCCESS_VIDEOS_AND_SCOPE_20261125报告与success_video_review_20261125/manifest，更新AGENTS/README/PROJECT_STATE、标准结果入口、视频协议、目标差距、RefXY2顶部和两份同文启动词：当前交付已有完整视频，停止自动推进标准迁移，RefXY2未执行且不启动；原u10000的B0-04/null/NA/标准V0=0诚实封存。旧计划及预算保留历史，不再当自动启动授权。未自动开始新算法/VLA，等待用户另行指定后续研究。
 
 本次新增训练/物理均0，没有重载远端权重，也没有查询或终止未知远端进程，不声称服务器作业已经关闭。原视频已在GitHub，不重复上传或建立本机压缩包。文档与清单将普通发布并从固定提交回读，实际提交号在交付中给出。
+
+### 19:05｜已显式启动的 RefXY2 配对执行与原判结案（北京时间）
+
+从 GitHub 登记 2bbb9fec 建独立工作树 ~/research/dog-and-arm-refxy2，保留原 main 的 4 项未提交修改及未跟踪目录。在 AutoDL 的 .refxy2-2bbb9fec 复用现场 u10000 原资产。18:18 完成两支等宽 +0 的旧列/Adam矩/实际组迁移。18:19 首个 zero 进程在首次恢复中止，修正恢复后学习率张量的设备，未采集、未执行优化。18:21 两支 +0 的三网络、33 查询核对完成；zero 从严格恢复开始实际优化。
+
+并行原540/u10000复核完成264扰动、4预热、8基线、12 JVP和4反向梯度，0优化/0物理。最细尺度12/12与反向投影同号；TorchScript四元数算子的forward-mode丢切向量已有单位旋转反例，整条修正后JVP和分项导数未闭合。18:23从zero+10实载核对全部ring/solver/优化器/采样器/RNG，随后两支+200均以同样入口实载逐字段复查。
+
+18:36 前后 zero +200 封存并开始 measured 的完整恢复训练。两支首更新11组索引相同，继承4083个Actor样本逐值相同。另13个新采样中7个状态/历史略有差异。measured每拍重算与原32步AD路径核对，新列变化已在首更新与+50/+100/+200冻结消融记录。18:49前两支训练均止于+200。两支各保留 +200 Actor / +2,000 WM / +4,000 Critic，配对实付 400 / 4,000 / 8,000，回滚为零。主段 252 案，延长复测 12 案。native/pull 的处理支最小 P95 为 10.255 mm，超过 shared_0 最大 P95 9.910 mm，差 0.345 mm。登记的 native 非退化条件未满足。本轮于 +200 结案，RefXY2 完整成功 0/12，V0=0，合格双侧回报 NA。
+
+- measured_200 通过数 {'full/warp': 0, 'contact/warp': 1, 'full/native': 0, 'contact/native': 2, 'free/warp': 0}，逐项分母 {'full/warp': 2, 'contact/warp': 10, 'full/native': 2, 'contact/native': 10, 'free/warp': 60}。
+- measured_200_repeat 通过数 {'full/native': 0, 'full/warp': 0}，逐项分母 {'full/native': 2, 'full/warp': 2}。
+- shared_0 通过数 {'full/warp': 0, 'contact/warp': 0, 'full/native': 0, 'contact/native': 0, 'free/warp': 0}，逐项分母 {'full/warp': 2, 'contact/warp': 10, 'full/native': 2, 'contact/native': 10, 'free/warp': 60}。
+- shared_0_repeat 通过数 {'full/native': 0, 'full/warp': 0}，逐项分母 {'full/native': 2, 'full/warp': 2}。
+- zero_200 通过数 {'full/warp': 0, 'contact/warp': 1, 'full/native': 0, 'contact/native': 2, 'free/warp': 0}，逐项分母 {'full/warp': 2, 'contact/warp': 10, 'full/native': 2, 'contact/native': 10, 'free/warp': 60}。
+- zero_200_repeat 通过数 {'full/native': 0, 'full/warp': 0}，逐项分母 {'full/native': 2, 'full/warp': 2}。
+
+追加记录以同一天内的实际执行时间为准，保留18:21视频交付提交和默认停止自动续训的项目决定。原546混合策略成功视频仍可查看。优化分项实付、逐案物理和原始失败、硬预算、未执行项、恢复路径与视频的独立依据见 [配对实测](reports/B0_REFXY2_TRANSFER_RESULTS_20261125.md)、[实付](results/b0/refxy2_pair_20261125/budget.json) 和 [延长决定](results/b0/refxy2_pair_20261125/extension_decision.json)。本次提交仅涉及独立实验与入口更新，普通推送及固定提交回读的最终回执单独交付。

@@ -1,0 +1,52 @@
+{
+  "checkpoint": "results/raw_large/b0/refxy2_pair_20261125/measured/checkpoint_000200.pt",
+  "backend": "warp",
+  "mujoco": "3.16.0",
+  "manifest": "config/b0/contact_dev_hold_margin_v2.json",
+  "requested_dev": false,
+  "source": "results/raw_large/b0/contact_held_margin_v2",
+  "passed": 1,
+  "evaluated": 5,
+  "failures": [
+    {
+      "side": "pull",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06977431106447433,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "pull",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 1,
+      "policy_calls": 1,
+      "final_door_deg": 0.06977483800289663,
+      "failure": "door_force_limit"
+    },
+    {
+      "side": "push",
+      "segment": "open_5",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 2514,
+      "policy_calls": 252,
+      "final_door_deg": 4.555531697610228,
+      "failure": "grip_base_or_handle_error"
+    },
+    {
+      "side": "push",
+      "segment": "open_15",
+      "case": "nominal",
+      "passed": false,
+      "physics_steps": 2619,
+      "policy_calls": 262,
+      "final_door_deg": 6.718598820013552,
+      "failure": "grip_base_or_handle_error"
+    }
+  ]
+}

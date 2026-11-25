@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from .refxy2 import MODES, RefXY2Normalization, append_refxy2
 from supermimic.tasks.task_spec import build_actor_obs_td, make_motion_task, make_velocity_task
 from supermimic.representations import GOAL_FRAME_STRIDE, NUM_GOAL_FRAMES
 
@@ -28,6 +29,10 @@ ARM_MAP_BASES = {STANCE_ARM: "proprio_motion", TRANSLATION_STANCE_ARM: PRIVILEGE
 
 def actor_goal_schema(cfg):
     schema = cfg.get("actor_goal_schema", "proprio_motion")
+    if schema in MODES:
+        if cfg.get("feature_mode", MODES[schema]) != MODES[schema]:
+            raise ValueError("RefXY2 schema and mode disagree")
+        return schema
     if schema in endpoint_policy.SCHEMAS:
         return schema
     if ARM_MAP_BASES.get(schema, schema) not in ("proprio_motion", PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL, APPROACH_LEG_WHEEL):
@@ -129,6 +134,8 @@ class DoorMotions:
                 raise ValueError("Current hinge required for endpoint residual")
             error=(door_angle-self.qpos[frames,31]).unsqueeze(-1)
             actor=torch.cat((actor,error,self.endpoint_clock[frames]),dim=-1)
+        if self.actor_schema in MODES:
+            actor = append_refxy2(actor, self.root_pos_w[frames], aux, MODES[self.actor_schema])
         return wm, actor
 
 
@@ -278,6 +285,8 @@ def _mask_normalized_motion_padding(_normalizer, inputs, normalized):
 def build_actor(rep, cfg, model, device):
     task = make_motion_task(rep,570)
     schema = actor_goal_schema(cfg)
+    if schema in MODES:
+        task = replace(task, goal_dim=542, extract_training_goal=lambda motion, t, aux: motion.goals(rep, t, aux)[1])
     if schema in (PRIVILEGED_TRANSLATION, PRIVILEGED_DOOR_ANGLE, APPROACH_WHEEL, APPROACH_LEG_WHEEL):
         task = replace(task, goal_dim=570 if schema == PRIVILEGED_TRANSLATION else 571,
                        extract_training_goal=lambda motion, t, aux: motion.goals(rep, t, aux)[1])
@@ -303,6 +312,8 @@ def build_actor(rep, cfg, model, device):
         actor_type=HingeFeedbackActor
     actor = actor_type(77,23,[task,velocity],{'motion':1.,'velocity':0.},
                               32,tuple(cfg['actor_hidden']),.1,10).to(device)
+    if schema in MODES:
+        actor.goal_normalizers["motion"] = RefXY2Normalization(540).to(device)
     actor.set_servo_units(model,ActionMap(model),device)
     if cfg.get("neutral_normalized_goal_padding"):
         if actor_type is not EffortScaledActor or schema != "proprio_motion":
