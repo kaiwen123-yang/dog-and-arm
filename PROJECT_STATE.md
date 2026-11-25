@@ -1,5 +1,9 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-25 11:44｜u5000 完整回读、u5100 滚动保存，tmux 继续至 u10000
+
+核验时已越过 u5100 并完成 u5102。u5100 处本轮保留新增 109 Actor / 1090 WM / 2180 Critic，回滚成本 0。u5000 独立开发块完成，整段双指 H32 有前拉 2 窗、背推 17 窗。原物理主节点 u7500/u10000 尚待评测。B0-04、候选 null、合格双侧回报 NA、V0=0。[运行报告](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261125.md) · [现场回执](results/b0/standard_official_flow_continuation_20261125/tmux_progress.json)
+
 ## 2026-11-25 11:35｜已接用户指令恢复本轮执行
 
 从暂停提交 45c8a0a 接续，AutoDL 重启 u4991 → u10000 主段与独立节点评测。[启动记录](results/b0/standard_official_flow_continuation_20261125/restart_after_pause.json) · [逐案诊断](results/b0/standard_official_flow_continuation_20261125/readiness_u004991.json)。10:58 暂停回执保留为历史记录。
