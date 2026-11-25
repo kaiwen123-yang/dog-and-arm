@@ -1,4 +1,4 @@
-2026-11-25 北京时间 10:58，用户明确暂停本轮，要求等其重新通知再启动。显存排队、节点评测排队和监控进程均已退出。现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-20261125-be398cc；记录见 reports/B0_OFFICIAL_FLOW_CONTINUATION_20261125.md 和 results/b0/standard_official_flow_continuation_20261125/pause.json、run_manifest.json。新增优化步与回滚均为零。收到用户重新启动指令后，从登记的 u4991 父包完整恢复，首个更新 u4992，主段 u10000；同时重新启动节点评测与独立恢复核验。四个父包诊断回合已全部完成，直接复用 readiness_u004991.json。后续按以下既有登记执行未完成部分。
+2026-11-25 北京时间 11:35 用户已明确要求继续，10:58 的暂停已经解除。先核对当前 run_manifest.json、restart_after_pause.json、恢复回执及 train_after_pause.log 和 eval_after_pause.log；同一现场有活动作业即接续监控。四案父包诊断已完成。以下为该轮原登记。
 
 继续 dog-and-arm 的固定官方 SuperMimic → M1＋Piper 标准迁移。根本目标保持：先完成并冻结可对比的独立标准基线，再开发算法和多模态/VLA；首次标准 Actor 完整成功时立即交连续仿真视频。
 

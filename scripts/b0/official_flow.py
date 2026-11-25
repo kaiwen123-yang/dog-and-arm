@@ -4,6 +4,7 @@ import fcntl
 from contextlib import ExitStack, nullcontext
 import json
 import os
+import shutil
 from pathlib import Path
 import time
 from unittest.mock import patch
@@ -101,6 +102,16 @@ def save(run, u, rolling=False):
     if CONTINUATION and (OUT/f'{label}_{u:06}.json').exists():
         raise FileExistsError(f'Committed node u{u} is immutable')
     directory = RAW / f"resume_{u:06}"
+    if NEW_SEGMENT and rolling and not directory.exists():
+        # The two previous generations stay readable while the next is being written.
+        expected=(PARENT_RAW/f'resume_{PARENT_UPDATE:06}'/'state.pt').stat().st_size+1024**3
+        if shutil.disk_usage(RAW).free < expected:
+            backing=(RAW/'resume_005000').resolve().parent/'rolling'
+            backing.mkdir(exist_ok=True)
+            if shutil.disk_usage(backing).free >= expected:
+                slot=backing/directory.name
+                slot.mkdir(exist_ok=False)
+                directory.symlink_to(slot,target_is_directory=True)
     directory.mkdir(exist_ok=True)
     package = io.package(run,u)
     io.atomic_torch(package, RAW/f"checkpoint_{u:06}.pt")
@@ -140,7 +151,13 @@ def save(run, u, rolling=False):
             obsolete.unlink()
             for name in ('state.pt', 'solver.npz'):
                 (directory/name).unlink()
-            directory.rmdir()
+            if directory.is_symlink():
+                slot=directory.resolve()
+                assert slot==(RAW/'resume_005000').resolve().parent/'rolling'/directory.name
+                directory.unlink()
+                slot.rmdir()
+            else:
+                directory.rmdir()
             checkpoint.unlink()
 
 
