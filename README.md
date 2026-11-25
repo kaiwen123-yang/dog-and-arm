@@ -1,46 +1,24 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-## 2026-11-25｜RefXY2 已执行结案，默认入口为查看已有视频
+## 当前两期安排（2026-11-25 20:41，北京时间）
 
-两支各保留 +200 Actor / +2,000 WM / +4,000 Critic，配对实付 400 / 4,000 / 8,000，回滚为零。主段 252 案，延长复测 12 案。native/pull 的处理支最小 P95 为 10.255 mm，超过 shared_0 最大 P95 9.910 mm，差 0.345 mm。登记的 native 非退化条件未满足。本轮于 +200 结案，RefXY2 完整成功 0/12，V0=0，合格双侧回报 NA。
+**第一期：导出已有成功策略，适配固定桌面 Piper H，完成抓把手、推/拉开门、释放和收臂。第二期：正式推进腕部RGB-D＋语言＋本体历史、世界模型/可微动力学与全身协同算法。**
 
-本聊天显式启动的配对与视频收束工作并行。登记提交为 2bbb9fec，交付基于含视频说明的 de0a4d6c。项目默认继续查看已有 546 维混合策略的双侧视频，后续研究等待另行指定。原 standard-v1 封存于 u10000。
+[一期计划](docs/DESKTOP_PIPER_TRANSFER_PLAN_20261125.md) · [二期计划](docs/MULTIMODAL_ALGORITHM_PLAN_20261125.md) · [本轮审查](reports/REFXY2_REVIEW_AND_TWO_PHASE_PLAN_20261125.md) · [当前启动词](prompts/NEXT_RUN.txt) · [目标差距](docs/GOAL_GAP_20261125.md) · [唯一工作日志](DAILY_WORK_LOG.md)
 
-[独立配对实测](reports/B0_REFXY2_TRANSFER_RESULTS_20261125.md) · [逐案与视频清单](results/b0/refxy2_pair_20261125/assessment/physics_manifest.json) · [已有双侧成功视频](reports/SUCCESS_VIDEOS_AND_SCOPE_20261125.md)
+一期首选已有双侧名义完整成功的546维混合u1，保留其参考前馈、动作BC与解析补偿身份。桌面导出、适配与实机整段尚未执行。本次只完成审查和计划，新增训练/物理/硬件动作均0。先贯通一种可达方向并交付完整视频，再复现和补另一方向。
 
-## 2026-11-25 18:21｜视频交付范围：已有完整成功视频，停止自动推进标准迁移
+原标准u10000和RefXY2/+200封存：标准仍B0-04/null/NA；RefXY2正式完整0/12、逆序0/12，按原非退化条件结案。旧标准资格不再阻止这两期推进，也不把混合成功改写为官方复现成功。[最新结案审查](reports/REFXY2_REVIEW_AND_TWO_PHASE_PLAN_20261125.md)
 
-用户现在以“能查看比较完整的成功流程仿真视频”为当前收束依据。已核对同一个546维混合策略u1的native双侧原视频：前拉74.28s、背推54.44s，均从frame0连续完成13阶段，原判passed=true。方法含参考前馈、累计15000动作BC及解析补偿；原官方标准链仍未完成，不能混写身份。
+## 已有完整仿真视频（1080p）
 
-[立即查看视频与说明](reports/SUCCESS_VIDEOS_AND_SCOPE_20261125.md) · [视频核验清单](results/b0/success_video_review_20261125/manifest.json) · [当前入口](prompts/NEXT_RUN.txt)
+- [前拉完整视频，74.28秒](results/b0/success_video_hd_20261125/pull_full_1080p.mp4)
+- [背推完整视频，54.44秒](results/b0/success_video_hd_20261125/push_full_1080p.mp4)
+- [方法来源、原判定与视频范围](reports/SUCCESS_VIDEOS_AND_SCOPE_20261125.md)
 
-**停止继续自动安排SuperMimic标准迁移；RefXY2计划保留但不启动，原u10000封存。** 原B0-04/null/NA/标准V0=0作为未完成结论保留，不再为本次视频交付追加训练或D/C/seed/H。当前先交付并查看已有成果，后续研究待用户另行指定。本次新增训练/仿真0，没有检查或终止远端未知作业。下方旧“下一轮执行”属于历史，不能覆盖本节。
+这两部是旧546维混合策略同一权重的原成功回合高清重渲，尚不是桌面Piper或实机结果。
 
-## 2026-11-25｜当前入口：RefXY2 独立配对已登记，尚未执行
-
-787d5e38 的 A–D 已完成并复核。原平台四案位置合格 0 拍、ready 0/75，最近 7.933–13.826 mm；不存在已证明可直接修复的同契约反例，但原 H32 同一 WM 的 9 组 AD–割线反号仍未闭合。原 standard-v1/u10000 保持 B0-04、候选 null、合格双侧回报 NA、V0=0，Warp/native 接触各 0/10、full 0/4、free 0/60。
-
-[当前审查](reports/B0_PREGRASP_ROUND_REVIEW_20261125.md) · [下一配对计划](docs/B0_REFXY2_TRANSFER_PLAN_20261125.md) · [机器登记](results/b0/pregrasp_review_20261125/next_registration.json) · [目标差距](docs/GOAL_GAP_20261125.md) · [启动词](prompts/NEXT_RUN.txt)
-
-下一执行轮为独立 `SuperMimic-M1Piper-RefXY2-v1` 与等宽恒零控制：完整恢复同一 u10000，仅 Actor 增当前参考根相对自身的 XY2；保留 `execution_recipe=official_flow_s0_v1` 与原 WM/Critic/损失/Ratio/H32/物理/裁判。各 +200，双侧原物理证据支持时同轮同步 +1000。主段实际优化上限 420/4200/8400，延长总上限 2020/20200/40400；全轮共享回滚20/200/400。主段三套原评分252案，完整延长440案，条件资格另列。一次冻结FP64模型内复核并行，不作WM门。
-
-本次只完成审查和计划发布，没有新增训练或仿真。新两维改变Actor信息，结果独立标识，不能改写原标准成功；先迁移冻结，再开发算法/VLA。首个原判完整成功立即交同回合原速V0。以下旧“当前/下一轮/待决定”均按历史日期及当时提交阅读，A–D和原u15000不重复启动；当前执行范围以本节、新计划及启动词为准。
-
-## 2026-11-25｜u10000 预抓兼容性实测
-
-原预抓平台四案均有连续 76 拍姿态合格，位置为 0 拍，最近 7.933–13.826 mm。四个锚点确认 Actor 的水平平移输入别名。76 条 0.25 ms 闭环响应均走完 H32；沿原目标正向扰动首动作，真实同钟和端点误差同时改善 3/12。四案超时后按原参考钟继续均未建立双指接触，在参考 open 阶段触发原物理终止。 standard-v1 仍为 B0-04、候选 null、合格双侧回报 NA、V0=0。u10000 原 Warp/native 接触各 0/10、full 0/4、free 0/60。新增优化 Actor/WM/Critic 为 0/0/0。原主链封存于 u10000。
-
-[独立实测报告](reports/B0_PREGRASP_COMPATIBILITY_RESULTS_20261125.md) · [机制决定](results/b0/standard_pregrasp_compatibility_20261125/mechanism_decision.json) · [实际成本](results/b0/standard_pregrasp_compatibility_20261125/budget_and_recovery.json) · [诊断视频](results/b0/standard_pregrasp_compatibility_20261125/diagnostic_video_manifest.json)
-
-## 2026-11-25｜u10000 已审查，下一轮集中查明预抓失败
-
-固定79fd3cf的official_flow_s0_v1已结案于u10000，不延长u15000。末点原Warp/native接触各0/10，frame0完整0/4、free0/60；候选null、合格完整双侧回报NA、V0=0，仍B0-04。主链累计10000 Actor/100000 WM/200000 Critic、102414758有效转移。先完成固定官方标准迁移冻结，再开发算法/VLA。
-
-[最新审查](reports/B0_U10000_REVIEW_20261125.md) · [下一集中轮](docs/B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md) · [机器登记](results/b0/official_u10000_review_20261125/next_registration.json) · [目标差距](docs/GOAL_GAP_20261125.md) · [启动词](prompts/NEXT_RUN.txt)
-
-预抓末拍79–113mm是到冻结端点的距离；同时TCP距把手7.84–11.51mm，参考已到grasp。下一轮围绕原平台期一次完成既有12轨迹分解、冻结输入/原目标核对、有限动作响应及4条完整参考钟诊断。默认0优化；仅有具体实现错误时同轮最小修复、control/fix各200原更新，另列一次回滚预留。原主链结案、旧结果与预算保持，不自动换观测/奖励、暂停参考或重开WM门。
-
-本次是仓库审查与计划发布，未新增训练/仿真。后续首次原裁判完整成功立即交同episode连续原速V0；失败后延续诊断视频不能代替成功视频。下方旧“当前/下一轮”按相应日期的历史记录阅读，以本节和新登记为当前入口。
+## 已有工程与硬件基础
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 
@@ -66,7 +44,7 @@
     cd dog-and-arm
     env -u PYTHONPATH -u PYTHONHOME /usr/bin/python3 scripts/init_workspace.py
 
-接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前标准迁移审查见 **reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
+接着在本目录打开 Codex，先读 **PROJECT_STATE.md** 和 **prompts/NEXT_RUN.txt**。当前两期接续见 **docs/DESKTOP_PIPER_TRANSFER_PLAN_20261125.md** 与 **docs/MULTIMODAL_ALGORITHM_PLAN_20261125.md**，工程教师基准见 **reports/P6_FREE_BASE_DOOR.md**；H0 操作流程保留在 **docs/H0_RUNBOOK.md**。已有 Codex CLI 时可运行：
 
     codex
 

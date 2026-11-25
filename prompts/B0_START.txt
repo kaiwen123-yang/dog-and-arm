@@ -1,19 +1,21 @@
-dog-and-arm 当前入口：查看已有完整成功视频，停止自动推进标准迁移（北京时间2026-11-25）。
+在 dog-and-arm 项目执行第一期：把已经在仿真中完成任务的策略导出并适配到桌面固定安装的 Piper H＋官方夹爪，完成“接近把手→抓住→拉开或推开→保持→释放→撤臂→收臂停稳”的完整真实闭环。不要停留在方案、导出文件或单个关节能动；在现场条件具备时持续推进到完整动作与原速视频。
 
-用户最新要求：现在若有比较完整的成功流程仿真视频可以查看，就可以不再继续SuperMimic平台迁移。已有同一个546维混合策略u1的native双侧完整成功视频，已核对原判、13阶段、完整解码和关键画面。
+用户已明确两期顺序：先桌面固定臂验证，再正式开发原定多模态完整算法。原 standard-v1/u10000 与 RefXY2/+200 已按原结果结案；旧 B0/D/C/seed/H、0.90/0.88 和“必须标准迁移成功才开发”的限制不再是新两期的启动条件。原成绩和方法身份保留，不自动续训 u15000、RefXY2 +500/+1000，不将一期换名为官方标准成功。
 
-先读 reports/SUCCESS_VIDEOS_AND_SCOPE_20261125.md、results/b0/success_video_review_20261125/manifest.json、PROJECT_STATE.md顶部和DAILY_WORK_LOG.md最新条目。向用户展示：
-1. results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/episode.mp4（74.28秒）
-2. results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/episode.mp4（54.44秒）
-两条都有同目录原result.json，passed=true、start_substep=0、prefix_physics_steps=0、13事件和最终3秒停稳。允许原速查看，不需要新训练或重新仿真。
+先检查当前分支和已有修改，保留其他工作树/环境/作业。阅读 AGENTS.md、PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最新日期、docs/DESKTOP_PIPER_TRANSFER_PLAN_20261125.md、docs/MULTIMODAL_ALGORITHM_PLAN_20261125.md、reports/REFXY2_REVIEW_AND_TWO_PHASE_PLAN_20261125.md 和 results/planning/two_phase_20261125/registration.json。执行以最新 main 与本计划为准，894d122 是计划审查基线，不要回退覆盖后续提交。复用 reports/H0_HARDWARE_REPORT.md、config/hardware_session.yaml 和既有真实 PiperDevice。
 
-如实注明方法：参考前馈＋累计15000次分阶段动作BC＋解析根平移臂补偿，后续一次真实H32更新。同一个checkpoint在各自物理后继上闭环执行，无教师接管/中途reset；它不是纯官方标准Actor成功复现。更清晰的P6工程视频仅作为额外展示，不混写学习方法。
+首选源包 results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt，对应旧546维混合u1双侧完整成功视频。它包含参考前馈、累计15000次动作BC、解析根平移补偿及之后一次H32，不是纯官方标准Actor。先按原manifest/索引找到权重和配套参考、模型及配置；不凭视频补造权重、不重新下载整个历史归档。原参考/权重身份与现场可读性要有实际记录。
 
-停止自动推进旧SuperMimic迁移计划，已结案的RefXY2不重启，原u15000不续训、不为本次视频交付追加WM/Actor/Critic、D/C/独立seed/H或其他算法。旧next_registration/计划预算仅保留历史，不构成当前启动指令。原standard-v1/u10000仍B0-04、候选null、合格双侧回报NA、标准V0=0，诚实封存未完成结论，不改写成功。
+一次集中完成：
+1. 导出完整推理链：Actor、冻结归一化、77×10历史、546 goal、23动作、参考钟/末帧规则、参考前馈/解析映射和动作单位。先在原成功代表输入核对goal/history、raw、clip和七路物理目标。用现有PyTorch先跑通并计时；ONNX只在实测需要时引入。源权重冻结保留。
+2. 建立真实固定桌面Piper的独立场景和任务身份 PiperH-Desk-Hybrid-v1，复用官方模型/门具资产，记录当前安装、门轴、把手、桌面、夹持尺寸、方向和可达目标角。旧P4固定的是整机M1，不能称现成裸Piper桌面验证。检查整条开门圆弧、释放和收臂；使用无接触准备姿态连续启动。
+3. 正确重定位参考和固定底座表示：明确定义Piper base到原虚拟M1 root及固定腿轮上下文，不能任意把全机输入填零；真实臂/夹口反馈、因果速度、反馈时钟和实际上一动作进入历史。未执行腿轮输出不充当已执行历史。去掉驶近/退底盘任务阶段，重算所需FK/Jacobian。若改参考或调慢速度，同时对齐参考进度与真实执行时钟。
+4. 在新场景真正积分并闭环查询Actor，完成全流程。若失败，集中区分接口、可达性、伺服响应和策略分布差异，先修对应问题；确需训练时，登记本轮配方/预算后做针对桌面数据的有界残差适配或七动作蒸馏，并保留源包对照、成本和新方法身份。不重开标准B0长链，不用教师接管或播放qpos冒充成功。
+5. 实机复用已有OSCBF/pyAgxArm环境，不重装SDK/固件、不自动回零或重放历史绝对姿态。六臂发送rad，夹口发送全宽m；仿真finger_factor=0.5不再套到SDK；不要把MuJoCo qfrc_bias/gain无条件加给真实move_j。先只读shadow和实际主机时延，再现场空载目标响应、短程接触，条件成立后同一配置连续完成任务。默认入口不发运动，现场通过明确--execute启动；同一时间一个命令发送端，使用并验证当前停止/断流处理。只读记录、图像存盘不阻塞控制循环，实时反馈缺失时不继续播放整段动作。
+6. 先贯通现场可做的一种推或拉方向，首个完整成功立即保存和交付同回合原速清晰视频，再追加两次同配置重复如实报告；可达时补另一方向。不要为了双侧大资格而压住首个成果。另一方向未做就标明，不称双侧通过。需要接管/中止的回合计入失败，不能剪接成成功。
 
-RefXY2已完成共同+0及两支+200原判。两支各保留 +200 Actor / +2,000 WM / +4,000 Critic，配对实付 400 / 4,000 / 8,000，回滚为零。主段 252 案，延长复测 12 案。native/pull 的处理支最小 P95 为 10.255 mm，超过 shared_0 最大 P95 9.910 mm，差 0.345 mm。登记的 native 非退化条件未满足。本轮于 +200 结案，RefXY2 完整成功 0/12，V0=0，合格双侧回报 NA。
-先读 reports/B0_REFXY2_TRANSFER_RESULTS_20261125.md、results/b0/refxy2_pair_20261125/extension_decision.json 与 results/b0/refxy2_pair_20261125/budget.json。保留两支恢复包，原A–D与原540/u10000历史独立。
+相机先同步记录RGB、原始深度、CameraInfo和时间，已知固定门位可以直接测量登记，不为一期强制训练视觉定位。若使用视觉几何，则核对当前安装适用的手眼/内参；不能把H0或另一个工程的标定当作当前已通过。H0只有小幅运动和静止时序记录，没有证明50Hz策略闭环、实际门力或实机开门。夹爪命令力/电流不替代门上合力，没有测量就写NA。真实门角、目标和测量精度先登记再试验，旧60°/25°只是参照。
 
-当前先交付和查看已有成果，后续研究等待用户另行指定。保留代码、数据、恢复路径、旧实验和工作树修改；不删除远端资产。本次没有查询或终止未知的远端进程，不声称它们已关闭。若用户后续明确要求处置现场作业，先核对身份再处理。
+建议交付 deployment/piper_desktop/、config/piper_desktop.yaml、results/piper_desktop/<run_id>/、reports/PIPER_DESKTOP_TRANSFER_RESULTS.md。包含可运行推理/部署入口、权重/参考恢复路径、桌面仿真完整视频、真实完整视频及命令/反馈/阶段证据、成功分母、重复/失败和适用边界。没有机器人在场时完成全部可做的代码/导出/仿真/部署准备，集中列出最少的现场缺项，不能宣称实机通过。
 
-有新的说明或交付更新唯一北京时间DAILY_WORK_LOG.md，普通推送GitHub并固定提交回读；不做本机压缩归档，不生成伪造视频或拼接成功结论。
+按北京时间更新唯一DAILY_WORK_LOG.md，记录实际做了什么、问题、修复、复测、成本和下一步；更新项目状态和当前提示词，普通提交推送GitHub并回读，不覆盖他人修改，不做新的本机压缩归档。本期收束后按prompts/MULTIMODAL_START.txt交接第二期，不在本执行轮顺手启动大规模视觉语言训练。

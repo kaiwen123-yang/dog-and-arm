@@ -1,5 +1,11 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 当前用途：封存标准对照，接续独立两期（2026-11-25）
+
+用户已指定先固定桌面Piper策略适配与完整动作，再多模态算法研发。原standard-v1/u10000仍B0-04/null/NA，RefXY2/+200正式full0/12、逆序0/12按原条件结案；旧资格不再是两期前置。本文件保留历史结果与当时计划，下方旧“当前/下一轮/待启动”不能触发新训练。
+
+[新接续审查](REFXY2_REVIEW_AND_TWO_PHASE_PLAN_20261125.md) · [一期](../docs/DESKTOP_PIPER_TRANSFER_PLAN_20261125.md) · [二期](../docs/MULTIMODAL_ALGORITHM_PLAN_20261125.md)。本次只更新范围说明，旧分数、manifest和原始记录不变。
+
 ## 2026-11-25｜RefXY2 已执行结案，默认入口为查看已有视频
 
 两支各保留 +200 Actor / +2,000 WM / +4,000 Critic，配对实付 400 / 4,000 / 8,000，回滚为零。主段 252 案，延长复测 12 案。native/pull 的处理支最小 P95 为 10.255 mm，超过 shared_0 最大 P95 9.910 mm，差 0.345 mm。登记的 native 非退化条件未满足。本轮于 +200 结案，RefXY2 完整成功 0/12，V0=0，合格双侧回报 NA。
