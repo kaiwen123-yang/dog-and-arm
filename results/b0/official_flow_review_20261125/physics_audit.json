@@ -1,0 +1,207 @@
+{
+  "source_commit": "0124ad75b61f35224033cdfc9f445228afb89f2e",
+  "review_scope": "只读 GitHub 及已克隆源码审查。未运行仿真、训练或原始数组复算。未修改仓库。",
+  "main_conclusion": "同一 official_flow_s0_v1 Actor 的双后端 2/10 是可复测局部接触进展；完整任务仍止于到站后连续稳态和预抓端点，不能换算为目标完成百分比。建议保留当前官方主链，批量续训并在已有评测节点贯通只读 readiness 诊断，不再以 WM 长窗误差设额外放行门。",
+  "reference_self_consistency": [
+    {
+      "path": "results/b0/recovery_a_teacher_r1/judge/pull_60_train.json",
+      "teacher_episode": "pull_60_train",
+      "frozen_judge_pass": true,
+      "reference_length_substeps": 37868,
+      "scored_substeps": 37368,
+      "margin_s": 1,
+      "phases": [
+        "approach_base",
+        "settle",
+        "pregrasp",
+        "approach_arm",
+        "grasp",
+        "open",
+        "hold",
+        "release",
+        "retreat_arm",
+        "post_release_hold",
+        "stow",
+        "retreat_base",
+        "final"
+      ],
+      "pregrasp": {
+        "actual_last_physics_step": 5947,
+        "last_in_measured_phase": true,
+        "tolerance_mm": 3,
+        "teacher_goal_to_frozen_endpoint_mm": 0,
+        "actual_tcp_to_teacher_goal_mm": 0.013722739047690205,
+        "actual_tcp_to_frozen_endpoint_mm": 0.013722739047690205,
+        "actual_tcp_to_handle_mm": 80.00835441821263,
+        "actual_door_deg": 0,
+        "actual_force_N": 0,
+        "active_finger_N": [
+          0,
+          0
+        ],
+        "same_phase_substeps": 2576,
+        "same_clock_same_phase_goal_delta_mm_quantiles": [
+          0,
+          0,
+          0
+        ],
+        "same_clock_same_phase_goal_delta_above_3mm": 0
+      },
+      "metrics_are_policy_evaluation": false
+    },
+    {
+      "path": "results/b0/recovery_a_teacher_r1/judge/push_25_train.json",
+      "teacher_episode": "push_25_train",
+      "frozen_judge_pass": true,
+      "reference_length_substeps": 28028,
+      "scored_substeps": 27528,
+      "margin_s": 1,
+      "phases": [
+        "approach_base",
+        "settle",
+        "pregrasp",
+        "approach_arm",
+        "grasp",
+        "open",
+        "hold",
+        "release",
+        "retreat_arm",
+        "post_release_hold",
+        "stow",
+        "retreat_base",
+        "final"
+      ],
+      "pregrasp": {
+        "actual_last_physics_step": 5945,
+        "last_in_measured_phase": true,
+        "tolerance_mm": 3,
+        "teacher_goal_to_frozen_endpoint_mm": 0,
+        "actual_tcp_to_teacher_goal_mm": 0.016836263652189914,
+        "actual_tcp_to_frozen_endpoint_mm": 0.016836263652189914,
+        "actual_tcp_to_handle_mm": 104.97929600425036,
+        "actual_door_deg": 0,
+        "actual_force_N": 0,
+        "active_finger_N": [
+          0,
+          0
+        ],
+        "same_phase_substeps": 2576,
+        "same_clock_same_phase_goal_delta_mm_quantiles": [
+          0,
+          0,
+          0
+        ],
+        "same_clock_same_phase_goal_delta_above_3mm": 0
+      },
+      "metrics_are_policy_evaluation": false
+    }
+  ],
+  "reference_scope_limit": "上述是既有名义参考实测记录在冻结裁判中的重评分，不是学习 Actor 过关，也不证明扰动条件。当前 YAML 仍引用同名 full_warp_hold_park_r1；下一执行仅核对资产/版本 fingerprint，缺失才一次重算，不重采教师。",
+  "last_full_cases": [
+    {
+      "side": "pull",
+      "backend": "warp",
+      "failure": "door_contact_outside_manipulation",
+      "phase": "pregrasp",
+      "seconds": 14.066,
+      "xy_mm": 5.254054834,
+      "heading_deg": 1.18061576,
+      "finger_n": [
+        0,
+        1.66234779
+      ],
+      "net_force_n": 1.909463625,
+      "final_door_deg": -0.00009158731856,
+      "interpretation": "尚处禁止门接触阶段时一指接触，非超过6N导致。"
+    },
+    {
+      "side": "push",
+      "backend": "warp",
+      "failure": "wheel_support_or_tilt",
+      "phase": "pregrasp",
+      "seconds": 11.594,
+      "xy_mm": 6.227045118,
+      "heading_deg": 0.1441091,
+      "tilt_deg": 0.6594347,
+      "wheel_n": [
+        0,
+        198.12559,
+        202.7037,
+        32.23846
+      ],
+      "interpretation": "倾角小于5度，故源码该判定只能由持续轮失载分支触发；0N轮是末拍事实，持续逐拍次数尚未读取原始数组。"
+    },
+    {
+      "side": "pull",
+      "backend": "native",
+      "failure": "timeout:pregrasp",
+      "phase": "pregrasp",
+      "seconds": 15.564,
+      "xy_mm": 8.510881051,
+      "heading_deg": 0.287281383,
+      "ready_best_steps": 0,
+      "ready_required_steps": 75,
+      "tcp_handle_mm": 47.375226908,
+      "interpretation": "pregrasp 判据是冻结预抓端点距离<=3mm及旋转误差<=0.02rad连续150ms；handle距离不是端点距离。当前结果缺timeout时last_not_ready，不能归因具体位置/姿态分项。"
+    },
+    {
+      "side": "push",
+      "backend": "native",
+      "failure": "timeout:settle",
+      "phase": "settle",
+      "seconds": 11.994,
+      "xy_mm": 8.800276545,
+      "heading_deg": 0.030684252,
+      "speed_mm_s": 4.494699097,
+      "ready_current_steps": 14,
+      "ready_best_steps": 385,
+      "ready_required_steps": 500,
+      "interpretation": "末拍位置、航向、线速均当拍合格，最长连续稳态770ms尚未达到1s；不是末拍XY或航向越界。"
+    }
+  ],
+  "actual_current_logging": {
+    "source": "learning/b0/contact_events.py; scripts/b0/eval_contact_segments.py",
+    "already_computed": "judge.last_not_ready[phase] 保存 ramp, within_position_zone, stable, wheels_loaded, reached, both_fingers, gripped, detached, door_speed_rad_s, planar_speed_m_s, yaw_rate_deg_s, tcp_handle_error_m, width_m。pregrasp/approach_arm/retreat_arm 额外保存 tcp_goal_distance_m 和 tcp_goal_rotation_error_rad。",
+    "not_present": "目前没有 position_ready 或 orientation_ready 独立布尔字段。",
+    "serialization_gap": "eval_contact_segments.py 只在 reference_exhausted 分支序列化 last_not_ready，timeout 和其他失败只输出通用 first_failure、last_physical_observation、longest_ready_steps。",
+    "minimal_change": "对所有终局序列化现成 last_not_ready、当前/最长/要求连续tick及实际/参考phase；若增加位置/姿态布尔，明确由原3mm/0.02rad阈值派生，仅日志，不改判定。",
+    "reuse_assets": "本轮 last_physical_intervals.csv 登记每案 solved_servo_trace.npz，含 q_pre/v_pre/q_post/v_post/phase/heading/xy/finger/resultant。可先用现有 q_pre 做FK与冻结endpoint比较，结合 physical_events_2ms.npy 的连续ready计数解释中断。旧trace不含逐步四轮load字段，不声称已经直接读全分项。"
+  },
+  "training_formal_difference": {
+    "sources": [
+      "learning/b0/contact_warp.py",
+      "learning/b0/contact_lanes.py",
+      "config/b0/official_flow_s0_v1.yaml",
+      "learning/b0/contact_events.py"
+    ],
+    "observed": "训练 ContactPlant.step_contact 使用参考时钟的 phase_ids 进行真实接触/限位/支撑/力/失抓等终止判定，没有 formal 独立事件的 station drift、endpoint ready、连续settle或phase timeout。逐lane RSI先物理积分200ms前缀；formal full从frame0启动且无前缀。",
+    "inference": "训练分布与完整事件成功分布不同，局部grip改善不会自动保证frame0顺序完成；这是现有任务适配差异，不足单独归因全部失败。",
+    "next_action": "在现有回放和完整评分中统计实际/参考phase、episode年龄、完整参考身份与事件ready欠项，作为解释数据。维持原采样、奖励、观测、时钟及正式裁判；改变任务定义或添加教师/控制器/课程均属于另行方法变化，不伪称官方原实现。"
+  },
+  "backend_diagnostics": {
+    "path": "results/b0/standard_official_flow_continuation_20261124/backend/comparison.json",
+    "aligned_start": "u1000 frame0输入同一，动作差约2e-7；按预设差异阈值一collect sigma=.1effort，首次跨线在frame206=4.12s的wheel通道12；这不是最早非零物理分歧证明。",
+    "native_pull": "u1000首败XY18.80315167mm在20mm内，heading2.001189730864度越2度线。",
+    "fine_warp": "u1000细步0.25ms/原servo2ms/policy20ms对照仍为前拉settle timeout、背推settle非抓取部位接触，不支持仅改训练/评测步长即可解决full。",
+    "overflow": "有一次精确捕获来源为 put_data 时 efm_fluid 的一个float64超float32条目；两个模型has_fluid=false且fluid核受其控制。不能把所有早期未知warning一概追溯到该原因，现有已查有限state/action与零容量位不构成全历史无风险证明。"
+  },
+  "near_contact_progress": {
+    "path": "results/b0/standard_official_flow_continuation_20261124/physics/u004991_native_hold_margin_v2/push/open_15/nominal/result.json",
+    "passed": false,
+    "completed_event": "open",
+    "hold_ready_best_steps": 1369,
+    "hold_required_steps": 1500,
+    "hold_seconds": 2.738,
+    "short_seconds": 0.262,
+    "last_not_ready_door_speed_rad_s": 0.01000157749786,
+    "door_speed_threshold_rad_s": 0.01,
+    "interpretation": "这项接近通过属于已有hold_margin_v2登记协议，仍是失败。不能延长参考或放松门槛改判；它是比只有2/10粗计数更有信息的继续训练证据。"
+  },
+  "recommendations": [
+    "保持 u4991 当前链权重、统计、优化器、replay、ReturnSampler、Ratio、RNG及live lanes；u5000整数不是额外一次决策门。",
+    "同一批次推进已有官方主循环，主段与有物理依据的延长及中断重试实付预留分列；不重新加入WM误差放行或任意新算法阈值。",
+    "一次性补全readiness日志与已有数据复算，可与主训练并行；闭合已知事实后停止重复u1000物理/步长/参考诊断。",
+    "固定节点继续原接触十项与双侧双后端frame0完整任务；视频从真实同一冻结Actor、真实后继反馈、frame0到原裁判终局，成功再称V0。",
+    "局部2/10、near15度hold与完整0/20分别呈现；合格双侧归一化回报仍NA，不能从早停片段return估算距0.88或0.90的数字。"
+  ]
+}

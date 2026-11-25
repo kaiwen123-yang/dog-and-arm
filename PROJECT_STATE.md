@@ -1,6 +1,18 @@
 # 项目状态：SuperMimic 标准迁移
 
-## 2026-11-25 北京时间｜官方同链已实训至预算末点 u4991
+## 2026-11-25｜u4991 审查完成，当前下一轮登记
+
+**同一官方链已学到双后端背推局部保持/5°开门，但完整从头尚未完成预抓取。** 实测末点仍0124ad7的u4991：Warp/native各2/10；本轮70接触案6份通过（相同两项的三组复现）、12阶段事件；20完整回合0成功，20驶近/9停车/0预抓取；free0/300，全部7s且TCP精度失败。B0-04、最终候选null、合格完整双侧回报NA、V0=0。局部成功入口已有200ms真实前缀后的双指，不能当从头抓持已学会。[审查](reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md) · [复算](results/b0/official_flow_review_20261125/evidence_audit.json) · [差距](docs/GOAL_GAP_20261125.md)
+
+u4991完整任务首失败分别为Warp前拉预抓早触门14.066s、Warp背推轮失载11.594s、native前拉预抓超时15.564s、native背推停车超时11.994s。末帧XY/航向均在20mm/2°内；native背推最佳稳定770ms/1s，三条预抓回合最佳连续ready0/150ms。下一轮贯通端点/姿态与连续ready欠项，不以TCP到把手距离替代端点误差。J2上端缺口现仅参考跨度1.031%，旧59.6%不再是现状；u3000当前策略合法all层H32约12.9/11.6mm，整段双指H32仍零，旧四格不重复。
+
+**下一轮完整恢复u4991至累计u10000，有实测物理依据延长至u15000。** 主段保留新增5009/50090/100180，延长后本轮累计10009/100090/200180；整轮回滚预留100/1000/2000，仅支付未保留执行。u5000是保存/开发点，不单独停一轮。旧40000WM实付上限与additional_budget_authorized=false原样封存，新段独立登记。[计划](docs/B0_OFFICIAL_FLOW_NEXT_PLAN_20261125.md) · [预算](results/b0/official_flow_review_20261125/next_registration.json) · [一致启动词](prompts/B0_START.txt)
+
+父现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8；父recovery位于results/b0/standard_official_flow_continuation_20261124/recovery.json，配套raw目录的resume_004991/checkpoint_004991.pt。累计4991/49910/99820、valid51124715；Ratio pending0，距下一阈值3605有效转移。下一轮恢复全部网络/优化器/统计/replay/RNG/live lanes/solver/servo，不仅载权重。新输出使用20261125独立段，先适配旧入口硬编码的u1000父校验、首更新u4992、路径/节点与滚动一致保存；学习cfg严格相同。
+
+本轮只审查并登记计划，未改学习核心、cfg、旧结果或运行新训练/仿真。有限日志与输出适配也尚待执行轮实施。先标准迁移冻结，再开发算法；真实完整成功立即交连续原速视频，同轮继续原资格。以下为历史事实和当时计划，不覆盖本节。
+
+## 2026-11-25 03:35 封存状态（旧段预算记录）
 
 u3000 主段完成后依据同钟双侧物理改善继续。u4000 Warp 原接触首次通过背推 `open_5` 和 `stable_grip`；u4991 同包 Warp 与 native MuJoCo 3.3.0 都为 2/10，同样两项通过。五节点完整从头 0/20、free 0/300。B0-04，最终候选空，合格完整双侧回报 NA，完整成功视频 0。保留主链累计 4,991 Actor / 49,910 WM / 99,820 Critic，51,124,715 有效转移。本轮实际支出含中断为 3,997 / 40,000 / 79,940，原 WM 上限已用尽。剩余到 u5000 的 9 次更新待额外预算授权。[实训报告](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md) · [独立 manifest](results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json) · [预算决定](results/b0/standard_official_flow_continuation_20261124/budget_decision.json) · [下一入口](prompts/NEXT_RUN.txt)
 

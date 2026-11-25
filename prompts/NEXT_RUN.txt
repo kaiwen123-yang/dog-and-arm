@@ -1,15 +1,23 @@
-继续 dog-and-arm 的固定官方 SuperMimic M1＋Piper 标准迁移。先从 GitHub 最新 main 读取 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md、results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json、budget_decision.json、restored_u004991.json、DAILY_WORK_LOG.md 最近的北京时间条目。当前实测末点为 u4991。u1000→u3000→u4000→u4991 已完成，大包保留在 autodl-d57 的 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8，新大资产目录为 results/raw_large/b0/official_flow_continuation_20261124/。
+继续 dog-and-arm 的固定官方 SuperMimic → M1＋Piper 标准迁移。根本目标保持：先完成并冻结可对比的独立标准基线，再开发算法和多模态/VLA；首次标准 Actor 完整成功时立即交连续仿真视频。
 
-本轮实付 3,997 Actor / 40,000 H7 WM / 79,940 Critic，含四次中断回滚的 6 / 90 / 120；包内新增 3,991 / 39,910 / 79,820。u4000 Warp 首次通过背推 open_5、stable_grip；u4991 同包 Warp/native 原十项均 2/10。五节点从 frame0 的完整尝试 0/20、free 0/300；最终候选为空，合格完整回报 NA，V0=0。B0-04 保持。
+先读取 GitHub 最新 main 的 AGENTS.md、PROJECT_STATE.md 顶部、reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md、docs/B0_OFFICIAL_FLOW_NEXT_PLAN_20261125.md、results/b0/official_flow_review_20261125/next_registration.json、docs/GOAL_GAP_20261125.md、原续训 report/manifest/recovery/restored_u004991/budget_decision 和 DAILY_WORK_LOG.md 最近北京时间记录。父实测是包含0124ad75b61f35224033cdfc9f445228afb89f2e的main；若现场/远端已有更新，先对齐真实最新状态，不重复运行已完成段，不覆盖他人改动。
 
-原登记 WM 增量上限已用尽。若用户明确授权覆盖回滚超额并完成 u5000，需另执行 9 次 H32 / 90 批 WM / 180 批 Critic；届时本轮实际总额为 4,006 / 40,090 / 80,120。先核当前 GitHub、现场进程、不可变恢复节点和授权，再依据同一完整包执行以下命令：
+当前同链 official_flow_s0_v1 末点 u4991，原Warp/native接触均2/10（背推open_5/stable_grip），本轮frame0完整0/20、free0/300。成功片段有原200ms真实前缀且已双指抓持，不冒充从头自主抓取。仍B0-04、候选null、合格完整双侧回报NA、V0=0。
 
-cd /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8
-export B0_FLOW_SEGMENT=continuation MUJOCO_GL=egl
-bash scripts/b0/env.sh python -u -m scripts.b0.official_flow --resume --stop 5000
-B0_FLOW_FINAL_NODE=5000 bash scripts/b0/official_flow_continuation_nodes.sh 5000
-bash scripts/b0/env.sh python -m scripts.b0.official_flow_restore_check 5000
-bash scripts/b0/env.sh python -m scripts.b0.official_flow_archive 5000
-bash scripts/b0/env.sh python -m scripts.b0.official_flow_index 5000
+这轮一次推进完整工作：从u4991完整恢复，主段至累计u10000；按新计划的原物理证据，在当轮决定是否延长至u15000。u5000只作过程保存和当前策略开发，不只补九次便结束。主段保留新增5009 Actor/50090 H7 WM/100180 Critic；延长后本轮累计10009/100090/200180。整轮另有一次性中断回滚预留100/1000/2000，仅支付已执行后丢弃成本，不增加保留目标、不在各节点重领。旧轮3997/40000/79940实付及预算false封存，不补签成旧授权。按登记自主执行，不逐档询问预算。
 
-u5000 若获授权，按原登记完成 256×64 独立冻结策略块，保持原时间、噪声、观察、统计、采集和优化。更新预算决定与 manifest，在逐案表中保留 u4991 的实际评测并标明身份。先完成独立标准迁移，再开发算法。原十项同包通过后接 D，再依原规则继续双侧/C/native、free、独立训练 seed1/2、三 seed 冻结 H。首次完整成功即交同一原始 episode 的连续原速视频、真值轨迹、原判定与完整回报。保持唯一北京时间 DAILY_WORK_LOG.md，普通推送并回读固定提交。
+父现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8，读取 results/b0/standard_official_flow_continuation_20261124/recovery.json，对应 results/raw_large/b0/official_flow_continuation_20261124/resume_004991 和 checkpoint_004991.pt。恢复全部网络/优化器/四组统计/replay/采样器/Ratio/RNG/live lanes/history/solver/servo，不只载权重。累计4991/49910/99820、valid51124715，pending0，距下一Ratio阈值3605有效转移。保留学习cfg全字典相同及恢复断言，首个新更新u4992。
+
+执行端先完成最小运行适配：新轻目录 standard_official_flow_continuation_20261125、新raw目录 official_flow_continuation_20261125；新OUT/RAW及父入口贯通所有评测/恢复/统计工具。现父恢复硬编码u1000，必须改为明确核验登记的u4991父身份，不删校验；first_resumed_update记录u4992。添加5000/7500/10000/12500/15000节点与≤100Actor更新的滚动两代完整恢复点（按剩余回滚预算收紧），保留正式节点/父包，轻覆盖继续≤500物理tick。旧continuation脚本不能不经适配直接当作新段命令。实际命令写入新manifest再运行。
+
+保持固定官方源、八训练参考、proprio/history10/goal540、4096环境、2048 WM batch、4096 Actor batch、2e-4、原在线统计/ReturnSampler/Ratio/10H7 WM→H32 Actor一次/20 Critic、.25ms训练/2ms伺服/20ms策略、原2msWarp/native3.3正式物理和原门槛。复用已稳定的原GPU路径，自己的训练/重评协调显存，不停其他项目、不改batch挤资源。不要新建Actor/冷WM/切观测/冻结统计/混H1/加教师配额/BC/新奖励或解析反馈，不恢复WM误差放行门，不重做已闭合四格、步长、边界扫描或P6工程。
+
+与主段并行做有限就绪诊断：先用u4991已有四条full轨迹，贯通原裁判last_not_ready、端点距离/姿态、ramp、当前/最佳/要求连续步数、实际与参考phase；所有终局都输出，成功phase为None时保留最后阶段记录。TCP到handle不是pregrasp endpoint误差。旧字段确实不足时最多补四个父包原后端诊断回合，单独记账。只补日志，不改判据、参考时钟、训练终止或任务。
+
+u5000/u10000及实际到达的u15000各做一个256×64独立冻结当前策略块，沿用已登记开发seed825001，单独进程与训练RNG隔离；各节点自己的sampler/策略可能改变起点，不能称同状态配对。按参考ID/参考phase/年龄/真实双指列合法H1/H7/H32分母，未维护独立事件裁判的lane actual_event_phase=NA。零双指H32就记0/NA，不回灌训练、不作Actor门。
+
+u7500/u10000及有据延长的u12500/u15000，做原Warp十项、双侧双后端frame0 full、原free三类×20、六个纯Actor入口；u10000/u15000加native原十项。u10000按新接触/完整事件或完整预登记双侧失败相关物理窗口决定延长，保留父2/10、WM loss下降或失败更晚不能单独作依据。u5000未重评的项目如实写未重评，不移用父分数。
+
+首次原裁判完整成功立即交同一episode从frame0到结束的连续原速视频、真值轨迹、阶段、23路动作、result/return和包身份；无教师接管、阶段reset、门驱动或成功片段拼接。具备条件就同轮接原十项→D→双侧完整/C/native、原free和独立seed/H资格；新seed另登记独立初始化与成本。0.90参照/0.88接近带和最终基线要求不变，未合格仍null/NA，视频不替代资格。
+
+实际完成训练、有限诊断、物理评分、证据支持的延长/验收和恢复资产；不要只写计划或反复审计。新增成本、回滚、祖先成本和旧轮分开，唯一DAILY_WORK_LOG.md按北京时间逐日详细记录。更新独立报告/manifest/逐案/视频/项目入口和下一启动词，普通推送GitHub并从固定提交回读核验，保护其他工作树，不强推、不创建本机压缩归档。没有实际执行的项目明确标未执行。

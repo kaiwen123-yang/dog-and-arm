@@ -1,5 +1,11 @@
 # B0 数据、动作、观测与模型约定
 
+## 2026-11-25｜当前接口不变，完整恢复 u4991
+
+官方在线主链已连续执行至u4991；Actor仍proprio/history10/goal540，WM状态75、WM/Critic目标570、context5；训练.25ms/servo2ms/策略20ms/c=.50625，正式原2ms身份不变。下一轮按[新段计划](B0_OFFICIAL_FLOW_NEXT_PLAN_20261125.md)恢复全部状态，cfg全等，不从u1000或+850重建。
+
+当前八训练参考ID不包含原free的三个ID；新Actor的free0/300如实作为原能力/泛化缺口，不自动注入新参考或继承旧资格。full记录实际/参考phase；未维护独立事件裁判的开发lane actual_event_phase=NA，不拿参考phase填充。ready欠项只是评测日志，不新增Actor输入、奖励或采样权重。本次未改数据/学习代码。旧节的u1000入口仅为历史。
+
 ## 2026-11-24 当前接口与接续说明
 
 51a0133 已实际实现并运行 official_flow_s0_v1。当前 Actor 是 proprio/history10/goal540；WM 接触表示75、WM/Critic目标570、context5；训练0.25ms/servo2ms/策略20ms/c=.50625，正式评测保留原2ms身份。新主链使用在线统计、原H7/Ratio，恢复以完整u1000为准。[接口实值](../results/b0/standard_official_flow_20261124/interface.json) · [官方映射对照](B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md) · [当前续训计划](B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)

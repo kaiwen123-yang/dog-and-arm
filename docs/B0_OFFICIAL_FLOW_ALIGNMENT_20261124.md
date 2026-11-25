@@ -1,5 +1,11 @@
 # 固定官方 SuperMimic 主循环与 M1＋Piper 迁移实现对照
 
+## 2026-11-25｜u4991 连续执行核验
+
+同一official_flow_s0_v1已保留4991 H32/49910 H7 WM/99820 Critic和51124715有效转移；本轮3991更新逐行计数及统计一致。u4991原两后端接触均2/10，完整0/20。当前按[下一计划](B0_OFFICIAL_FLOW_NEXT_PLAN_20261125.md)完整恢复至u10000、有据至u15000，保留下列官方机制与必要平台映射；本次未改学习cfg或核心。
+
+B0阶段、预算与门裁判属于本项目，不能称为作者训练课程。初次WM warm-start祖先14850批继续披露。训练参考phase物理终止与formal独立事件就绪的差异保留，不凭差异自动改训练。全终局ready记录和父恢复/节点路径适配是下一执行轮的运行配套，不是新算法或WM放行门。[审查](../reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md)
+
 ## 2026-11-24｜51a0133 的执行核验与剩余配置边界
 
 本轮已经实际运行本表要求的采集→统计→Ratio→十H7 WM→H32 Actor一次/二十Critic，共1000轮更新，首批与累计计数、terminal纳入和恢复均有提交回执。下方695f3d7登记中的“待实现”不再表示主环尚未接通。[首更新](../results/b0/standard_official_flow_20261124/first_update.json) · [当前审查](../reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md) · [下一段完整恢复计划](B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)

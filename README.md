@@ -1,16 +1,12 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-## 2026-11-25｜最新已执行节点
+## 2026-11-25｜u4991 已审查，下一轮继续同一官方主链
 
-official_flow_s0_v1 同链 u4991 在 Warp/native 原接触均 2/10，背推 5° 开门保持与稳定握持通过。正式接触尚未取得十项资格，完整尝试 0/20，V0=0，合格双侧回报 NA，候选为空。原本轮 WM 上限实付 40,000 批。实训、回滚、有限诊断与后续预算见[同链续训结果](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md)和[独立 manifest](results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json)。
+**先完成固定官方 SuperMimic 的 M1＋Piper 标准迁移并冻结独立结果，再开发算法、多模态/VLA。** u4991 同一包在原2ms Warp与native3.3均通过背推5°开门保持、稳定握持，各2/10；成功片段从原真实前缀后已有抓持的入口开始。完整从头0/20，驶近20次、停车9次、预抓取0次；新Actor free0/300。仍B0-04、候选null、合格完整双侧回报NA、V0=0。[最新审查](reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md) · [原实训](reports/B0_OFFICIAL_FLOW_CONTINUATION_20261124.md) · [实际差距](docs/GOAL_GAP_20261125.md)
 
-**当前先完成固定官方 SuperMimic 在 M1＋Piper 的标准迁移，达到或接近既定论文参照并冻结独立结果，随后才开发算法、多模态/VLA 和实机联合系统。** WM、可微动力学和 H32 Actor/Critic 属于当前 B0；V0 完整成功仿真视频是新增交付。
+下一轮完整恢复u4991，主段累计至u10000，有物理依据至u15000。u5000作中途保存；主段新增5009 Actor/50090 WM/100180 Critic，延长后整轮新增10009/100090/200180，另单列一次回滚预留100/1000/2000。保持当前官方核心、八参考、在线统计与原物理任务，有限ready诊断并行，不重启Actor或设置WM门。[完整计划](docs/B0_OFFICIAL_FLOW_NEXT_PLAN_20261125.md) · [机器预算](results/b0/official_flow_review_20261125/next_registration.json) · [启动词](prompts/NEXT_RUN.txt)
 
-2026-11-24 已审查 [51a0133 的官方在线实训](reports/B0_OFFICIAL_FLOW_RESULTS_20261124.md)：official_flow_s0_v1 实际完成1000 H32/10000 WM/20000 Critic、10255490有效转移。**仍B0-04、候选null、合格完整双侧回报NA。** 110接触案0通过；24完整尝试0成功，但已有驶近15次、停车11次完成事件，最远未完成预抓取。新Actor free0/240均运行7s，精度未通过。[最新审查](reports/B0_OFFICIAL_FLOW_ROUND_REVIEW_20261124.md) · [目标差距](docs/GOAL_GAP_20261124.md)
-
-下一轮按[连续迁移计划](docs/B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)完整恢复同一u1000，先累计u3000，有真实物理依据延长至u5000。保留proprio/history10和官方采集→在线统计→Ratio→10H7 WM→H32 Actor/20Critic主环，有限诊断并行；不重开Actor或恢复WM误差放行门。首次真实完整成功立即交连续全程视频，同轮继续另一侧与原验收。[启动词](prompts/B0_START.txt) · [预算登记](results/b0/official_flow_review_20261124/continuation_registration.json)
-
-P1–P6工程、旧B0-03与此前迁移结果按原身份保留。+850只在这条新链的首次初始化作WM-only warm-start；下一轮从u1000完整恢复，祖先成本和新增预算分列。540/546的参考前馈、15000动作BC和解析补偿属于独立混合对照，不替代标准成绩。当前状态以[PROJECT_STATE](PROJECT_STATE.md)顶部为准。
+首次标准Actor从frame0真实完整成功即交同episode连续视频，并继续另一侧及原D/C/native/free/独立seed/H资格。旧P6教师和混合策略成绩独立保留；WM直接祖先14850批及各轮实付分列。本次只审查和发布计划，没有新增训练或成功视频。当前实绩以[PROJECT_STATE](PROJECT_STATE.md)顶部为准。
 
 **基础联合模型已生成：官方 M1 ZGWS＋Piper H＋双指夹爪＋名义腕部支架／相机。**提供可重建的组合 URDF/MJCF、桌面实时关节调试入口和被动单门组合场景。装配查看器仍是 **KINEMATIC_PREVIEW**；另有独立 P4 入口，固定底盘已从前侧拉门至 **59.963°**，从背侧推门至 **25.076°**。
 

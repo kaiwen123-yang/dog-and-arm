@@ -1,0 +1,385 @@
+{
+  "schema": "b0_official_flow_next_registration_v1",
+  "registered_date_beijing": "2026-11-25",
+  "status": "planned_not_executed",
+  "execution_performed_in_this_review": false,
+  "method_id": "SuperMimic-M1Piper-standard-v1",
+  "chain_id": "official_flow_s0_v1",
+  "parent_experiment_commit": "0124ad75b61f35224033cdfc9f445228afb89f2e",
+  "parent_node": 4991,
+  "stage": "B0-04",
+  "candidate": null,
+  "qualified_bilateral_return": null,
+  "V0": 0,
+  "objective": "固定官方SuperMimic核心及在线流程的M1/Piper标准迁移先完成并冻结，之后才开发算法；V0连续完整成功视频为新增交付",
+  "plan": "docs/B0_OFFICIAL_FLOW_NEXT_PLAN_20261125.md",
+  "review": "reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md",
+  "parent_recovery": {
+    "remote_worktree": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8",
+    "receipt": "results/b0/standard_official_flow_continuation_20261124/recovery.json",
+    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_004991.pt",
+    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_004991",
+    "clock": 13652,
+    "valid": 51124715,
+    "steps": {
+      "actor": 4991,
+      "wm": 49910,
+      "critic": 99820
+    },
+    "statistics": {
+      "wm_state": 51175194,
+      "wm_proc": 51175194,
+      "proprio": 51124715,
+      "goal": 51124715
+    },
+    "ratio": {
+      "previous_clock": 51118080,
+      "pending": 0,
+      "valid_since_clock": 6635,
+      "remaining_valid_to_next_threshold": 3605
+    },
+    "restore_fields": [
+      "wm",
+      "actor",
+      "critic",
+      "all_optimizers",
+      "all_normalizers",
+      "replay",
+      "ReturnSampler",
+      "Ratio",
+      "all_RNG",
+      "live_lanes",
+      "history",
+      "previous_action",
+      "physical_clock",
+      "solver",
+      "servo"
+    ],
+    "not_weights_only": true,
+    "learning_cfg_exact_match_required": true,
+    "first_new_update": 4992,
+    "first_new_cumulative_steps": {
+      "actor": 4992,
+      "wm": 49920,
+      "critic": 99840
+    }
+  },
+  "historical_budget_preserved": {
+    "source": "results/b0/standard_official_flow_continuation_20261124/budget_decision.json",
+    "retained": {
+      "actor": 3991,
+      "wm": 39910,
+      "critic": 79820
+    },
+    "discarded": {
+      "actor": 6,
+      "wm": 90,
+      "critic": 120
+    },
+    "charged": {
+      "actor": 3997,
+      "wm": 40000,
+      "critic": 79940
+    },
+    "additional_budget_authorized_at_old_close": false,
+    "not_retroactively_changed_by_new_plan": true,
+    "wm_ancestor_minibatches": 14850,
+    "remainder_to_5000": {
+      "actor": 9,
+      "wm": 90,
+      "critic": 180
+    }
+  },
+  "new_budget": {
+    "main_target": 10000,
+    "main_retained_increment": {
+      "actor": 5009,
+      "wm": 50090,
+      "critic": 100180
+    },
+    "extension_target": 15000,
+    "extended_total_retained_increment": {
+      "actor": 10009,
+      "wm": 100090,
+      "critic": 200180
+    },
+    "rollback_reserve_for_whole_new_run": {
+      "actor": 100,
+      "wm": 1000,
+      "critic": 2000
+    },
+    "main_max_charged": {
+      "actor": 5109,
+      "wm": 51090,
+      "critic": 102180
+    },
+    "extended_max_charged": {
+      "actor": 10109,
+      "wm": 101090,
+      "critic": 202180
+    },
+    "reserve_applies_only_to_executed_discarded_work": true,
+    "reserve_is_not_extra_retained_updates": true,
+    "reserve_not_renewed_at_checkpoints_or_sessions": true,
+    "do_not_execute_extra_updates_to_exhaust_reserve": true,
+    "old_and_new_costs_separate": true,
+    "actual_new_optimizer_steps_in_review": {
+      "actor": 0,
+      "wm": 0,
+      "critic": 0
+    },
+    "interrupted_partial_physics_explicitly_reported": true
+  },
+  "fixed_source": {
+    "supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+    "mjlab_research": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd",
+    "learning_cfg": "config/b0/official_flow_s0_v1.yaml",
+    "online_cycle": {
+      "wm_horizon_scored": 7,
+      "wm_stored_frames": 8,
+      "wm_minibatches": 10,
+      "actor_horizon": 32,
+      "actor_updates": 1,
+      "critic_minibatches": 20
+    },
+    "worlds": 4096,
+    "wm_batch": 2048,
+    "actor_batch": 4096,
+    "learning_rate": 0.0002,
+    "actor_obs": "proprio",
+    "history": 10,
+    "actor_goal": 540,
+    "wm_state": 75,
+    "wm_critic_goal": 570,
+    "context": 5,
+    "gamma": 0.99,
+    "lambda": 0.95,
+    "noise": 0.1,
+    "ratio": 16,
+    "train_dt_s": 0.00025,
+    "servo_dt_s": 0.002,
+    "policy_dt_s": 0.02,
+    "train_microsteps_per_policy": 80,
+    "gencoord_coefficient": 0.50625,
+    "formal_dt_s": 0.002,
+    "formal_native_version": "3.3.0",
+    "preserve_eight_training_reference_ids": true,
+    "preserve_live_statistics_sampler_and_loss": true
+  },
+  "runtime_adaptation_required_not_yet_implemented": {
+    "new_small_out": "results/b0/standard_official_flow_continuation_20261125/",
+    "new_large_out": "results/raw_large/b0/official_flow_continuation_20261125/",
+    "checkpoint_nodes": [
+      5000,
+      7500,
+      10000,
+      12500,
+      15000
+    ],
+    "propagate_paths_to": [
+      "train",
+      "eval",
+      "free",
+      "servo",
+      "coverage",
+      "current_policy",
+      "restore_check",
+      "archive",
+      "index",
+      "node_driver"
+    ],
+    "existing_continuation_env_and_node_driver_not_ready_for_new_run": true,
+    "atomic_snapshot_before_continuing_optimization": true,
+    "counting_archive_max_tick_interval": 500,
+    "resume_preferred_host_history": false,
+    "resume_preferred_host_activation_gib": 0,
+    "do_not_stop_other_projects": true,
+    "learning_cfg_must_not_gain_run_metadata": true,
+    "parent_guard_must_bind_registered_u4991_not_delete_identity_check": true,
+    "first_resumed_receipt_update": 4992,
+    "rolling_complete_save_max_actor_updates": 100,
+    "rolling_temporary_generations": 2,
+    "preserve_parent_named_nodes_and_failure_evidence": true,
+    "reduce_save_interval_to_remaining_rollback_cycle_capacity": true
+  },
+  "extension_decision": {
+    "at_node": 10000,
+    "baseline_nodes": [
+      4991,
+      7500,
+      10000
+    ],
+    "review_both_sides": true,
+    "physical_new_contact_or_full_event_or_reproducible_acquired_contact": true,
+    "new_milestone_on_one_side_requires_review_of_opposite_side_regression": true,
+    "tracking_only_requires_complete_preregistered_windows_and_bilateral_failure_related_improvement": true,
+    "window_registration_before_first_new_node_physical_evaluation": true,
+    "not_sufficient": [
+      "retain_parent_2_of_10_only",
+      "WM_loss",
+      "command_range",
+      "single_late_failure_time",
+      "partial_window",
+      "diagnostic_return"
+    ],
+    "no_WM_admission_gate": true,
+    "stop_at_registered_cap_without_new_evidence": true
+  },
+  "readiness_diagnostic": {
+    "existing_traces_first": true,
+    "maximum_extra_parent_full_replays": 4,
+    "node": 4991,
+    "sides": [
+      "pull",
+      "push"
+    ],
+    "backends": [
+      "warp_2ms",
+      "native_3_3_0_2ms"
+    ],
+    "fields": [
+      "last_not_ready",
+      "tcp_goal_distance_m",
+      "tcp_goal_rotation_error_rad",
+      "ramp",
+      "actual_phase",
+      "reference_phase",
+      "episode_age",
+      "ready_current",
+      "ready_best",
+      "ready_required",
+      "xy",
+      "heading",
+      "linear_speed",
+      "yaw_rate",
+      "wheel_loads"
+    ],
+    "all_terminal_reasons_report_existing_readiness": true,
+    "endpoint_not_handle_distance": true,
+    "no_judge_or_clock_or_training_termination_changes": true,
+    "reference_self_consistency_reuse_existing_if_same_assets": true,
+    "maximum_new_training_data_or_optimizer_updates": 0,
+    "retain_final_phase_when_judge_phase_is_none": true
+  },
+  "current_policy_development": {
+    "nodes": [
+      5000,
+      10000,
+      15000
+    ],
+    "last_node_only_if_extension_executed": true,
+    "lanes_per_block": 256,
+    "ticks_per_block": 64,
+    "max_intervals_per_block": 16384,
+    "max_blocks": 3,
+    "max_intervals_total": 49152,
+    "shared_independent_seed": 825001,
+    "seed_note": "沿用历史u5000未执行块已登记的825001，并在新节点复用；不是同访问状态的逐样本配对",
+    "frozen_statistics": true,
+    "train_RNG_isolated": true,
+    "not_returned_to_training": true,
+    "horizons": [
+      1,
+      7,
+      32
+    ],
+    "require_valid_same_episode": true,
+    "zero_long_dual_contact_windows_report_zero_and_NA": true,
+    "not_independent_training_seed_or_H": true,
+    "run_in_separate_process": true,
+    "load_each_nodes_own_ReturnSampler": true,
+    "same_seed_does_not_guarantee_same_initial_reference_or_state": true,
+    "strata": [
+      "side",
+      "reference_id",
+      "reference_phase",
+      "episode_age",
+      "physical_dual_contact"
+    ],
+    "actual_event_phase_without_event_judge": null,
+    "do_not_copy_reference_phase_as_event_phase": true
+  },
+  "evaluation": {
+    "intermediate_save_only": [
+      5000
+    ],
+    "main_physics_nodes": [
+      7500,
+      10000
+    ],
+    "extension_physics_nodes": [
+      12500,
+      15000
+    ],
+    "per_major_node": {
+      "warp_contacts": 10,
+      "full_warp_sides": 2,
+      "full_native_sides": 2,
+      "free": 60,
+      "pure_actor_entries": 6
+    },
+    "native_contacts_extra_nodes": [
+      10000,
+      15000
+    ],
+    "native_contacts_per_extra_node": 10,
+    "main_fixed_cases": {
+      "warp_contacts": 20,
+      "native_contacts": 10,
+      "full": 8,
+      "free": 120,
+      "pure_actor_entries": 12
+    },
+    "extension_additional_fixed_cases": {
+      "warp_contacts": 20,
+      "native_contacts": 10,
+      "full": 8,
+      "free": 120,
+      "pure_actor_entries": 12
+    },
+    "diagnostic_and_repeat_and_qualification_cases_separate": true,
+    "no_parent_scores_relabelled_as_u5000": true
+  },
+  "exit_criteria_unchanged": {
+    "V0": "同一标准Actor从frame0按原裁判成功后立即交连续原速完整视频与同episode轨迹/判定；不等待全部资格",
+    "contacts_same_package": 10,
+    "D_min_each_of_20": 18,
+    "C_min_each_side_of_20": 18,
+    "native_same_package_full_both_sides": true,
+    "free_new_actor_must_qualify": true,
+    "independent_training_seeds": [
+      1,
+      2
+    ],
+    "H_after_three_seed_freeze_min_each_side_of_50": 40,
+    "paper_reference": 0.9,
+    "project_near_band": 0.88,
+    "qualified_full_return_required": true,
+    "no_algorithm_development_before_standard_freeze": true
+  },
+  "excluded_changes": [
+    "new_actor",
+    "cold_wm",
+    "rep_state_switch",
+    "BC",
+    "teacher_quota",
+    "new_H1_mix",
+    "fixed_statistics",
+    "gain32",
+    "new_reward",
+    "risk_head",
+    "analytic_feedback",
+    "reference_clock_pause",
+    "threshold_relaxation",
+    "reference_tail_extension",
+    "free_reference_injection",
+    "new_WM_gate"
+  ],
+  "reporting": [
+    "unique_Beijing_DAILY_WORK_LOG",
+    "separate_retained_discarded_inherited_budget",
+    "per_case_original_denominators",
+    "parameter_units_and_ratios",
+    "ordinary_GitHub_push_and_fixed_commit_readback"
+  ]
+}

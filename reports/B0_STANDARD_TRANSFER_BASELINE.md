@@ -1,5 +1,11 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-25｜u4991 审查后的独立标准结果
+
+最终候选null、合格完整双侧回报NA、B0-04、V0=0。u4991同一标准Actor在原2ms Warp/native3.3接触各2/10，均通过背推open_5/stable_grip。70接触案6份通过、12事件；本轮20次frame0 full均失败（20驶近/9停车/0预抓取），free0/300均跑满7s、TCP精度未过。通过片段的真实前缀末端已有抓持，不等于完整自主抓取成功。原结果保持。[审查](B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md) · [目标差距](../docs/GOAL_GAP_20261125.md)
+
+下一轮[独立登记](../results/b0/official_flow_review_20261125/next_registration.json)从u4991完整恢复至u10000，有物理依据至u15000，单列一次回滚预留；u5000为中途节点。先标准迁移冻结，再开发算法。新计划无新增实验成绩，不改变旧预算false或正式任务/指标。下方按各轮历史阅读。
+
 ## 2026-11-25｜最新已执行节点
 
 official_flow_s0_v1 同链 u4991 在 Warp/native 原接触均 2/10，背推 5° 开门保持与稳定握持通过。正式接触尚未取得十项资格，完整尝试 0/20，V0=0，合格双侧回报 NA，候选为空。原本轮 WM 上限实付 40,000 批。实训、回滚、有限诊断与后续预算见[同链续训结果](B0_OFFICIAL_FLOW_CONTINUATION_20261124.md)和[独立 manifest](../results/b0/standard_official_flow_continuation_20261124/baseline_manifest.json)。
