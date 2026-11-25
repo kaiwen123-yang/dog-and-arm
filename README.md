@@ -1,14 +1,14 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
-## 当前两期安排（2026-11-25 20:41，北京时间）
+## 当前主线（2026-11-25 21:08，北京时间）
 
-**第一期：导出已有成功策略，适配固定桌面 Piper H，完成抓把手、推/拉开门、释放和收臂。第二期：正式推进腕部RGB-D＋语言＋本体历史、世界模型/可微动力学与全身协同算法。**
+**立即推进完整多模态腿臂算法。固定桌面Piper部署由用户根据自己的时间安排，保留为独立支线，不是当前训练的前置。**
 
-[一期计划](docs/DESKTOP_PIPER_TRANSFER_PLAN_20261125.md) · [二期计划](docs/MULTIMODAL_ALGORITHM_PLAN_20261125.md) · [本轮审查](reports/REFXY2_REVIEW_AND_TWO_PHASE_PLAN_20261125.md) · [当前启动词](prompts/NEXT_RUN.txt) · [目标差距](docs/GOAL_GAP_20261125.md) · [唯一工作日志](DAILY_WORK_LOG.md)
+当前MM-01集中完成全机腕RGB-D/语言/本体数据、监督策略、世界模型、可微短时优化和完整物理评测。三条工作线为环境/数据、策略、WM，依赖就绪后同轮集成。当前尚未启动本轮AutoDL训练，不把已有相机或状态Actor称为已完成多模态。
 
-一期首选已有双侧名义完整成功的546维混合u1，保留其参考前馈、动作BC与解析补偿身份。桌面导出、适配与实机整段尚未执行。本次只完成审查和计划，新增训练/物理/硬件动作均0。先贯通一种可达方向并交付完整视频，再复现和补另一方向。
+[MM-01执行计划](docs/MULTIMODAL_MM01_EXECUTION_20261125.md) · [完整算法计划](docs/MULTIMODAL_ALGORITHM_PLAN_20261125.md) · [当前启动词](prompts/MULTIMODAL_START.txt) · [目标差距](docs/GOAL_GAP_20261125.md) · [每日日志](DAILY_WORK_LOG.md)
 
-原标准u10000和RefXY2/+200封存：标准仍B0-04/null/NA；RefXY2正式完整0/12、逆序0/12，按原非退化条件结案。旧标准资格不再阻止这两期推进，也不把混合成功改写为官方复现成功。[最新结案审查](reports/REFXY2_REVIEW_AND_TWO_PHASE_PLAN_20261125.md)
+原标准u10000和RefXY2/+200封存；旧546维混合u1的成功与1080p视频保留为能力/教师来源。桌面导出与真实完整动作尚未执行，相关[计划](docs/DESKTOP_PIPER_TRANSFER_PLAN_20261125.md)和[专用提示词](prompts/PIPER_DESKTOP_START.txt)继续供用户择时使用。当前主线不发送硬件运动命令。
 
 ## 已有完整仿真视频（1080p）
 

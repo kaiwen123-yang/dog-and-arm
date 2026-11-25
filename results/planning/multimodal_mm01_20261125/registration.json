@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "registered_at_beijing": "2026-11-25T21:08:29+08:00",
+  "reviewed_commit": "f6dfa4bef94c3d9972ab9c316453837936405c02",
+  "method_id": "M1Piper-Multimodal-v1",
+  "active_track": "full_multimodal_algorithm",
+  "round": "MM-01",
+  "execution_status": "registered_for_implementation_and_training_on_development_platform",
+  "desktop_track_status": "user_scheduled_independent_track",
+  "desktop_success_is_prerequisite": false,
+  "hardware_online_is_prerequisite": false,
+  "hand_eye_is_current_simulation_prerequisite": false,
+  "old_standard_qualification_is_prerequisite": false,
+  "hardware_execution_in_current_run": false,
+  "supersedes_schedule": {
+    "commit": "f6dfa4bef94c3d9972ab9c316453837936405c02",
+    "path": "results/planning/two_phase_20261125/registration.json",
+    "preserve_original_registration": true
+  },
+  "scope": [
+    "full_robot_multimodal_data_collection",
+    "supervised_multimodal_actor",
+    "perception_and_contact_world_model",
+    "differentiable_short_horizon_policy_optimization",
+    "full_physical_closed_loop_evaluation"
+  ],
+  "work_packages": [
+    "environment_data_and_scoring",
+    "multimodal_actor",
+    "world_model_and_optimization"
+  ],
+  "policy_dt_seconds": 0.02,
+  "action_dim": 23,
+  "action_schema": "legs_rad12,wheel_rad_s4,arm_rad6,jaw_full_width_m1",
+  "student_inputs": [
+    "wrist_rgb",
+    "depth_m_and_validity",
+    "proprioceptive_history",
+    "previous_executed_action",
+    "task_text",
+    "causal_sensor_timestamps_and_masks"
+  ],
+  "not_implicit_deployment_inputs": [
+    "future_motion_reference",
+    "future_images",
+    "ground_truth_handle_pose_or_hinge_angle",
+    "true_friction_and_damping",
+    "teacher_phase_or_judge_events"
+  ],
+  "language_check": "Same feasible initial scene with different executable task goals; register target values after teacher feasibility checks and before collection/evaluation.",
+  "data_split": "By scene, episode and task combination before augmentation/paraphrases.",
+  "baseline_comparison": "Same multimodal supervised initialization and allowed observations; continuation of supervised baseline versus added world-model policy optimization; actual data/compute differences disclosed.",
+  "existing_code_gaps": [
+    "No training RGB-D/text recorder/replay or multimodal Actor yet",
+    "ContactRepresentation currently stores fixed hinge/handle geometry in buffers",
+    "contact_context includes privileged friction/damping",
+    "Old full evaluator binds reference clock and default angle targets"
+  ],
+  "resource_reference": {
+    "cpu_cores": 25,
+    "gpu_vram_GB": 96,
+    "ram_GB": 120,
+    "concurrency": "Measured throughput and peak-memory based; no forced wall-clock termination."
+  },
+  "runtime_budget": "Executing platform registers actual data size, recipe, checkpoints and bounded compute after representative throughput measurement; no legacy budget carry-over.",
+  "actual_work_this_turn": {
+    "scope": [
+      "source_and_entry_review",
+      "schedule_revision",
+      "MM01_execution_plan",
+      "startup_and_state_updates"
+    ],
+    "actor_updates": 0,
+    "wm_minibatches": 0,
+    "critic_minibatches": 0,
+    "new_physics_steps": 0,
+    "hardware_motion_commands": 0,
+    "autodl_training_started": false
+  },
+  "plan": "docs/MULTIMODAL_MM01_EXECUTION_20261125.md",
+  "current_prompt": "prompts/MULTIMODAL_START.txt",
+  "desktop_prompt": "prompts/PIPER_DESKTOP_START.txt",
+  "current_prompt_aliases": [
+    "prompts/NEXT_RUN.txt",
+    "prompts/B0_START.txt"
+  ],
+  "preserve": [
+    "original standard and RefXY2 results",
+    "old mixed policy lineage and HD video",
+    "desktop technical plan for user scheduling",
+    "other environments and worktrees"
+  ]
+}

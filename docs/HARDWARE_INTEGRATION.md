@@ -1,5 +1,9 @@
 # H0：Piper H 与 DaBai DC1 实机联调
 
+## 2026-11-25 21:08 最新调度
+
+当前[多模态主线](MULTIMODAL_MM01_EXECUTION_20261125.md)已独立推进。桌面Piper部署由用户择时，按[PIPER_DESKTOP_START](../prompts/PIPER_DESKTOP_START.txt)启动；H0和桌面尚缺项均不阻塞算法仿真，本轮不自动操作硬件。
+
 ## 2026-11-25 新一期入口
 
 H0仍是已完成的小幅联调与采集记录。用户现在要求固定桌面Piper策略迁移和真实完整开门动作，按[新一期计划](DESKTOP_PIPER_TRANSFER_PLAN_20261125.md)与[启动词](../prompts/PIPER_DESKTOP_START.txt)执行，复用本页现有SDK/记录器；不重做H0来代替新任务。H0的有限动作、手眼/时序和停止验证边界保持，新的部署结果另行登记。

@@ -1,8 +1,10 @@
+独立支线提示词：由用户根据自己的时间在开发平台择时启动。当前默认主线已是多模态算法，见prompts/MULTIMODAL_START.txt；本支线不构成它的前置，也不自动暂停其作业。
+
 在 dog-and-arm 项目执行第一期：把已经在仿真中完成任务的策略导出并适配到桌面固定安装的 Piper H＋官方夹爪，完成“接近把手→抓住→拉开或推开→保持→释放→撤臂→收臂停稳”的完整真实闭环。不要停留在方案、导出文件或单个关节能动；在现场条件具备时持续推进到完整动作与原速视频。
 
-用户已明确两期顺序：先桌面固定臂验证，再正式开发原定多模态完整算法。原 standard-v1/u10000 与 RefXY2/+200 已按原结果结案；旧 B0/D/C/seed/H、0.90/0.88 和“必须标准迁移成功才开发”的限制不再是新两期的启动条件。原成绩和方法身份保留，不自动续训 u15000、RefXY2 +500/+1000，不将一期换名为官方标准成功。
+用户保留桌面固定臂部署计划并自行择时执行；完整多模态算法已经获准独立推进。原 standard-v1/u10000 与 RefXY2/+200 已按原结果结案；旧 B0/D/C/seed/H、0.90/0.88 和“必须标准迁移成功才开发”的限制不再是新两期的启动条件。原成绩和方法身份保留，不自动续训 u15000、RefXY2 +500/+1000，不将一期换名为官方标准成功。
 
-先检查当前分支和已有修改，保留其他工作树/环境/作业。阅读 AGENTS.md、PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最新日期、docs/DESKTOP_PIPER_TRANSFER_PLAN_20261125.md、docs/MULTIMODAL_ALGORITHM_PLAN_20261125.md、reports/REFXY2_REVIEW_AND_TWO_PHASE_PLAN_20261125.md 和 results/planning/two_phase_20261125/registration.json。执行以最新 main 与本计划为准，894d122 是计划审查基线，不要回退覆盖后续提交。复用 reports/H0_HARDWARE_REPORT.md、config/hardware_session.yaml 和既有真实 PiperDevice。
+先检查当前分支和已有修改，保留其他工作树/环境/作业。阅读 AGENTS.md、PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最新日期、docs/DESKTOP_PIPER_TRANSFER_PLAN_20261125.md、docs/MULTIMODAL_ALGORITHM_PLAN_20261125.md、reports/REFXY2_REVIEW_AND_TWO_PHASE_PLAN_20261125.md 和当前 results/planning/multimodal_mm01_20261125/registration.json。原 two_phase 登记作为旧安排保留。执行以最新 main 与本计划为准，894d122 是计划审查基线，不要回退覆盖后续提交。复用 reports/H0_HARDWARE_REPORT.md、config/hardware_session.yaml 和既有真实 PiperDevice。
 
 首选源包 results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt，对应旧546维混合u1双侧完整成功视频。它包含参考前馈、累计15000次动作BC、解析根平移补偿及之后一次H32，不是纯官方标准Actor。先按原manifest/索引找到权重和配套参考、模型及配置；不凭视频补造权重、不重新下载整个历史归档。原参考/权重身份与现场可读性要有实际记录。
 
@@ -18,4 +20,4 @@
 
 建议交付 deployment/piper_desktop/、config/piper_desktop.yaml、results/piper_desktop/<run_id>/、reports/PIPER_DESKTOP_TRANSFER_RESULTS.md。包含可运行推理/部署入口、权重/参考恢复路径、桌面仿真完整视频、真实完整视频及命令/反馈/阶段证据、成功分母、重复/失败和适用边界。没有机器人在场时完成全部可做的代码/导出/仿真/部署准备，集中列出最少的现场缺项，不能宣称实机通过。
 
-按北京时间更新唯一DAILY_WORK_LOG.md，记录实际做了什么、问题、修复、复测、成本和下一步；更新项目状态和当前提示词，普通提交推送GitHub并回读，不覆盖他人修改，不做新的本机压缩归档。本期收束后按prompts/MULTIMODAL_START.txt交接第二期，不在本执行轮顺手启动大规模视觉语言训练。
+按北京时间更新唯一DAILY_WORK_LOG.md，记录实际做了什么、问题、修复、复测、成本和下一步；更新项目状态和当前提示词，普通提交推送GitHub并回读，不覆盖他人修改，不做新的本机压缩归档。本支线结果作为新增证据交给已独立推进的多模态主线，不自动暂停、重启或重复启动其训练。
