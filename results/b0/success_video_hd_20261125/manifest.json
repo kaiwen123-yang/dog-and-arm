@@ -1,0 +1,317 @@
+{
+  "method": "546-dimensional StanceArmActor mixed policy",
+  "control_provenance": {
+    "reference_feedforward": true,
+    "inherited_action_BC_updates": 15000,
+    "analytic_root_translation_arm_compensation": true,
+    "actual_H32_actor_updates_after_that_initialization": 1,
+    "teacher_takeover_during_evaluation": false,
+    "mid_episode_reset": false,
+    "fixed_official_standard_actor_success": false
+  },
+  "checkpoint_identity_only": "results/b0/recovery_b_stance_u1_r1/checkpoint_000001.pt",
+  "source_review": "results/b0/success_video_review_20261125/manifest.json",
+  "run_spec": "results/b0/recovery_b_stance_u1_native_r1/run_spec.json",
+  "evaluation": "results/b0/recovery_b_stance_u1_native_r1/evaluation.json",
+  "model_builder": "scripts/p6_scene.py:build",
+  "scene": "sim/scenes/assembly_preview.xml",
+  "mujoco": "3.3.0",
+  "camera": "p6_overview",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "fps": 25,
+  "playback_speed": 1,
+  "encoder": "libx264",
+  "crf": 17,
+  "preset": "medium",
+  "pixel_format": "yuv420p",
+  "faststart": true,
+  "selection": "physics_step % 20 == 0 plus the last saved row, once",
+  "state_replay": "saved qpos to MjData, mj_forward, update_scene, render",
+  "training_updates": 0,
+  "new_physics_steps": 0,
+  "policy_queries": 0,
+  "original_scores_modified": false,
+  "videos": [
+    {
+      "side": "pull",
+      "result": "results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/result.json",
+      "original_video": "results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/episode.mp4",
+      "actual_config_source": "results/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/result.json#actual_config",
+      "input_arrays": {
+        "qpos.npy": {
+          "original": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/qpos.npy",
+          "read_path": "/home/kaiwen/research/dog-and-arm-success-hd/results/raw_large/b0/success_hd_sources/pull/full/nominal/qpos.npy",
+          "sha256": "9bed9659cf7667b1889beb411e52171db8c1dcda568b71e238fc4bd80e8d9328",
+          "archive": "02_第二开发平台历史数据/dog-and-arm-b0-contact/0011.zip",
+          "member": "dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_full_c_r1/pull/full/C01/qpos.npy",
+          "bytes": 950400
+        },
+        "physics_step.npy": {
+          "original": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_r1/pull/full/nominal/physics_step.npy",
+          "read_path": "/home/kaiwen/research/dog-and-arm-success-hd/results/raw_large/b0/success_hd_sources/pull/full/nominal/physics_step.npy",
+          "sha256": "0b4b837551e6a9905c5ffdbe3740d381da47254aeac971dabe9d60e2c692918e",
+          "archive": "02_第二开发平台历史数据/dog-and-arm-b0-contact/0011.zip",
+          "member": "dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_full_c_r1/pull/full/C01/physics_step.npy",
+          "bytes": 29824
+        }
+      },
+      "saved_states": 3712,
+      "qpos_dim": 32,
+      "model_meshes": 30,
+      "gl_renderer": "Mesa Intel(R) Graphics (ADL GT2)",
+      "model_camera_id": 3,
+      "physics_steps": 37110,
+      "physics_seconds": 74.22,
+      "final_door_deg": 59.97301644079496,
+      "selected_qpos_row_indices": {
+        "start": 0,
+        "through": 3710,
+        "stride": 2,
+        "append_final": 3711
+      },
+      "selected_physics_steps": {
+        "start": 0,
+        "through": 37100,
+        "stride": 20,
+        "append_final": 37110
+      },
+      "original_judgment": {
+        "passed": true,
+        "first_failure": null,
+        "events": [
+          "approach_base",
+          "settle",
+          "pregrasp",
+          "approach_arm",
+          "grasp",
+          "open",
+          "hold",
+          "release",
+          "retreat_arm",
+          "post_release_hold",
+          "stow",
+          "retreat_base",
+          "final"
+        ]
+      },
+      "output": "results/b0/success_video_hd_20261125/pull_full_1080p.mp4",
+      "frames": 1857,
+      "playback_seconds": 74.28,
+      "header": {
+        "codec_name": "h264",
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p",
+        "avg_frame_rate": "25/1",
+        "time_base": "1/12800",
+        "duration_ts": 950784,
+        "nb_frames": "1857",
+        "disposition": {
+          "default": 1,
+          "dub": 0,
+          "original": 0,
+          "comment": 0,
+          "lyrics": 0,
+          "karaoke": 0,
+          "forced": 0,
+          "hearing_impaired": 0,
+          "visual_impaired": 0,
+          "clean_effects": 0,
+          "attached_pic": 0,
+          "timed_thumbnails": 0
+        },
+        "tags": {
+          "language": "und",
+          "handler_name": "VideoHandler",
+          "vendor_id": "[0][0][0][0]"
+        }
+      },
+      "full_decode_and_all_pts_verified": true,
+      "sha256": "8da62a388632fb9b7e4d700c7a7113e020ab24a2394d600a937bb910ed9a87ed",
+      "bytes": 7903765,
+      "verified_mp4_top_level_boxes": [
+        "ftyp",
+        "moov",
+        "free",
+        "mdat"
+      ],
+      "visual_review_frames": [
+        {
+          "stage": "start",
+          "video_frame_zero_based": 0,
+          "physics_step": 0
+        },
+        {
+          "stage": "grasp",
+          "video_frame_zero_based": 431,
+          "physics_step": 8620
+        },
+        {
+          "stage": "open",
+          "video_frame_zero_based": 1286,
+          "physics_step": 25720
+        },
+        {
+          "stage": "release",
+          "video_frame_zero_based": 1365,
+          "physics_step": 27300
+        },
+        {
+          "stage": "stow",
+          "video_frame_zero_based": 1648,
+          "physics_step": 32960
+        },
+        {
+          "stage": "final",
+          "video_frame_zero_based": 1856,
+          "physics_step": 37110
+        }
+      ],
+      "all_frame_ssim_at_original_size": 0.992951
+    },
+    {
+      "side": "push",
+      "result": "results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/result.json",
+      "original_video": "results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/episode.mp4",
+      "actual_config_source": "results/b0/recovery_b_stance_u1_native_r1/push/full/nominal/result.json#actual_config",
+      "input_arrays": {
+        "qpos.npy": {
+          "original": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_r1/push/full/nominal/qpos.npy",
+          "read_path": "/home/kaiwen/research/dog-and-arm-success-hd/results/raw_large/b0/success_hd_sources/push/full/nominal/qpos.npy",
+          "sha256": "d14a8786360353671aaee130c3de7b89f779e8cc356a3d9aaf09ad84ff404cc3",
+          "archive": "02_第二开发平台历史数据/dog-and-arm-b0-contact/0010.zip",
+          "member": "dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_full_c_r1/push/full/C01/qpos.npy",
+          "bytes": 696704
+        },
+        "physics_step.npy": {
+          "original": "/home/kaiwen/research/dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_r1/push/full/nominal/physics_step.npy",
+          "read_path": "/home/kaiwen/research/dog-and-arm-success-hd/results/raw_large/b0/success_hd_sources/push/full/nominal/physics_step.npy",
+          "sha256": "d87973e855e73c1c980a2ccc22e4474f2a5ec856b371bffe03ae9566f9c8a99b",
+          "archive": "02_第二开发平台历史数据/dog-and-arm-b0-contact/0010.zip",
+          "member": "dog-and-arm-b0-contact/results/raw_large/b0/recovery_b_stance_u1_native_full_c_r1/push/full/C01/physics_step.npy",
+          "bytes": 21896
+        }
+      },
+      "saved_states": 2721,
+      "qpos_dim": 32,
+      "model_meshes": 30,
+      "gl_renderer": "Mesa Intel(R) Graphics (ADL GT2)",
+      "model_camera_id": 3,
+      "physics_steps": 27192,
+      "physics_seconds": 54.384,
+      "final_door_deg": 24.990747946768835,
+      "selected_qpos_row_indices": {
+        "start": 0,
+        "through": 2718,
+        "stride": 2,
+        "append_final": 2720
+      },
+      "selected_physics_steps": {
+        "start": 0,
+        "through": 27180,
+        "stride": 20,
+        "append_final": 27192
+      },
+      "original_judgment": {
+        "passed": true,
+        "first_failure": null,
+        "events": [
+          "approach_base",
+          "settle",
+          "pregrasp",
+          "approach_arm",
+          "grasp",
+          "open",
+          "hold",
+          "release",
+          "retreat_arm",
+          "post_release_hold",
+          "stow",
+          "retreat_base",
+          "final"
+        ]
+      },
+      "output": "results/b0/success_video_hd_20261125/push_full_1080p.mp4",
+      "frames": 1361,
+      "playback_seconds": 54.44,
+      "header": {
+        "codec_name": "h264",
+        "width": 1920,
+        "height": 1080,
+        "pix_fmt": "yuv420p",
+        "avg_frame_rate": "25/1",
+        "time_base": "1/12800",
+        "duration_ts": 696832,
+        "nb_frames": "1361",
+        "disposition": {
+          "default": 1,
+          "dub": 0,
+          "original": 0,
+          "comment": 0,
+          "lyrics": 0,
+          "karaoke": 0,
+          "forced": 0,
+          "hearing_impaired": 0,
+          "visual_impaired": 0,
+          "clean_effects": 0,
+          "attached_pic": 0,
+          "timed_thumbnails": 0
+        },
+        "tags": {
+          "language": "und",
+          "handler_name": "VideoHandler",
+          "vendor_id": "[0][0][0][0]"
+        }
+      },
+      "full_decode_and_all_pts_verified": true,
+      "sha256": "bc5f442484e7357705558b9b5ce8177d5c64cddccfafe884522c8241bdb817fd",
+      "bytes": 4543458,
+      "verified_mp4_top_level_boxes": [
+        "ftyp",
+        "moov",
+        "free",
+        "mdat"
+      ],
+      "visual_review_frames": [
+        {
+          "stage": "start",
+          "video_frame_zero_based": 0,
+          "physics_step": 0
+        },
+        {
+          "stage": "grasp",
+          "video_frame_zero_based": 431,
+          "physics_step": 8620
+        },
+        {
+          "stage": "open",
+          "video_frame_zero_based": 795,
+          "physics_step": 15900
+        },
+        {
+          "stage": "release",
+          "video_frame_zero_based": 874,
+          "physics_step": 17480
+        },
+        {
+          "stage": "stow",
+          "video_frame_zero_based": 1157,
+          "physics_step": 23140
+        },
+        {
+          "stage": "final",
+          "video_frame_zero_based": 1360,
+          "physics_step": 27192
+        }
+      ],
+      "all_frame_ssim_at_original_size": 0.995349
+    }
+  ],
+  "archive_root": "H:/dog and arm",
+  "source_main": "354fc5f2f794656757f5ebbc92c9750cacb30e26",
+  "model_verification": "The originating contact worktree and the rendering revision have matching assembly_preview.xml, p6_scene.py, build_doors.py and door.yaml. Both resolve the original shared converted meshes.",
+  "visual_review": "Reviewed six named frames per side and the original-size grasp/open regions. The dog, arm, door and final retreat are visible. The gripper reaches the handle on both sides; the original door frame partially occludes the gripper after the push side opens."
+}

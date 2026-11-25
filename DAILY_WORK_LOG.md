@@ -1580,3 +1580,17 @@ GitHub main 为 be398cc3c9532d90c852a7f221fbf64c2b7e4e10。开发平台主工作
 - zero_200_repeat 通过数 {'full/native': 0, 'full/warp': 0}，逐项分母 {'full/native': 2, 'full/warp': 2}。
 
 追加记录以同一天内的实际执行时间为准，保留18:21视频交付提交和默认停止自动续训的项目决定。原546混合策略成功视频仍可查看。优化分项实付、逐案物理和原始失败、硬预算、未执行项、恢复路径与视频的独立依据见 [配对实测](reports/B0_REFXY2_TRANSFER_RESULTS_20261125.md)、[实付](results/b0/refxy2_pair_20261125/budget.json) 和 [延长决定](results/b0/refxy2_pair_20261125/extension_decision.json)。本次提交仅涉及独立实验与入口更新，普通推送及固定提交回读的最终回执单独交付。
+
+### 19:47｜546 维混合策略 u1 同回合高清离线重渲染（北京时间）
+
+从 GitHub main 354fc5f2 建独立工作树 ~/research/dog-and-arm-success-hd。登记的两个 dev2 原目录已归档，按 H:/dog and arm/00_目录与恢复/20261124_B0/文件索引.sqlite 中四个完整原路径，从第二平台历史数据卷 0010.zip、0011.zip 读取各侧 qpos.npy 与 physics_step.npy，逐文件比对归档 SHA-256。物理评分目录 nominal 与归档去重成员 C01 的对应关系由原路径索引和内容哈希确定。原 save_video 只写入 qpos 并做 mj_forward，因此本轮同样使用保存位置更新几何。每侧 30 个网格，场景装配和门配置与原 contact 工作树一致。
+
+在第二平台的独立工作树执行以下命令。使用原项目 MuJoCo 3.3.0 与 Mesa Intel ADL GT2 离屏上下文，FFmpeg 从 1920×1080 原始 RGB 帧直接编码。
+
+```bash
+MUJOCO_GL=egl PYOPENGL_PLATFORM=egl __EGL_VENDOR_LIBRARY_FILENAMES=/usr/share/glvnd/egl_vendor.d/50_mesa.json OPENBLAS_NUM_THREADS=1 nice -n 8 ../dog-and-arm/.venv/bin/python -u scripts/b0/render_saved_success_hd.py --source-root results/raw_large/b0/success_hd_sources --archive-index results/raw_large/b0/success_hd_sources/archive_sources.json
+```
+
+前拉 1,857 帧、74.280 秒，末物理步 37,110；背推 1,361 帧、54.440 秒，末物理步 27,192。逐帧 PTS 核对、完整解码、MP4 moov 位于 mdat 之前均通过。高清帧降采样仅用于同原影片逐帧对照，前拉 SSIM 0.992951、背推 0.995349。人工查看各六个阶段及夹爪局部，原机位下背推开门后有门框遮挡，退离和停稳均在画面内。检查和渲染期间未加载策略权重。新增优化、策略查询、物理积分均 0。两案原判、旧视频与现场原工作树均保留。高清交付完成后结束本轮。
+
+[前拉高清视频](results/b0/success_video_hd_20261125/pull_full_1080p.mp4) · [背推高清视频](results/b0/success_video_hd_20261125/push_full_1080p.mp4) · [来源与核验](results/b0/success_video_hd_20261125/manifest.json)
