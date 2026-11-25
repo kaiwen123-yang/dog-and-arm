@@ -10,19 +10,23 @@ from .world_model import FINGER_THRESHOLD_N, VISION_DIM, camera_features
 
 
 class PhysicalReplay:
-    def __init__(self, root, split, device, *, only=None):
+    def __init__(self, root, split, device, *, only=None, episode_dirs=None):
         self.device, self.split = torch.device(device), split
         self.episodes, self.windows = [], {}
         blocks = {k: [] for k in ('p', 'prev', 'vision', 'o', 'a', 'contact', 'prev_contact', 'fresh')}
         self.base, self.end = [], []
+        self.prefix_p, self.prefix_prev, self.episode_index = [], [], []
         offset = 0
-        paths = sorted(Path(root).rglob('metadata.json'))
+        paths = (sorted(Path(root).rglob('metadata.json')) if episode_dirs is None
+                 else [Path(directory) / 'metadata.json' for directory in episode_dirs])
         if isinstance(only, str):
             only = {only}
         for path in paths:
             if not (path.parent / 'object_state.npy').is_file():
                 continue
             meta = json.loads(path.read_text())
+            if episode_dirs is not None and meta['split'] != split:
+                raise ValueError(f'{path}: expected {split} replay, received {meta["split"]}')
             if meta['split'] != split or (only and meta['episode_id'] not in only):
                 continue
 
@@ -32,7 +36,8 @@ class PhysicalReplay:
             def as_tensor(x):
                 return torch.tensor(np.asarray(x), device=self.device)
 
-            valid = np.asarray(arr('valid_transition'), dtype=bool)
+            # This small, persistent mask outlives the episode's mapped arrays.
+            valid = np.array(arr('valid_transition'), dtype=bool, copy=True)
             n = len(valid)
             if not n:
                 continue
@@ -51,7 +56,11 @@ class PhysicalReplay:
                 camera.append(camera_features(as_tensor(rgb[sl]), as_tensor(depth[sl]), as_tensor(mask[sl])))
             vision = torch.cat(camera)
             p, o, prev = (as_tensor(arr(k)).float() for k in ('proprio', 'object_state', 'previous_action'))
-            a, contact = (as_tensor(arr(k)).float() for k in ('action_clipped', 'contact'))
+            action_key = ('executed_action_clipped' if (path.parent / 'executed_action_clipped.npy').is_file()
+                          else 'action_clipped')
+            if meta.get('schema', '').startswith('mm02') and action_key != 'executed_action_clipped':
+                raise ValueError(f'{path}: missing explicitly recorded executed action')
+            a, contact = (as_tensor(arr(k)).float() for k in (action_key, 'contact'))
             if (p.shape != (n+1, 52) or o.shape != (n+1, 5) or a.shape != (n, 23)
                     or prev.shape != (n+1, 23) or contact.shape != (n, 2)):
                 raise ValueError(f'{path}: incompatible physical observation or supervision shapes')
@@ -59,15 +68,31 @@ class PhysicalReplay:
             offset += n+1
             self.base.extend([start]*(n+1))
             self.end.extend([offset-1]*(n+1))
+            self.episode_index.extend([len(self.episodes)]*(n+1))
+            if not torch.allclose(prev[1:], a, atol=1e-6, rtol=0):
+                raise ValueError(f'{path}: observation history differs from executed commands')
+            if meta.get('parent_episode') is not None and meta.get('anchor_tick') is not None:
+                prefix_p = as_tensor(arr('history_prefix_proprio')).float()
+                prefix_prev = as_tensor(arr('history_prefix_previous_action')).float()
+                prev_contact = as_tensor(arr('history_prefix_contact')).float().reshape(1, 3)
+                if prefix_p.shape != (9, 52) or prefix_prev.shape != (9, 23):
+                    raise ValueError(f'{path}: recovery needs the preceding nine actual observation/action pairs')
+            else:
+                prefix_p, prefix_prev = p[:1].expand(9, -1), prev[:1].expand(9, -1)
+                prev_contact = p.new_zeros(1, 3)
+            self.prefix_p.append(prefix_p)
+            self.prefix_prev.append(prefix_prev)
             self.episodes.append(dict(id=meta['episode_id'], scene=meta['scene_id'], source=meta['source'],
-                                      start=start, valid=valid, count=n, path=path.parent))
+                                      start=start, valid=valid, count=n, path=path.parent, meta=meta))
             dual = as_tensor(arr('both_contact_fraction')).float().reshape(n, 1)
             contact = torch.cat(((contact > FINGER_THRESHOLD_N).float(), dual), -1)
             vals = dict(p=p, prev=prev, vision=vision[as_tensor(idx+1)], o=o,
                         a=torch.cat((a, torch.zeros_like(a[:1]))),
                         contact=torch.cat((contact, torch.zeros_like(contact[:1]))),
-                        prev_contact=torch.cat((torch.zeros_like(contact[:1]), contact)),
-                        fresh=as_tensor(visible & np.r_[True, idx[1:] != idx[:-1]]))
+                        prev_contact=torch.cat((prev_contact, contact)),
+                        fresh=as_tensor(visible & np.isclose(t, image_t[np.maximum(0, idx)],
+                                                           atol=1e-6, rtol=0)) if len(image_t)
+                              else as_tensor(np.zeros(n+1, dtype=bool)))
             for key, value in vals.items():
                 blocks[key].append(value)
         if not self.episodes:
@@ -78,6 +103,9 @@ class PhysicalReplay:
         self.parts = {k: torch.cat(v) for k, v in blocks.items()}
         self.base = torch.tensor(self.base, device=self.device)
         self.end = torch.tensor(self.end, device=self.device)
+        self.prefix_p = torch.stack(self.prefix_p)
+        self.prefix_prev = torch.stack(self.prefix_prev)
+        self.episode_index = torch.tensor(self.episode_index, device=self.device)
 
     def summary(self):
         return [dict(episode_id=e['id'], scene=e['scene'], source=e['source'],
@@ -106,7 +134,12 @@ class PhysicalReplay:
 
     def window(self, starts, horizon):
         index = starts[:, None] + torch.arange(horizon + 1, device=self.device)
-        history = torch.maximum(starts[:, None] + torch.arange(-9, 1, device=self.device),
-                                self.base[starts, None])
+        requested = starts[:, None] + torch.arange(-9, 1, device=self.device)
+        base = self.base[starts, None]
+        history = torch.maximum(requested, base)
+        prefix = (requested - base + 9).clamp(0, 8)
+        episode = self.episode_index[starts, None]
+        use_prefix = (requested < base)[..., None]
         return {**{k: v[index] for k, v in self.parts.items()},
-                'history': self.parts['p'][history], 'previous_history': self.parts['prev'][history]}
+                'history': torch.where(use_prefix, self.prefix_p[episode, prefix], self.parts['p'][history]),
+                'previous_history': torch.where(use_prefix, self.prefix_prev[episode, prefix], self.parts['prev'][history])}

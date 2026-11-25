@@ -57,8 +57,10 @@ def export(checkpoint, data, destination, report):
     destination.parent.mkdir(parents=True, exist_ok=True)
     digest = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
     inference = {"schema": full["schema"], "vocabulary": vocab.tokens, "actor": original.state_dict(),
-                 "method": "M1Piper-Multimodal-v1", "operation": "inference", "source_sha256": digest,
+                 "method": full.get("method", "M1Piper-Multimodal-v1"), "operation": "inference", "source_sha256": digest,
                  "update": full["update"], "configuration": full["configuration"]}
+    if "affine_mode" in full:
+        inference["affine_mode"] = full["affine_mode"]
     temporary = destination.with_suffix(".pt.tmp")
     torch.save(inference, temporary)
     restored, _, _ = load_actor(temporary, "cpu")

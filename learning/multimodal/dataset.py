@@ -38,20 +38,28 @@ def training_vocabulary(root, episode_ids=None):
 
 class EpisodeDataset:
     """Contiguous device-side tensors; states and camera frames retain independent clocks."""
-    def __init__(self, root, split, vocab, device, episode_ids=None):
+    def __init__(self, root, split, vocab, device, episode_ids=None, *, episodes=None):
         self.device = torch.device(device)
-        self.episodes = discover(root, split, episode_ids)
+        self.episodes = discover(root, split, episode_ids) if episodes is None else list(episodes)
         self.episode_ids = [m["episode_id"] for _, m in self.episodes]
+        if len(self.episode_ids) != len(set(self.episode_ids)) or any(
+                m["split"] != split for _, m in self.episodes):
+            raise ValueError(f"Duplicate episode or incorrect split in {split} data")
         arrays = {key: [] for key in ("proprio", "previous", "sensor", "action", "image", "episode")}
         images = {"rgb": [], "depth": [], "depth_valid": []}
-        self.starts, self.lengths, expert_rows, contact_rows, transition_rows = [], [], [], [], []
+        self.starts, self.history_starts, self.lengths = [], [], []
+        expert_rows, contact_rows, transition_rows = [], [], []
         tasks, angles = [], []
         pos = 0
         frame = 1  # Row zero is an explicitly missing frame.
         for i, (directory, meta) in enumerate(self.episodes):
             def load(name):
-                return np.load(directory / (name + ".npy"), mmap_mode="r", allow_pickle=False)
-            action = load("action_clipped")
+                # State and image blocks are concatenated below. Eager reads release each
+                # descriptor before the next episode, including large sets of short forks.
+                return np.load(directory / (name + ".npy"), allow_pickle=False)
+            correction = (directory / "expert_action_target.npy").is_file()
+            action = load("executed_action_clipped" if correction else "action_clipped")
+            expert = load("expert_action_target") if correction else action
             n = len(action)
             t = load("t")
             image_t, idx = load("image_t"), load("image_index").astype(np.int64)
@@ -71,22 +79,43 @@ class EpisodeDataset:
             previous = load("previous_action")
             if s.shape != (n+1, 52) or previous.shape != (n+1, 23) or action.shape != (n, 23):
                 raise ValueError(f"State/action layout error in {directory}")
-            if not np.allclose(previous[0], 0, atol=1e-7) or not np.allclose(previous[1:], action, atol=1e-6):
+            if not np.allclose(previous[1:], action, atol=1e-6):
                 raise ValueError(f"Previous action is not the executed action in {directory}")
+            if correction and (directory / "history_prefix_proprio.npy").is_file():
+                past_p = load("history_prefix_proprio")
+                past_u = load("history_prefix_previous_action")
+                expected_prefix = 0 if len(past_p) == 0 and abs(t[0]) <= 1e-6 else HISTORY-1
+                if past_p.shape != (expected_prefix, 52) or past_u.shape != (expected_prefix, 23):
+                    raise ValueError(f"Invalid causal prefix in {directory}")
+            else:
+                past_p, past_u = s[:0], previous[:0]
+                if (correction and abs(t[0]) > 1e-6) or not np.allclose(previous[0], 0, atol=1e-7):
+                    raise ValueError(f"Non-reset episode without restored history in {directory}")
             eligible = load("valid_transition").astype(bool)
-            labeled = eligible & load("action_supervision_mask").astype(bool)
+            if correction:
+                # A query's independent qualification survives subsequent task/transition failure.
+                labeled = load("expert_label_valid").astype(bool)
+                if expert.shape != (n, 23) or not np.isfinite(expert[labeled]).all() or (
+                        np.abs(expert[labeled]) > 1.000001).any():
+                    raise ValueError(f"Invalid eligible normalized expert targets in {directory}")
+            else:
+                labeled = eligible & load("action_supervision_mask").astype(bool)
             contact = np.asarray(load("contact"))
             if eligible.shape != (n,) or labeled.shape != (n,) or contact.shape != (n, 2):
                 raise ValueError(f"Transition mask/contact layout error in {directory}")
-            transition_rows.extend(pos + np.flatnonzero(eligible))
-            expert_rows.extend(pos + np.flatnonzero(labeled))
-            contact_rows.extend(pos + np.flatnonzero(labeled & (contact.max(axis=1) > 0.05)))
-            arrays["proprio"].append(s)
-            arrays["previous"].append(previous)
-            arrays["sensor"].append(np.stack((np.maximum(age, 0), valid_image, t - t[0]), axis=-1).astype(np.float32))
-            arrays["action"].append(np.vstack((action, np.zeros((1,23), np.float32))))
-            arrays["image"].append(np.where(valid_image, frame + idx, 0))
-            arrays["episode"].append(np.full(n+1, i, np.int64))
+            prefix = len(past_p)
+            first = pos + prefix
+            transition_rows.extend(first + np.flatnonzero(eligible))
+            expert_rows.extend(first + np.flatnonzero(labeled))
+            contact_rows.extend(first + np.flatnonzero(labeled & (contact.max(axis=1) > 0.05)))
+            arrays["proprio"].extend((past_p, s))
+            arrays["previous"].extend((past_u, previous))
+            clock = t if correction else t - t[0]
+            sensor = np.stack((np.maximum(age, 0), valid_image, clock), axis=-1).astype(np.float32)
+            arrays["sensor"].extend((np.zeros((prefix, 3), np.float32), sensor))
+            arrays["action"].extend((np.zeros((prefix, 23), np.float32), expert, np.zeros((1,23), np.float32)))
+            arrays["image"].extend((np.zeros(prefix, np.int64), np.where(valid_image, frame + idx, 0)))
+            arrays["episode"].append(np.full(prefix+n+1, i, np.int64))
             for k in images:
                 value = load(k)
                 if len(value) != len(image_t):
@@ -94,9 +123,10 @@ class EpisodeDataset:
                 if not images[k]:
                     images[k].append(np.zeros((1, *value.shape[1:]), dtype=value.dtype))
                 images[k].append(value)
-            self.starts.append(pos)
+            self.starts.append(first)
+            self.history_starts.append(pos)
             self.lengths.append(n+1)
-            pos += n+1
+            pos = first+n+1
             frame += len(image_t)
             text = meta["task_text"]
             angle = command_angle_rad(text)
@@ -105,6 +135,7 @@ class EpisodeDataset:
             tasks.append(vocab.encode(text))
             angles.append(angle)
         self.start_tensor = torch.as_tensor(self.starts, device=self.device)
+        self.history_start_tensor = torch.as_tensor(self.history_starts, device=self.device)
         self.length_tensor = torch.as_tensor(self.lengths, device=self.device)
         self.backward_offsets = torch.arange(1-HISTORY, 1, device=self.device)
         self.tasks = torch.tensor(tasks, dtype=torch.long, device=self.device)
@@ -144,7 +175,7 @@ class EpisodeDataset:
     def batch_rows(self, rows):
         rows = torch.as_tensor(rows, device=self.device, dtype=torch.long)
         episode = self.states["episode"][rows]
-        history = torch.maximum(rows[:,None] + self.backward_offsets, self.start_tensor[episode, None])
+        history = torch.maximum(rows[:,None] + self.backward_offsets, self.history_start_tensor[episode, None])
         image_id = self.states["image"][rows]
         return {**{k: v[image_id] for k, v in self.images.items()}, "image_id": image_id,
                 "tokens": self.tasks[episode], "command_angle_rad": self.angles[episode],

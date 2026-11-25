@@ -54,8 +54,11 @@ def stem(channels):
 
 
 class MultimodalActor(nn.Module):
-    def __init__(self, vocabulary):
+    def __init__(self, vocabulary, affine_mode="fixed"):
         super().__init__()
+        if affine_mode not in ("fixed", "adaptive_slope_only"):
+            raise ValueError(f"Unknown servo affine mode {affine_mode!r}")
+        self.affine_mode = affine_mode
         self.rgb_encoder = stem(3)
         self.depth_encoder = stem(2)
         self.visual_projection = nn.Sequential(nn.Linear(2 * 32 * 4 * 4, 128), nn.LayerNorm(128),
@@ -78,7 +81,11 @@ class MultimodalActor(nn.Module):
                                     ("action_mean", ACTION_DIM, 0), ("action_std", ACTION_DIM, 1),
                                     ("servo_mean", ACTION_DIM, 0), ("servo_slope", ACTION_DIM, 0),
                                     ("residual_std", ACTION_DIM, 1)):
-            self.register_buffer(name, torch.full((size,), float(initial)))
+            value = torch.full((size,), float(initial))
+            if name == "servo_slope" and affine_mode == "adaptive_slope_only":
+                self.register_parameter(name, nn.Parameter(value))
+            else:
+                self.register_buffer(name, value)
 
     @staticmethod
     def servo_measurement(proprio):
@@ -141,18 +148,25 @@ class MultimodalActor(nn.Module):
                                  self.encode_text(batch["tokens"]), batch["proprio_history"],
                                  batch["previous_history"], batch["sensor"])
 
-    def freeze_encoders(self):
+    def set_encoder_grad(self, enabled):
         for module in (self.rgb_encoder, self.depth_encoder, self.visual_projection, self.embedding,
                        self.token_weight, self.text_projection):
-            module.requires_grad_(False)
+            module.requires_grad_(enabled)
+
+    def freeze_encoders(self):
+        self.set_encoder_grad(False)
 
 
 def load_actor(checkpoint, device="cpu"):
     payload = torch.load(Path(checkpoint), map_location=device, weights_only=False)
-    if payload["schema"] != "M1Piper-Multimodal-v1-actor-v1":
+    if payload["schema"] == "M1Piper-Multimodal-v1-actor-v1":
+        mode = "fixed"
+    elif payload["schema"] == "M1Piper-Multimodal-DAggerWM-v2-actor-v1":
+        mode = payload["affine_mode"]
+    else:
         raise ValueError(f"Unknown actor schema {payload['schema']}")
     vocab = Vocabulary(payload["vocabulary"])
-    actor = MultimodalActor(vocab).to(device)
+    actor = MultimodalActor(vocab, affine_mode=mode).to(device)
     actor.load_state_dict(payload["actor"], strict=True)
     return actor.eval(), vocab, payload
 

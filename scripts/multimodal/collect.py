@@ -127,6 +127,12 @@ class EpisodeWriter:
         a["both_contact_fraction"][-1] += int(np.all(np.asarray(finger_load_N) > .01))
         a["substeps"][-1] += 1
 
+    def supervision_mask(self, arrays, success):
+        return arrays["action_supervision_mask"] & arrays["valid_transition"] & bool(success)
+
+    def previous_at_start(self):
+        return np.zeros(23, np.float32)
+
     def save(self, out, success, failure, *, extra=None):
         a = {key: np.asarray(values) for key, values in self.arrays.items()}
         n = len(a["action_clipped"])
@@ -134,8 +140,8 @@ class EpisodeWriter:
                 np.diff(a["t"]), self.dt*a["substeps"], rtol=0, atol=1e-8):
             raise ValueError("State/action/substep times disagree")
         a["valid_transition"] = a["substeps"] == DECIMATION
-        a["action_supervision_mask"] &= a["valid_transition"] & bool(success)
-        a["previous_action"] = np.concatenate((np.zeros((1, 23), np.float32), a["action_clipped"]))
+        a["action_supervision_mask"] = self.supervision_mask(a, success)
+        a["previous_action"] = np.vstack((self.previous_at_start(), a["action_clipped"]))
         a["both_contact_fraction"] = (a["both_contact_fraction"] / a["substeps"]).astype(np.float32)
         a["terminated"] = np.arange(n) == n-1
         if not np.all(np.isfinite(a["action_clipped"])) or not np.allclose(
