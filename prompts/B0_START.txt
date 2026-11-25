@@ -1,5 +1,3 @@
-继续查看 kaiwen123-yang/dog-and-arm 的 MM-02 后台实验。北京时间 2026-11-25 23:47，第 1、2 轮完成，第 3 轮已在 AutoDL 采集。首先读取 PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最新条目、reports/MULTIMODAL_MM02_RESULTS.md 与 results/multimodal/mm02_20261125/tmux_handoff.json。
+接续 kaiwen123-yang/dog-and-arm 的 MM-02 冻结实测，阅读 PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最新北京时间条目、reports/MULTIMODAL_MM02_RESULTS.md、results/multimodal/mm02_20261125/manifest.json 和 physics/aggregates.json（在同一结果目录）。
 
-用 ssh autodl-d57 登录，检查 tmux 会话 dog-arm-mm02-20261125 和 /root/autodl-tmp/mm02-20261125/current.json、logs/tmux.log。运行窗口为 run，首个纯学生视频发布窗口为 video。优先复用此运行及其已完成的采集与优化回执。原登记与完整启动词见基线 ea30e5fb 的 docs/MULTIMODAL_MM02_EXECUTION_20261125.md、results/planning/multimodal_mm02_20261125/registration.json、prompts/MULTIMODAL_START.txt。
-
-末点冻结后检查 extension_decision.json、terminal_freeze.json、formal/cases.json、reload/cases.json 和 published_final.json。只有纯学生 frame0 原判 12 事件全过才会生成 published_video.json。需接续中断时确认进程与回执，沿同一运行目录执行 scripts/multimodal/mm02_session.sh，保留全部已执行步数与回滚账本。桌面 Piper 由用户择时。
+第 6 轮固定末点，监督纯学生 0/20，模型式 H32 纯学生 0/20。同初态完整成功率之差为 +0 个百分点。 正式 40 案中，首个两支均未达成的顺序事件为「停稳」。 两个新盲场景已完成末点评价，下次使用时列为已揭晓回归。原完整权重、优化器、数据成员、采样器、教师和求解器快照由 manifest 指向 /root/autodl-tmp/mm02-20261125。需要审查时先逐案复核匹配的成功、失败和同初态目标角差，保留原 12 事件、新盲测与旧回归分母。新增训练或新方法按后续用户指定另行登记，桌面 Piper 由用户择时。

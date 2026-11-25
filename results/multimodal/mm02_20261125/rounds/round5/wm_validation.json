@@ -1,0 +1,733 @@
+{
+  "round": 5,
+  "bundle": "/root/autodl-tmp/mm02-20261125/round5/dynamics/trajectory_bundle.pt",
+  "frozen_evaluated_actor": "/root/autodl-tmp/mm02-20261125/round5/model_trajectory/paired/final.pt",
+  "fit_on_validation": false,
+  "open_loop": "actual student commands for on-policy validation, physical teacher commands for recovery/demo",
+  "closed_loop": "student re-queried on predicted state, measured start sensors only; scored against recorded physical successors",
+  "camera_baseline": "same starting exposure held across each window; identical actual exposure times",
+  "recovery_provenance": {
+    "train_recovery": {
+      "branches": 256,
+      "unique_anchor_snapshots": 256,
+      "complete_h32": 177,
+      "incomplete_kept_prefixes": 79,
+      "duplicate_anchor_snapshots": 0,
+      "actual_physics_substeps": 60673,
+      "anchor_stages": {
+        "settle": 81,
+        "approach_base": 175
+      },
+      "actual_exposures_per_complete_h32": {
+        "7": 65,
+        "6": 112
+      },
+      "masked_bc_label_reasons_in_complete_physical_branches": {},
+      "parent_start_and_history_max_abs_error": {
+        "proprio": 0.0,
+        "previous_action": 0.0,
+        "object_state": 0.0,
+        "qpos": 0.0,
+        "qvel": 0.0,
+        "t": 0.0,
+        "history_prefix_proprio": 0.0,
+        "history_prefix_previous_action": 0.0,
+        "history_prefix_contact": 0.0
+      },
+      "held_image_or_exposure_mismatches": 0,
+      "source_states_without_prior_student_action": 0,
+      "non_teacher_intervals": 0
+    },
+    "validation_recovery": {
+      "branches": 32,
+      "unique_anchor_snapshots": 32,
+      "complete_h32": 9,
+      "incomplete_kept_prefixes": 23,
+      "duplicate_anchor_snapshots": 0,
+      "actual_physics_substeps": 4059,
+      "anchor_stages": {
+        "approach_base": 32
+      },
+      "actual_exposures_per_complete_h32": {
+        "6": 8,
+        "7": 1
+      },
+      "masked_bc_label_reasons_in_complete_physical_branches": {},
+      "parent_start_and_history_max_abs_error": {
+        "proprio": 0.0,
+        "previous_action": 0.0,
+        "object_state": 0.0,
+        "qpos": 0.0,
+        "qvel": 0.0,
+        "t": 0.0,
+        "history_prefix_proprio": 0.0,
+        "history_prefix_previous_action": 0.0,
+        "history_prefix_contact": 0.0
+      },
+      "held_image_or_exposure_mismatches": 0,
+      "source_states_without_prior_student_action": 0,
+      "non_teacher_intervals": 0
+    }
+  },
+  "strata": {
+    "validation_onpolicy": {
+      "episodes": [
+        {
+          "episode_id": "round4_development_supervised_aggregate_va_pose_pull_15_pure",
+          "scene": "va_pose",
+          "source": "pure",
+          "transitions": 1162,
+          "valid": 1161
+        },
+        {
+          "episode_id": "round4_development_supervised_aggregate_va_pose_pull_25_pure",
+          "scene": "va_pose",
+          "source": "pure",
+          "transitions": 956,
+          "valid": 955
+        },
+        {
+          "episode_id": "round4_development_supervised_aggregate_va_pose_push_15_pure",
+          "scene": "va_pose",
+          "source": "pure",
+          "transitions": 1391,
+          "valid": 1390
+        },
+        {
+          "episode_id": "round4_development_supervised_aggregate_va_pose_push_25_pure",
+          "scene": "va_pose",
+          "source": "pure",
+          "transitions": 1002,
+          "valid": 1001
+        },
+        {
+          "episode_id": "round4_development_model_trajectory_va_pose_pull_15_pure",
+          "scene": "va_pose",
+          "source": "pure",
+          "transitions": 421,
+          "valid": 420
+        },
+        {
+          "episode_id": "round4_development_model_trajectory_va_pose_pull_25_pure",
+          "scene": "va_pose",
+          "source": "pure",
+          "transitions": 472,
+          "valid": 471
+        },
+        {
+          "episode_id": "round4_development_model_trajectory_va_pose_push_15_pure",
+          "scene": "va_pose",
+          "source": "pure",
+          "transitions": 601,
+          "valid": 600
+        },
+        {
+          "episode_id": "round4_development_model_trajectory_va_pose_push_25_pure",
+          "scene": "va_pose",
+          "source": "pure",
+          "transitions": 552,
+          "valid": 551
+        }
+      ],
+      "horizons": {
+        "1": {
+          "windows": 384,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 0.26403847336769104,
+            "hinge_rate_mae_rad_s": 0.00035043596290051937,
+            "handle_error_mm": 25.929412841796875,
+            "leg_mae_rad": 0.0004071790899615735,
+            "wheel_rate_mae_rad_s": 0.05293872579932213,
+            "arm_mae_deg": 0.06342991441488266,
+            "jaw_mae_mm": 1.021920084953308,
+            "finger_brier": 1.815299133234305e-09,
+            "dual_fraction_mse": 2.583913305542751e-09,
+            "exposures_in_windows": 63,
+            "vision_rmse_at_exposures": 0.028863829853402766,
+            "held_start_rmse_same_exposures": 0.03034407921120117,
+            "fresh_endpoints": 63,
+            "vision_rmse_fresh_endpoint": 0.028863829853402766,
+            "held_start_rmse_same_endpoint": 0.03034407921120117
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 0.2641092836856842,
+            "hinge_rate_mae_rad_s": 0.000778991961851716,
+            "handle_error_mm": 25.637008666992188,
+            "leg_mae_rad": 0.0033007843885570765,
+            "wheel_rate_mae_rad_s": 0.21235544979572296,
+            "arm_mae_deg": 0.07823198288679123,
+            "jaw_mae_mm": 1.2773628234863281,
+            "finger_brier": 6.552797748859973e-10,
+            "dual_fraction_mse": 7.539440738391079e-10,
+            "exposures_in_windows": 63,
+            "vision_rmse_at_exposures": 0.03132987210448862,
+            "held_start_rmse_same_exposures": 0.03034407921120117,
+            "fresh_endpoints": 63,
+            "vision_rmse_fresh_endpoint": 0.03132987210448862,
+            "held_start_rmse_same_endpoint": 0.03034407921120117
+          }
+        },
+        "7": {
+          "windows": 384,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 0.25961241126060486,
+            "hinge_rate_mae_rad_s": 0.0007448850083164871,
+            "handle_error_mm": 26.59800910949707,
+            "leg_mae_rad": 0.0013005159562453628,
+            "wheel_rate_mae_rad_s": 0.056925442069768906,
+            "arm_mae_deg": 0.2571640610694885,
+            "jaw_mae_mm": 1.1248588562011719,
+            "finger_brier": 1.0978919995352499e-09,
+            "dual_fraction_mse": 1.2031682317115155e-09,
+            "exposures_in_windows": 537,
+            "vision_rmse_at_exposures": 0.02246609498022699,
+            "held_start_rmse_same_exposures": 0.02292382855667759,
+            "fresh_endpoints": 71,
+            "vision_rmse_fresh_endpoint": 0.023375148958504576,
+            "held_start_rmse_same_endpoint": 0.02426227666586941
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 0.26239362359046936,
+            "hinge_rate_mae_rad_s": 0.0013821767643094063,
+            "handle_error_mm": 43.40080261230469,
+            "leg_mae_rad": 0.027780579403042793,
+            "wheel_rate_mae_rad_s": 0.2139796018600464,
+            "arm_mae_deg": 0.6336578726768494,
+            "jaw_mae_mm": 2.8920700550079346,
+            "finger_brier": 4.784240226207714e-10,
+            "dual_fraction_mse": 5.630402810652413e-10,
+            "exposures_in_windows": 537,
+            "vision_rmse_at_exposures": 0.030692541849561723,
+            "held_start_rmse_same_exposures": 0.02292382855667759,
+            "fresh_endpoints": 71,
+            "vision_rmse_fresh_endpoint": 0.037709527619272785,
+            "held_start_rmse_same_endpoint": 0.02426227666586941
+          }
+        },
+        "32": {
+          "windows": 384,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 0.26688310503959656,
+            "hinge_rate_mae_rad_s": 0.0009367842576466501,
+            "handle_error_mm": 30.3746337890625,
+            "leg_mae_rad": 0.0018645046511664987,
+            "wheel_rate_mae_rad_s": 0.05826899781823158,
+            "arm_mae_deg": 0.26663973927497864,
+            "jaw_mae_mm": 2.0898501873016357,
+            "finger_brier": 6.49624354309708e-10,
+            "dual_fraction_mse": 7.369580501404016e-10,
+            "exposures_in_windows": 2459,
+            "vision_rmse_at_exposures": 0.032962587102865745,
+            "held_start_rmse_same_exposures": 0.027508325322296454,
+            "fresh_endpoints": 76,
+            "vision_rmse_fresh_endpoint": 0.0435368939341813,
+            "held_start_rmse_same_endpoint": 0.03416697106037507
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 0.2699829638004303,
+            "hinge_rate_mae_rad_s": 0.0007177591905929148,
+            "handle_error_mm": 50.58127212524414,
+            "leg_mae_rad": 0.02552005462348461,
+            "wheel_rate_mae_rad_s": 0.23633398115634918,
+            "arm_mae_deg": 1.2993237972259521,
+            "jaw_mae_mm": 2.7837908267974854,
+            "finger_brier": 5.842258898880459e-10,
+            "dual_fraction_mse": 6.574873978593132e-10,
+            "exposures_in_windows": 2459,
+            "vision_rmse_at_exposures": 0.0470627358945899,
+            "held_start_rmse_same_exposures": 0.027508325322296454,
+            "fresh_endpoints": 76,
+            "vision_rmse_fresh_endpoint": 0.05614655811873,
+            "held_start_rmse_same_endpoint": 0.03416697106037507
+          }
+        }
+      }
+    },
+    "validation_recovery": {
+      "episodes": [
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_push_15_pure_a95",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_push_15_pure_a102",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_push_15_pure_a364",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_push_15_pure_a210",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_push_15_pure_a259",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_push_15_pure_a1013",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 5,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_push_15_pure_a296",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_push_15_pure_a1168",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 4,
+          "valid": 3
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_pull_15_pure_a436",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 5,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_pull_15_pure_a876",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_pull_15_pure_a215",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_pull_15_pure_a136",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_pull_25_pure_a652",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_pull_25_pure_a682",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_pull_25_pure_a525",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_pull_25_pure_a421",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_push_25_pure_a795",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_push_25_pure_a733",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_push_25_pure_a16",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_supervised_aggregate_va_pose_push_25_pure_a536",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_pull_25_pure_a370",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_pull_25_pure_a323",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_pull_25_pure_a419",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 5,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_pull_25_pure_a387",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_push_25_pure_a446",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_push_25_pure_a498",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_push_25_pure_a99",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_push_25_pure_a536",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 5,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_pull_15_pure_a136",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_pull_15_pure_a232",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 32,
+          "valid": 32
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_pull_15_pure_a408",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        },
+        {
+          "episode_id": "r5_round4_development_model_trajectory_va_pose_pull_15_pure_a380",
+          "scene": "va_pose",
+          "source": "recovery",
+          "transitions": 6,
+          "valid": 5
+        }
+      ],
+      "horizons": {
+        "1": {
+          "windows": 32,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 0.269281804561615,
+            "hinge_rate_mae_rad_s": 0.0029530772008001804,
+            "handle_error_mm": 29.52439308166504,
+            "leg_mae_rad": 0.012372057884931564,
+            "wheel_rate_mae_rad_s": 0.2953640818595886,
+            "arm_mae_deg": 0.33092761039733887,
+            "jaw_mae_mm": 4.148936748504639,
+            "finger_brier": 7.273882884906158e-12,
+            "dual_fraction_mse": 4.6562771000013825e-12,
+            "exposures_in_windows": 4,
+            "vision_rmse_at_exposures": 0.04148688808918288,
+            "held_start_rmse_same_exposures": 0.022331024054210457,
+            "fresh_endpoints": 4,
+            "vision_rmse_fresh_endpoint": 0.04148688808918288,
+            "held_start_rmse_same_endpoint": 0.022331024054210457
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 0.26787269115448,
+            "hinge_rate_mae_rad_s": 0.0006107670487836003,
+            "handle_error_mm": 24.694307327270508,
+            "leg_mae_rad": 0.02828579768538475,
+            "wheel_rate_mae_rad_s": 0.8999506235122681,
+            "arm_mae_deg": 0.35798031091690063,
+            "jaw_mae_mm": 3.9185962677001953,
+            "finger_brier": 5.564506633248811e-10,
+            "dual_fraction_mse": 7.739575091925133e-10,
+            "exposures_in_windows": 4,
+            "vision_rmse_at_exposures": 0.024411611433968635,
+            "held_start_rmse_same_exposures": 0.022331024054210457,
+            "fresh_endpoints": 4,
+            "vision_rmse_fresh_endpoint": 0.024411611433968635,
+            "held_start_rmse_same_endpoint": 0.022331024054210457
+          }
+        },
+        "7": {
+          "windows": 9,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 0.17941832542419434,
+            "hinge_rate_mae_rad_s": 0.002837412990629673,
+            "handle_error_mm": 27.513809204101562,
+            "leg_mae_rad": 0.003071203362196684,
+            "wheel_rate_mae_rad_s": 0.06616465747356415,
+            "arm_mae_deg": 0.3130877912044525,
+            "jaw_mae_mm": 0.8590117692947388,
+            "finger_brier": 8.274109869477186e-11,
+            "dual_fraction_mse": 1.159279824913817e-10,
+            "exposures_in_windows": 10,
+            "vision_rmse_at_exposures": 0.0333488687681566,
+            "held_start_rmse_same_exposures": 0.026992036195212243,
+            "fresh_endpoints": 0,
+            "vision_rmse_fresh_endpoint": null,
+            "held_start_rmse_same_endpoint": null
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 0.156292125582695,
+            "hinge_rate_mae_rad_s": 0.0006255860789678991,
+            "handle_error_mm": 77.23429870605469,
+            "leg_mae_rad": 0.07081517577171326,
+            "wheel_rate_mae_rad_s": 0.4185844659805298,
+            "arm_mae_deg": 0.7794849276542664,
+            "jaw_mae_mm": 2.1121907234191895,
+            "finger_brier": 1.0453408139099452e-09,
+            "dual_fraction_mse": 1.3655561126313387e-09,
+            "exposures_in_windows": 10,
+            "vision_rmse_at_exposures": 0.028141830627142435,
+            "held_start_rmse_same_exposures": 0.026992036195212243,
+            "fresh_endpoints": 0,
+            "vision_rmse_fresh_endpoint": null,
+            "held_start_rmse_same_endpoint": null
+          }
+        },
+        "32": {
+          "windows": 9,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 0.19957470893859863,
+            "hinge_rate_mae_rad_s": 0.00038985369610600173,
+            "handle_error_mm": 28.267515182495117,
+            "leg_mae_rad": 0.00234294799156487,
+            "wheel_rate_mae_rad_s": 0.05461916700005531,
+            "arm_mae_deg": 0.08654745668172836,
+            "jaw_mae_mm": 2.3444900512695312,
+            "finger_brier": 2.7512672695628737e-10,
+            "dual_fraction_mse": 4.815874365959871e-10,
+            "exposures_in_windows": 55,
+            "vision_rmse_at_exposures": 0.03571600487986691,
+            "held_start_rmse_same_exposures": 0.03252295398742191,
+            "fresh_endpoints": 0,
+            "vision_rmse_fresh_endpoint": null,
+            "held_start_rmse_same_endpoint": null
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 0.16331876814365387,
+            "hinge_rate_mae_rad_s": 0.0004248559707775712,
+            "handle_error_mm": 48.342037200927734,
+            "leg_mae_rad": 0.04870595037937164,
+            "wheel_rate_mae_rad_s": 0.3833111822605133,
+            "arm_mae_deg": 0.692061185836792,
+            "jaw_mae_mm": 2.6267192363739014,
+            "finger_brier": 1.0790279780792389e-09,
+            "dual_fraction_mse": 1.236300839480009e-09,
+            "exposures_in_windows": 55,
+            "vision_rmse_at_exposures": 0.03136892663933973,
+            "held_start_rmse_same_exposures": 0.03252295398742191,
+            "fresh_endpoints": 0,
+            "vision_rmse_fresh_endpoint": null,
+            "held_start_rmse_same_endpoint": null
+          }
+        }
+      }
+    },
+    "validation_demo": {
+      "episodes": [
+        {
+          "episode_id": "va_pose_pull_15_held",
+          "scene": "va_pose",
+          "source": "P6_held_20ms",
+          "transitions": 2572,
+          "valid": 2571
+        },
+        {
+          "episode_id": "va_pose_pull_25_held",
+          "scene": "va_pose",
+          "source": "P6_held_20ms",
+          "transitions": 2856,
+          "valid": 2855
+        },
+        {
+          "episode_id": "va_pose_push_15_held",
+          "scene": "va_pose",
+          "source": "P6_held_20ms",
+          "transitions": 2533,
+          "valid": 2532
+        },
+        {
+          "episode_id": "va_pose_push_25_held",
+          "scene": "va_pose",
+          "source": "P6_held_20ms",
+          "transitions": 2824,
+          "valid": 2823
+        }
+      ],
+      "horizons": {
+        "1": {
+          "windows": 384,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 1.0173159837722778,
+            "hinge_rate_mae_rad_s": 0.0008965665474534035,
+            "handle_error_mm": 29.349573135375977,
+            "leg_mae_rad": 0.00011394160537747666,
+            "wheel_rate_mae_rad_s": 0.028244242072105408,
+            "arm_mae_deg": 0.009624996222555637,
+            "jaw_mae_mm": 0.12588505446910858,
+            "finger_brier": 0.0025436130817979574,
+            "dual_fraction_mse": 0.001841287943534553,
+            "exposures_in_windows": 65,
+            "vision_rmse_at_exposures": 0.016592084944200083,
+            "held_start_rmse_same_exposures": 0.0185370925680248,
+            "fresh_endpoints": 65,
+            "vision_rmse_fresh_endpoint": 0.016592084944200083,
+            "held_start_rmse_same_endpoint": 0.0185370925680248
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 1.017368197441101,
+            "hinge_rate_mae_rad_s": 0.0008741209167055786,
+            "handle_error_mm": 29.30341911315918,
+            "leg_mae_rad": 0.0009137907181866467,
+            "wheel_rate_mae_rad_s": 0.05883988365530968,
+            "arm_mae_deg": 0.03648838773369789,
+            "jaw_mae_mm": 0.4883582890033722,
+            "finger_brier": 0.002338571473956108,
+            "dual_fraction_mse": 0.0017107186140492558,
+            "exposures_in_windows": 65,
+            "vision_rmse_at_exposures": 0.016801740748095546,
+            "held_start_rmse_same_exposures": 0.0185370925680248,
+            "fresh_endpoints": 65,
+            "vision_rmse_fresh_endpoint": 0.016801740748095546,
+            "held_start_rmse_same_endpoint": 0.0185370925680248
+          }
+        },
+        "7": {
+          "windows": 384,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 0.9891372323036194,
+            "hinge_rate_mae_rad_s": 0.001066726865246892,
+            "handle_error_mm": 29.70574378967285,
+            "leg_mae_rad": 0.0006444326136261225,
+            "wheel_rate_mae_rad_s": 0.031327925622463226,
+            "arm_mae_deg": 0.08047062158584595,
+            "jaw_mae_mm": 0.6330025792121887,
+            "finger_brier": 4.5749253331450745e-05,
+            "dual_fraction_mse": 1.2493765098042786e-05,
+            "exposures_in_windows": 593,
+            "vision_rmse_at_exposures": 0.020407534686510496,
+            "held_start_rmse_same_exposures": 0.03320161172532431,
+            "fresh_endpoints": 108,
+            "vision_rmse_fresh_endpoint": 0.026378703644026513,
+            "held_start_rmse_same_endpoint": 0.04846525407625653
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 0.9940715432167053,
+            "hinge_rate_mae_rad_s": 0.004010811913758516,
+            "handle_error_mm": 42.9842529296875,
+            "leg_mae_rad": 0.03186590597033501,
+            "wheel_rate_mae_rad_s": 0.20365381240844727,
+            "arm_mae_deg": 1.5515199899673462,
+            "jaw_mae_mm": 5.992965221405029,
+            "finger_brier": 0.1445292979478836,
+            "dual_fraction_mse": 0.1474285125732422,
+            "exposures_in_windows": 593,
+            "vision_rmse_at_exposures": 0.04119593863807889,
+            "held_start_rmse_same_exposures": 0.03320161172532431,
+            "fresh_endpoints": 108,
+            "vision_rmse_fresh_endpoint": 0.06678653113948176,
+            "held_start_rmse_same_endpoint": 0.04846525407625653
+          }
+        },
+        "32": {
+          "windows": 384,
+          "recorded_action_open_loop": {
+            "angle_mae_deg": 1.0209547281265259,
+            "hinge_rate_mae_rad_s": 0.0018683774396777153,
+            "handle_error_mm": 40.906005859375,
+            "leg_mae_rad": 0.0011973176151514053,
+            "wheel_rate_mae_rad_s": 0.031832773238420486,
+            "arm_mae_deg": 0.1323668509721756,
+            "jaw_mae_mm": 1.4831141233444214,
+            "finger_brier": 0.0005661534960381687,
+            "dual_fraction_mse": 0.0005337516777217388,
+            "exposures_in_windows": 2458,
+            "vision_rmse_at_exposures": 0.04245327955938418,
+            "held_start_rmse_same_exposures": 0.06429010197947363,
+            "fresh_endpoints": 82,
+            "vision_rmse_fresh_endpoint": 0.05709504942740798,
+            "held_start_rmse_same_endpoint": 0.08200186866517988
+          },
+          "student_imagined_closed_loop": {
+            "angle_mae_deg": 1.1598834991455078,
+            "hinge_rate_mae_rad_s": 0.008128478191792965,
+            "handle_error_mm": 191.19093322753906,
+            "leg_mae_rad": 0.03482988104224205,
+            "wheel_rate_mae_rad_s": 0.319698303937912,
+            "arm_mae_deg": 14.189953804016113,
+            "jaw_mae_mm": 17.097631454467773,
+            "finger_brier": 0.266791969537735,
+            "dual_fraction_mse": 0.267540842294693,
+            "exposures_in_windows": 2458,
+            "vision_rmse_at_exposures": 0.1172570399114827,
+            "held_start_rmse_same_exposures": 0.06429010197947363,
+            "fresh_endpoints": 82,
+            "vision_rmse_fresh_endpoint": 0.17034607200221633,
+            "held_start_rmse_same_endpoint": 0.08200186866517988
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "round": 6,
+  "branches": {
+    "supervised_aggregate": {
+      "training": "/root/autodl-tmp/mm02-20261125/round6/supervised_aggregate/paired/final.pt",
+      "training_sha256": "0ba8a7cfa01f3b3c9329787b846e70f26ce829fa9e9de421ff15569459ffb3ac",
+      "deployment": "/root/autodl-tmp/mm02-20261125/round6/supervised_aggregate/paired/deploy.pt",
+      "deployment_sha256": "39e30d639d42a85fa83bd06fbd60ffd5dfe9aa0221418b9a0eeb5e345c39c256"
+    },
+    "model_trajectory": {
+      "training": "/root/autodl-tmp/mm02-20261125/round6/model_trajectory/paired/final.pt",
+      "training_sha256": "93242da20dd0c92efbfcd052f04def4dcb5d175059531075e1b31943aec44351",
+      "deployment": "/root/autodl-tmp/mm02-20261125/round6/model_trajectory/paired/deploy.pt",
+      "deployment_sha256": "a95955bb66d811e249630b1c63062376d0502e8f4eb5c492611880aca11323bb"
+    }
+  },
+  "decision": {
+    "extend": true,
+    "round4_bilateral": [],
+    "new_complete_success": [],
+    "new_ordered_event_cases": [
+      {
+        "branch": "supervised_aggregate",
+        "scene": "tr_nominal",
+        "side": "pull",
+        "goal": 25,
+        "early": 0,
+        "late": 1,
+        "case_ids": [
+          "round1_development_supervised_aggregate_tr_nominal_pull_25_pure",
+          "round2_development_supervised_aggregate_tr_nominal_pull_25_pure",
+          "round3_development_supervised_aggregate_tr_nominal_pull_25_pure",
+          "round4_development_supervised_aggregate_tr_nominal_pull_25_pure"
+        ]
+      },
+      {
+        "branch": "supervised_aggregate",
+        "scene": "tr_nominal",
+        "side": "push",
+        "goal": 25,
+        "early": 0,
+        "late": 1,
+        "case_ids": [
+          "round1_development_supervised_aggregate_tr_nominal_push_25_pure",
+          "round2_development_supervised_aggregate_tr_nominal_push_25_pure",
+          "round3_development_supervised_aggregate_tr_nominal_push_25_pure",
+          "round4_development_supervised_aggregate_tr_nominal_push_25_pure"
+        ]
+      }
+    ],
+    "new_side_goal_combinations": [
+      [
+        "pull",
+        25
+      ],
+      [
+        "push",
+        25
+      ]
+    ],
+    "decided_at_utc": "2026-11-25T15:56:58.019322+00:00",
+    "student_blind_cases_used": 0
+  },
+  "utc": "2026-11-25T16:09:21.628088+00:00"
+}
