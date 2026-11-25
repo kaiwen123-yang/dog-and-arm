@@ -1,0 +1,59 @@
+{
+  "method": "M1Piper-Multimodal-v1",
+  "base_commit": "057f7070608c70ca42adc07cb7ba1964153bc400",
+  "round": "MM-01",
+  "registered_before_student_evaluations": true,
+  "goals_deg": [
+    15,
+    25
+  ],
+  "sides": [
+    "pull",
+    "push"
+  ],
+  "tolerance_deg": 2,
+  "physics": "native MuJoCo 3.3.0, free M1/Piper H/official gripper/passive hinge",
+  "physics_dt_s": 0.002,
+  "policy_dt_s": 0.02,
+  "wrist_dt_s": 0.1,
+  "conditions": "config/multimodal/scenes.json",
+  "reference_source": "P6 stationary waypoints, grasp geometry and support/contact safety thresholds from config/p6_{pull,push}.yaml; no frozen trajectory or reference clock in the independent judge.",
+  "ordered_events": [
+    "approach_base",
+    "settle",
+    "reach_handle",
+    "grasp",
+    "open",
+    "hold",
+    "release",
+    "retreat_arm",
+    "post_release_hold",
+    "stow",
+    "retreat_base",
+    "final"
+  ],
+  "timing": "Event counters accrue only on consecutive valid physical steps. Reach is TCP-handle <=5 mm for 60 ms, replacing the reference-timed pregrasp/approach events. Opening requires the requested angle and bilateral contact for 150 ms. Hold requires 500 ms stable, gripped, |hinge speed| <0.01 rad/s. Final parking includes a stowed arm and 3 s at target with released gripper. Other numerical thresholds/timeouts follow P6 or the registered sum of its pregrasp and approach timeouts.",
+  "comparison": {
+    "common_initialization": "one supervised checkpoint after 12000 steps x 256, seed 701, lr 0.0005; 4000/8000 for recovery and development evidence, fixed final checkpoint",
+    "branches": "512 further Actor updates each, batch 256, identical BC sampling seed 1701, lr 0.0001; WM compute and frozen-encoder calibration separately recorded",
+    "collection_feedback": "4 common-parent training-condition episodes (two sides x two commands, tr_nominal); unsupervised for BC and eligible as train-only replay for WM",
+    "formal_physics": {
+      "branches": [
+        "supervised",
+        "wm_optimized"
+      ],
+      "scenes": [
+        "tr_nominal",
+        "va_pose",
+        "te_combination"
+      ],
+      "side_x_goal_per_scene": 4,
+      "planned_per_branch": 12,
+      "fixed_before_evaluation": true,
+      "test_feedback": false
+    },
+    "success_video": "first passing student case, saved exact qpos/physics timestamps from its scored rollout, 1280x720 or higher, 25 fps original time"
+  },
+  "budget_scope": "new MM01 run; no historical B0 update allowance carried over",
+  "hardware_motion_commands": 0
+}

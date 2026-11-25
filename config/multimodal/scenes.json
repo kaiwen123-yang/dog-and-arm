@@ -1,0 +1,26 @@
+{
+  "method": "M1Piper-Multimodal-v1",
+  "goal_deg": [15, 25],
+  "sides": ["pull", "push"],
+  "goal_tolerance_deg": 2,
+  "decision_dt_s": 0.02,
+  "physics_dt_s": 0.002,
+  "camera_period_s": 0.1,
+  "image_size": [64, 64],
+  "feasibility_reference": "Nominal native P6 full paths verified before this split: pull 15/25 and push 15/25 all physically completed. Positive hinge rotation for both sides.",
+  "task_text": "{side} the door to {goal} degrees then release stow and exit",
+  "criterion": "Reach the station and grasp the handle on both fingers, achieve the commanded angle within 2 degrees while grasping, hold, release, withdraw and stow, drive back to the parking zone and remain stopped there.",
+  "scenes": [
+    {"id":"tr_nominal","split":"train","perturbation":{},"panel_rgb":null},
+    {"id":"tr_offset","split":"train","perturbation":{"dx":0.018,"dy":-0.008,"yaw":1.0},"panel_rgb":[0.49,0.36,0.27]},
+    {"id":"tr_load","split":"train","perturbation":{"dx":-0.013,"dy":0.006,"door":1.0,"hinge_damping":1.12,"wheel_mu":0.92},"panel_rgb":[0.39,0.49,0.45]},
+    {"id":"va_pose","split":"validation","perturbation":{"dx":-0.016,"dy":-0.012,"yaw":-1.4,"finger_mu":1.08},"panel_rgb":[0.47,0.49,0.42]},
+    {"id":"te_combination","split":"test","perturbation":{"dx":0.021,"dy":0.010,"yaw":-1.8,"door":1.5,"hinge_friction":0.9,"wheel_mu":1.06},"panel_rgb":[0.43,0.40,0.51]}
+  ],
+  "training_interventions": [
+    {"scene":"tr_offset","side":"pull","goal":15,"name":"transient_open","hold_open_ticks":1},
+    {"scene":"tr_offset","side":"push","goal":15,"name":"transient_open","hold_open_ticks":1},
+    {"scene":"tr_nominal","side":"pull","goal":25,"name":"forced_release","release_during_hold":true},
+    {"scene":"tr_nominal","side":"push","goal":25,"name":"forced_release","release_during_hold":true}
+  ]
+}
