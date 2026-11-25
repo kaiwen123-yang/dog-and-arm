@@ -1,12 +1,12 @@
 # 固定官方 SuperMimic 向 M1＋Piper 迁移，11 月 25 日续训
 
-父实验为 official_flow_s0_v1 的 u4991，启动版本为 be398cc3c9532d90c852a7f221fbf64c2b7e4e10。北京时间 09:59，AutoDL 的独立恢复进程与父包四案就绪诊断已完成。主段训练脚本等待共享显存分配。当前 B0-04，候选 null，合格双侧回报 NA，V0=0。[运行登记](../results/b0/standard_official_flow_continuation_20261125/run_manifest.json) · [当日日志](../DAILY_WORK_LOG.md)
+父实验为 official_flow_s0_v1 的 u4991，启动版本为 be398cc3c9532d90c852a7f221fbf64c2b7e4e10。北京时间 10:58，已按用户指令暂停。AutoDL 已完成父包独立恢复和四案就绪诊断，主训练、评测排队及监控均已退出。本轮实际新增与回滚均为零。[暂停回执](../results/b0/standard_official_flow_continuation_20261125/pause.json)。当前 B0-04，候选 null，合格双侧回报 NA，V0=0。[运行登记](../results/b0/standard_official_flow_continuation_20261125/run_manifest.json) · [当日日志](../DAILY_WORK_LOG.md)
 
 ## 父点恢复与本轮记账
 
 已实载 4,991 次 Actor、49,910 批 WM、99,820 批 Critic 的状态，在物理 tick 13,652 处恢复 4,096 条 lane、上拍动作与连续物理状态。逐值核验 136 个 solver 数组、162 个优化器张量、采样器及 RNG。四组统计、51,124,715 个有效转移和 Ratio 均与冻结回执一致。尚需 3,605 个有效转移触发下一次更新。[独立恢复回执](../results/b0/standard_official_flow_continuation_20261125/restored_u004991.json)
 
-直接 WM 祖先成本 14,850 批。主链 0–1000、旧续训 1001–4991 和本轮使用独立账目。旧续训的保留成本为 3,991 / 39,910 / 79,820，回滚为 6 / 90 / 120，以上顺序均为 Actor / WM / Critic。本轮截至 09:59 实付为 0 / 0 / 0。u5000 开发与独立恢复、u7500/u10000 物理评分、延长裁决及正式资格均待运行。原父点 Warp/native 接触各 2/10，已通过片段在真实前缀后具有双指抓持。
+直接 WM 祖先成本 14,850 批。主链 0–1000、旧续训 1001–4991 和本轮使用独立账目。旧续训的保留成本为 3,991 / 39,910 / 79,820，回滚为 6 / 90 / 120，以上顺序均为 Actor / WM / Critic。本轮暂停时实付为 0 / 0 / 0。u5000 开发与独立恢复、u7500/u10000 物理评分、延长裁决及正式资格均待运行。原父点 Warp/native 接触各 2/10，已通过片段在真实前缀后具有双指抓持。
 
 ## 原裁判就绪诊断
 

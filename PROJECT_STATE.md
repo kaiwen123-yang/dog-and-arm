@@ -1,8 +1,8 @@
 # 项目状态：SuperMimic 标准迁移
 
-## 2026-11-25｜u4991 已在新现场完整回读，u10000 主段已排队
+## 2026-11-25｜用户已暂停续训，末点 u4991
 
-固定 be398cc3 的同链新段使用 [运行登记](results/b0/standard_official_flow_continuation_20261125/run_manifest.json)。主段命令已在 AutoDL 启动等待共享 GPU，最近已验证学习点为 u4991。[父包独立恢复](results/b0/standard_official_flow_continuation_20261125/restored_u004991.json) · [实际四案补采及原轨迹对照](results/b0/standard_official_flow_continuation_20261125/readiness_u004991.json) · [冻结窗口](results/b0/standard_official_flow_continuation_20261125/readiness_windows.json)。B0-04，候选 null，合格双侧回报 NA，V0=0。当前执行者继续监控同一现场。
+固定 be398cc3 的同链新段使用 [运行登记](results/b0/standard_official_flow_continuation_20261125/run_manifest.json)。北京时间 10:58 已依用户指令停止本轮主训练排队、评测排队及监控。新增训练、回滚均为零。下次仅在用户明确要求后，从 u4991 恢复并执行首个新更新 u4992。[父包独立恢复](results/b0/standard_official_flow_continuation_20261125/restored_u004991.json) · [实际四案补采及原轨迹对照](results/b0/standard_official_flow_continuation_20261125/readiness_u004991.json) · [冻结窗口](results/b0/standard_official_flow_continuation_20261125/readiness_windows.json)。B0-04，候选 null，合格双侧回报 NA，V0=0。[暂停回执](results/b0/standard_official_flow_continuation_20261125/pause.json)。
 
 ## 2026-11-25｜u4991 审查完成，当前下一轮登记
 
