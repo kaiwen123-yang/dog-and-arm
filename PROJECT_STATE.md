@@ -1,5 +1,9 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-25｜u4991 已在新现场完整回读，u10000 主段已排队
+
+固定 be398cc3 的同链新段使用 [运行登记](results/b0/standard_official_flow_continuation_20261125/run_manifest.json)。主段命令已在 AutoDL 启动等待共享 GPU，最近已验证学习点为 u4991。[父包独立恢复](results/b0/standard_official_flow_continuation_20261125/restored_u004991.json) · [实际四案补采及原轨迹对照](results/b0/standard_official_flow_continuation_20261125/readiness_u004991.json) · [冻结窗口](results/b0/standard_official_flow_continuation_20261125/readiness_windows.json)。B0-04，候选 null，合格双侧回报 NA，V0=0。当前执行者继续监控同一现场。
+
 ## 2026-11-25｜u4991 审查完成，当前下一轮登记
 
 **同一官方链已学到双后端背推局部保持/5°开门，但完整从头尚未完成预抓取。** 实测末点仍0124ad7的u4991：Warp/native各2/10；本轮70接触案6份通过（相同两项的三组复现）、12阶段事件；20完整回合0成功，20驶近/9停车/0预抓取；free0/300，全部7s且TCP精度失败。B0-04、最终候选null、合格完整双侧回报NA、V0=0。局部成功入口已有200ms真实前缀后的双指，不能当从头抓持已学会。[审查](reports/B0_OFFICIAL_FLOW_CONTINUATION_REVIEW_20261125.md) · [复算](results/b0/official_flow_review_20261125/evidence_audit.json) · [差距](docs/GOAL_GAP_20261125.md)

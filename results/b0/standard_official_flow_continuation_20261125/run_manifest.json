@@ -1,0 +1,118 @@
+{
+  "source_main": "be398cc3c9532d90c852a7f221fbf64c2b7e4e10",
+  "method": "SuperMimic-M1Piper-standard-v1",
+  "chain": "official_flow_s0_v1",
+  "status": "registered_before_training",
+  "registration": "results/b0/official_flow_review_20261125/next_registration.json",
+  "host": "autodl-d57",
+  "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-20261125-be398cc",
+  "parent_workdir": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8",
+  "parent_recovery": "results/b0/standard_official_flow_continuation_20261124/recovery.json",
+  "out": "results/b0/standard_official_flow_continuation_20261125",
+  "raw": "results/raw_large/b0/official_flow_continuation_20261125",
+  "formal_state_backing": "/root/autodl-fs/dog-and-arm/official_flow_continuation_20261125",
+  "parent": {
+    "remote_worktree": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-continuation-bdb72d8",
+    "receipt": "results/b0/standard_official_flow_continuation_20261124/recovery.json",
+    "checkpoint": "results/raw_large/b0/official_flow_continuation_20261124/checkpoint_004991.pt",
+    "state": "results/raw_large/b0/official_flow_continuation_20261124/resume_004991",
+    "clock": 13652,
+    "valid": 51124715,
+    "steps": {
+      "actor": 4991,
+      "wm": 49910,
+      "critic": 99820
+    },
+    "statistics": {
+      "wm_state": 51175194,
+      "wm_proc": 51175194,
+      "proprio": 51124715,
+      "goal": 51124715
+    },
+    "ratio": {
+      "previous_clock": 51118080,
+      "pending": 0,
+      "valid_since_clock": 6635,
+      "remaining_valid_to_next_threshold": 3605
+    },
+    "restore_fields": [
+      "wm",
+      "actor",
+      "critic",
+      "all_optimizers",
+      "all_normalizers",
+      "replay",
+      "ReturnSampler",
+      "Ratio",
+      "all_RNG",
+      "live_lanes",
+      "history",
+      "previous_action",
+      "physical_clock",
+      "solver",
+      "servo"
+    ],
+    "not_weights_only": true,
+    "learning_cfg_exact_match_required": true,
+    "first_new_update": 4992,
+    "first_new_cumulative_steps": {
+      "actor": 4992,
+      "wm": 49920,
+      "critic": 99840
+    }
+  },
+  "budget": {
+    "main_target": 10000,
+    "main_retained_increment": {
+      "actor": 5009,
+      "wm": 50090,
+      "critic": 100180
+    },
+    "extension_target": 15000,
+    "extended_total_retained_increment": {
+      "actor": 10009,
+      "wm": 100090,
+      "critic": 200180
+    },
+    "rollback_reserve_for_whole_new_run": {
+      "actor": 100,
+      "wm": 1000,
+      "critic": 2000
+    },
+    "main_max_charged": {
+      "actor": 5109,
+      "wm": 51090,
+      "critic": 102180
+    },
+    "extended_max_charged": {
+      "actor": 10109,
+      "wm": 101090,
+      "critic": 202180
+    },
+    "reserve_applies_only_to_executed_discarded_work": true,
+    "reserve_is_not_extra_retained_updates": true,
+    "reserve_not_renewed_at_checkpoints_or_sessions": true,
+    "do_not_execute_extra_updates_to_exhaust_reserve": true,
+    "old_and_new_costs_separate": true,
+    "actual_new_optimizer_steps_in_review": {
+      "actor": 0,
+      "wm": 0,
+      "critic": 0
+    },
+    "interrupted_partial_physics_explicitly_reported": true
+  },
+  "environment": {
+    "B0_FLOW_SEGMENT": "continuation_20261125",
+    "MUJOCO_GL": "egl",
+    "host_history": false,
+    "host_activation_gib": 0
+  },
+  "commands": {
+    "train_main": "bash scripts/b0/official_flow_registered_train.sh 10000",
+    "train_extension_after_decision": "bash scripts/b0/official_flow_registered_train.sh 15000",
+    "physical_and_development": "B0_FLOW_SEGMENT=continuation_20261125 bash scripts/b0/official_flow_continuation_nodes.sh 5000 7500 10000",
+    "reload": "B0_FLOW_SEGMENT=continuation_20261125 bash scripts/b0/env.sh python -m scripts.b0.official_flow_restore_check NODE",
+    "archive": "B0_FLOW_SEGMENT=continuation_20261125 bash scripts/b0/env.sh python -m scripts.b0.official_flow_archive NODE",
+    "index": "B0_FLOW_SEGMENT=continuation_20261125 bash scripts/b0/env.sh python -m scripts.b0.official_flow_continuation_index NODE"
+  }
+}

@@ -18,15 +18,22 @@ from learning.b0.physics import ActionMap, make_model
 from learning.b0.temporal_dynamics import make_dynamics
 from scripts.b0 import dynamics_h32_pilot as io
 from scripts.b0.joint_validation import Validation
-from scripts.b0.official_flow import CONTINUATION, OUT, RAW
+from scripts.b0.official_flow import CONTINUATION, NEW_SEGMENT, PARENT_RAW, OUT, RAW
 
 
 def evaluate(u, backend, kind):
     checkpoint = RAW/f"checkpoint_{u:06}.pt"
+    folder = 'physics'
+    if kind == 'parent-ready':
+        if not NEW_SEGMENT or u != 4991:
+            raise ValueError('Only the registered u4991 parent can be replayed')
+        checkpoint = PARENT_RAW/f"checkpoint_{u:06}.pt"
+        folder = 'diagnostic_replay'
+        kind = 'full'
     prefix = f"u{u:06}_{backend}"
     for protocol in (("full",) if kind == 'full' else ('v1','hold_margin_v2')):
         run = f"{prefix}_{protocol}"
-        dest = OUT/'physics'/run
+        dest = OUT/folder/run
         if (dest/'evaluation.json').exists():
             if protocol=='full':
                 export_complete_videos(dest,checkpoint,backend)
@@ -34,8 +41,8 @@ def evaluate(u, backend, kind):
         runner = 'scripts/project_env.sh' if backend == 'native' else 'scripts/b0/env.sh'
         cmd = ['bash',runner,'python','-u','scripts/b0/eval_contact_segments.py',
                '--checkpoint',str(checkpoint),'--backend',backend,'--run',run,
-               '--round',str(OUT.relative_to('results/b0')/'physics'),
-               str(RAW.relative_to('results/raw_large/b0')/'physics'),'--paper-score']
+               '--round',str(OUT.relative_to('results/b0')/folder),
+               str(RAW.relative_to('results/raw_large/b0')/folder),'--paper-score']
         if CONTINUATION:
             cmd += ['--record-servo','--warning-log',str(OUT/'backend'/'node_warnings.jsonl')]
         if protocol=='full':
@@ -103,7 +110,7 @@ def diagnostic(u):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('update',type=int)
-    parser.add_argument('kind',choices=['formal','full','wm'])
+    parser.add_argument('kind',choices=['formal','full','wm','parent-ready'])
     parser.add_argument('--backend',choices=['warp','native'],default='warp')
     args=parser.parse_args()
     lock=RAW/f'.eval-{args.update}-{args.kind}-{args.backend}.lock'

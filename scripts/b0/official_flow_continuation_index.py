@@ -3,7 +3,7 @@ import csv
 import json
 from pathlib import Path
 import numpy as np
-from scripts.b0.official_flow import OUT,RAW,PARENT_OUT,io
+from scripts.b0.official_flow import NEW_SEGMENT,OUT,RAW,PARENT_OUT,io
 from scripts.b0.official_flow_index import physics,full_clock,csv_file
 from scripts.b0.official_flow_tracking import compare
 
@@ -21,6 +21,10 @@ def index(stop):
         assert r['statistics']['proprio']==r['valid'] and r['statistics']['wm_state']==r['valid']+50479
     assert updates[-1]['valid']==latest['valid']
     nodes=[u for u in (1500,2000,3000,4000,5000) if u<=stop]
+    if NEW_SEGMENT:
+        nodes=[u for u in (7500,10000,12500,15000) if u<=stop]
+        if not nodes or nodes[-1]!=stop:
+            raise ValueError('Index a scored major physics node')
     if (OUT/'coverage_u004991.json').exists() and 4991<=stop and 4991 not in nodes:
         nodes.append(4991)
     if stop not in nodes:
@@ -35,7 +39,7 @@ def index(stop):
         assert coverage['simulated_intervals']==r['simulated']-parent['simulated']
         compare(u)
         for backend in ('warp','native'):
-            protocols= ('v1','hold_margin_v2') if backend=='warp' or u in (3000,5000) or (
+            protocols= ('v1','hold_margin_v2') if backend=='warp' or u in (3000,5000,10000,15000) or (
                 OUT/'physics'/f'{tag}_{backend}_hold_margin_v2/evaluation.json').exists() else ()
             contacts=[c for protocol in protocols for c in physics(u,backend,protocol)]
             full=physics(u,backend,'full')
@@ -103,12 +107,12 @@ def index(stop):
     result=dict(method=inherited['method'],execution_recipe=inherited['execution_recipe'],
         source_main='bdb72d8f7019688b6e51ba0cd2d083a5bef90532',parent_run_commit='51a0133802983b65602949000099e7d18fa8e835',
         supermimic=inherited['supermimic'],mjlab=inherited['mjlab'],seed=0,parent=parent,
-        parent_manifest=str(PARENT_OUT/'baseline_manifest.json'),direct_wm_lineage=inherited['direct_weight_lineage'],
+        parent_manifest=str(PARENT_OUT/'baseline_manifest.json'),direct_wm_lineage=inherited['direct_wm_lineage' if NEW_SEGMENT else 'direct_weight_lineage'],
         retained_cfg='config/b0/official_flow_s0_v1.yaml',cfg_equality_checked_at_load=True,
         parent_restore_checks='restored_u001000.json',durable_u1001_reload='restored_u001001.json',
         first_new_update='first_resumed_update.json',training_processes='sessions.jsonl',
         u1001_implementation_commit='88448d10566eef38f96df9be4433875454ec2739',
-        optimizer_core=inherited['environment'],
+        optimizer_core=inherited['optimizer_core' if NEW_SEGMENT else 'environment'],
         settings=dict(worlds=4096,wm_batch=2048,actor_batch=4096,actor_horizon=32,wm_stored_frames=8,
             wm_scored_transitions=7,wm_batches_per_actor=10,critic_batches_per_actor=20,ratio=16,
             online_statistics=True,actor_input='proprio/history10/goal540',training_dt=.00025,servo_dt=.002,
@@ -131,6 +135,17 @@ def index(stop):
         V0=len(videos),stage='B0-04',candidate=None,qualified_bilateral_return=None,
         paper=dict(sonic_reference=.90,registered_near_band=.88),D=None,C=None,seeds_1_2=None,H=None,
         scope='Individual failed full attempts retain their measured-prefix diagnostics; qualified scores require success.')
+    if NEW_SEGMENT:
+        manifest=io.read(OUT/'run_manifest.json')
+        result.update(source_main=manifest['source_main'],parent_run_commit='0124ad75b61f35224033cdfc9f445228afb89f2e',
+            registration='run_manifest.json',parent_restore_checks='restored_u004991.json',
+            first_named_reload='restored_u005000.json',previous_round_charged_steps=inherited['charged_new_steps'],
+            nodes=[5000,*nodes],u5000_formal_physics='not rescored',diagnostics=dict(
+                parent_ready='readiness_u004991.json', windows='readiness_windows.json',
+                node_readiness=[f'readiness_u{u:06}.json' for u in nodes],
+                tracking='tracking_windows.json',current_policy=result['diagnostics']['current_policy']))
+        for stale in ('durable_u1001_reload','u1001_implementation_commit'):
+            del result[stale]
     if any(row['contact_pass']==10 for row in summary) or videos:
         result['qualification_followthrough_required']=True
     decision=OUT/'budget_decision.json'
@@ -140,4 +155,6 @@ def index(stop):
             confirmed_sustained_contact='repeat_u004000.json',case_rows='physical_cases.csv',
             physical_ratios='last_physical_intervals.csv',actuator_ratios='wheel_arm_jaw.csv',
             complete_video_register='video_manifest.json')
+    if NEW_SEGMENT:
+        result.pop('confirmed_sustained_contact',None)
     io.write(OUT/'baseline_manifest.json',result)

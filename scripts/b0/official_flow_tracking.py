@@ -4,13 +4,13 @@ from datetime import datetime,timezone,timedelta
 from pathlib import Path
 import numpy as np
 from learning.b0.physics import ActionMap,make_model
-from scripts.b0.official_flow import PARENT_OUT,OUT,io
+from scripts.b0.official_flow import NEW_SEGMENT,PARENT_UPDATE,PARENT_OUT,OUT,io
 
 LOCK=OUT/'tracking_windows.json'
 
 
 def trial(u,backend,side):
-    root=PARENT_OUT if u<=1000 else OUT
+    root=PARENT_OUT if u<=PARENT_UPDATE else OUT
     case=io.read(root/'physics'/f'u{u:06}_{backend}_full'/side/'full/nominal/result.json')
     raw=Path(case['raw_directory'])
     return case,raw,np.load(raw/'physics_step.npy')
@@ -22,8 +22,8 @@ def lock():
     windows=[]
     for backend in ('warp','native'):
         for side in ('pull','push'):
-            a,_,t=trial(500,backend,side)
-            b,_,s=trial(1000,backend,side)
+            a,_,t=trial(PARENT_UPDATE if NEW_SEGMENT else 500,backend,side)
+            b,_,s=trial(PARENT_UPDATE,backend,side)
             assert a['episode']==b['episode']
             ref=Path('results/raw_large/b0/full_warp_hold_park_r1')/a['episode']
             labels=np.asarray(io.read(ref/'metadata.json')['phases'])[np.load(ref/'substeps/phase.npy')]
@@ -36,10 +36,10 @@ def lock():
                     start=int(selected[0]) if len(selected) else None,end=int(selected[-1]) if len(selected) else None,
                     step=10,count=len(selected)))
     io.write(LOCK,dict(created_beijing=datetime.now(timezone(timedelta(hours=8))).isoformat(),
-        timing='Computed solely from u500/u1000 before any new milestone physical score; an initial resumed update had already run.',
+        timing='Frozen using u4991 before new node evaluation.' if NEW_SEGMENT else 'Computed solely from u500/u1000 before any new milestone physical score; an initial resumed update had already run.',
         units='indices in the original 2ms reference; every common complete 20ms endpoint, label of just-ended interval',
         denominators='fixed for every evaluation and empty if unavailable; missing endpoints are not replaced',
-        current_policy_dev_seeds={'1000':821001,'3000':823001,'5000':825001},windows=windows))
+        current_policy_dev_seeds={str(u):825001 for u in (5000,10000,15000)} if NEW_SEGMENT else {'1000':821001,'3000':823001,'5000':825001},windows=windows))
 
 
 def yaw(q):

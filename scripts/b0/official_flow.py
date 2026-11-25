@@ -23,12 +23,21 @@ from scripts.b0.dynamics_h32_probe import rng_state, restore_rng
 OUT = Path("results/b0/standard_official_flow_20261124")
 RAW = Path("results/raw_large/b0/official_flow_20261124")
 PARENT_OUT, PARENT_RAW = OUT, RAW
-CONTINUATION = os.environ.get("B0_FLOW_SEGMENT") == "continuation"
+NEW_SEGMENT = os.environ.get("B0_FLOW_SEGMENT") == "continuation_20261125"
+CONTINUATION = NEW_SEGMENT or os.environ.get("B0_FLOW_SEGMENT") == "continuation"
 if CONTINUATION:
     OUT = Path("results/b0/standard_official_flow_continuation_20261124")
     RAW = Path("results/raw_large/b0/official_flow_continuation_20261124")
+PARENT_UPDATE = 4991 if NEW_SEGMENT else 1000
+if NEW_SEGMENT:
+    PARENT_OUT, PARENT_RAW = OUT, RAW
+    OUT = Path("results/b0/standard_official_flow_continuation_20261125")
+    RAW = Path("results/raw_large/b0/official_flow_continuation_20261125")
 CONFIG = Path("config/b0/official_flow_s0_v1.yaml")
 NODES = (0, 1, 10, 50, 100, 200, 500, 1000, 1500, 2000, 3000, 4000, 5000)
+
+if NEW_SEGMENT:
+    NODES = (5000, 7500, 10000, 12500, 15000)
 
 
 def stats(run):
@@ -87,8 +96,9 @@ def build(cfg):
     return run, info
 
 
-def save(run, u):
-    if CONTINUATION and (OUT/f'node_{u:06}.json').exists():
+def save(run, u, rolling=False):
+    label = "rolling" if rolling else "node"
+    if CONTINUATION and (OUT/f'{label}_{u:06}.json').exists():
         raise FileExistsError(f'Committed node u{u} is immutable')
     directory = RAW / f"resume_{u:06}"
     directory.mkdir(exist_ok=True)
@@ -106,8 +116,32 @@ def save(run, u):
     receipt = dict(update=u, checkpoint=str(RAW/f"checkpoint_{u:06}.pt"),
         state=str(directory), clock=run.replay.clock, simulated=run.simulated, valid=run.total,
         steps=io.optimizer_steps(run), stats=stats(run), ratio=run.schedule.state_dict())
-    io.write(OUT/f'node_{u:06}.json', receipt)
+    if NEW_SEGMENT:
+        # Snapshot serialization is synchronous. Read both torch containers and
+        # the closed solver archive before advertising or retiring a generation.
+        import zipfile
+        ck = torch.load(receipt['checkpoint'], map_location='cpu', weights_only=False, mmap=True)
+        st = torch.load(directory/'state.pt', map_location='cpu', weights_only=False, mmap=True)
+        assert ck['cfg'] == run.cfg and st['total'] == run.total and st['replay']['clock'] == run.replay.clock
+        with zipfile.ZipFile(directory/'solver.npz') as z:
+            assert z.testzip() is None
+    io.write(OUT/f'{label}_{u:06}.json', receipt)
     io.write(OUT/'recovery.json', receipt)
+    if rolling and io.read(OUT/'recovery.json') == receipt:
+        for obsolete in sorted(OUT.glob('rolling_*.json'))[:-2]:
+            old = io.read(obsolete)
+            i = old['update']
+            directory = RAW/f'resume_{i:06}'
+            checkpoint = RAW/f'checkpoint_{i:06}.pt'
+            assert i < u and i not in NODES and i > PARENT_UPDATE
+            assert old['state'] == str(directory) and old['checkpoint'] == str(checkpoint)
+            assert not (OUT/f'node_{i:06}.json').exists()
+            io.write(OUT/'retired_rolling'/obsolete.name, old)
+            obsolete.unlink()
+            for name in ('state.pt', 'solver.npz'):
+                (directory/name).unlink()
+            directory.rmdir()
+            checkpoint.unlink()
 
 
 def restore(run, receipt=None):
@@ -218,12 +252,43 @@ def host_saved_activations(limit, buffers):
     return torch.autograd.graph.saved_tensors_hooks(pack,unpack)
 
 
+def validate_parent(path, receipt):
+    expected = PARENT_OUT/'recovery.json'
+    if path.resolve()!=expected.resolve() or receipt!=io.read(expected) or receipt['update']!=PARENT_UPDATE:
+        raise ValueError(f'Expected the registered u{PARENT_UPDATE} parent')
+    if NEW_SEGMENT:
+        spec=io.read(Path('results/b0/official_flow_review_20261125/next_registration.json'))['parent_recovery']
+        for key in ('state','checkpoint','steps','clock','valid'):
+            assert receipt[key]==spec[key], key
+        assert receipt['stats']==spec['statistics']
+        assert all(receipt['ratio'][k]==spec['ratio'][k] for k in ('pending','previous_clock'))
+
+
 def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
     from scripts.b0.official_flow_coverage import save_counting_fields
     if parent is not None and (not CONTINUATION or resume or (OUT/'recovery.json').exists()):
         raise ValueError('A parent receipt is only valid on entry to a new continuation')
     if CONTINUATION and not (resume or parent):
         raise ValueError('An exact recovery is required for this segment')
+    interval = 100
+    if NEW_SEGMENT:
+        if stop not in NODES or host_history or host_activation_gib:
+            raise ValueError("Use registered stops and the original GPU path")
+        if stop > 10000 and not io.read(OUT/'decision_u010000.json')['extend']:
+            raise ValueError("The u10000 physics decision is required for extension")
+        remaining = dict(actor=100, wm=1000, critic=2000)
+        for failure in OUT.glob('failure_at_*.json'):
+            if failure.name.endswith('.rollback.json'):
+                continue
+            spent = io.read(failure)['steps']
+            retained = io.read(failure.with_suffix('.rollback.json'))['steps']
+            for key in remaining:
+                delta = spent[key] - retained[key]
+                assert delta >= 0
+                remaining[key] -= delta
+        interval = min(remaining['actor'], remaining['wm']//10, remaining['critic']//20)
+        if interval < 1:
+            raise ValueError(f"Rollback allowance exhausted: {remaining}")
     cfg = yaml.safe_load(CONFIG.read_text())
     run, info = build(cfg)
     OUT.mkdir(parents=True,exist_ok=True)
@@ -232,13 +297,13 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
         if resume and CONTINUATION:
             # node_N is the publication point for all three files. A process
             # can stop after publishing it but before refreshing the latest pointer.
-            nodes=sorted(OUT.glob('node_*.json'))
+            nodes=sorted([*OUT.glob('node_*.json'), *OUT.glob('rolling_*.json')], key=lambda p: int(p.stem.split('_')[-1]))
             receipt=io.read(nodes[-1] if nodes else OUT/'recovery.json')
             io.write(OUT/'recovery.json',receipt)
         else:
             receipt = io.read(parent or OUT/'recovery.json')
-        if parent and (receipt != io.read(PARENT_OUT/'recovery.json') or receipt['update'] != 1000):
-            raise ValueError('Expected the registered u1000 parent')
+        if parent:
+            validate_parent(parent,receipt)
         u=restore(run, receipt)
         if host_history is not None:
             io.write(OUT/f'history_storage_from_u{u:06}.json',map_observation_history(run,host_history))
@@ -261,6 +326,7 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
     started=time.monotonic()
     start_wall=time.time()
     start_update=u
+    last_save=u
     if CONTINUATION:
         io.append(OUT/'sessions.jsonl',dict(started_unix=start_wall,from_update=u,from_clock=run.replay.clock,
             stop=stop,host_history=bool(host_history),host_activation_gib=host_activation_gib,
@@ -317,7 +383,7 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
                         draw_columns=['lane','absolute_first_tick_zero_based'], online_only=True))
                 io.append(OUT/'updates.jsonl',row)
                 print(f"u{u} valid={run.total} actual_steps={steps}",flush=True)
-                if CONTINUATION and u==1001:
+                if CONTINUATION and u==PARENT_UPDATE+1:
                     io.write(OUT/'first_resumed_update.json', row)
                 if u==750:
                     save_counting_fields(run,u)
@@ -328,6 +394,10 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
                     if CONTINUATION:
                         save_counting_fields(run, u)
                     save(run,u)
+                    last_save=u
+                elif NEW_SEGMENT and u-last_save >= interval:
+                    save(run,u,rolling=True)
+                    last_save=u
         except BaseException as exc:
             failure=OUT/f'failure_at_{run.replay.clock:06}_u{u:06}.json'
             if failure.exists():

@@ -6,12 +6,19 @@ import numpy as np
 import torch
 import yaml
 from learning.b0.contact_model import contact_state
-from scripts.b0.official_flow import CONFIG, OUT, RAW, build, io, restore, stats, rng_state
+from scripts.b0.official_flow import CONFIG, OUT, RAW, NEW_SEGMENT, PARENT_OUT, PARENT_UPDATE, validate_parent, build, io, restore, stats, rng_state
 
 
 def check(u):
     cfg=yaml.safe_load(CONFIG.read_text())
     run,_=build(cfg)
+    if NEW_SEGMENT and u==PARENT_UPDATE:
+        path=PARENT_OUT/'recovery.json'
+        receipt=io.read(path)
+        validate_parent(path,receipt)
+        assert restore(run,receipt)==u
+        verify_loaded(run,receipt)
+        return
     row=next(r for r in (json.loads(line) for line in (OUT/'updates.jsonl').read_text().splitlines())
              if r['update']==u)
     directory=RAW/f'resume_{u:06}'

@@ -140,6 +140,10 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
     max_step=end*clock.servo_stride
     judge=ContactEvents(model,cfg,side,ref,phases=phases,hold_seconds=.5 if full else 3.,start_step=start,
                         score_until_step=end-start if paper_score else None)
+    judge.log_readiness = trace
+    if trace:
+        ref_phase = np.load(path/'substeps/phase.npy',mmap_mode='r')
+        readiness_rows = []
     mapping=ActionMap(model)
     if full:
         if start != 0:
@@ -190,6 +194,15 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
             failure=judge.observe(d,None,q0,v0)
             if trace_log and ((judge.step-1)%clock.servo_stride==0 or failure or judge.passed):
                 trace_log.record(judge.step-1,q0,v0,d,judge,mapping.offset+mapping.scale*previous,mapping,model)
+            if trace and full:
+                ob = judge.latest
+                reference_tick = start+(judge.step-1)//clock.servo_stride
+                readiness_rows.append([judge.step, FULL_DOOR_PHASES.index(ob['phase']),
+                    FULL_DOOR_PHASES.index(meta['phases'][ref_phase[reference_tick]]), ob['ramp'],
+                    ob['ready'], ob['continuous_ready_steps'], judge.peak_ready_steps[ob['phase']],
+                    ob['required_ready_steps'], ob['tcp_goal_distance_m'], ob['tcp_goal_rotation_error_rad'],
+                    ob['station_error_m'], ob['heading_error_deg'], ob['speed_m_s'], ob['yaw_rate_deg_s'],
+                    *ob['wheel_load_n']])
             net_force = judge.latest['net_door_force_n']
             peak_net_force = net_force if peak_net_force is None else max(peak_net_force, net_force)
             if full and raw_dir is not None:
@@ -214,6 +227,16 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
                   final_door_deg=float(np.rad2deg(d.qpos[judge.hinge_q])),
                   final_partial_substeps=judge.step%10, longest_ready_steps=judge.peak_ready_steps,
                   last_physical_observation=judge.latest)
+    if trace:
+        latest = judge.latest or {}
+        phase = latest.get('phase', judge.phase)
+        result['readiness'] = dict(phase=phase, episode_age_s=judge.step*judge.dt,
+            reference_phase=meta['phases'][ref_phase[start+(judge.step-1)//clock.servo_stride]] if judge.step else None,
+            current=latest.get('continuous_ready_steps'), best=judge.peak_ready_steps.get(phase),
+            required=latest.get('required_ready_steps'), ramp=latest.get('ramp'),
+            tcp_goal_distance_m=latest.get('tcp_goal_distance_m'),
+            tcp_goal_rotation_error_rad=latest.get('tcp_goal_rotation_error_rad'),
+            last_not_ready=judge.last_not_ready, peak_ready_steps=judge.peak_ready_steps)
     if paper_score:
         result.update(physical_gate_pass_step=judge.terminal_event_step,
                       measured_peak_net_force_n=peak_net_force, physical_wall_seconds=perf_counter()-begun,
@@ -230,6 +253,11 @@ def evaluate_segment(policy_fn, episode_path, segment, perturbation, backend, ou
         raw_dir.mkdir(parents=True,exist_ok=False)
         if trace_log:
             trace_log.save(raw_dir)
+        if trace and full:
+            result['readiness_columns'] = ['step','actual_phase','reference_phase','ramp','ready','current',
+                'best','required','endpoint_m','endpoint_rad','xy_m','heading_deg','speed_m_s','yaw_rate_deg_s',
+                'wheel_0_N','wheel_1_N','wheel_2_N','wheel_3_N']
+            np.save(raw_dir/'readiness.npy', np.asarray(readiness_rows,dtype=float).reshape(-1,18))
         for name,values in dict(qpos=qlog,qvel=vlog,physics_step=ticks,
                                 raw_action=np.asarray(raw_log).reshape(-1,23),
                                 clipped_action=np.asarray(clipped_log).reshape(-1,23)).items():

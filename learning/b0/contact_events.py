@@ -227,6 +227,11 @@ class ContactEvents:
                            tcp_handle_error_m=float(error), station_error_m=float(drift), heading_error_deg=float(heading),
                            tilt_deg=float(tilt), speed_m_s=float(speed), yaw_rate_deg_s=float(yaw_rate),
                            continuous_ready_steps=self.good, required_ready_steps=self.ticks(seconds))
+        if getattr(self, 'log_readiness', False):
+            endpoint_phase = phase in ('pregrasp', 'approach_arm', 'retreat_arm')
+            self.latest.update(ramp=bool(ramp), ready=bool(ready), wheel_load_n=c.normal.tolist(),
+                               tcp_goal_distance_m=float(distance) if endpoint_phase else None,
+                               tcp_goal_rotation_error_rad=float(rot_error) if endpoint_phase else None)
         if self.terminal_event_step is not None:
             # The original physical gate already passed. Keep enforcing its terminal
             # conditions on the actual policy through the requested score horizon.
