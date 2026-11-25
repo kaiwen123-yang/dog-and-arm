@@ -191,7 +191,7 @@ def retain_interrupted_rows(update, tick):
             dest.mkdir(parents=True,exist_ok=True)
             file.rename(dest/file.name)
     for filename,field,limit in (('updates.jsonl','update',update),('collection.jsonl','tick',tick),
-                                 ('readiness.jsonl','tick',tick)):
+                                 ('readiness.jsonl','tick',tick),('physical_contact_counts.jsonl','tick',tick)):
         path=OUT/filename
         if not path.exists():
             continue
@@ -291,6 +291,7 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
             raise ValueError(f"Rollback allowance exhausted: {remaining}")
     cfg = yaml.safe_load(CONFIG.read_text())
     run, info = build(cfg)
+    run.log_physical_dual = NEW_SEGMENT
     OUT.mkdir(parents=True,exist_ok=True)
     RAW.mkdir(parents=True,exist_ok=True)
     if resume or parent:
@@ -334,6 +335,9 @@ def train(stop, resume, parent=None, host_history=None, host_activation_gib=0):
     while u < stop:
         try:
             cohort = run.collect()
+            if NEW_SEGMENT:
+                counts = cohort.pop('physical_contact_counts')
+                io.append(OUT/'physical_contact_counts.jsonl',dict(tick=run.replay.clock, **counts))
             if CONTINUATION and run.replay.clock % 500 == 0:
                 save_counting_fields(run, u)
             if run.replay.clock <= 20 or run.replay.clock % 10 == 0 or run.schedule.pending:

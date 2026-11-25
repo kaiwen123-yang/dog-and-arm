@@ -1467,3 +1467,5 @@ GitHub main 为 be398cc3c9532d90c852a7f221fbf64c2b7e4e10。开发平台主工作
 另进程用 B0_FLOW_SEGMENT=continuation_20261125 bash scripts/b0/env.sh python -m scripts.b0.official_flow_restore_check 4991 从登记的父训练现场实载网络、优化器、四组统计、replay、调度/采样器、随机数、live lanes、history/上拍动作、solver/servo。逐项检查通过：136个solver数组、162个优化器状态张量、4096条lane与动作、RNG与采样器；累计4991/49910/99820，valid=51124715，clock=13652，新增优化步0。已登记首更新应为u4992。训练更新、当轮正式评分、是否延长，随后按真实回执追加。
 
 09:59 运行适配、四案诊断和父实载已普通推送 0fbb19354eafaf23218294d46e137793dca3884f。GitHub 固定 SHA 返回的 restored_u004991.json blob 与本地一致，第二开发平台独立工作树已快进。主训练及评测等待进程仍在。
+
+10:24 主段仍在等待共享显存。为按登记区分参考 phase 和实际双指覆盖，新段在每个采集 tick 记录两侧有效 20 ms 区间数、两指在整个有效区间的最小力均大于原 0.01 N 的区间数；直接复用已有 finger_min/side/valid，计数在学习输入写入后进行。归档按父 clock 到端点逐 tick 核对并与累计 valid 增量对账。用已封存 u3000 独立开发块的 64 份 lane 数组复算，前拉/背推有效区间为 6679/4011，双指为 133/10，与原评分 10690/143 一致；新增训练、采集均为 0。

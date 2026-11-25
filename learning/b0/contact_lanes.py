@@ -132,10 +132,20 @@ def collect_lanes(run, raw_path=None):
     run.schedule.add_cohort(run.total,counts)
     run.total += sum(counts)
     run.simulated += n*run.steps
-    return dict(valid_transitions=sum(counts),cumulative_valid_transitions=run.total,
+    result = dict(valid_transitions=sum(counts),cumulative_valid_transitions=run.total,
                 simulated_lane_intervals=n*run.steps,starts_per_motion=starts.tolist(),
                 prefix_intervals=int(arrays['prefix'].sum()),prefix_invalid=int(arrays['rejected_prefix'].sum()),
                 failed_lanes=int(((arrays['fail']>0)&~arrays['prefix']).sum()),
                 post_failure_diagnostic_substeps=int(np.where((arrays['fail']>0)&~arrays['prefix'],
                     plant.clock.policy_steps-arrays['fail'],0).sum()),
                 waiting_intervals=0,last_episode=run.last_episode)
+    if getattr(run,'log_physical_dual',False):
+        # Reuse the just-collected interval minima. These observations are
+        # reported after the replay, sampling and normalization updates.
+        valid=arrays['valid']
+        side=arrays['side']
+        dual=(arrays['finger_min']>plant.cfg['contact_threshold_n']).all(axis=-1)
+        result['physical_contact_counts']=dict(
+            valid=np.bincount(side[valid],minlength=2).tolist(),
+            dual_entire_valid=np.bincount(side[valid & dual],minlength=2).tolist())
+    return result

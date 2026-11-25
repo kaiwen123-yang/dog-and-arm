@@ -1,9 +1,10 @@
 """Check continuity of lightweight coverage records and list immutable recovery assets."""
 import argparse
+import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 import torch
-from scripts.b0.official_flow import OUT,RAW,io
+from scripts.b0.official_flow import NEW_SEGMENT,OUT,RAW,io
 
 
 def check(stop):
@@ -36,6 +37,27 @@ def check(stop):
     assert clocks[0]==parent['clock'] and clocks[-1]==end['clock']
     meta=io.read(OUT/f'coverage_u{stop:06}.json')
     assert meta['segment_covered'] and meta['valid']==end['valid']-parent['valid']
+    if NEW_SEGMENT:
+        valid=[0,0]
+        dual=[0,0]
+        expected=parent['clock']+1
+        with (OUT/'physical_contact_counts.jsonl').open() as stream:
+            for line in stream:
+                row=json.loads(line)
+                if row['tick']>end['clock']:
+                    break
+                assert row['tick']==expected
+                expected+=1
+                for side in (0,1):
+                    v,d=row['valid'][side],row['dual_entire_valid'][side]
+                    assert 0<=d<=v
+                    valid[side]+=v
+                    dual[side]+=d
+        assert expected==end['clock']+1 and sum(valid)==meta['valid']
+        io.write(OUT/f'physical_contact_coverage_u{stop:06}.json',dict(side_order=['pull','push'],
+            valid=valid,dual_entire_valid=dual,first_tick=parent['clock']+1,last_tick=end['clock'],
+            definition='both finger force minima exceed the original contact threshold across the valid 20 ms interval',
+            actual_event_phase=None,reference_phase_coverage=f'coverage_u{stop:06}.json'))
     tz=timezone(timedelta(hours=8))
     milestones=[]
     for receipt in sorted(OUT.glob('node_*.json')):
