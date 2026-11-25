@@ -1,0 +1,76 @@
+{
+  "method": "M1Piper-Multimodal-v1",
+  "registered_at_beijing": "2026-11-25T21:34:04+08:00",
+  "training_runtime": "/root/autodl-tmp/dog-and-arm-mm01/.conda/envs/arm-and-dog/bin/python",
+  "entry": "scripts/multimodal/train_actor.py",
+  "backbone": "In-project randomly initialized RGB CNN, independent metric depth/mask CNN, learned token embedding with attention pooling and numeric instruction token. No external model or pretrained weights.",
+  "license": "New project source; third-party weights: none. PyTorch 2.14.0+cu130 from the project's existing installation, wheel License-Expression: Apache-2.0 AND Apache-2.0 WITH LLVM-exception AND BSD-2-Clause AND BSD-3-Clause AND BSL-1.0 AND MIT. The project has no top-level redistributable license statement.",
+  "inputs": "64x64 RGB and metric axial depth/valid mask, latest causal image age and validity, actual elapsed control time since physical reset, 10 causal frames of 52 measured proprioceptive channels and previous executed actions. History repeats the first physical measurement at reset. Elapsed simulation sensor time is independent of the teacher reference clock.",
+  "supervision": "Only valid_transition and action_supervision_mask. State-based channel skip and normalization are fitted on training teacher labels. No auxiliary teacher input at deployment. Four equal loss groups (12 leg / 4 wheel / 6 arm / jaw), scaled Huber beta 0.5.",
+  "comparison": "Final fixed common parent plus two terminal continuations; paired branches restore the same model, training scalers and the same AdamW state, then freeze RGB/depth/text encoders. Same independently seeded BC batch sequence and actor-update count. The model-based branch adds a frozen world model objective and its extra compute is reported separately.",
+  "benchmark": {
+    "run": "actor-benchmark",
+    "shared_reference_with_formal_training": false,
+    "discarded_updates": 48,
+    "batch_size": 256,
+    "expert_transitions": 2558,
+    "cold_inclusive_updates_per_s": 26.08885949199959,
+    "steady_updates_per_s_16_to_48": 124.1757316532465,
+    "peak_allocated_MiB": 245.5078125,
+    "peak_reserved_MiB": 282
+  },
+  "common": {
+    "seed": 701,
+    "updates": 12000,
+    "batch_size": 256,
+    "lr": 0.0005,
+    "learning_rate_schedule": "constant",
+    "save_at": [
+      4000,
+      8000,
+      12000
+    ]
+  },
+  "paired": {
+    "seed": 1701,
+    "updates_per_branch": 512,
+    "batch_size": 256,
+    "lr": 0.0001,
+    "learning_rate_schedule": "constant",
+    "save_at": [
+      256,
+      512
+    ],
+    "initialization": "exact common terminal model and AdamW optimizer states",
+    "baseline": "supervised continuation",
+    "treatment": "same supervised loss plus frozen-model differentiable H32 objective"
+  },
+  "membership": {
+    "train": [
+      "tr_load_pull_15_held",
+      "tr_load_pull_25_held",
+      "tr_load_push_15_held",
+      "tr_load_push_25_held",
+      "tr_nominal_pull_15_held",
+      "tr_nominal_pull_25_forced_release",
+      "tr_nominal_pull_25_held",
+      "tr_nominal_push_15_held",
+      "tr_nominal_push_25_forced_release",
+      "tr_nominal_push_25_held",
+      "tr_nominal_push_25_mixed_native_u1",
+      "tr_offset_pull_15_held",
+      "tr_offset_pull_15_transient_open",
+      "tr_offset_pull_25_held",
+      "tr_offset_push_15_held",
+      "tr_offset_push_15_transient_open",
+      "tr_offset_push_25_held"
+    ],
+    "validation": [
+      "va_pose_pull_15_held",
+      "va_pose_pull_25_held",
+      "va_pose_push_15_held",
+      "va_pose_push_25_held"
+    ]
+  },
+  "held_out_test_scene": "te_combination; unobserved during fitting and diagnostic model selection"
+}

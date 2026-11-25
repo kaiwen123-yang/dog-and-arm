@@ -1,0 +1,491 @@
+{
+  "registered_at_beijing": "2026-11-25T21:47:11.095789+08:00",
+  "specification": {
+    "candidate": "approach_repair",
+    "purpose": "Independent training-scene diagnostic of absolute arm-target drift before base arrival",
+    "parent_path": "actor-common/final.pt",
+    "parent_sha256": "02e7a4587f2a5901936b9c50d0e8be2ddd52b0ea55491c536b6a5509233d8913",
+    "feedback_ids": [
+      "common_12000_tr_nominal_pull_15",
+      "common_12000_tr_nominal_pull_25",
+      "common_12000_tr_nominal_push_15",
+      "common_12000_tr_nominal_push_25"
+    ],
+    "label_source": "P6 Arm.__init__/update uses the reset arm home in approach_base. Verify its absolute physical targets throughout the corresponding original P6 demonstrations. Use only this target on approach_base feedback states with a valid complete 20 ms interval.",
+    "auxiliary_indices_zero_based": [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "actor": "Same architecture, sensor-only deployable inputs, fixed input scalers and common visual/text encoders. Restore the complete parent actor and AdamW state.",
+    "updates": 2400,
+    "seed": 2701,
+    "lr": 0.0002,
+    "weight_decay": 1e-05,
+    "expert_batch": 256,
+    "feedback_batch": 128,
+    "feedback_early_seconds": 5.0,
+    "feedback_sampling": "Half uniform over all eligible states, half uniform over first five seconds to include drift onset.",
+    "auxiliary_loss": "0.5 times mean SmoothL1(beta=0.5) of six normalized arm errors, scaled by their frozen common parent residual standard deviations. Original balanced four-group BC on the 17 common training sources has coefficient 1.",
+    "auxiliary_weight": 0.5,
+    "save_every": 800,
+    "evaluation": {
+      "scenes": [
+        "tr_nominal",
+        "va_pose"
+      ],
+      "sides": [
+        "pull",
+        "push"
+      ],
+      "goals": [
+        15,
+        25
+      ],
+      "workers": 4,
+      "selector": "single terminal checkpoint",
+      "cases": 8
+    }
+  },
+  "feedback_labels": {
+    "common_12000_tr_nominal_pull_15": {
+      "teacher_episode": "tr_nominal_pull_15_held",
+      "teacher_arm_and_full_jaw_home": [
+        0.0,
+        0.800000011920929,
+        -1.399999976158142,
+        0.0,
+        0.6000000238418579,
+        0.0,
+        0.03999999910593033
+      ],
+      "normalized_arm_target": [
+        0.0,
+        -0.4907041658291855,
+        0.05630481506109092,
+        0.0,
+        0.3841058195114084,
+        0.0
+      ],
+      "max_observed_teacher_command_deviation_from_home": 0.0,
+      "common_parent": {
+        "rows": 921,
+        "approach_last_valid_end_s": 18.42000000000067,
+        "j2_command_p95_abs_error_rad": 0.768624484539032,
+        "j2_measured_p95_abs_error_rad": 0.7608151435852051,
+        "j2_command_min_max_rad": [
+          0.0,
+          0.8288856148719788
+        ],
+        "j2_state_min_max_rad": [
+          1.573621921124868e-05,
+          0.8261523246765137
+        ],
+        "last_valid_successor_j2_rad": 1.9067123275817721e-06,
+        "samples": [
+          {
+            "t_s": 0.0,
+            "physical_command_rad": 0.8011181354522705,
+            "measured_rad": 0.800000011920929
+          },
+          {
+            "t_s": 2.0000000000000013,
+            "physical_command_rad": 0.7915407419204712,
+            "measured_rad": 0.7987578511238098
+          },
+          {
+            "t_s": 3.999999999999781,
+            "physical_command_rad": 0.7272564768791199,
+            "measured_rad": 0.734670877456665
+          },
+          {
+            "t_s": 4.999999999999671,
+            "physical_command_rad": 0.6435216069221497,
+            "measured_rad": 0.6539715528488159
+          },
+          {
+            "t_s": 6.999999999999451,
+            "physical_command_rad": 0.4668188691139221,
+            "measured_rad": 0.4683740735054016
+          },
+          {
+            "t_s": 10.000000000000009,
+            "physical_command_rad": 0.4043961465358734,
+            "measured_rad": 0.407108873128891
+          },
+          {
+            "t_s": 15.000000000001679,
+            "physical_command_rad": 0.22837962210178375,
+            "measured_rad": 0.23433762788772583
+          }
+        ]
+      },
+      "p6_teacher": {
+        "rows": 254,
+        "approach_last_valid_end_s": 5.079999999999663,
+        "j2_command_p95_abs_error_rad": 0.0,
+        "j2_measured_p95_abs_error_rad": 0.0004153340996708721,
+        "j2_command_min_max_rad": [
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "j2_state_min_max_rad": [
+          0.7987285852432251,
+          0.8007026314735413
+        ],
+        "last_valid_successor_j2_rad": 0.8000010251998901,
+        "samples": [
+          {
+            "t_s": 0.0,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.800000011920929
+          },
+          {
+            "t_s": 2.0000000000000013,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8000313639640808
+          },
+          {
+            "t_s": 3.999999999999781,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8001833558082581
+          },
+          {
+            "t_s": 4.999999999999671,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8001506328582764
+          }
+        ]
+      }
+    },
+    "common_12000_tr_nominal_pull_25": {
+      "teacher_episode": "tr_nominal_pull_25_held",
+      "teacher_arm_and_full_jaw_home": [
+        0.0,
+        0.800000011920929,
+        -1.399999976158142,
+        0.0,
+        0.6000000238418579,
+        0.0,
+        0.03999999910593033
+      ],
+      "normalized_arm_target": [
+        0.0,
+        -0.4907041658291855,
+        0.05630481506109092,
+        0.0,
+        0.3841058195114084,
+        0.0
+      ],
+      "max_observed_teacher_command_deviation_from_home": 0.0,
+      "common_parent": {
+        "rows": 805,
+        "approach_last_valid_end_s": 16.100000000001955,
+        "j2_command_p95_abs_error_rad": 0.7882397770881653,
+        "j2_measured_p95_abs_error_rad": 0.7812597751617432,
+        "j2_command_min_max_rad": [
+          0.0,
+          0.8271382451057434
+        ],
+        "j2_state_min_max_rad": [
+          5.679561581928283e-06,
+          0.8244915008544922
+        ],
+        "last_valid_successor_j2_rad": 1.3419985407381319e-05,
+        "samples": [
+          {
+            "t_s": 0.0,
+            "physical_command_rad": 0.8011477589607239,
+            "measured_rad": 0.800000011920929
+          },
+          {
+            "t_s": 2.0000000000000013,
+            "physical_command_rad": 0.7924988269805908,
+            "measured_rad": 0.7983410358428955
+          },
+          {
+            "t_s": 3.999999999999781,
+            "physical_command_rad": 0.7126098871231079,
+            "measured_rad": 0.7199273705482483
+          },
+          {
+            "t_s": 4.999999999999671,
+            "physical_command_rad": 0.6020962595939636,
+            "measured_rad": 0.6129315495491028
+          },
+          {
+            "t_s": 6.999999999999451,
+            "physical_command_rad": 0.3714137673377991,
+            "measured_rad": 0.379292368888855
+          },
+          {
+            "t_s": 10.000000000000009,
+            "physical_command_rad": 0.2707097828388214,
+            "measured_rad": 0.27501818537712097
+          },
+          {
+            "t_s": 15.000000000001679,
+            "physical_command_rad": 0.030926883220672607,
+            "measured_rad": 0.03726683184504509
+          }
+        ]
+      },
+      "p6_teacher": {
+        "rows": 254,
+        "approach_last_valid_end_s": 5.079999999999663,
+        "j2_command_p95_abs_error_rad": 0.0,
+        "j2_measured_p95_abs_error_rad": 0.0004153340996708721,
+        "j2_command_min_max_rad": [
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "j2_state_min_max_rad": [
+          0.7987285852432251,
+          0.8007026314735413
+        ],
+        "last_valid_successor_j2_rad": 0.8000010251998901,
+        "samples": [
+          {
+            "t_s": 0.0,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.800000011920929
+          },
+          {
+            "t_s": 2.0000000000000013,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8000313639640808
+          },
+          {
+            "t_s": 3.999999999999781,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8001833558082581
+          },
+          {
+            "t_s": 4.999999999999671,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8001506328582764
+          }
+        ]
+      }
+    },
+    "common_12000_tr_nominal_push_15": {
+      "teacher_episode": "tr_nominal_push_15_held",
+      "teacher_arm_and_full_jaw_home": [
+        0.0,
+        0.800000011920929,
+        -1.399999976158142,
+        0.0,
+        0.6000000238418579,
+        0.0,
+        0.03999999910593033
+      ],
+      "normalized_arm_target": [
+        0.0,
+        -0.4907041658291855,
+        0.05630481506109092,
+        0.0,
+        0.3841058195114084,
+        0.0
+      ],
+      "max_observed_teacher_command_deviation_from_home": 0.0,
+      "common_parent": {
+        "rows": 738,
+        "approach_last_valid_end_s": 14.760000000001599,
+        "j2_command_p95_abs_error_rad": 0.7835919857025146,
+        "j2_measured_p95_abs_error_rad": 0.7771907448768616,
+        "j2_command_min_max_rad": [
+          0.0,
+          0.8355750441551208
+        ],
+        "j2_state_min_max_rad": [
+          7.533482857979834e-06,
+          0.8350923657417297
+        ],
+        "last_valid_successor_j2_rad": 7.748190910206176e-06,
+        "samples": [
+          {
+            "t_s": 0.0,
+            "physical_command_rad": 0.8011443018913269,
+            "measured_rad": 0.800000011920929
+          },
+          {
+            "t_s": 2.0000000000000013,
+            "physical_command_rad": 0.7933964729309082,
+            "measured_rad": 0.7978848814964294
+          },
+          {
+            "t_s": 3.999999999999781,
+            "physical_command_rad": 0.6684659123420715,
+            "measured_rad": 0.6755426526069641
+          },
+          {
+            "t_s": 4.999999999999671,
+            "physical_command_rad": 0.583497941493988,
+            "measured_rad": 0.592603325843811
+          },
+          {
+            "t_s": 6.999999999999451,
+            "physical_command_rad": 0.3891085684299469,
+            "measured_rad": 0.39716458320617676
+          },
+          {
+            "t_s": 10.000000000000009,
+            "physical_command_rad": 0.2270062118768692,
+            "measured_rad": 0.23248668015003204
+          }
+        ]
+      },
+      "p6_teacher": {
+        "rows": 254,
+        "approach_last_valid_end_s": 5.079999999999663,
+        "j2_command_p95_abs_error_rad": 0.0,
+        "j2_measured_p95_abs_error_rad": 0.0004153340996708721,
+        "j2_command_min_max_rad": [
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "j2_state_min_max_rad": [
+          0.7987285852432251,
+          0.8007026314735413
+        ],
+        "last_valid_successor_j2_rad": 0.8000010251998901,
+        "samples": [
+          {
+            "t_s": 0.0,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.800000011920929
+          },
+          {
+            "t_s": 2.0000000000000013,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8000313639640808
+          },
+          {
+            "t_s": 3.999999999999781,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8001833558082581
+          },
+          {
+            "t_s": 4.999999999999671,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8001506328582764
+          }
+        ]
+      }
+    },
+    "common_12000_tr_nominal_push_25": {
+      "teacher_episode": "tr_nominal_push_25_held",
+      "teacher_arm_and_full_jaw_home": [
+        0.0,
+        0.800000011920929,
+        -1.399999976158142,
+        0.0,
+        0.6000000238418579,
+        0.0,
+        0.03999999910593033
+      ],
+      "normalized_arm_target": [
+        0.0,
+        -0.4907041658291855,
+        0.05630481506109092,
+        0.0,
+        0.3841058195114084,
+        0.0
+      ],
+      "max_observed_teacher_command_deviation_from_home": 0.0,
+      "common_parent": {
+        "rows": 791,
+        "approach_last_valid_end_s": 15.820000000001953,
+        "j2_command_p95_abs_error_rad": 0.800000011920929,
+        "j2_measured_p95_abs_error_rad": 0.7982000112533569,
+        "j2_command_min_max_rad": [
+          0.0,
+          0.8347663879394531
+        ],
+        "j2_state_min_max_rad": [
+          9.36447975163901e-07,
+          0.8340935111045837
+        ],
+        "last_valid_successor_j2_rad": 1.3332432899915148e-05,
+        "samples": [
+          {
+            "t_s": 0.0,
+            "physical_command_rad": 0.801165759563446,
+            "measured_rad": 0.800000011920929
+          },
+          {
+            "t_s": 2.0000000000000013,
+            "physical_command_rad": 0.7903736233711243,
+            "measured_rad": 0.7972123026847839
+          },
+          {
+            "t_s": 3.999999999999781,
+            "physical_command_rad": 0.669288694858551,
+            "measured_rad": 0.6760184168815613
+          },
+          {
+            "t_s": 4.999999999999671,
+            "physical_command_rad": 0.5798254609107971,
+            "measured_rad": 0.5897490978240967
+          },
+          {
+            "t_s": 6.999999999999451,
+            "physical_command_rad": 0.3859812617301941,
+            "measured_rad": 0.39289042353630066
+          },
+          {
+            "t_s": 10.000000000000009,
+            "physical_command_rad": 0.24749755859375,
+            "measured_rad": 0.25237318873405457
+          },
+          {
+            "t_s": 15.000000000001679,
+            "physical_command_rad": 0.0,
+            "measured_rad": 0.0020452893804758787
+          }
+        ]
+      },
+      "p6_teacher": {
+        "rows": 254,
+        "approach_last_valid_end_s": 5.079999999999663,
+        "j2_command_p95_abs_error_rad": 0.0,
+        "j2_measured_p95_abs_error_rad": 0.0004153340996708721,
+        "j2_command_min_max_rad": [
+          0.800000011920929,
+          0.800000011920929
+        ],
+        "j2_state_min_max_rad": [
+          0.7987285852432251,
+          0.8007026314735413
+        ],
+        "last_valid_successor_j2_rad": 0.8000010251998901,
+        "samples": [
+          {
+            "t_s": 0.0,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.800000011920929
+          },
+          {
+            "t_s": 2.0000000000000013,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8000313639640808
+          },
+          {
+            "t_s": 3.999999999999781,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8001833558082581
+          },
+          {
+            "t_s": 4.999999999999671,
+            "physical_command_rad": 0.800000011920929,
+            "measured_rad": 0.8001506328582764
+          }
+        ]
+      }
+    }
+  },
+  "source_sha256": "bf800fe36eb57247ec1edadcdf986b2910062d1bce0251e261e6fbe38e8be738"
+}

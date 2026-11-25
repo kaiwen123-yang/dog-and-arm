@@ -1,0 +1,100 @@
+{
+  "source_checkpoint": "/root/autodl-tmp/mm01-20261125/actor-bc/final.pt",
+  "source_sha256": "1f0c3deaceee9e04ddc70427c9d3c229c87a8b5b01368b3e6da080cb0ce75cac",
+  "deployment_filename": "supervised.pt",
+  "deployment_sha256": "aaeb22c295abc0e11eb0c161fbbe9f5190dec231fbefe66d4dc1083224cac47e",
+  "size_bytes": 1812695,
+  "device": "cpu",
+  "validation_episodes": [
+    {
+      "episode_id": "va_pose_pull_15_held",
+      "spread_states": 96,
+      "consecutive_stream_states": 18
+    },
+    {
+      "episode_id": "va_pose_pull_25_held",
+      "spread_states": 96,
+      "consecutive_stream_states": 18
+    },
+    {
+      "episode_id": "va_pose_push_15_held",
+      "spread_states": 96,
+      "consecutive_stream_states": 18
+    },
+    {
+      "episode_id": "va_pose_push_25_held",
+      "spread_states": 96,
+      "consecutive_stream_states": 18
+    }
+  ],
+  "max_abs_batch_difference": 0.0,
+  "max_abs_online_control_difference": 0.0,
+  "validation_instruction_pairs": [
+    {
+      "scene": "va_pose",
+      "side": "pull",
+      "goals_deg": [
+        15.0,
+        25.0
+      ],
+      "rows": [
+        {
+          "policy_tick": 0,
+          "time_s": 0.0,
+          "same_rgb": true,
+          "same_metric_depth": true,
+          "max_abs_proprio_history_difference": 0.0,
+          "teacher_action_max_abs_difference": 0.0,
+          "frozen_observation_language_change_mean_abs": 4.7578894736943766e-05,
+          "frozen_observation_language_change_max_abs": 0.00017601251602172852,
+          "largest_response_channel": 2
+        },
+        {
+          "policy_tick": 1365,
+          "time_s": 27.299999237060547,
+          "same_rgb": true,
+          "same_metric_depth": true,
+          "max_abs_proprio_history_difference": 0.0,
+          "teacher_action_max_abs_difference": 0.00027808547019958496,
+          "frozen_observation_language_change_mean_abs": 1.8738055587164126e-05,
+          "frozen_observation_language_change_max_abs": 0.00012296438217163086,
+          "largest_response_channel": 22
+        }
+      ],
+      "selection": "reset and first teacher action difference > 1e-5 at the same elapsed time"
+    },
+    {
+      "scene": "va_pose",
+      "side": "push",
+      "goals_deg": [
+        15.0,
+        25.0
+      ],
+      "rows": [
+        {
+          "policy_tick": 0,
+          "time_s": 0.0,
+          "same_rgb": true,
+          "same_metric_depth": true,
+          "max_abs_proprio_history_difference": 0.0,
+          "teacher_action_max_abs_difference": 0.0,
+          "frozen_observation_language_change_mean_abs": 3.979996108682826e-05,
+          "frozen_observation_language_change_max_abs": 0.00012993067502975464,
+          "largest_response_channel": 2
+        },
+        {
+          "policy_tick": 1334,
+          "time_s": 26.68000030517578,
+          "same_rgb": true,
+          "same_metric_depth": true,
+          "max_abs_proprio_history_difference": 0.0,
+          "teacher_action_max_abs_difference": 0.000981916207820177,
+          "frozen_observation_language_change_mean_abs": 1.4843694771116134e-05,
+          "frozen_observation_language_change_max_abs": 5.8591365814208984e-05,
+          "largest_response_channel": 22
+        }
+      ],
+      "selection": "reset and first teacher action difference > 1e-5 at the same elapsed time"
+    }
+  ]
+}

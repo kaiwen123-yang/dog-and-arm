@@ -1,0 +1,13 @@
+{
+  "parent_registration": "scenes.json",
+  "reason": "Both one-tick 90 mm hold openings extinguished contact and exceeded the native 6 N net-force limit during reclose. Probe a continuous unloading and reclose trajectory on the same training-only scene.",
+  "scene": "tr_offset",
+  "sides": ["pull","push"],
+  "target_deg": 15,
+  "protocol": "Start each intact full P6 trajectory at frame zero. At hold onset change only the full-width commands below, one per 20 ms, then resume nominal held P6. Score with the original P6 predicates. All override labels are invalid for BC. Retain all outcomes.",
+  "recovery_confirmation": "Detect a substep loss of simultaneous bilateral contact during intervention, followed by a fully bilateral 20 ms interval after nominal control resumes, and full task success.",
+  "probes": [
+    {"name":"ramp24mm","widths_m":[0.012,0.016,0.020,0.022,0.024,0.022,0.020,0.018,0.016,0.013]},
+    {"name":"ramp26mm","widths_m":[0.014,0.020,0.026,0.021,0.016]}
+  ]
+}

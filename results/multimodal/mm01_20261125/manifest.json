@@ -1,0 +1,203 @@
+{
+  "method": "M1Piper-Multimodal-v1",
+  "round": "MM-01",
+  "run_id": "mm01_20261125",
+  "status": "trained_and_physically_scored",
+  "start_main": "057f7070608c70ca42adc07cb7ba1964153bc400",
+  "first_published_data_commit": "ff3479d99024ea35be54390ed256d02bd4de11e9",
+  "native": "MuJoCo 3.3.0",
+  "training": "PyTorch 2.14.0+cu130; pinned SuperMimic GenCoordRepresentation.apply_prediction",
+  "task": "free M1 + Piper H + official parallel gripper + wrist_rgbd, single passive hinged door",
+  "hardware_motion_commands": 0,
+  "training_seeds": 1,
+  "train_scene_count": 3,
+  "validation_scene_count": 1,
+  "test_scene_count": 1,
+  "controls": {
+    "physics_step_s": 0.002,
+    "policy_step_s": 0.02,
+    "camera_period_s": 0.1,
+    "channels": 23,
+    "depth_unit": "m",
+    "image_size": [
+      64,
+      64
+    ]
+  },
+  "common_parent": {
+    "updates": 12000,
+    "batch": 256,
+    "expert_labels": 35026,
+    "valid_train_transitions": 40975,
+    "episode_ids_file": "actor/common_configuration.json",
+    "sha256": "02e7a4587f2a5901936b9c50d0e8be2ddd52b0ea55491c536b6a5509233d8913"
+  },
+  "paired": {
+    "each_branch_updates": 512,
+    "each_supervised_examples": 131072,
+    "sampler_seed": 1701,
+    "sampler_sha256": "ec6c4bede87ba4a4de351e9ee25b350fc3fc158a1a18f4761b010b6dbf7fc0f5",
+    "extra_imagined_queries": 524288,
+    "supervised_actor_update_wall_s": 4.528842335566878,
+    "h32_actor_update_wall_s": 127.13172109983861
+  },
+  "world_model": {
+    "teacher_updates": 2400,
+    "interaction_updates": 400,
+    "camera_projection_updates": 600,
+    "batch": 128,
+    "teacher_and_interaction_episodes": 21,
+    "valid_transitions": 44230,
+    "legal_H7_windows": 44104,
+    "H32_validation": {
+      "n": 768,
+      "angle_mae_deg": 0.7711994647979736,
+      "hinge_rate_mae_rad_s": 0.001085229218006134,
+      "rod_err_mm": 31.65330696105957,
+      "leg_mae_rad": 0.0008708781679160893,
+      "wheel_rate_mae_rad_s": 0.025408850982785225,
+      "arm_mae_deg": 0.07477112114429474,
+      "jaw_mae_mm": 0.9052157402038574,
+      "pooled_rgbd_rmse": 0.0508093535900116,
+      "held_image_rmse": 0.03953438997268677,
+      "finger_brier": 0.0006974086281843483,
+      "finger_accuracy": 0.9986979365348816,
+      "dual_fraction_mae": 0.0013123303651809692
+    },
+    "critics": 0
+  },
+  "auxiliary": {
+    "approach_repair_actor_updates": 2400,
+    "action_channels_labeled": [
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ],
+    "real_student_transitions_relabeled": 3255,
+    "development_full_successes": 0,
+    "development_attempts": 8,
+    "source_budget": "approach/comparison.json"
+  },
+  "pilots": {
+    "actor_discarded_updates": 48,
+    "wm_discarded_updates": 60,
+    "visual_bridge_discarded_updates": 12,
+    "H32_compute_probes": 6,
+    "description": "Pilot timings and discarded updates are separate from retained checkpoints"
+  },
+  "new_AutoDL_native_physics_steps": {
+    "teacher_goal_screen_5": 145483,
+    "teacher_renderer_pilot": 25587,
+    "primary_teacher_24": 597072,
+    "independent_teacher_judge_check_4": 107370,
+    "real_contact_recovery_4": 102514,
+    "native_WM_action_response_including_warm_prefixes": 880,
+    "development_4000": 3270,
+    "common_parent_feedback": 32567,
+    "supervised_formal": 44667,
+    "model_optimized_formal": 45376,
+    "diagnostic_approach_repair": 42527
+  },
+  "total_new_AutoDL_native_physics_steps": 1147313,
+  "legacy_mixed_new_integrations": 0,
+  "formal_physics": {
+    "supervised": {
+      "attempts": 12,
+      "successes": 0,
+      "physics_steps": 44667,
+      "decisions": 4472,
+      "camera_frames": 899,
+      "completed_events": {},
+      "first_failure_phase": {
+        "approach_base": 12
+      },
+      "first_failure_reason": {
+        "unexpected_contact:robot_self": 6,
+        "arm_joint_limit:piper_joint5": 3,
+        "arm_joint_limit:piper_joint2": 3
+      },
+      "cases_with_door_contact": 0,
+      "cases_with_bilateral_contact": 0,
+      "max_effective_hinge_change_deg": 2.220446049250313e-16
+    },
+    "wm_optimized": {
+      "attempts": 12,
+      "successes": 0,
+      "physics_steps": 45376,
+      "decisions": 4544,
+      "camera_frames": 915,
+      "completed_events": {
+        "approach_base": 1
+      },
+      "first_failure_phase": {
+        "approach_base": 11,
+        "settle": 1
+      },
+      "first_failure_reason": {
+        "unexpected_contact:robot_self": 6,
+        "arm_joint_limit:piper_joint5": 4,
+        "arm_joint_limit:piper_joint2": 2
+      },
+      "cases_with_door_contact": 0,
+      "cases_with_bilateral_contact": 0,
+      "max_effective_hinge_change_deg": 2.220446049250313e-16
+    }
+  },
+  "full_student_success_videos": 0,
+  "official_control_extra_video": "videos/wm_validation_pull_25_failure_1080p.mp4",
+  "teacher_success_video": "videos/teacher_pull_15_1080p.mp4",
+  "early_request_provenance": {
+    "live_preclamp_formal_cases": 16,
+    "posthoc_preclamp_formal_cases": 8,
+    "posthoc_parent_and_development": 5,
+    "live_preclamp_repair_cases": 8,
+    "max_clipped_vs_physical_command_difference": 0,
+    "receipts": [
+      "physics/parent_requests.json",
+      "physics/formal_requests.json",
+      "physics/repair_requests.json"
+    ]
+  },
+  "weight_and_video_files": {
+    "actor/supervised.pt": {
+      "bytes": 1812695,
+      "sha256": "aaeb22c295abc0e11eb0c161fbbe9f5190dec231fbefe66d4dc1083224cac47e"
+    },
+    "actor/model_optimized.pt": {
+      "bytes": 1813029,
+      "sha256": "c47d91c509c43c36b5180c1ef937e45ddd40c433aaf9c4b611fc799b02af9993"
+    },
+    "wm/wm_objective.pt": {
+      "bytes": 1926586,
+      "sha256": "661bcb8cef9fd53d90b282591f12982635b386c08589de152fc0c8eeea0995b9"
+    },
+    "videos/teacher_pull_15_1080p.mp4": {
+      "bytes": 4588218,
+      "sha256": "151cdd86c86220cd958dd48654309da49694881801c7d559b71fbd9a7dea0cf2"
+    },
+    "videos/wm_validation_pull_25_failure_1080p.mp4": {
+      "bytes": 1875708,
+      "sha256": "a2aab6d2d88ab1c8fcce7e237d4c6832b2b489b17097394c684b95335c1409e0"
+    }
+  },
+  "execution_roots": {
+    "AutoDL_code": "/root/autodl-tmp/dog-and-arm-mm01",
+    "AutoDL_data_and_full_checkpoints": "/root/autodl-tmp/mm01-20261125",
+    "dev2_checkout": "/home/kaiwen/research/dog-and-arm-mm01"
+  },
+  "reports": [
+    "reports/MULTIMODAL_MM01_RESULTS.md",
+    "physics/physics_cases.json",
+    "physics/physics_summary.json",
+    "physics/development_cases.json",
+    "data/teacher_dataset.json",
+    "data/teacher_data_summary.json",
+    "data/recovery_evidence.json",
+    "actor/comparison.json",
+    "wm/package_and_recovery.json",
+    "approach/comparison.json"
+  ]
+}

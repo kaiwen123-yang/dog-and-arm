@@ -1,0 +1,27 @@
+{
+  "candidate": "approach_repair",
+  "purpose": "Independent training-scene diagnostic of absolute arm-target drift before base arrival",
+  "parent_path": "actor-common/final.pt",
+  "parent_sha256": "02e7a4587f2a5901936b9c50d0e8be2ddd52b0ea55491c536b6a5509233d8913",
+  "feedback_ids": [
+    "common_12000_tr_nominal_pull_15",
+    "common_12000_tr_nominal_pull_25",
+    "common_12000_tr_nominal_push_15",
+    "common_12000_tr_nominal_push_25"
+  ],
+  "label_source": "P6 Arm.__init__/update uses the reset arm home in approach_base. Verify its absolute physical targets throughout the corresponding original P6 demonstrations. Use only this target on approach_base feedback states with a valid complete 20 ms interval.",
+  "auxiliary_indices_zero_based": [16, 17, 18, 19, 20, 21],
+  "actor": "Same architecture, sensor-only deployable inputs, fixed input scalers and common visual/text encoders. Restore the complete parent actor and AdamW state.",
+  "updates": 2400,
+  "seed": 2701,
+  "lr": 0.0002,
+  "weight_decay": 0.00001,
+  "expert_batch": 256,
+  "feedback_batch": 128,
+  "feedback_early_seconds": 5.0,
+  "feedback_sampling": "Half uniform over all eligible states, half uniform over first five seconds to include drift onset.",
+  "auxiliary_loss": "0.5 times mean SmoothL1(beta=0.5) of six normalized arm errors, scaled by their frozen common parent residual standard deviations. Original balanced four-group BC on the 17 common training sources has coefficient 1.",
+  "auxiliary_weight": 0.5,
+  "save_every": 800,
+  "evaluation": {"scenes":["tr_nominal","va_pose"],"sides":["pull","push"],"goals":[15,25],"workers":4,"selector":"single terminal checkpoint","cases":8}
+}
