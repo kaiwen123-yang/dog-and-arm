@@ -1,6 +1,6 @@
 # 腿臂协同研究主线与阶段依赖
 
-更新：2026-11-25 21:08，北京时间。用户最新明确直接推进[完整多模态主线](MULTIMODAL_ALGORITHM_PLAN_20261125.md)，当前执行[MM-01集中轮](MULTIMODAL_MM01_EXECUTION_20261125.md)。[桌面Piper](DESKTOP_PIPER_TRANSFER_PLAN_20261125.md)由用户择时部署，不作前置。
+更新：2026-11-25 22:32，北京时间。当前完整多模态主线已完成[MM-01首轮实训](../reports/MULTIMODAL_MM01_RESULTS.md)，监督/H32各0/12；下一执行[MM-02四轮集中迭代](MULTIMODAL_MM02_EXECUTION_20261125.md)。R0/R1/R2最小链已建立，R3/R4有实训原型，R5首次配对尚无完整任务收益，R6泛化与R7/R8实机尚待。桌面Piper由用户择时，不作前置。[总体算法](MULTIMODAL_ALGORITHM_PLAN_20261125.md) · [审查](../reports/MULTIMODAL_MM01_REVIEW_20261125.md)。
 
 ## 1. 最终目标与当前顺序
 

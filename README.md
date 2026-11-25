@@ -1,5 +1,15 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
+## 2026-11-25 22:32 北京时间 · MM-01已审查，下一执行轮为MM-02
+
+MM-01正式监督/H32各0/12，24案无门接触；首次失败合计自碰12、J2越限5、J5越限7。六臂旧状态补训另0/8，不能把当前瓶颈归为单一J2错误。多模态采集/策略/WM/H32已实际实现，完整学生任务尚未成功。
+
+[当前审查](reports/MULTIMODAL_MM01_REVIEW_20261125.md) · [MM-02集中计划](docs/MULTIMODAL_MM02_EXECUTION_20261125.md) · [机器登记](results/planning/multimodal_mm02_20261125/registration.json) · [启动词](prompts/MULTIMODAL_START.txt)
+
+下一轮提取状态化P6全身纠正教师，分开专家标签与实际动作；一次短fixed/adaptive直连配对后，完成四轮新学生在轨数据聚合。监督与模型两支共享全部合格新数据、匹配BC预算，模型支额外使用学生真实起点的教师32拍物理恢复目标做H32优化。主段192训练回合，末点两支40正式案，其中16新盲测；条件延长两轮已登记。首次纯学生完整成功立即交1080p同回合原速视频。
+
+本次只完成审查、计划/启动词和发布准备，新增优化/物理/硬件均0，尚未启动MM-02。桌面固定Piper由用户择时，当前算法仿真不等待桌面实机；原standard-v1与RefXY2封存。下方历史“当前/下一轮”按原时间阅读，以本节及MM-02登记为当前执行入口。
+
 ## 2026-11-25 21:56 北京时间 · MM-01 已完成训练与全机物理评测
 
 监督基线 0/12，加入可微 H32 优化 0/12。24 案均无门接触。模型式支的一案完成底盘驶近，随后在停车阶段自碰。独立六臂纠偏补训在训练/验证开发场景 0/8。第二平台已加载从 GitHub 发布的监督权重，复现名义前拉驶近时 J2 越限。学生完整成功视频 0，已交同回合学生失败与 P6 教师完整成功的 1080p 原速视频。
@@ -52,9 +62,9 @@
 
 ## 用户现在需要做什么
 
-正常 fetch main，读取工作树状态并保留现有修改，将 [B0_START.txt](prompts/B0_START.txt) 交给执行端。按[续训计划](docs/B0_OFFICIAL_FLOW_CONTINUATION_PLAN_20261124.md)从u1000完整恢复，集中完成预算内实际训练、有限诊断、固定物理评测、可用完整视频与发布；不只再交一份审计。
+在开发平台正常fetch最新main并保留现有修改，将[MULTIMODAL_START.txt](prompts/MULTIMODAL_START.txt)交给执行端，按[MM-02集中计划](docs/MULTIMODAL_MM02_EXECUTION_20261125.md)实施全身在轨教师纠正、四轮数据聚合、监督/WM配对和从frame0完整评测。NEXT_RUN与B0_START是同文兼容入口，不再启动旧u1000或标准迁移续训。
 
-现场 /root/autodl-tmp/dog-and-arm-b0-temporal-v1/.official-flow-695f3d7，父包 results/raw_large/b0/official_flow_20261124/resume_001000。官方来源和映射见[对齐清单](docs/B0_OFFICIAL_FLOW_ALIGNMENT_20261124.md)，正式成绩和视频定义见[协议](docs/B0_PAPER_BASELINE_PROTOCOL.md)与[视频/比例协议](docs/B0_FULL_TASK_VIDEO_PROTOCOL.md)。[NEXT_RUN](prompts/NEXT_RUN.txt)与完整启动词一致。
+现有MM-01完整资产位于AutoDL的/root/autodl-tmp/mm01-20261125，实际恢复源从[原manifest](results/multimodal/mm01_20261125/manifest.json)核对；新轮使用独立目录。首次纯学生完整成功立即交同回合1080p原速视频。[桌面Piper专用入口](prompts/PIPER_DESKTOP_START.txt)继续由用户自行选择时间。
 
 ## H0：相机和机械臂联合运行
 
