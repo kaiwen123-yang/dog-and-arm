@@ -1,0 +1,131 @@
+{
+  "definition": "Dplus=(plus-baseline)/a; Dminus=(baseline-minus)/a; central=(plus-minus)/(2a). H1/H7 use original survival discounted prefixes. J32 adds the unchanged terminal Critic.",
+  "source": "pregrasp_response_objective.Fold calls pinned WorldModelEnv._compute_term_prob and ActorCriticPolicyLearner._bootstrap, and ContactRepresentation.compute_wm_reward_from_reference with successor reference t+1.",
+  "original_actor_first_variable": "RobotActor.raw independent decoder output z0 times original standard_action plus home_action through canonical clamp; all later policy queries see their own successors and retain full input AD.",
+  "comparison": "AD versus finite difference of the same WM function; measured finite difference includes subsequent actor feedback. Counts are descriptive across registered amplitudes at overlapping starts.",
+  "reported_sign_resolution": "One float32 ulp on baseline return / amplitude for both compared slopes. Raw slopes and one-sided values are preserved. Physical/contact mode switches counted by comparing each sign to the baseline on shared measured microsteps.",
+  "scope": "Fine-step development starts. Neither absorbing full-task scores nor V0. Hyperscale or backend causation is not identified.",
+  "starts": [
+    {
+      "side": "pull",
+      "frame": 588,
+      "objective_gradient_defined": true,
+      "reward_component_closure_max": 6.391783244907856e-07,
+      "rows": 19,
+      "actual_optimizer_steps": 0,
+      "raw": "results/raw_large/b0/pregrasp_compatibility_20261125/response/pull/frame_0588"
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "objective_gradient_defined": true,
+      "reward_component_closure_max": 8.77829734236002e-07,
+      "rows": 19,
+      "actual_optimizer_steps": 0,
+      "raw": "results/raw_large/b0/pregrasp_compatibility_20261125/response/pull/frame_0594"
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "objective_gradient_defined": true,
+      "reward_component_closure_max": 5.947804311290383e-07,
+      "rows": 19,
+      "actual_optimizer_steps": 0,
+      "raw": "results/raw_large/b0/pregrasp_compatibility_20261125/response/push/frame_0587"
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "objective_gradient_defined": true,
+      "reward_component_closure_max": 8.499482646584511e-07,
+      "rows": 19,
+      "actual_optimizer_steps": 0,
+      "raw": "results/raw_large/b0/pregrasp_compatibility_20261125/response/push/frame_0594"
+    }
+  ],
+  "results_by_horizon": [
+    {
+      "horizon": 1,
+      "registered_triplets": 36,
+      "complete": 36,
+      "wm_AD_FD_J_sign": {
+        "same": 36,
+        "opposite": 0,
+        "under_resolution": 0,
+        "missing": 0
+      },
+      "wm_physics_FD_J_sign": {
+        "same": 33,
+        "opposite": 3,
+        "under_resolution": 0,
+        "missing": 0
+      },
+      "objective_direction_instances": 12,
+      "original_positive_effort_reduces_real_endpoint": 0,
+      "original_positive_effort_reduces_real_same_clock": 0,
+      "original_positive_effort_increases_real_return": 0,
+      "both_errors_reduced": 0
+    },
+    {
+      "horizon": 7,
+      "registered_triplets": 36,
+      "complete": 36,
+      "wm_AD_FD_J_sign": {
+        "same": 36,
+        "opposite": 0,
+        "under_resolution": 0,
+        "missing": 0
+      },
+      "wm_physics_FD_J_sign": {
+        "same": 36,
+        "opposite": 0,
+        "under_resolution": 0,
+        "missing": 0
+      },
+      "objective_direction_instances": 12,
+      "original_positive_effort_reduces_real_endpoint": 6,
+      "original_positive_effort_reduces_real_same_clock": 6,
+      "original_positive_effort_increases_real_return": 1,
+      "both_errors_reduced": 6
+    },
+    {
+      "horizon": 32,
+      "registered_triplets": 36,
+      "complete": 36,
+      "wm_AD_FD_J_sign": {
+        "same": 25,
+        "opposite": 9,
+        "under_resolution": 2,
+        "missing": 0
+      },
+      "wm_physics_FD_J_sign": {
+        "same": 20,
+        "opposite": 8,
+        "under_resolution": 8,
+        "missing": 0
+      },
+      "objective_direction_instances": 12,
+      "original_positive_effort_reduces_real_endpoint": 3,
+      "original_positive_effort_reduces_real_same_clock": 5,
+      "original_positive_effort_increases_real_return": 3,
+      "both_errors_reduced": 3
+    }
+  ],
+  "physical_branches": 76,
+  "physical_microsteps": 194560,
+  "actor_calls_in_response_physics": 2432,
+  "physical_first_failure_count": 0,
+  "prefix_microsteps": 95200,
+  "reload_microsteps": 320,
+  "full_solver_reload_checks": 4,
+  "bitwise_successors": 2,
+  "dense_derivatives": "Each differences row links all 101 scalar/state outputs, AD, +/- and central derivatives in NPZ.",
+  "light_branch_table": "response_branches.csv",
+  "finite_difference_table": "response_differences.csv",
+  "formal_return": null,
+  "optimizer_steps": {
+    "actor": 0,
+    "wm": 0,
+    "critic": 0
+  }
+}

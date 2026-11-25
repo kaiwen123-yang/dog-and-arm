@@ -1,0 +1,38 @@
+{
+  "status": "executed_compatibility_limitation",
+  "registration": "official_pregrasp_compatibility_s0_v1",
+  "parent": "79fd3cf876c126e74d862e34e2638495705098e7",
+  "facts": [
+    "12条原轨迹复算。u10000四案各76平台拍姿态合格、位置0拍。最小端点距离7.933–13.826mm。最长ready为0/75。",
+    "平台同钟跟踪误差投影占绝大部分，臂FK投影7.231–10.041mm，参考进展0.025–0.047mm。符号投影是几何量。",
+    "共同XY平移保留稳定计算的Actor输入/命令，Critic可见变化；yaw与J2正控均被检测。删除30维参考根相对平移符合固定官方motion任务。",
+    "H32原高回报方向的正向首拍干预同时降低真实同钟/端点误差3/12。WM中心割线与真实回报中心割线同号20、反号8、低分辨8。",
+    "四条原参考钟继续段全部在参考open触及原物理终止；双指同时接触0拍，门角和门上合力为0。"
+  ],
+  "refuted_in_this_round": [
+    "四案在参考预抓平台尚未满足ramp或姿态",
+    "末拍偏离旧端点完全解释早期平台误差",
+    "在这四案中越过原任务超时后即可自然抓持/开门",
+    "原目标梯度正向在所有登记锚点和幅值改善端点"
+  ],
+  "unidentified": [
+    "缺失XY信息对原轨迹失败的因果份额及最优电机纠偏",
+    "H32反号在局部模型、非线性、闭环Actor、Critic与数值误差之间的分配",
+    "导致各控制分量偏差的训练原因",
+    "物理终止之后未到达的保持、释放与后续阶段能力"
+  ],
+  "implementation_contract_error_proven": false,
+  "learning_pair_triggered": false,
+  "learning_spend": {
+    "actor": 0,
+    "wm": 0,
+    "critic": 0
+  },
+  "diagnostic_instrumentation": "contact_warp.py 增加单世界诊断首个物理微步早停选项，默认不启用。训练权重、优化器、奖励和正式裁判均沿用父契约。",
+  "adaptation": "adaptation_proposal.json",
+  "old_chain": "closed at u10000",
+  "stage": "B0-04",
+  "candidate": null,
+  "V0": 0,
+  "qualified_bilateral_return": null
+}

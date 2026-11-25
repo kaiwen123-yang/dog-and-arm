@@ -1,5 +1,13 @@
 # 项目状态：SuperMimic 标准迁移
 
+## 2026-11-25｜集中兼容性轮实测完成
+
+原预抓平台四案均有连续 76 拍姿态合格，位置为 0 拍，最近 7.933–13.826 mm。四个锚点确认 Actor 的水平平移输入别名。76 条 0.25 ms 闭环响应均走完 H32；沿原目标正向扰动首动作，真实同钟和端点误差同时改善 3/12。四案超时后按原参考钟继续均未建立双指接触，在参考 open 阶段触发原物理终止。
+
+standard-v1 仍为 B0-04、候选 null、合格双侧回报 NA、V0=0。u10000 原 Warp/native 接触各 0/10、full 0/4、free 0/60。新增优化 Actor/WM/Critic 为 0/0/0。原主链封存于 u10000。 独立适配提案 SuperMimic-M1Piper-RefXY2-v1 只增加当前参考根相对机体的两维水平偏移，以等宽恒零输入作对照；提案仍待单独决定。
+
+[独立实测报告](reports/B0_PREGRASP_COMPATIBILITY_RESULTS_20261125.md) · [机制决定](results/b0/standard_pregrasp_compatibility_20261125/mechanism_decision.json) · [实际成本](results/b0/standard_pregrasp_compatibility_20261125/budget_and_recovery.json) · [诊断视频](results/b0/standard_pregrasp_compatibility_20261125/diagnostic_video_manifest.json)
+
 ## 2026-11-25｜u10000 已审查，下一轮集中查明预抓失败
 
 固定79fd3cf的official_flow_s0_v1已结案于u10000，不延长u15000。末点原Warp/native接触各0/10，frame0完整0/4、free0/60；候选null、合格完整双侧回报NA、V0=0，仍B0-04。主链累计10000 Actor/100000 WM/200000 Critic、102414758有效转移。先完成固定官方标准迁移冻结，再开发算法/VLA。

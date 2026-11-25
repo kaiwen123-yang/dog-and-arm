@@ -1,0 +1,32 @@
+{
+  "parent": "79fd3cf876c126e74d862e34e2638495705098e7/official_flow_s0_v1/u10000",
+  "amplitudes": [
+    0.02,
+    0.04,
+    0.08
+  ],
+  "anchors": "states.json",
+  "early_stop": "existing training first physical failure microstep; missing horizons NA",
+  "noise_seed": 825251,
+  "registration": "official_pregrasp_compatibility_s0_v1",
+  "branches_per_anchor_cap": 19,
+  "source": "2f75c34950018e2293f9effbe6172ab2ef40ba53",
+  "response_max": 76,
+  "servo_dt": 0.002,
+  "target": "First action only, subsequent closed-loop frozen policy; six tracking terms, signed fixed-effort rate and limits, soft survival, gamma=.99, bootstrapped Critic at H32 only",
+  "noise": "Single independent CUDA generator in registered state order, first 10 measured historical sensors and next 32 successor sensors, same draws for WM AD, WM differences and physics",
+  "reload_max": 4,
+  "branch_rule": "baseline + 3 amplitudes x both signs x each defined direction; no fallback direction",
+  "auxiliary": "Original latent BC separate",
+  "physics_dt": 0.00025,
+  "frame0_and_reload": "clean sensors, zero collector noise, common frozen Actor, single world per side",
+  "optimizer_steps": 0,
+  "policy_dt": 0.02,
+  "reconstruction_max": 2,
+  "replay_context": "continuous developer starts from original frame0, never appended to training replay",
+  "directions": [
+    "independent first raw-effort H32 gradient divided by max abs",
+    "positive J2 index 17",
+    "four wheel signs from model joint axle dot root lateral axis"
+  ]
+}

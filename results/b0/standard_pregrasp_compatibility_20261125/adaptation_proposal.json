@@ -1,0 +1,68 @@
+{
+  "id": "SuperMimic-M1Piper-RefXY2-v1",
+  "status": "proposal_only",
+  "parent": "79fd3cf876c126e74d862e34e2638495705098e7/official_flow_s0_v1/u10000",
+  "question": "同一参考时刻，若 Actor 能区分当前机器人相对参考根的水平偏移，原端点位置合格拍数及原物理资格是否改善？",
+  "rationale": "XY 平移构造显示不同的绝对端点误差可产生相同的稳态 Actor 输入。四案平台的臂 FK 有符号投影均大于根平移项，单靠根信息能否改善臂的补偿动作仍须实测。",
+  "feature": "只取当前20ms参考根XY与机器人根XY之差，按当前根yaw旋到机体水平系，除以0.05m。两个量追加到原540维goal规范化结果，进入motion encoder第一层。保持原540维在线统计，新两列采用预定物理尺度。",
+  "access": "首轮仿真使用物理根位姿作为自定位上界。两支均保留原77×10本体。新增2维不读未来相对平移、门、把手、裁判阶段或冻结端点。实机另需外部验证自定位误差和时延。",
+  "control": "同样的542输入、同样参数量，追加两列恒零。验证 +0 输出与父 Actor 数值等价。",
+  "treatment": "追加两列当前相对根水平偏移。两支首层新增列权重和相应优化器状态均为零，其余包括在线统计、Replay、优化器、时钟、lane、RNG与父包一致。新增量由既有状态和参考因果重算。按原生产优化器对齐扩维参数及其状态，保存迁移回执。",
+  "unchanged": [
+    "原 encoder/decoder 隐层宽度及latent",
+    "WM/Critic的原输入、网络、监督和统计",
+    "23通道effort与原2ms/20ms控制时钟",
+    "原0.25ms训练、原H7/H32、Ratio、六项tracking及原裁判、八参考"
+  ],
+  "comparison": "同父同种子，+0与配对+200，50步保存读数，每不超过10步保存两代。两支新采数据分别计数。报告两侧原平台位置/姿态/就绪持续时间、原完整首败，以及原Warp/native接触、full、free。主要终点为同包双后端双侧完整物理判定及到3mm的位置距离。",
+  "budget_proposed_only": {
+    "units": [
+      "Actor",
+      "WM",
+      "Critic"
+    ],
+    "per_arm": [
+      200,
+      2000,
+      4000
+    ],
+    "retained_total": [
+      400,
+      4000,
+      8000
+    ],
+    "one_pair_rollback": [
+      20,
+      200,
+      400
+    ],
+    "charged_cap": [
+      420,
+      4200,
+      8400
+    ],
+    "assessment_per_distinct_package": {
+      "warp_contact": 10,
+      "native_contact": 10,
+      "bilateral_full": 4,
+      "free": 60
+    },
+    "both_zero_equivalence": "先对父轨迹逐查询核对两支+0。两支输出与父包等价时复用父+0；若不等价则修正扩维初始化后再进入物理配对。",
+    "new_assessment_at_both_plus200": {
+      "contact": 40,
+      "full": 8,
+      "free": 120
+    },
+    "conditional_further_qualification_per_eligible_package": {
+      "D": 200,
+      "bilateral_C": 40,
+      "native_full_nominal": 2
+    },
+    "spent_here": [
+      0,
+      0,
+      0
+    ]
+  },
+  "decision": "按独立方法ID报告，不回填standard-v1。两支若均无原资格，只报告有界配对差异。若达到原资格，依同包原协议继续、首个原判完整成功即交同episode连续原速V0。独立seed/H另须独立预算。"
+}

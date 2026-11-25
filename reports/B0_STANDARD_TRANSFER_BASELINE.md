@@ -1,5 +1,13 @@
 # SuperMimic 标准迁移独立结果：M1＋Piper H
 
+## 2026-11-25｜固定 u10000 的集中兼容性结果
+
+原预抓平台四案均有连续 76 拍姿态合格，位置为 0 拍，最近 7.933–13.826 mm。四个锚点确认 Actor 的水平平移输入别名。76 条 0.25 ms 闭环响应均走完 H32；沿原目标正向扰动首动作，真实同钟和端点误差同时改善 3/12。四案超时后按原参考钟继续均未建立双指接触，在参考 open 阶段触发原物理终止。
+
+standard-v1 仍为 B0-04、候选 null、合格双侧回报 NA、V0=0。u10000 原 Warp/native 接触各 0/10、full 0/4、free 0/60。新增优化 Actor/WM/Critic 为 0/0/0。原主链封存于 u10000。 独立适配提案 SuperMimic-M1Piper-RefXY2-v1 只增加当前参考根相对机体的两维水平偏移，以等宽恒零输入作对照；提案仍待单独决定。
+
+[独立实测报告](../reports/B0_PREGRASP_COMPATIBILITY_RESULTS_20261125.md) · [机制决定](../results/b0/standard_pregrasp_compatibility_20261125/mechanism_decision.json) · [实际成本](../results/b0/standard_pregrasp_compatibility_20261125/budget_and_recovery.json) · [诊断视频](../results/b0/standard_pregrasp_compatibility_20261125/diagnostic_video_manifest.json)
+
 ## 2026-11-25｜u10000 结案后的当前独立结果
 
 最新固定实测79fd3cf：u10000原Warp/native接触各0/10，full0/4、free0/60；本轮30接触1过、8full0过、120free0过。仍B0-04、候选null、合格完整双侧回报NA、V0=0。三轮官方链累计52个frame0完整评测回合0成功，覆盖15节点，不是同一策略52次独立重复。前拉局部改善与背推退化分别记录，不跨包拼候选。

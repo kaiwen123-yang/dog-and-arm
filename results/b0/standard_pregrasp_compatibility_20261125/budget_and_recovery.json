@@ -1,0 +1,102 @@
+{
+  "registration": "official_pregrasp_compatibility_s0_v1",
+  "plan_commit": "2f75c34950018e2293f9effbe6172ab2ef40ba53",
+  "parent_commit": "79fd3cf876c126e74d862e34e2638495705098e7",
+  "cwd": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.pregrasp-2f75c349",
+  "original_method": "SuperMimic-M1Piper-standard-v1",
+  "offline": {
+    "unique_original_trajectories": 12,
+    "original_2ms_intervals": 85404,
+    "registered_window_evaluations": 36
+  },
+  "input_alias": {
+    "anchors": 4,
+    "input_variants": 28,
+    "direct_actor_forwards": 27,
+    "physics": 0,
+    "receipt": "input_alias.json"
+  },
+  "frame0_formal_diagnostics": {
+    "cases": 4,
+    "dt": 0.002,
+    "steps": 34570,
+    "sealed_prefix_steps": 32007,
+    "post_failure_steps": 2563
+  },
+  "fine_reconstruction": {
+    "cases": 2,
+    "dt": 0.00025,
+    "microsteps": 95200
+  },
+  "fine_unperturbed_reload": {
+    "branches": 4,
+    "dt": 0.00025,
+    "microsteps": 320,
+    "bitwise_successors": 2
+  },
+  "fine_response": {
+    "branches": 76,
+    "dt": 0.00025,
+    "microsteps": 194560,
+    "policy_intervals": 2432,
+    "complete_h1_h7_h32": [
+      76,
+      76,
+      76
+    ]
+  },
+  "actual_physical_trajectories_and_branches": 86,
+  "formal_qualification_suite_runs": 0,
+  "new_training_transitions": 0,
+  "optimizer_retained": {
+    "actor": 0,
+    "wm": 0,
+    "critic": 0
+  },
+  "optimizer_charged": {
+    "actor": 0,
+    "wm": 0,
+    "critic": 0
+  },
+  "rollbacks": {
+    "actor": 0,
+    "wm": 0,
+    "critic": 0
+  },
+  "conditional_pair": "not triggered",
+  "original_parent_retained": {
+    "wm": 100000,
+    "actor": 10000,
+    "critic": 200000
+  },
+  "previous_u4991_to_u10000_increment": {
+    "actor": 5009,
+    "wm": 50090,
+    "critic": 100180
+  },
+  "old_wm_ancestor_batches": 14850,
+  "previous_valid": 102414758,
+  "previous_clock": 26988,
+  "valid_to_next_ratio": 5722,
+  "raw_root": "/root/autodl-tmp/dog-and-arm-b0-temporal-v1/.pregrasp-2f75c349/results/raw_large/b0/pregrasp_compatibility_20261125",
+  "light_root": "results/b0/standard_pregrasp_compatibility_20261125",
+  "new_formal_candidate": null,
+  "qualified_bilateral_return": null,
+  "V0": 0,
+  "executed_checks": [
+    "parent_recovery.json",
+    "restored_u010000.json",
+    "source_array_inventory.json",
+    "clock_alignment.json",
+    "gradient_physics_comparison.json",
+    "reference_clock_continuation_cases.csv",
+    "diagnostic_video_manifest.json"
+  ],
+  "operational_notes": [
+    "首份父包附加账本错误地用每更新的样本位置数直接算Ratio间隔。原恢复与张量比较已通过。按原replay_ratio折算后从同一包重新完整实载，回执为5722；两次均零优化。",
+    "首次别名断言把冷启动舍入差当作异常，止于第2个直接调用。复算原输入，恢复并复用相同张量的输出；总计27次直接推理。",
+    "两侧首锚后继有微小浮点差。保留原80微步结果，逐字段复核快照、噪声身份及离散计数，再在原4锚上收集响应。无重复物理重建或重载分支。",
+    "本地完整clone未取得pack，已停止；改用第二平台隔离worktree和小型过滤对象库。平台本身未配置GitHub推送凭据，使用Windows已有认证作普通推送。",
+    "Windows首次视频拷贝的花括号参数解析失败，已重新传输。源轨迹及评分未重跑。"
+  ]
+}

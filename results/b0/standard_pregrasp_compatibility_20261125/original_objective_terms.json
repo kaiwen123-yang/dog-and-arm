@@ -1,0 +1,131 @@
+{
+  "pinned_supermimic": "abc124c1bd5976341034668af3d12c087f2f1f55",
+  "pinned_mjlab_research": "dd51a9fcc98791a2f0b018b3c7f71a3eefd5ecdd",
+  "parent": "79fd3cf876c126e74d862e34e2638495705098e7",
+  "checkpoint": "results/raw_large/b0/official_flow_continuation_20261125/checkpoint_010000.pt",
+  "sources": {
+    "goal": "vendor/b0/supermimic/src/supermimic/representations.py:compute_wm_goal; learning/b0/contact_policy.py:DoorMotions.goals",
+    "sensor": "learning/b0/contact_policy.py:sensor; learning/b0/model.py:RobotRepresentation",
+    "reward": "vendor/b0/supermimic/src/supermimic/utils/tracking_reward.py:tracking_reward,_reanchor_targets; learning/b0/contact_reward.py:reward_actions,reward_terms",
+    "successor": "learning/b0/contact_training.py:DoorImagination._update_goal",
+    "termination": "vendor/b0/supermimic/src/supermimic/envs/world_model_env.py:_compute_term_prob",
+    "bootstrap": "vendor/b0/supermimic/src/supermimic/learners/policy_learner.py:ActorCriticPolicyLearner._bootstrap",
+    "configuration": "learning/b0/contact_training.py:ContactRun and parent interface.json"
+  },
+  "current_state_dimensions": {
+    "history": [
+      10,
+      77
+    ],
+    "actor_goal": 540,
+    "critic_state": 75,
+    "critic_goal": 570,
+    "ctx": 5
+  },
+  "reanchor": "Body pose target uses predicted XY and relative yaw; reference anchor Z and roll/pitch retained. Anchor position and orientation terms score the original absolute target.",
+  "six_kernel_weights_widths": {
+    "anchor_position": [
+      0.5,
+      0.3
+    ],
+    "anchor_orientation": [
+      0.5,
+      0.4
+    ],
+    "body_position": [
+      1.0,
+      0.3
+    ],
+    "body_orientation": [
+      1.0,
+      0.4
+    ],
+    "body_linear_velocity": [
+      1.0,
+      1.0
+    ],
+    "body_angular_velocity": [
+      1.0,
+      3.14
+    ]
+  },
+  "action_rate": "-dt * 0.1 * squared norm of effort-space current minus previous (canonical-home)/unit",
+  "joint_limit": "-dt * 2 * sum of linear excess beyond soft joint position limits",
+  "termination": "sigmoid((max(abs(root_z-ref_z)/0.1, abs(gravity_z-ref_gravity_z)/0.12)-1)/0.05); soft survival multiplier (1-p)",
+  "return_formula": "sum_t gamma^t survive_before_t reward_t, plus gamma^32 survive_32 min(critic_observation_value, max_step_reward/(1-gamma)); gamma=.99. Auxiliary latent BC separate, motion=1 velocity=0.",
+  "event": "Original pregrasp threshold 0.003m, 0.02rad, 0.15s; 0.3m Gaussian width has different role.",
+  "fixed_measured_successor_checks": [
+    {
+      "side": "pull",
+      "frame": 588,
+      "reward_successor_frame": 589,
+      "terms": {
+        "anchor_position": 0.009988232515752316,
+        "anchor_orientation": 0.009999865666031837,
+        "body_position": 0.019953040406107903,
+        "body_orientation": 0.019986381754279137,
+        "body_linear_velocity": 0.019997233524918556,
+        "body_angular_velocity": 0.019999368116259575,
+        "action_rate": -1.5188585166470148e-05,
+        "joint_limit": -0.0
+      },
+      "official_reward": 0.09990893304347992,
+      "signed_terms_sum": 0.09990893304347992,
+      "residual": 0.0
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "reward_successor_frame": 595,
+      "terms": {
+        "anchor_position": 0.009988919831812382,
+        "anchor_orientation": 0.009999806061387062,
+        "body_position": 0.019958538934588432,
+        "body_orientation": 0.019987570121884346,
+        "body_linear_velocity": 0.019997715950012207,
+        "body_angular_velocity": 0.019998934119939804,
+        "action_rate": -1.3360609955270775e-05,
+        "joint_limit": -0.0
+      },
+      "official_reward": 0.09991812705993652,
+      "signed_terms_sum": 0.09991811960935593,
+      "residual": -7.450580596923828e-09
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "reward_successor_frame": 588,
+      "terms": {
+        "anchor_position": 0.009995603002607822,
+        "anchor_orientation": 0.00999964214861393,
+        "body_position": 0.019955389201641083,
+        "body_orientation": 0.01995619758963585,
+        "body_linear_velocity": 0.019999396055936813,
+        "body_angular_velocity": 0.01999887451529503,
+        "action_rate": -3.4054869502142537e-06,
+        "joint_limit": -0.0
+      },
+      "official_reward": 0.0999017059803009,
+      "signed_terms_sum": 0.0999016985297203,
+      "residual": -7.450580596923828e-09
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "reward_successor_frame": 595,
+      "terms": {
+        "anchor_position": 0.009995776228606701,
+        "anchor_orientation": 0.009999671950936317,
+        "body_position": 0.019958004355430603,
+        "body_orientation": 0.01996055245399475,
+        "body_linear_velocity": 0.0199995506554842,
+        "body_angular_velocity": 0.019998932257294655,
+        "action_rate": -2.061253780993866e-06,
+        "joint_limit": -0.0
+      },
+      "official_reward": 0.0999104306101799,
+      "signed_terms_sum": 0.0999104231595993,
+      "residual": -7.450580596923828e-09
+    }
+  ]
+}

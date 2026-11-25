@@ -1,0 +1,644 @@
+{
+  "checkpoint": "results/raw_large/b0/official_flow_continuation_20261125/checkpoint_010000.pt",
+  "direct_query_count_current_pass": 23,
+  "reconstructed_input_variants": 28,
+  "physics_calls": 0,
+  "history": "Full archived q/v/previous command from last ten absolute boundaries; current frame uses previous command. All perturbations applied to the entire q history, velocities/commands/reference/door fixed.",
+  "outputs": "Cumulative infinity norms relative to same-anchor baseline, same frozen weights and normalizers. Critic receives concat(75,570,5). Raw arrays per anchor under raw_large/pregrasp directory.",
+  "reachability": "Synthetic counterfactual input and FK. Opposite signed TCP residuals imply opposite geometric displacement for fixed absolute endpoint in that coordinate, not opposite proven optimal motor commands or physically sampled mirror states.",
+  "rows": [
+    {
+      "side": "pull",
+      "frame": 588,
+      "variant": "base",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.0,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.005495056721404934,
+        0.008939939038514422,
+        0.004076667664810629
+      ],
+      "tcp_endpoint_distance_m": 0.01125776965624738,
+      "auxiliary_loss": null,
+      "action_source": "direct query on saved raw tensors",
+      "max_abs_raw_command_vs_archived": 5.960464477539063e-08
+    },
+    {
+      "side": "pull",
+      "frame": 588,
+      "variant": "x+",
+      "max_abs_delta": {
+        "raw_history": 4.656612873077393e-10,
+        "normalized_history": 3.725290298461914e-09,
+        "raw_goal": 1.7171259969472885e-07,
+        "normalized_goal": 7.495284080505371e-06,
+        "critic_input": 0.04999954253435135,
+        "command_raw": 5.960464477539063e-08,
+        "command_clipped": 5.960464477539063e-08
+      },
+      "tcp_minus_endpoint_world_m": [
+        0.04450494327859511,
+        0.008939939038514422,
+        0.004076667664810629
+      ],
+      "tcp_endpoint_distance_m": 0.04557665746292321,
+      "auxiliary_loss": null,
+      "action_source": "direct query on saved raw tensors"
+    },
+    {
+      "side": "pull",
+      "frame": 588,
+      "variant": "x-",
+      "max_abs_delta": {
+        "raw_history": 4.656612873077393e-10,
+        "normalized_history": 3.725290298461914e-09,
+        "raw_goal": 1.7171259969472885e-07,
+        "normalized_goal": 7.495284080505371e-06,
+        "critic_input": 0.049999624490737915,
+        "command_raw": 5.960464477539063e-08,
+        "command_clipped": 5.960464477539063e-08
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.05549505672140498,
+        0.008939939038514422,
+        0.004076667664810629
+      ],
+      "tcp_endpoint_distance_m": 0.05635816755159471,
+      "auxiliary_loss": null,
+      "action_source": "identical raw tensors; shared direct x+ output"
+    },
+    {
+      "side": "pull",
+      "frame": 588,
+      "variant": "y+",
+      "max_abs_delta": {
+        "raw_history": 4.656612873077393e-10,
+        "normalized_history": 3.725290298461914e-09,
+        "raw_goal": 1.7171259969472885e-07,
+        "normalized_goal": 7.495284080505371e-06,
+        "critic_input": 0.049999479204416275,
+        "command_raw": 5.960464477539063e-08,
+        "command_clipped": 5.960464477539063e-08
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.005495056721404934,
+        0.05893993903851441,
+        0.004076667664810629
+      ],
+      "tcp_endpoint_distance_m": 0.059335750450167604,
+      "auxiliary_loss": null,
+      "action_source": "identical raw tensors; shared direct x+ output"
+    },
+    {
+      "side": "pull",
+      "frame": 588,
+      "variant": "y-",
+      "max_abs_delta": {
+        "raw_history": 4.656612873077393e-10,
+        "normalized_history": 3.725290298461914e-09,
+        "raw_goal": 1.7171259969472885e-07,
+        "normalized_goal": 7.495284080505371e-06,
+        "critic_input": 0.04999963939189911,
+        "command_raw": 5.960464477539063e-08,
+        "command_clipped": 5.960464477539063e-08
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.005495056721404934,
+        -0.04106006096148557,
+        0.004076667664810629
+      ],
+      "tcp_endpoint_distance_m": 0.04162623540246801,
+      "auxiliary_loss": null,
+      "action_source": "identical raw tensors; shared direct x+ output"
+    },
+    {
+      "side": "pull",
+      "frame": 588,
+      "variant": "yaw+",
+      "max_abs_delta": {
+        "raw_history": 4.656612873077393e-10,
+        "normalized_history": 7.450580596923828e-09,
+        "raw_goal": 0.00872665923088789,
+        "normalized_goal": 0.40258359909057617,
+        "critic_input": 0.010029196739196777,
+        "command_raw": 0.002635955810546875,
+        "command_clipped": 0.002635955810546875
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.005530216933003151,
+        0.015155728050611494,
+        0.004076667664810518
+      ],
+      "tcp_endpoint_distance_m": 0.016640270770617843,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "pull",
+      "frame": 588,
+      "variant": "J2+",
+      "max_abs_delta": {
+        "raw_history": 0.0009999275207519531,
+        "normalized_history": 0.0016478300094604492,
+        "raw_goal": 1.7171259969472885e-07,
+        "normalized_goal": 7.495284080505371e-06,
+        "critic_input": 0.0009999275207519531,
+        "command_raw": 2.944469451904297e-05,
+        "command_clipped": 2.944469451904297e-05
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.0053943260962387996,
+        0.008921492999905634,
+        0.0034392030934323747
+      ],
+      "tcp_endpoint_distance_m": 0.010978156006260932,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "variant": "base",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.0,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.004217073313263819,
+        0.00834702666440812,
+        0.002856895215253785
+      ],
+      "tcp_endpoint_distance_m": 0.009778466737516776,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query",
+      "max_abs_raw_command_vs_archived": 0.0
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "variant": "x+",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.04999956488609314,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        0.045782926686736225,
+        0.00834702666440812,
+        0.002856895215253785
+      ],
+      "tcp_endpoint_distance_m": 0.046625219360452816,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "variant": "x-",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.04999944567680359,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.054217073313263864,
+        0.00834702666440812,
+        0.002856895215253785
+      ],
+      "tcp_endpoint_distance_m": 0.05493018972353098,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "variant": "y+",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.04999956116080284,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.004217073313263819,
+        0.058347026664408164,
+        0.002856895215253785
+      ],
+      "tcp_endpoint_distance_m": 0.058568942949122266,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "variant": "y-",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.04999956488609314,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.004217073313263819,
+        -0.041652973335591814,
+        0.002856895215253785
+      ],
+      "tcp_endpoint_distance_m": 0.04196326661850701,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "variant": "yaw+",
+      "max_abs_delta": {
+        "raw_history": 4.656612873077393e-10,
+        "normalized_history": 7.450580596923828e-09,
+        "raw_goal": 0.008726852014660835,
+        "normalized_goal": 0.4025900065898895,
+        "critic_input": 0.010031044483184814,
+        "command_raw": 0.002330005168914795,
+        "command_clipped": 0.002330005168914795
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.004247795867059256,
+        0.014576996178355506,
+        0.0028568952152538962
+      ],
+      "tcp_endpoint_distance_m": 0.015449739078150716,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "pull",
+      "frame": 594,
+      "variant": "J2+",
+      "max_abs_delta": {
+        "raw_history": 0.0009999275207519531,
+        "normalized_history": 0.0016478300094604492,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.0009999275207519531,
+        "command_raw": 2.759695053100586e-05,
+        "command_clipped": 2.759695053100586e-05
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.004117618649775112,
+        0.008328815973714043,
+        0.0022176481714130114
+      ],
+      "tcp_endpoint_distance_m": 0.009552063770784902,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "variant": "base",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.0,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.00874156948994087,
+        0.012094408672032764,
+        0.0017526973509184307
+      ],
+      "tcp_endpoint_distance_m": 0.01502536875679006,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query",
+      "max_abs_raw_command_vs_archived": 0.0
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "variant": "x+",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.04982320964336395,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        0.041258430510059396,
+        0.012094408672032764,
+        0.0017526973509184307
+      ],
+      "tcp_endpoint_distance_m": 0.04303027721597268,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "variant": "x-",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.049823254346847534,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.058741569489940915,
+        0.012094408672032764,
+        0.0017526973509184307
+      ],
+      "tcp_endpoint_distance_m": 0.05999932212343415,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "variant": "y+",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.0498233400285244,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.00874156948994087,
+        0.06209440867203275,
+        0.0017526973509184307
+      ],
+      "tcp_endpoint_distance_m": 0.06273119298627117,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "variant": "y-",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.04982340335845947,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.00874156948994087,
+        -0.03790559132796725,
+        0.0017526973509184307
+      ],
+      "tcp_endpoint_distance_m": 0.03893996454895982,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "variant": "yaw+",
+      "max_abs_delta": {
+        "raw_history": 4.656612873077393e-10,
+        "normalized_history": 1.4901161193847656e-08,
+        "raw_goal": 0.00872665736824274,
+        "normalized_goal": 0.402590274810791,
+        "critic_input": 0.00872665736824274,
+        "command_raw": 0.001405075192451477,
+        "command_clipped": 0.001405075192451477
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.01068518977131383,
+        0.009538802786337147,
+        0.0017526973509188748
+      ],
+      "tcp_endpoint_distance_m": 0.0144303148631463,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 587,
+      "variant": "J2+",
+      "max_abs_delta": {
+        "raw_history": 0.001000046730041504,
+        "normalized_history": 0.001648038625717163,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.001000046730041504,
+        "command_raw": 2.8431415557861328e-05,
+        "command_clipped": 2.8431415557861328e-05
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.008869549072180849,
+        0.012054235080087766,
+        0.0015174592031177436
+      ],
+      "tcp_endpoint_distance_m": 0.015042478736663364,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "variant": "base",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.0,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.007976798036132271,
+        0.011299342118059136,
+        0.0013157277757435137
+      ],
+      "tcp_endpoint_distance_m": 0.013893724439114652,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query",
+      "max_abs_raw_command_vs_archived": 0.0
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "variant": "x+",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.04982296749949455,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        0.04202320196386777,
+        0.011299342118059136,
+        0.0013157277757435137
+      ],
+      "tcp_endpoint_distance_m": 0.04353568392912679,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "variant": "x-",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.049822986125946045,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.057976798036132315,
+        0.011299342118059136,
+        0.0013157277757435137
+      ],
+      "tcp_endpoint_distance_m": 0.059082276381358934,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "variant": "y+",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.049823082983493805,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.007976798036132271,
+        0.0612993421180591,
+        0.0013157277757435137
+      ],
+      "tcp_endpoint_distance_m": 0.061830168935528236,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "variant": "y-",
+      "max_abs_delta": {
+        "raw_history": 0.0,
+        "normalized_history": 0.0,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.04982313513755798,
+        "command_raw": 0.0,
+        "command_clipped": 0.0
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.007976798036132271,
+        -0.038700657881940825,
+        0.0013157277757435137
+      ],
+      "tcp_endpoint_distance_m": 0.03953607677785107,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "variant": "yaw+",
+      "max_abs_delta": {
+        "raw_history": 4.656612873077393e-10,
+        "normalized_history": 7.450580596923828e-09,
+        "raw_goal": 0.008726704865694046,
+        "normalized_goal": 0.40259015560150146,
+        "critic_input": 0.008726704865694046,
+        "command_raw": 0.001236259937286377,
+        "command_clipped": 0.001236259937286377
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.009914428713263534,
+        0.00874949274376946,
+        0.0013157277757437358
+      ],
+      "tcp_endpoint_distance_m": 0.013288365571563812,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    },
+    {
+      "side": "push",
+      "frame": 594,
+      "variant": "J2+",
+      "max_abs_delta": {
+        "raw_history": 0.001000046730041504,
+        "normalized_history": 0.001648038625717163,
+        "raw_goal": 0.0,
+        "normalized_goal": 0.0,
+        "critic_input": 0.001000046730041504,
+        "command_raw": 2.7924776077270508e-05,
+        "command_clipped": 2.7924776077270508e-05
+      },
+      "tcp_minus_endpoint_world_m": [
+        -0.008104160795918691,
+        0.011258736547716641,
+        0.001081741674498593
+      ],
+      "tcp_endpoint_distance_m": 0.013914263757286726,
+      "auxiliary_loss": 0.0,
+      "action_source": "direct frozen query"
+    }
+  ],
+  "initial_failed_pass": {
+    "query_count": 2,
+    "failed_at": "pull 588 x+",
+    "reason": "Exact zero against cold first evaluation. Source-input-only fresh process reproduces both tensors bit-for-bit and proves first failing raw-input assertion independent of motor output.",
+    "counterexample_raw_goal_max_abs": 1.7171259969472885e-07
+  },
+  "direct_query_count_total": 27,
+  "first_anchor_recheck": {
+    "first_two_input_arrays_reproduced": true,
+    "steady_unshifted_vs_each_xy_raw_input_exact": true,
+    "extra_unique_input_forwards": 2,
+    "interpretation": "Task inputs exactly equal in steady computation, cold-vs-steady differences are also reproduced with zero translation. Two new forwards on the two distinct raw input pairs. Three redundant XY queries reuse the exact same query result."
+  }
+}

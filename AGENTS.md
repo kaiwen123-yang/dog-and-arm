@@ -1,5 +1,9 @@
 # dog-and-arm 项目指令
 
+## 2026-11-25｜预抓兼容性轮已执行
+
+读取[独立结果](reports/B0_PREGRASP_COMPATIBILITY_RESULTS_20261125.md)、[机制决定](results/b0/standard_pregrasp_compatibility_20261125/mechanism_decision.json)和[当前启动词](prompts/NEXT_RUN.txt)。2f75c349 登记的 A–D 已完成，历史条目中的“下一轮”指本次已执行诊断。standard-v1 仍为 B0-04、候选 null、合格双侧回报 NA、V0=0。u10000 原 Warp/native 接触各 0/10、full 0/4、free 0/60。新增优化 Actor/WM/Critic 为 0/0/0。原主链封存于 u10000。 独立适配提案 SuperMimic-M1Piper-RefXY2-v1 只增加当前参考根相对机体的两维水平偏移，以等宽恒零输入作对照；提案仍待单独决定。 完整成功首次出现仍立即保存并交付同一回合连续原速 V0，完成独立标准迁移后再开展算法/VLA。
+
 ## 2026-11-25｜u10000 审查后当前执行入口
 
 先读 reports/B0_U10000_REVIEW_20261125.md、docs/B0_PREGRASP_COMPATIBILITY_PLAN_20261125.md、results/b0/official_u10000_review_20261125/next_registration.json、PROJECT_STATE.md顶部和prompts/NEXT_RUN.txt。

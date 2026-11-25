@@ -145,7 +145,9 @@ class ContactPlant(ResearchPlant):
         current.wait_stream(base._torch_stream)
 
     def step_contact(self, actions, side_bits, phase_ids, record=False, measure_peak_force=False,
-                     capture_first_failure_state=False, measure_grip=False):
+                     capture_first_failure_state=False, measure_grip=False, stop_at_first_failure=False):
+        if stop_at_first_failure and self.count != 1:
+            raise ValueError('Early stop requires a single diagnostic world')
         if actions.shape != (self.count, 23):
             raise ValueError('Expected one clipped action per world with 23 channels')
         if side_bits.shape != (self.count,) or phase_ids.shape not in (
@@ -242,8 +244,10 @@ class ContactPlant(ResearchPlant):
                               qvel_post=data.qvel[:], numerical_valid=numerical, first_fail_substep=first)
                 for key, value in fields.items():
                     records.setdefault(key, []).append(value.clone())
+            if stop_at_first_failure and first.item():
+                break
         result = dict(first_fail_substep=first, reason=reason, overflow=overflow,
-                      valid_full_interval=finite, physics_steps=torch.full_like(first,self.clock.policy_steps))
+                      valid_full_interval=finite, physics_steps=torch.full_like(first, substep + 1))
         if measure_grip:
             result.update(finger_min=finger_min,finger_max=finger_max,dual_prefix=dual_prefix)
         if capture_first_failure_state:
