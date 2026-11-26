@@ -1,24 +1,30 @@
 {
-  "as_of_beijing": "2026-11-26T10:24:19+08:00",
-  "low_updates": 36000,
-  "B_high_updates": 8192,
-  "C_actor_updates": 4397,
+  "as_of_beijing": "2026-11-26T10:31:28+08:00",
+  "low_updates": 48000,
+  "B_high_updates": 19008,
+  "C_actor_updates": 5507,
   "wm_updates": 0,
   "bridge_updates": 600,
   "critic_updates": 0,
-  "completed_episodes": 480,
-  "episode_substeps": 7171979,
+  "completed_episodes": 656,
+  "episode_substeps": 9395401,
   "extra_substeps": {
     "C/true_forward_optimization": 0,
-    "C/short_recovery_evaluation": 75060,
+    "C/short_recovery_evaluation": 93591,
     "C/directional_check": 5120,
     "B/true_forward_optimization": 0
   },
-  "accounted_native_substeps": 7252159,
+  "accounted_native_substeps": 9494112,
   "physical_by_group": {
     "A/command_teacher": {
       "cases": 96,
       "success": 30,
+      "ordered_events": 0,
+      "native_substeps": 1440000
+    },
+    "A/correction": {
+      "cases": 96,
+      "success": 40,
       "ordered_events": 0,
       "native_substeps": 1440000
     },
@@ -41,10 +47,10 @@
       "native_substeps": 424484
     },
     "B/rounds/r01/collect": {
-      "cases": 43,
+      "cases": 96,
       "success": 0,
-      "ordered_events": 93,
-      "native_substeps": 370563
+      "ordered_events": 278,
+      "native_substeps": 976123
     },
     "B/teachers": {
       "cases": 96,
@@ -53,16 +59,16 @@
       "native_substeps": 2529224
     },
     "B/warm/development": {
-      "cases": 16,
+      "cases": 27,
       "success": 0,
-      "ordered_events": 4,
-      "native_substeps": 100414
+      "ordered_events": 8,
+      "native_substeps": 128818
     },
     "C/development": {
-      "cases": 64,
+      "cases": 80,
       "success": 0,
-      "ordered_events": 20,
-      "native_substeps": 499839
+      "ordered_events": 26,
+      "native_substeps": 649297
     }
   },
   "A_stages": [
@@ -75,6 +81,14 @@
       "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt"
     },
     {
+      "seed": 1701,
+      "block": 1,
+      "retained": 4000,
+      "paid": 4000,
+      "resume": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block1/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block1/deploy.pt"
+    },
+    {
       "seed": 1702,
       "block": 0,
       "retained": 12000,
@@ -83,12 +97,28 @@
       "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt"
     },
     {
+      "seed": 1702,
+      "block": 1,
+      "retained": 4000,
+      "paid": 4000,
+      "resume": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block1/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block1/deploy.pt"
+    },
+    {
       "seed": 1703,
       "block": 0,
       "retained": 12000,
       "paid": 12000,
       "resume": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/latest.pt",
       "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/deploy.pt"
+    },
+    {
+      "seed": 1703,
+      "block": 1,
+      "retained": 4000,
+      "paid": 4000,
+      "resume": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block1/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block1/deploy.pt"
     }
   ],
   "B_stages": [
@@ -107,6 +137,32 @@
     },
     {
       "stage": "warm",
+      "method": "D23",
+      "seed": 1702,
+      "round": 0,
+      "retained": 4096,
+      "paid": 4096,
+      "path": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1702",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1702/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1702/deploy.pt"
+    },
+    {
+      "stage": "warm",
+      "method": "D23",
+      "seed": 1703,
+      "round": 0,
+      "retained": 2624,
+      "paid": 2624,
+      "path": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1703",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": null,
+      "deploy": null
+    },
+    {
+      "stage": "warm",
       "method": "H9",
       "seed": 1701,
       "round": 0,
@@ -117,6 +173,19 @@
       "model_queries": 0,
       "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/full.pt",
       "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/deploy.pt"
+    },
+    {
+      "stage": "warm",
+      "method": "H9",
+      "seed": 1702,
+      "round": 0,
+      "retained": 4096,
+      "paid": 4096,
+      "path": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/deploy.pt"
     }
   ],
   "C_forks": [
@@ -173,10 +242,30 @@
     {
       "variant": "C32",
       "seed": 1703,
-      "paid": 301,
-      "retained": 288,
-      "bc_rows_paid": 77056,
-      "model_queries": 308224,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 524288,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C32/seed1703/final.pt"
+    },
+    {
+      "variant": "C32G",
+      "seed": 1701,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 524288,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C32G/seed1701/final.pt"
+    },
+    {
+      "variant": "C32G",
+      "seed": 1702,
+      "paid": 387,
+      "retained": 384,
+      "bc_rows_paid": 99072,
+      "model_queries": 396288,
       "native_substeps": 0,
       "full": null
     },
@@ -246,6 +335,20 @@
       "cases": 32,
       "survived": 28,
       "native_substeps": 9284
+    },
+    {
+      "variant": "C32",
+      "seed": 1703,
+      "cases": 32,
+      "survived": 28,
+      "native_substeps": 9219
+    },
+    {
+      "variant": "C32G",
+      "seed": 1701,
+      "cases": 32,
+      "survived": 28,
+      "native_substeps": 9312
     },
     {
       "variant": "C8",

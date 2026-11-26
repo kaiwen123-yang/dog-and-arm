@@ -1,9 +1,9 @@
 # 项目状态：完整多模态腿臂算法主线
 
 <!-- mm03-live -->
-## 2026-11-26 10:24 北京时间 · MM03 实际进度
+## 2026-11-26 10:31 北京时间 · MM03 实际进度
 
-A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 36,000、8,192、4,397、0、600 次。 云端 A running, B running, C running。原始回合与完整包位于 /root/autodl-tmp/mm03-20261126。[实测报告](reports/MULTIMODAL_MM03_RESULTS.md) · [恢复清单](results/multimodal/mm03_20261126/manifest.json)
+A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 48,000、19,008、5,507、0、600 次。 云端 A running, B running, C running。原始回合与完整包位于 /root/autodl-tmp/mm03-20261126。[实测报告](reports/MULTIMODAL_MM03_RESULTS.md) · [恢复清单](results/multimodal/mm03_20261126/manifest.json)
 <!-- /mm03-live -->
 
 ## 2026-11-26 10:05 北京时间 · MM03 启动准备
