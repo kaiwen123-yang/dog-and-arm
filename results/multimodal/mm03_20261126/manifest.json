@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-26T10:31:28+08:00",
+  "as_of_beijing": "2026-11-26T10:36:38+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "L16 第 1 个训练块",
+  "milestone": "完整教师与同条件高层学生录像、高层预热完成",
   "runtime": {
     "supervisor": {
       "pid": 399163,
@@ -103,11 +103,11 @@
     },
     "C": {
       "unit": "C",
-      "attempt": 2,
-      "started_beijing": "2026-11-26T10:07:34+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/C.attempt002.log",
-      "wrapper": 400414,
-      "wrapper_stamp": "1171622172",
+      "attempt": 3,
+      "started_beijing": "2026-11-26T10:36:30+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/C.attempt003.log",
+      "wrapper": 411310,
+      "wrapper_stamp": "1171795759",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.venv/bin/python",
         "-u",
@@ -118,10 +118,10 @@
         "--workers",
         "4"
       ],
-      "git_commit": "d1412cede10b357aacdf057b042b5b5096710a3e",
+      "git_commit": "9b465fa95c709d5e1d20e9f1e9cff9e0adbb1940",
       "state": "running",
-      "pid": 400416,
-      "pid_stamp": "1171622178",
+      "pid": 411312,
+      "pid_stamp": "1171795765",
       "live": true
     },
     "video": {
@@ -174,37 +174,37 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 74,
+    "samples": 90,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-26T10:31:10+08:00",
-      "time": 1795660270.5673478,
-      "cpu_stat": "usage_usec 11029975828402\nuser_usec 10742302464619\nsystem_usec 287673363782\nnr_periods 21208873\nnr_throttled 150613\nthrottled_usec 81883497074",
+      "beijing": "2026-11-26T10:36:32+08:00",
+      "time": 1795660592.3042076,
+      "cpu_stat": "usage_usec 11034751343118\nuser_usec 10746955748026\nsystem_usec 287795595091\nnr_periods 21212091\nnr_throttled 150620\nthrottled_usec 81910591616",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "110682443776",
+      "ram_bytes": "103362437120",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 424479571968,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 13066, 97887, 96",
+      "disk_free_bytes": 423280136192,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 2413, 97887, 3",
       "inference": {
-        "calls": 461104,
-        "forwards": 261587,
+        "calls": 670142,
+        "forwards": 372863,
         "max_batch": 7,
-        "mean_batch": 1.7627175662399126,
-        "queue_wait_mean_ms": 1.9207046041649694,
+        "mean_batch": 1.7972874755607287,
+        "queue_wait_mean_ms": 2.010839164437849,
         "device": "cuda",
-        "queued": 0,
-        "models": 11,
-        "peak_torch_allocated_bytes": 51116544
+        "queued": 2,
+        "models": 17,
+        "peak_torch_allocated_bytes": 57050112
       },
       "lane_pids": {
         "inference": 404001,
         "A": 404015,
         "B": 407427,
-        "C": 400416,
+        "C": 411312,
         "video": 399173
       }
     },
@@ -370,6 +370,84 @@
       "common_H9_parent": false
     },
     {
+      "method": "D23",
+      "seed": 1703,
+      "round": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1703/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1703/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1703/receipt.json",
+      "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/deploy.pt",
+      "rank": [
+        0,
+        0,
+        1,
+        -8,
+        0
+      ],
+      "development": [
+        {
+          "scene": "tr_nominal",
+          "side": "pull",
+          "goal": 15,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "pull",
+          "goal": 25,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "push",
+          "goal": 15,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "push",
+          "goal": 25,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "pull",
+          "goal": 15,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "pull",
+          "goal": 25,
+          "success": false,
+          "events": 1
+        },
+        {
+          "scene": "va_pose",
+          "side": "push",
+          "goal": 15,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "push",
+          "goal": 25,
+          "success": false,
+          "events": 0
+        }
+      ],
+      "physical_cases": 8,
+      "paired_model_updates_at_checkpoint": 0,
+      "initialization_only": true,
+      "common_H9_parent": false
+    },
+    {
       "method": "H9",
       "seed": 1701,
       "round": 0,
@@ -446,12 +524,92 @@
       "paired_model_updates_at_checkpoint": 0,
       "initialization_only": true,
       "common_H9_parent": false
+    },
+    {
+      "method": "H9",
+      "seed": 1702,
+      "round": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/receipt.json",
+      "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt",
+      "rank": [
+        0,
+        0,
+        4,
+        0,
+        0
+      ],
+      "development": [
+        {
+          "scene": "tr_nominal",
+          "side": "pull",
+          "goal": 15,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "pull",
+          "goal": 25,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "push",
+          "goal": 15,
+          "success": false,
+          "events": 1
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "push",
+          "goal": 25,
+          "success": false,
+          "events": 1
+        },
+        {
+          "scene": "va_pose",
+          "side": "pull",
+          "goal": 15,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "pull",
+          "goal": 25,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "push",
+          "goal": 15,
+          "success": false,
+          "events": 1
+        },
+        {
+          "scene": "va_pose",
+          "side": "push",
+          "goal": 25,
+          "success": false,
+          "events": 1
+        }
+      ],
+      "physical_cases": 8,
+      "paired_model_updates_at_checkpoint": 0,
+      "initialization_only": true,
+      "common_H9_parent": false
     }
   ],
   "latest_locations": [
     "/root/autodl-tmp/mm03-20261126/B/models/D23/seed1701/latest.json",
     "/root/autodl-tmp/mm03-20261126/B/models/D23/seed1702/latest.json",
-    "/root/autodl-tmp/mm03-20261126/B/models/H9/seed1701/latest.json"
+    "/root/autodl-tmp/mm03-20261126/B/models/D23/seed1703/latest.json",
+    "/root/autodl-tmp/mm03-20261126/B/models/H9/seed1701/latest.json",
+    "/root/autodl-tmp/mm03-20261126/B/models/H9/seed1702/latest.json"
   ],
   "C_selected": null,
   "mm02_original_videos": 8,
@@ -460,42 +618,49 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "warm/development",
-    "cases_done": 3,
-    "planned": 8,
+    "partition": "rounds/r01/collect",
+    "cases_done": 14,
+    "planned": 24,
     "workers": 7,
-    "wall_s": 16.987828569486737,
-    "completed_here": 3,
-    "steps_here": 15874,
-    "steps_s": 934.4337291296089,
+    "wall_s": 24.390959238633513,
+    "completed_here": 14,
+    "steps_here": 38013,
+    "steps_s": 1558.4872914629025,
     "resumed_cases": 0,
     "processes": [
-      408484,
-      408487,
-      408488,
-      408489,
-      408490,
-      408491,
-      408492
+      411124,
+      411127,
+      411128,
+      411129,
+      411130,
+      411131,
+      411132
     ]
   },
   "A_current": {
-    "phase": "correction_1",
-    "complete": 96,
-    "scheduled": 96,
+    "phase": "development_1",
+    "complete": 77,
+    "scheduled": 120,
     "resumed": 0,
-    "case": "030_tr_nominal_forward_right_stop_3",
+    "case": "036_te_combination_right_turn_stop_0",
     "last_success": false,
     "last_steps": 15000,
-    "completed_physics_steps": 1440000,
-    "active": [],
-    "newly_completed_episodes_s": 0.24474947018166018,
-    "measured_physics_steps_s": 3671.242052724903,
-    "timestamp": "2026-11-26T02:30:26.456462+00:00"
+    "completed_physics_steps": 1155000,
+    "active": [
+      "037_te_combination_forward_left_stop_1",
+      "038_te_combination_forward_right_stop_2",
+      "039_te_combination_alternating_motion_stop_3",
+      "000_tr_nominal_zero_0",
+      "001_tr_nominal_forward_stop_1",
+      "002_tr_nominal_reverse_stop_2"
+    ],
+    "newly_completed_episodes_s": 0.24453905722298994,
+    "measured_physics_steps_s": 3668.085858344849,
+    "timestamp": "2026-11-26T02:36:21.730177+00:00"
   },
   "C_current": {
-    "stage": "training",
+    "stage": "physical_development",
     "variant": "C32G",
-    "seed": 1702
+    "seed": 1703
   }
 }

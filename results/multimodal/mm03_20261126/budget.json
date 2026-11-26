@@ -1,20 +1,20 @@
 {
-  "as_of_beijing": "2026-11-26T10:31:28+08:00",
+  "as_of_beijing": "2026-11-26T10:36:38+08:00",
   "low_updates": 48000,
-  "B_high_updates": 19008,
-  "C_actor_updates": 5507,
+  "B_high_updates": 24576,
+  "C_actor_updates": 6144,
   "wm_updates": 0,
   "bridge_updates": 600,
   "critic_updates": 0,
-  "completed_episodes": 656,
-  "episode_substeps": 9395401,
+  "completed_episodes": 824,
+  "episode_substeps": 11475740,
   "extra_substeps": {
     "C/true_forward_optimization": 0,
-    "C/short_recovery_evaluation": 93591,
+    "C/short_recovery_evaluation": 102682,
     "C/directional_check": 5120,
     "B/true_forward_optimization": 0
   },
-  "accounted_native_substeps": 9494112,
+  "accounted_native_substeps": 11583542,
   "physical_by_group": {
     "A/command_teacher": {
       "cases": 96,
@@ -35,10 +35,10 @@
       "native_substeps": 7455
     },
     "A/development": {
-      "cases": 120,
-      "success": 39,
+      "cases": 197,
+      "success": 41,
       "ordered_events": 0,
-      "native_substeps": 1800000
+      "native_substeps": 2955000
     },
     "A/rescue": {
       "cases": 44,
@@ -47,10 +47,10 @@
       "native_substeps": 424484
     },
     "B/rounds/r01/collect": {
-      "cases": 96,
+      "cases": 158,
       "success": 0,
-      "ordered_events": 278,
-      "native_substeps": 976123
+      "ordered_events": 417,
+      "native_substeps": 1689195
     },
     "B/teachers": {
       "cases": 96,
@@ -59,16 +59,16 @@
       "native_substeps": 2529224
     },
     "B/warm/development": {
-      "cases": 27,
+      "cases": 40,
       "success": 0,
-      "ordered_events": 8,
-      "native_substeps": 128818
+      "ordered_events": 10,
+      "native_substeps": 213359
     },
     "C/development": {
-      "cases": 80,
+      "cases": 96,
       "success": 0,
-      "ordered_events": 26,
-      "native_substeps": 649297
+      "ordered_events": 33,
+      "native_substeps": 777023
     }
   },
   "A_stages": [
@@ -153,13 +153,13 @@
       "method": "D23",
       "seed": 1703,
       "round": 0,
-      "retained": 2624,
-      "paid": 2624,
+      "retained": 4096,
+      "paid": 4096,
       "path": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1703",
       "native_substeps": 0,
       "model_queries": 0,
-      "full": null,
-      "deploy": null
+      "full": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1703/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1703/deploy.pt"
     },
     {
       "stage": "warm",
@@ -186,6 +186,19 @@
       "model_queries": 0,
       "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/full.pt",
       "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/deploy.pt"
+    },
+    {
+      "stage": "warm",
+      "method": "H9",
+      "seed": 1703,
+      "round": 0,
+      "retained": 4096,
+      "paid": 4096,
+      "path": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1703",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1703/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1703/deploy.pt"
     }
   ],
   "C_forks": [
@@ -262,12 +275,22 @@
     {
       "variant": "C32G",
       "seed": 1702,
-      "paid": 387,
-      "retained": 384,
-      "bc_rows_paid": 99072,
-      "model_queries": 396288,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 524288,
       "native_substeps": 0,
-      "full": null
+      "full": "/root/autodl-tmp/mm03-20261126/C/C32G/seed1702/final.pt"
+    },
+    {
+      "variant": "C32G",
+      "seed": 1703,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 524288,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C32G/seed1703/final.pt"
     },
     {
       "variant": "C8",
@@ -349,6 +372,13 @@
       "cases": 32,
       "survived": 28,
       "native_substeps": 9312
+    },
+    {
+      "variant": "C32G",
+      "seed": 1702,
+      "cases": 32,
+      "survived": 27,
+      "native_substeps": 9091
     },
     {
       "variant": "C8",
