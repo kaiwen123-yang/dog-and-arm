@@ -163,7 +163,11 @@ def check_first_h9_fork(s, parent_path):
     other = torch.load(duplicate_path,map_location="cpu",weights_only=False)
     if ref["row_order"] != other["row_order"] or ref["low_sha256"] != other["low_sha256"]:
         raise ValueError("First H9 comparison requires the same physical rows and same frozen L16")
-    actual = [float((ref["actor"][k]-other["actor"][k]).abs().max()) for k in ref["actor"]]
+    # Compare the deployed functions in the canonical L16 parameter/buffer layout
+    # even across old embedded packages missing the two version/absolute-range buffers.
+    left = load_task_actor(parent_path,"cpu")[0].state_dict()
+    right = load_task_actor(duplicate_path,"cpu")[0].state_dict()
+    actual = [float((left[k].double()-right[k].double()).abs().max()) for k in left]
     if ref["optimizer_names"] != other["optimizer_names"]:
         raise ValueError("H9 optimizer names changed across the duplicated BC stage")
     adam = [float((v-other["optimizer"]["state"][pid][k]).abs().max())
@@ -211,7 +215,7 @@ def train(s):
         optimizer.load_state_dict(parent["optimizer"])
         if s["low"] != parent["low_path"]:
             from learning.multimodal.mm03_low import LowPolicy
-            actor.low.load_state_dict(LowPolicy.load(s["low"], DEVICE).state_dict())
+            actor.bind_frozen_low(LowPolicy.load(s["low"], DEVICE).state_dict())
     actor.set_encoder_grad(s["stage"] != "paired")
     actor.low.requires_grad_(False).eval()
     member = read(s["members"])
@@ -270,7 +274,7 @@ def train(s):
         r = torch.load(final if final.exists() else ck, map_location=DEVICE, weights_only=False)
         if r["spec"] != s or r["row_order"] != order["batch_rows_sha256"]:
             raise ValueError("High-level resume changed a frozen dependency")
-        actor.load_state_dict(r["actor"])
+        actor.restore_task_state(r["actor"])
         optimizer.load_state_dict(r["optimizer"])
         step0, totals, prior_wall = r["update"], r["totals"], r["wall_s"]
         restore_rng(r["rng"])
@@ -370,6 +374,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("spec", type=Path)
     s = read(parser.parse_args().spec)
+    if "root" not in s:
+        # The first frozen bridge specifications locate their run by their
+        # absolute B output directory. They remain valid on a normal resume.
+        stage_path = Path(s["output"]).resolve()
+        b_root = next((p for p in stage_path.parents if p.name=="B" and
+                       (p.parent / "launch_config.json").is_file()),None)
+        if s["stage"]!="bridge" or b_root is None:
+            raise ValueError(f"Cannot identify the MM03 run for {stage_path}")
+        s["root"] = str(b_root.parent)
     from scripts.multimodal.mm03_b_rounds import index_warm_candidates
     index_warm_candidates(Path(s["root"]))
     torch.set_num_threads(1)

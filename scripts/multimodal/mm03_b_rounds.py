@@ -251,7 +251,9 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
         paired_parent = train_dir(root, r, "H9", seed) / "bc" / "full.pt"
     bspec = dict(stage="bridge", output=str(out / "bridge"), parent=str(paired_parent),
                  seed=seed, round=r, members=str(member), wm=str(wm / "wm.pt"))
-    stage(bspec)
+    # Reuse an already issued bridge specification byte-for-byte on recovery.
+    bridge_spec = out / "bridge" / "spec.json"
+    stage(read(bridge_spec) if bridge_spec.exists() else dict(**bspec,root=str(root)))
     paired = out / "paired"
     stage(train_spec(root,method,seed,r,"paired",paired_parent,low,member,paired,512,offset=2048,
                      variant=variant, bundle=str(out / "bridge" / "trajectory_bundle.pt"),

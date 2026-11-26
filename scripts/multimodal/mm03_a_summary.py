@@ -217,11 +217,80 @@ def budget(root):
          additional_shared_B_adapter_episodes_charged_to_A=0, hardware_motion_commands=0))
 
 
+def static_transfer(root):
+    """Compare the previous implementation before using the final corrective block."""
+    from datetime import datetime
+    import subprocess
+    from zoneinfo import ZoneInfo
+    import torch
+    from torch import nn
+    from learning.multimodal.mm03_low import LowPolicy
+    from scripts.multimodal.mm03_a_train import causal_features
+    out = root/"A"/"low"/"block2_design.json"
+    if out.is_file():
+        return
+    torch.set_num_threads(1)
+    rev = subprocess.check_output(["git", "rev-parse", "aa22541"], cwd=REPO, text=True).strip()
+    source = subprocess.check_output(["git", "show", rev+":learning/multimodal/mm03_low.py"], cwd=REPO, text=True)
+    legacy = {}
+    exec(compile(source, rev+":learning/multimodal/mm03_low.py", "exec"), legacy)
+    ref = next(iter(sorted((root/"A"/"command_teacher").glob("*forward_left_stop*/result.json")))).parent
+    x = causal_features(np.load(ref/"proprio.npy"), np.load(ref/"previous.npy"))
+    inds = np.linspace(0, len(x)-1, 128).astype(int)
+    samples = torch.tensor(x[inds], device="cuda")
+    rates = torch.tensor(np.load(ref/"command.npy")[inds], device="cuda")
+    bounds_fixture = torch.tensor(np.load(ref/"teacher16.npy"), device="cuda")
+    checks = []
+    with torch.inference_mode():
+        for seed in (1701, 1702, 1703):
+            for b in (0, 1):
+                path = root/"A"/"low"/f"seed{seed}"/f"block{b}"/"deploy.pt"
+                old = legacy["LowPolicy"].load(path, "cuda")
+                current = LowPolicy.load(path, "cuda")
+                reference = old.from_features(samples, rates)[0]
+                actual = current.from_features(samples, rates)[0]
+                holder = nn.Module()
+                holder.low = LowPolicy().cuda()
+                holder.load_state_dict({"low."+k:v for k,v in old.state_dict().items()}, strict=True)
+                nested = holder.low.from_features(samples, rates)[0]
+                if not (torch.equal(actual, reference) and torch.equal(nested, reference)):
+                    raise ValueError("Old low standalone or H9-embedded inference changed")
+                checks.append(dict(seed=seed, block=b, rows=len(x[inds]), standalone_max_abs=float((actual-reference).abs().max()),
+                                   embedded_max_abs=float((nested-reference).abs().max())))
+            # Use the trained nonzero residual head in this in-memory range
+            # check. Actual block2 will reset the last layer for absolute targets.
+            last = {k:v.clone() for k,v in current.stationary[-1].state_dict().items()}
+            current.enable_bounded_stationary(bounds_fixture)
+            current.stationary[-1].load_state_dict(last)
+            zero = samples.clone()
+            zero[:, 116:120] = 0.
+            output = current.from_features(zero, torch.zeros_like(rates))[0][:, :12]
+            prior = zero[:, 104:116]
+            limit = current.stationary_bound
+            violation = torch.maximum((output-(.96*prior+.04*limit)).amax(), ((.96*prior-.04*limit)-output).amax()).clamp_min(0.)
+            if float(violation)>2e-7:
+                raise ValueError("Zero-command leg target escaped the convex-combination bounds")
+            checks[-1]["absolute_mode_bound_violation"] = float(violation)
+    observation = root/"A"/"low"/"seed1701"/"block1"/"development"/"000_tr_nominal_zero_0"
+    labels = np.load(observation/"teacher16.npy")[:, :12]
+    actual = np.load(observation/"actual.npy")[:, :12]
+    emit(out, dict(registered_beijing=datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(), seeds=[1701,1702,1703],
+         updates_per_seed=4000, extra_physics_steps=0, extra_optimizer_updates=0, old_code=rev, training_fixture=str(ref),
+         observed_case=str(observation), observed_teacher_max_abs_leg=float(np.abs(labels).max()),
+         observed_block1_max_abs_leg=float(np.abs(actual).max()), compatibility=checks,
+         old_block1="prev + motion_increment + .04*learned_residual; residual adds on every stationary tick",
+         block2="0.96*previous + 0.04*bounded_absolute + motion_increment; motion term vanishes at zero request and zero previous wheel target",
+         absolute_target="per-channel max(abs(eligible training teacher targets)) * tanh(learned output)",
+         transfer="preserve block1 and optimizer. Reset weight and bias of the final stationary layer and their two Adam slots; all incoming source rows and physical tests unchanged"))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--transfer", action="store_true")
     parser.add_argument("--low-scores", action="store_true")
     parser.add_argument("--budget", action="store_true")
+    parser.add_argument("--static-transfer", action="store_true")
     args = parser.parse_args()
-    (transfer if args.transfer else low_scores if args.low_scores else budget if args.budget else summary)(args.root)
+    (static_transfer if args.static_transfer else transfer if args.transfer else
+     low_scores if args.low_scores else budget if args.budget else summary)(args.root)

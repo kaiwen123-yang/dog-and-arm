@@ -25,6 +25,19 @@ class TaskActor(MultimodalActor):
         nn.init.zeros_(self.estimated_velocity_head.weight)
         self.register_buffer("request_scale", torch.tensor([.07, .08]))
 
+    def bind_frozen_low(self, state):
+        # LowPolicy owns both legacy lifts and the bounded-stationary version flag.
+        # It rejects partially missing current buffers and unknown parameter layouts.
+        self.low.inherit(state)
+        self.low.requires_grad_(False).eval()
+
+    def restore_task_state(self, state):
+        low_state = {name[4:]:tensor for name,tensor in state.items() if name.startswith("low.")}
+        self.bind_frozen_low(low_state)
+        canonical = {name:tensor for name,tensor in state.items() if not name.startswith("low.")}
+        canonical.update({"low."+name:tensor for name,tensor in self.low.state_dict().items()})
+        self.load_state_dict(canonical,strict=True)
+
     def high_features(self, visual, language, hist, previous, sensor):
         prop = ((hist - self.proprio_mean) / self.proprio_std).clamp(-10, 10)
         act = ((previous - self.action_mean) / self.action_std).clamp(-10, 10)
@@ -88,7 +101,7 @@ def load_task_actor(path, device="cpu"):
         raise ValueError(f"Unsupported task checkpoint in {path}")
     vocab = Vocabulary(data["vocabulary"])
     actor = TaskActor(vocab, data["architecture"], data["affine_mode"]).to(device)
-    actor.load_state_dict(data["actor"])
+    actor.restore_task_state(data["actor"])
     return actor.eval(), vocab, data
 
 
@@ -104,8 +117,7 @@ def migrate(parent_actor, parent, vocab, low_path, mode, device):
         else:
             state[name].copy_(value)
     actor.load_state_dict(state)
-    actor.low.load_state_dict(LowPolicy.load(low_path, device).state_dict())
-    actor.low.requires_grad_(False).eval()
+    actor.bind_frozen_low(LowPolicy.load(low_path,device).state_dict())
     return actor
 
 
