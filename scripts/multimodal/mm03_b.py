@@ -84,7 +84,6 @@ def batch(root, jobs, workers):
     if not 1 <= workers <= 25:
         raise ValueError(f"Invalid native B worker target: {workers}")
     workers = min(workers,len(jobs))
-    seq = iter(jobs)
     done = set()
     results = {}
     for job in jobs:
@@ -92,7 +91,13 @@ def batch(root, jobs, workers):
         if path.is_file():
             results[job["id"]] = read(path)
             done.add(job["id"])
-    seq = iter(j for j in jobs if j["id"] not in done)
+    from scripts.multimodal.mm03_dispatch import physical_queue
+    queue, predicted = physical_queue(root,[j for j in jobs if j["id"] not in done])
+    if not queue:
+        return [results[j["id"]] for j in jobs]
+    workers = min(workers,len(queue))
+    seq = iter(queue)
+    start_epoch = time.time()
     start = time.monotonic()
     steps = 0
     fresh = 0
@@ -120,6 +125,13 @@ def batch(root, jobs, workers):
                  wall_s=elapsed, completed_here=fresh, steps_here=steps, steps_s=steps/max(elapsed, 1e-6),
                  resumed_cases=len(done), processes=list(pool._processes)))
             refill()
+    duration = time.monotonic()-start
+    timing = dict(partition=partition, workers=workers, predicted_cases=predicted,
+                  start_epoch=start_epoch, elapsed_s=duration, physical_substeps=steps, cases=fresh,
+                  substeps_per_s=steps/duration, dispatch_order=[j["id"] for j in queue],
+                  worker_case_wall_s=sum(results[j["id"]]["wall_s"] for j in queue))
+    folder = root/"B"/"native_batch_timings"
+    emit(folder/f"{time.time_ns()}.json",timing)
     return [results[j["id"]] for j in jobs]
 
 

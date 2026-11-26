@@ -17,7 +17,7 @@ PHASE_GROUP.update(pregrasp=1, approach_arm=1)
 
 
 class SharedRows:
-    def __init__(self, membership, vocab, device):
+    def __init__(self, membership, vocab, device, *, run_root=None, member_file=None, scopes=()):
         self.device = torch.device(device)
         self.strata = defaultdict(lambda: defaultdict(list))
         self.source_rows = Counter()
@@ -26,12 +26,38 @@ class SharedRows:
         self.paths = list(dict.fromkeys(membership["teachers"] + membership["corrections"]))
         teacher_set = set(membership["teachers"])
         episodes = [(Path(p), json.loads((Path(p) / "metadata.json").read_text())) for p in self.paths]
-        # Large later rounds can retain the contiguous lookup arrays in host memory.
-        # Only the 256-row minibatch then crosses PCIe. Other lanes keep their GPU allocation.
         image_bytes = sum((p / (k + ".npy")).stat().st_size for p, _ in episodes for k in
                           ("rgb", "depth", "depth_valid"))
-        resident = self.device if image_bytes <= 10 * 2**30 else torch.device("cpu")
-        self.data = EpisodeDataset(None, "train", vocab, resident, episodes=episodes)
+        rows = sum(m["transitions"]+1+(9 if m.get("anchor_tick") is not None else 0) for _,m in episodes)
+        resident = self.device
+        reservation = None
+        self.residency = dict(device=str(resident),source_image_file_bytes=image_bytes)
+        if self.device.type=="cuda":
+            from scripts.multimodal.mm03_b_parallel import (GPU_HEADROOM,GPU_WORK_PER_OPTIMIZER,
+                                                            estimated_row_bytes,choose_row_device)
+            if run_root is not None:
+                reservation,self.residency=choose_row_device(run_root,member_file,scopes,image_bytes,rows,
+                    lambda:torch.cuda.mem_get_info(self.device)[0])
+                resident=self.device if self.residency["device"]=="cuda" else torch.device("cpu")
+            elif estimated_row_bytes(image_bytes,rows)>torch.cuda.mem_get_info(self.device)[0]-GPU_HEADROOM-GPU_WORK_PER_OPTIMIZER:
+                resident=torch.device("cpu")
+                self.residency["device"]="cpu"
+        retry_on_host = False
+        try:
+            self.data = EpisodeDataset(None,"train",vocab,resident,episodes=episodes)
+        except torch.OutOfMemoryError:
+            if resident.type!="cuda":
+                raise
+            retry_on_host=True
+        if retry_on_host:
+            # No model or optimizer step has started. Rebuild the exact same arrays
+            # on host if a concurrent allocation invalidated the earlier observation.
+            import gc
+            gc.collect()
+            torch.cuda.empty_cache()
+            resident=torch.device("cpu")
+            self.residency.update(device="cpu",fallback="CUDA allocation unavailable during dataset construction")
+            self.data=EpisodeDataset(None,"train",vocab,resident,episodes=episodes)
         commands = torch.zeros((len(self.data.states["episode"]), 2), device=resident)
         command_valid = torch.zeros(len(commands), device=resident, dtype=torch.bool)
         for i, (p, m) in enumerate(episodes):
@@ -77,6 +103,15 @@ class SharedRows:
             self.available_by_episode[m["episode_id"]] = counts
         self.commands = commands
         self.command_valid = command_valid
+        auxiliary = (self.data.start_tensor,self.data.history_start_tensor,self.data.length_tensor,
+                     self.data.backward_offsets,self.data.tasks,self.data.angles,commands,command_valid)
+        image_tensors = sum(t.numel()*t.element_size() for t in self.data.images.values())
+        all_tensors = image_tensors + sum(t.numel()*t.element_size() for t in (*self.data.states.values(),*auxiliary))
+        self.residency.update(status="ready",device=resident.type,actual_image_tensor_bytes=image_tensors,
+                              actual_row_tensor_bytes=all_tensors,actual_aux_and_state_tensor_bytes=all_tensors-image_tensors)
+        if reservation is not None:
+            from scripts.multimodal.mm03_b import emit
+            emit(reservation,self.residency)
         self.distribution = {}
         for key, strata in self.strata.items():
             # Each side, then goal inside side, then scene inside goal, then episode,

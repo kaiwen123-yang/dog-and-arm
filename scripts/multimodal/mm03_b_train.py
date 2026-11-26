@@ -226,11 +226,14 @@ def train(s, data_cache=None):
     if reused:
         pool = data_cache["pool"]
     else:
-        pool = SharedRows(member,vocab,DEVICE)
+        scopes = (("d23cost",) if s["stage"]=="cost" else
+                  (f'r{s["round"]:02d}',f'catchup{s["round"]:02d}'))
+        pool = SharedRows(member,vocab,DEVICE,run_root=s["root"],member_file=s["members"],scopes=scopes)
         if data_cache is not None:
             data_cache.clear()
             data_cache.update(key=key,pool=pool)
     data_setup_s = time.perf_counter()-data_start
+    emit(out/"row_residency.json",dict(**pool.residency,reused=reused,setup_seconds=data_setup_s))
     schedule_path = Path(s["schedule"])
     schedule_meta = schedule_path.with_suffix(".json")
     if schedule_meta.exists():
@@ -419,6 +422,7 @@ def train(s, data_cache=None):
     emit(out / "receipt.json", dict(stage=s["stage"], method=s["method"], round=s["round"], seed=seed,
          cost_sensitivity=comparison_cost,retained=steps, paid=attempts+steps-step0, rollback=attempts-step0, paid_model_cost=paid_totals,
          shared_row_cache_reused=reused,shared_row_setup_s=data_setup_s,
+         row_tensor_device=pool.residency["device"],row_tensor_bytes=pool.residency["actual_row_tensor_bytes"],
          retained_cost=payload["totals"], native_pool_allocation=native_allocation,
          trajectory_anchor_coverage=anchor_coverage if obj is not None else None,
          full=str(final), deploy=str(deploy), parent=str(parent_path),
