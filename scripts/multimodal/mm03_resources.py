@@ -16,6 +16,16 @@ def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=No
         fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
         path=directory/"worker_targets.json"
         old=read(path)
+        if (b is None and c is None and b_gpu is None and b_cf is None and cf_slots is None
+                and old.get("reason")=="Scoped R8 seed1702 single-tail test with two completed sibling receipts"):
+            from scripts.multimodal.mm03_elastic import pid_stamp
+            lease=read(directory/"CF_single_tail.json")
+            stage=root/"B/rounds/r08/H9-WM/seed1702/paired"
+            valid=(lease.get("phase")=="trial" and lease.get("pid_stamp")
+                   and lease["pid_stamp"]==pid_stamp(lease.get("pid")) and lease.get("stage")==str(stage))
+            if not valid or (stage/"receipt.json").is_file():
+                b,b_cf,cf_slots=4,6,3
+                reason="Return the completed or abandoned single-seed loan to the measured three-seed layout"
         if elastic is not None:
             configure_locked(root,elastic,reason)
         cfg=read(root/"launch_config.json")["workers"]

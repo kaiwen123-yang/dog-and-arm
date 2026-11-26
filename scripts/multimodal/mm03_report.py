@@ -329,6 +329,8 @@ def snapshot(root,repo,milestone):
         for test in sorted(latency.glob("r[0-9][0-9]-eight")):
             for name in ("registration.json","baseline.json","challenger.json","decision.json"):
                 slimcopy(test/name,evidence/test.name/name)
+        for name in ("registration.json","baseline.json","challenger.json","decision.json","single_tail.py"):
+            slimcopy(latency/"r08-tail"/name,evidence/"r08-tail"/name)
         manifest["cf32_latency_evidence"]="performance/cf32_latency/summary.json"
         if (latency/"forecast.json").is_file():
             manifest["current_forecast"]="performance/cf32_latency/forecast.json"
