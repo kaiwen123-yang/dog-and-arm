@@ -1,0 +1,520 @@
+{
+  "schema": "dog-and-arm-mm03-plan-v1",
+  "registered_date_beijing": "2026-11-26",
+  "status": "registered_not_executed",
+  "reviewed_parent_commit": "f54e7ddc9015343f1d2a5d64ccbb2defc3dbcb2e",
+  "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
+  "round": "MM-03",
+  "authorization": "user requested parallel next experiment plan and normal GitHub publication; launch prompt supplied for execution host",
+  "review_work_actual": {
+    "actor_updates": 0,
+    "low_level_updates": 0,
+    "wm_updates": 0,
+    "bridge_updates": 0,
+    "critic_updates": 0,
+    "physics_substeps": 0,
+    "hardware_motion_commands": 0
+  },
+  "documents": {
+    "review": "reports/MULTIMODAL_MM02_REVIEW_20261126.md",
+    "plan": "docs/MULTIMODAL_MM03_EXECUTION_20261126.md",
+    "literature": "docs/MM03_RESEARCH_BASIS_20261126.md",
+    "prompt": "prompts/MM03_START.txt",
+    "prompt_aliases": [
+      "prompts/NEXT_RUN.txt",
+      "prompts/MULTIMODAL_START.txt",
+      "prompts/B0_START.txt"
+    ],
+    "daily_log": "DAILY_WORK_LOG.md"
+  },
+  "environment": {
+    "backend": "native MuJoCo 3.3.0",
+    "mount": "rail_bridge_front60_v2",
+    "physics_dt_s": 0.002,
+    "all_policy_dt_s": 0.02,
+    "camera_period_s": 0.1,
+    "image_size": [
+      64,
+      64
+    ],
+    "physical_action_dim": 23,
+    "high_level_action_dim": 9,
+    "low_level_action_dim": 16,
+    "base_commands": [
+      "body_vx_m_s",
+      "body_wz_rad_s"
+    ],
+    "independent_lateral_velocity_command": false,
+    "original_judge": "learning/multimodal/judge.py",
+    "original_evaluation": "config/multimodal/evaluation.json",
+    "change_original_thresholds": false,
+    "goals_deg": [
+      15,
+      25
+    ],
+    "sides": [
+      "pull",
+      "push"
+    ]
+  },
+  "inheritance": {
+    "parent": "MM02 round6 supervised full training checkpoint; exact location from original manifest",
+    "parent_run": "/root/autodl-tmp/mm02-20261125",
+    "new_run": "/root/autodl-tmp/mm03-20261126",
+    "full_state_required": [
+      "weights",
+      "compatible_named_optimizer_states",
+      "normalizers",
+      "rng",
+      "data_membership",
+      "sampler",
+      "sensor_history",
+      "physical_solver_state"
+    ],
+    "new_heads_and_optimizers_logged_separately": true,
+    "training_seeds": [
+      1701,
+      1702,
+      1703
+    ],
+    "seed_scope": "independent fine-tuning RNG from shared inherited initialization, not from-scratch seeds"
+  },
+  "deploy_observation": {
+    "allowed": [
+      "wrist_rgbd",
+      "language",
+      "joint_position_velocity",
+      "gravity_gyro",
+      "causal_history",
+      "previous_actual_action",
+      "causal_estimated_base_velocity_and_relative_state"
+    ],
+    "train_or_oracle_only": [
+      "true_base_position_velocity",
+      "true_wheel_forces",
+      "true_handle_pose",
+      "teacher_phase",
+      "judge_events"
+    ],
+    "same_estimator_features_for_d23_h9": true
+  },
+  "A": {
+    "rescue": {
+      "checkpoints": [
+        "mm02_r6_supervised",
+        "mm02_r6_h32"
+      ],
+      "nominal_tasks": 4,
+      "variants": [
+        "student",
+        "teacher_legs12",
+        "teacher_wheels4",
+        "teacher_arm_grip7",
+        "teacher_legs_wheels16"
+      ],
+      "intervention_cases": 40,
+      "full_teacher_reference_cases": 4,
+      "total_cases": 44,
+      "same_control_period": true,
+      "executor_source_mask_dim": 23,
+      "causal_claim": "intervention rescue, not complete factorial decomposition"
+    },
+    "required_physics_log": [
+      "wheel_normal_forces4",
+      "support_mask4",
+      "not_all_supported_duration",
+      "roll_pitch",
+      "root_height",
+      "base_velocity",
+      "requested_targets23",
+      "actual_targets23",
+      "servo_bias",
+      "joint_margins",
+      "actuator_saturation",
+      "self_collision_pairs"
+    ],
+    "low_level": {
+      "initial_teacher_training_episodes": 96,
+      "episode_duration_s": 30,
+      "factorization": "3 train scenes x 8 command profiles x 4 legal arm profiles",
+      "command_profiles": [
+        "zero",
+        "forward_stop",
+        "reverse_stop",
+        "left_turn_stop",
+        "right_turn_stop",
+        "forward_left_stop",
+        "forward_right_stop",
+        "alternating_motion_stop"
+      ],
+      "command_units": "m/s and rad/s effective requests after navigation stop/deadband/hysteresis; phase limits represented upstream; not raw requested_rate or amplified last_turn",
+      "nominal_control_limits": "existing P6 straight_speed_m_s and yaw_rate_rad_s",
+      "learned_integral_memory": "causal recurrent state or documented explicit estimate, never teacher integrator as deployment input",
+      "initial_updates_per_seed": 12000,
+      "batch": 512,
+      "seeds": [
+        1701,
+        1702,
+        1703
+      ],
+      "correction_blocks_max": 2,
+      "student_episodes_per_seed_per_block": 32,
+      "updates_per_seed_per_block": 4000,
+      "initial_total_updates": 36000,
+      "correction_max_total_updates": 24000,
+      "development_cases_per_seed": 40,
+      "engineering_target_passes": 36,
+      "engineering_target_is_not_full_task_or_start_gate": true,
+      "teacher_or_analytic_execution_is_separate_mixed_method": true,
+      "local_teacher_adapter": "new query-only command-conditioned, uniformly limited 2ms feedback/integral/leg control sampled at20ms; independent version, no world-target proxy or hidden mode",
+      "bias_labels": "BaseDrive.leg_commands includes bias: remove once; P6CorrectionTeacher raw/target already pre-bias: do not remove again",
+      "adapter_nominal_functional_cases": 4,
+      "adapter_case_dedup": "may coincide with the exact same physical episode in 96 complete demos, count once",
+      "contact_data": "B complete demos and legal continuation sequences at grasp/open/hold/release feed A existing correction budgets",
+      "deployment_phase_mode_input": false
+    }
+  },
+  "B": {
+    "methods": [
+      "MM03-D23",
+      "MM03-H9",
+      "MM03-H9-WM"
+    ],
+    "complete_teacher_episodes": 96,
+    "teacher_factorization": "3 train scenes x 4 tasks x 8 registered training perturbation seeds",
+    "phase_groups": [
+      [
+        "approach_base",
+        "settle"
+      ],
+      [
+        "reach_handle",
+        "grasp"
+      ],
+      [
+        "open",
+        "hold"
+      ],
+      [
+        "release",
+        "retreat_arm"
+      ],
+      [
+        "post_release_hold",
+        "stow"
+      ],
+      [
+        "retreat_base",
+        "final"
+      ]
+    ],
+    "pool_weights": {
+      "complete_teacher": 0.5,
+      "new_student_and_teacher_prefix_continuation": 0.5
+    },
+    "sampling": "phase groups then side/goal/scene/episode; log empty strata and fallbacks",
+    "teacher_prefix_is_real_continuous_physics": true,
+    "teacher_prefix_success_is_not_full_student_success": true,
+    "initial_high_bc_updates_per_method_seed": 4096,
+    "initial_high_bc_methods": [
+      "MM03-D23",
+      "MM03-H9"
+    ],
+    "initial_high_bc_total_updates": 24576,
+    "h9_wm_initialization": "clone matched H9 full package including optimizer before pairing",
+    "initial_rounds": 8,
+    "work_block_rounds": 4,
+    "bc_updates_per_method_seed_round": 2048,
+    "paired_updates_per_method_seed_round": 512,
+    "bc_batch": 256,
+    "paired_encoder_frozen": true,
+    "learning_rate": 0.0001,
+    "low_level_frozen_first_block": true,
+    "low_level_refresh_shared_by_h9_and_h9_wm": true,
+    "collection_per_method_seed_round": {
+      "pure_frame0": 12,
+      "teacher_prefix_student_continuation": 12
+    },
+    "main_new_episodes_if_all_branches_8_rounds": 1728,
+    "main_actor_updates_if_all_branches_8_rounds": 184320,
+    "actor_updates_with_high_warmup_if_all_branches_8_rounds": 208896,
+    "wm_updates_per_seed_round": 1000,
+    "wm_batch": 128,
+    "wm_horizon": 7,
+    "bridge_updates_per_current_encoder_round": 600,
+    "bridge_batch": 256,
+    "wm_total_if_all_seeds_8_rounds": 24000,
+    "bridge_total_if_nine_encoders_8_rounds": 43200,
+    "critic_updates": 0,
+    "development_cases_per_method_seed_round": 8,
+    "disclosed_cases_per_block": 20,
+    "selection": [
+      "complete_success_count",
+      "minimum_ordered_events_across_four_tasks",
+      "total_ordered_events",
+      "fewer_support_selfcollision_limit_first_failures",
+      "earlier_checkpoint"
+    ],
+    "keep_best_and_latest": true,
+    "training_continues_from_own_latest_unless_explicit_fork": true,
+    "d23_additional_budget_sensitivity": {
+      "method": "D23-cost",
+      "parent": "selected D23 full checkpoint for each seed",
+      "extra_bc_per_seed": "12000 + actual L16 correction updates (0,4000,8000)",
+      "data": "common eligible data only; no fabricated task/command labels",
+      "total_extra_bc_range_three_seeds": [
+        36000,
+        60000
+      ],
+      "evaluation": "20 disclosed regression cases per seed before any new blind, total60, outside324 main denominator",
+      "scope": "budget sensitivity, not proof of identical training information"
+    },
+    "extend_after_initial_block": "automatic 4-round block if matched development full success improves or next ordered event improves in >=2 side/goal tasks without losing already achieved full successes",
+    "plateau_close": "only after all key A/B/C implementations executed and two consecutive 4-round blocks without registered physical progress or concrete validated repair",
+    "wallclock_stop": false,
+    "recurrent_prefix": "shadow update with real observations/actions from frame0; preserve hidden at same weights, reconstruct by real-prefix burn-in after weight changes; never initialize with teacher state or silently zero",
+    "new_command_label_semantics": "same executed adapter version; legacy missing command labels not fabricated"
+  },
+  "C": {
+    "variants": [
+      "C0_BC",
+      "C8_imagination",
+      "C32_imagination",
+      "C32G_gradient_budget",
+      "CF32_real_forward_model_backward"
+    ],
+    "same_full_parent_optimizer_normalizers_bc_order": true,
+    "initial_parent": "MM02 R6 supervised full training state",
+    "freeze_first_comparison": [
+      "encoder",
+      "WM",
+      "bridge"
+    ],
+    "updates_per_variant_seed": 512,
+    "bc_batch": 256,
+    "model_batch": 32,
+    "seeds": [
+      1701,
+      1702,
+      1703
+    ],
+    "actor_updates_total": 7680,
+    "base_model_weight": 0.15,
+    "gradient_budget_fraction": 0.25,
+    "gradient_budget_formula": "min(0.15, 0.25*norm(g_BC)/(norm(g_traj)+epsilon)), detached, same trainable parameter set",
+    "horizons": {
+      "C8": 8,
+      "C32": 32,
+      "C32G": 32,
+      "CF32": 32
+    },
+    "real_forward_replacement": "x_bar_next = x_pred_next + stopgrad(x_real_next - x_pred_next)",
+    "real_transition": "current student actual action, native 10 x 2ms substeps",
+    "backward": "frozen learned WM Jacobian plus causal bridge surrogate at actual camera exposure; not native physics derivative",
+    "loss": "same differentiable teacher trajectory loss plus BC, Torch recomputation on replaced tensors",
+    "critic_updates": 0,
+    "no_cross_episode_bptt": true,
+    "no_per_step_whole_state_detach": true,
+    "true_future_not_actor_input": true,
+    "cf32_substeps_per_update_full_window": 10240,
+    "cf32_substeps_per_seed_512_full_window": 5242880,
+    "cf32_substeps_three_seeds_full_window": 15728640,
+    "cf32_main_8_rounds_three_seeds_full_window": 125829120,
+    "teacher_recovery_and_eval_costs_extra": true,
+    "terminated_prefix_masks_and_actual_costs": true,
+    "equal_bc_not_equal_compute": true,
+    "first_frozen_comparison_extra_data_not_used_for_own_wm": true,
+    "later_extra_data_shared": true,
+    "development_full_cases_total": 120,
+    "recovery_anchors_per_variant_seed": 32,
+    "native_directional_response": "small signed perturbations of parameters/actions from fixed physical snapshots, report actual objective response, not only model-internal FD",
+    "selected_model_variant": "best numerically legal non-BC candidate by fixed development selection before blind; confirm matched H9 pairing",
+    "if_all_model_variants_invalid": "H9-WM not executed with reason; D23/H9 continue",
+    "initial_shared_bridge_refit_updates": 600,
+    "bridge_binding": "MM02 supervised R6 encoder; common train exposures only; all variants/seeds share binding; keep encoder_id verification",
+    "gradient_budget_objective": "Ltraj excludes 0.15; gtraj = grad(Ltraj), Ltotal = Lbc + detached(lambda_eff)*Ltraj; avoid weighting twice",
+    "real_state_projection": {
+      "p": 52,
+      "object": 5,
+      "low_visual": 180,
+      "actor_visual": 48,
+      "robot_aux": "same GenCoord layout and zero-translation/zero-linear-velocity gauge as old model; anchor yaw removal; sensor(adapter) equals real proprio",
+      "contact": "20ms finger thresholds and bilateral fraction; logit(clamp(c,1e-4,1-1e-4))",
+      "initial_state": "same model.initial for every model branch; real projection replacement starts at first successor",
+      "previous_action_and_prefix": "actual23; preserve nine pre-anchor observations, exact clock and exposure phase; new recurrent modules additionally burn in",
+      "student_execution": "new on-policy branch runner; do not reuse old anchor runner that unconditionally executes teacher",
+      "camera_age": "hold last true image/features between exposures; update t-image_t every20ms and reset at actual exposure"
+    },
+    "termination": {
+      "normalization": "fixed planned H discounted denominator for every model variant",
+      "step_loss_cap": "Cmax = max(1, 2*P99.9 of per-step weighted trajectory loss on fixed training-anchor calibration before first optimization), freeze and record value/membership",
+      "valid_loss": "min(step_loss,Cmax), record cap rate; same fresh-vision weighting definition",
+      "unexecuted_tail": "absorbing Cmax penalty only, not fake real states; terminal mask/cost detached",
+      "partial_control_interval": "store actual partial_dt and terminal observation; not a full20ms training successor",
+      "zero_valid_batch": "BC only, model gradient0, no claimed H32 update",
+      "causal_limit": "early failure changes effective gradient horizon; report mask/termination rate, do not attribute all gain solely to forward drift",
+      "calibration_anchors": "fixed sorted eligible training anchors, at most256 unique, common parent C32 imagination before any optimization; record exact membership; no validation/test"
+    },
+    "frozen_low_level_derivatives": "only freeze L16 parameters; retain all input/history/recurrent/command derivatives, no no_grad/inference_mode/detach across low-level",
+    "short_recovery_evaluation_total": 480
+  },
+  "splits": {
+    "train": [
+      "tr_nominal",
+      "tr_offset",
+      "tr_load"
+    ],
+    "validation": [
+      "va_pose"
+    ],
+    "disclosed_regression": [
+      "tr_nominal",
+      "va_pose",
+      "te_combination",
+      "te_mm02_combo_a",
+      "te_mm02_combo_b"
+    ],
+    "new_blind_scenes": [
+      {
+        "id": "te_mm03_combo_a",
+        "split": "test",
+        "perturbation": {
+          "dx": 0.011,
+          "dy": 0.019,
+          "yaw": 0.8,
+          "door": 0.7,
+          "hinge_damping": 1.05,
+          "wheel_mu": 0.98,
+          "finger_mu": 0.94
+        },
+        "panel_rgb": [
+          0.37,
+          0.46,
+          0.51
+        ]
+      },
+      {
+        "id": "te_mm03_combo_b",
+        "split": "test",
+        "perturbation": {
+          "dx": -0.023,
+          "dy": 0.014,
+          "yaw": -1.1,
+          "door": 0.3,
+          "hinge_friction": 1.06,
+          "wheel_mu": 0.95
+        },
+        "panel_rgb": [
+          0.49,
+          0.39,
+          0.46
+        ]
+      },
+      {
+        "id": "te_mm03_combo_c",
+        "split": "test",
+        "perturbation": {
+          "dx": 0.006,
+          "dy": -0.018,
+          "yaw": 1.6,
+          "door": 1.3,
+          "hinge_damping": 0.94,
+          "finger_mu": 1.05
+        },
+        "panel_rgb": [
+          0.41,
+          0.52,
+          0.37
+        ]
+      },
+      {
+        "id": "te_mm03_combo_d",
+        "split": "test",
+        "perturbation": {
+          "dx": -0.018,
+          "dy": -0.02,
+          "yaw": 0.6,
+          "door": 0.9,
+          "hinge_friction": 0.94,
+          "wheel_mu": 1.08
+        },
+        "panel_rgb": [
+          0.55,
+          0.48,
+          0.38
+        ]
+      }
+    ],
+    "new_blind_cases": 16,
+    "blind_teacher_feasibility_cases": 16,
+    "teacher_feasibility_data_excluded_from_training": true,
+    "teacher_failures_preserved": true,
+    "student_blind_once_after_all_candidate_freezes": true,
+    "blind_is_new_combinations_not_all_out_of_range": true
+  },
+  "evaluation": {
+    "formal_cases_per_method_seed": 36,
+    "known_regression_cases_per_package": 20,
+    "new_blind_cases_per_package": 16,
+    "planned_methods": 3,
+    "planned_seeds": 3,
+    "formal_total_if_all_trained": 324,
+    "blind_total_if_all_trained": 144,
+    "absent_method_not_counted_as_run": "report unexecuted count and reason, retain planned denominator separately",
+    "formal_only_frame0_pure_learning": true,
+    "first_success_video": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 25,
+      "speed": 1,
+      "same_episode_continuous": true,
+      "immediate": true
+    },
+    "first_success_reload_repeats": 2,
+    "failure_videos_required": true,
+    "no_different_checkpoints_combined_into_same_package_success": true
+  },
+  "resources": {
+    "cpu_cores": 25,
+    "gpu_memory_gb": 96,
+    "ram_gb_expected_verify": 120,
+    "cpu_start": {
+      "A": 8,
+      "B": 8,
+      "C": 4,
+      "shared_training_io_render_coordination": 5
+    },
+    "gpu_memory_planning_not_measured_gb": {
+      "A": 15,
+      "B": 35,
+      "C": 30,
+      "reserve": 16
+    },
+    "worker_omp_mkl_threads": 1,
+    "central_batched_gpu_inference": true,
+    "bounded_queues": true,
+    "adaptive_reallocation": true,
+    "monitor": [
+      "episodes_per_second",
+      "physics_substeps_per_second",
+      "gpu_utilization",
+      "peak_gpu_memory",
+      "cpu_ram",
+      "queue_wait"
+    ]
+  },
+  "execution": {
+    "launch_state": "not_started_in_review",
+    "launcher": "to_be_implemented_by_execution_host_then_document_exact_command",
+    "inspect_other_jobs_and_worktrees": true,
+    "isolated_environment": true,
+    "wallclock_kill": false,
+    "keep_original_per_episode_timeouts": true,
+    "new_local_archive": false,
+    "copy_final_archive_to_user_computer": false,
+    "keep_raw_full_training_assets_on_autodl": true,
+    "publish": "normal fast-forward GitHub commits with exact code/results/weights/video paths; no force push",
+    "hardware_motion": false,
+    "desktop_piper": "user_scheduled_independent_branch"
+  }
+}

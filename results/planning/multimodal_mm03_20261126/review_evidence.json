@@ -1,0 +1,405 @@
+{
+  "schema": "dog-and-arm-mm03-review-evidence-v1",
+  "date_beijing": "2026-11-26",
+  "source_commit": "f54e7ddc9015343f1d2a5d64ccbb2defc3dbcb2e",
+  "source_files": [
+    "results/multimodal/mm02_20261125/manifest.json",
+    "results/multimodal/mm02_20261125/physics/formal_cases.json",
+    "results/multimodal/mm02_20261125/physics/aggregates.json",
+    "results/multimodal/mm02_20261125/learning_evidence.json",
+    "results/multimodal/mm02_20261125/dynamics_summary.json"
+  ],
+  "formal": {
+    "model_trajectory": {
+      "n": 20,
+      "success": 0,
+      "approach": 1,
+      "settle": 0,
+      "door_contact": 0,
+      "first_failures": {
+        "wheel_support_or_tilt": 20
+      },
+      "support_or_tilt_cases": 20,
+      "support_or_tilt_failure_tilt_range_deg": [
+        0.16007566893815892,
+        0.6393891607509551
+      ]
+    },
+    "supervised_aggregate": {
+      "n": 20,
+      "success": 0,
+      "approach": 4,
+      "settle": 0,
+      "door_contact": 0,
+      "first_failures": {
+        "timeout:settle": 4,
+        "wheel_support_or_tilt": 16
+      },
+      "support_or_tilt_cases": 16,
+      "support_or_tilt_failure_tilt_range_deg": [
+        0.059500646381872385,
+        0.9927167494892081
+      ]
+    }
+  },
+  "matched_formal": {
+    "all": {
+      "matched_cases": 20,
+      "successes": [
+        0,
+        0
+      ],
+      "model_gain_percentage_points": 0.0,
+      "ordered_event_totals": [
+        4,
+        1
+      ],
+      "model_event_wins": 0,
+      "model_event_ties": 17,
+      "model_event_losses": 3,
+      "door_contact_cases": [
+        0,
+        0
+      ],
+      "bilateral_cases": [
+        0,
+        0
+      ]
+    },
+    "disclosed_regression": {
+      "matched_cases": 4,
+      "successes": [
+        0,
+        0
+      ],
+      "model_gain_percentage_points": 0.0,
+      "ordered_event_totals": [
+        0,
+        0
+      ],
+      "model_event_wins": 0,
+      "model_event_ties": 4,
+      "model_event_losses": 0,
+      "door_contact_cases": [
+        0,
+        0
+      ],
+      "bilateral_cases": [
+        0,
+        0
+      ]
+    },
+    "new_blind": {
+      "matched_cases": 8,
+      "successes": [
+        0,
+        0
+      ],
+      "model_gain_percentage_points": 0.0,
+      "ordered_event_totals": [
+        0,
+        0
+      ],
+      "model_event_wins": 0,
+      "model_event_ties": 8,
+      "model_event_losses": 0,
+      "door_contact_cases": [
+        0,
+        0
+      ],
+      "bilateral_cases": [
+        0,
+        0
+      ]
+    },
+    "nominal": {
+      "matched_cases": 4,
+      "successes": [
+        0,
+        0
+      ],
+      "model_gain_percentage_points": 0.0,
+      "ordered_event_totals": [
+        4,
+        1
+      ],
+      "model_event_wins": 0,
+      "model_event_ties": 1,
+      "model_event_losses": 3,
+      "door_contact_cases": [
+        0,
+        0
+      ],
+      "bilateral_cases": [
+        0,
+        0
+      ]
+    },
+    "validation": {
+      "matched_cases": 4,
+      "successes": [
+        0,
+        0
+      ],
+      "model_gain_percentage_points": 0.0,
+      "ordered_event_totals": [
+        0,
+        0
+      ],
+      "model_event_wins": 0,
+      "model_event_ties": 4,
+      "model_event_losses": 0,
+      "door_contact_cases": [
+        0,
+        0
+      ],
+      "bilateral_cases": [
+        0,
+        0
+      ]
+    }
+  },
+  "actual_budget": {
+    "actor_actual": 31744,
+    "actor_retained": 31744,
+    "actor_rollback": 0,
+    "h32_actor_retained": 3072,
+    "h32_actor_applied": 3072,
+    "h32_queries_retained": 3145728,
+    "h32_queries_applied": 3145728,
+    "bc_rows_retained": 8126464,
+    "bc_rows_applied": 8126464,
+    "h32_diagnostic_queries": 13312,
+    "validation_student_imagined_queries": 177121,
+    "wm_actual": 6000,
+    "wm_retained": 6000,
+    "wm_rollback": 0,
+    "bridge_actual": 3600,
+    "bridge_retained": 3600,
+    "bridge_rollback": 0,
+    "critic_actual": 0,
+    "critic_retained": 0,
+    "critic_rollback": 0,
+    "h32_actor_rollback": 0,
+    "h32_queries_rollback": 0
+  },
+  "new_pool_r6": {
+    "members": 1836,
+    "empty_label_members": [],
+    "expert_queries": 211918,
+    "draws": 327680,
+    "eligible_labels_per_teacher_phase": {
+      "approach_base": 151462,
+      "settle": 57577,
+      "pregrasp": 2534,
+      "approach_arm": 252,
+      "grasp": 93
+    },
+    "eligible_by_behavior": {
+      "common_12000/pure/student": 5956,
+      "model_trajectory/recovery/teacher": 17772,
+      "supervised_aggregate/recovery/teacher": 20560,
+      "model_trajectory/mixed/student": 20146,
+      "model_trajectory/mixed/teacher": 11533,
+      "model_trajectory/pure/student": 41948,
+      "supervised_aggregate/mixed/student": 26055,
+      "supervised_aggregate/mixed/teacher": 12094,
+      "supervised_aggregate/pure/student": 55854
+    },
+    "sampled_per_teacher_phase": {
+      "approach_base": 240941,
+      "settle": 82456,
+      "pregrasp": 3829,
+      "approach_arm": 320,
+      "grasp": 134
+    },
+    "sampled_by_behavior": {
+      "common_12000/pure/student": 36558,
+      "model_trajectory/recovery/teacher": 36548,
+      "supervised_aggregate/recovery/teacher": 36096,
+      "model_trajectory/mixed/student": 36718,
+      "model_trajectory/mixed/teacher": 36352,
+      "model_trajectory/pure/student": 36209,
+      "supervised_aggregate/mixed/student": 36321,
+      "supervised_aggregate/mixed/teacher": 36442,
+      "supervised_aggregate/pure/student": 36436
+    },
+    "qualified_partial_terminal_queries": 590,
+    "absent_teacher_phases_relative_to_old_demos": [
+      "final",
+      "hold",
+      "open",
+      "post_release_hold",
+      "release",
+      "retreat_arm",
+      "retreat_base",
+      "stow"
+    ]
+  },
+  "recovery_totals": {
+    "train_recovery": {
+      "branches": 1536,
+      "unique_anchor_snapshots": 1536,
+      "complete_h32": 1118,
+      "incomplete_kept_prefixes": 418,
+      "actual_physics_substeps": 380985,
+      "duplicate_anchor_snapshots": 0,
+      "held_image_or_exposure_mismatches": 0,
+      "source_states_without_prior_student_action": 0,
+      "non_teacher_intervals": 0,
+      "max_parent_start_or_prefix_error": {
+        "history_prefix_contact": 0.0,
+        "history_prefix_previous_action": 0.0,
+        "history_prefix_proprio": 0.0,
+        "object_state": 0.0,
+        "previous_action": 0.0,
+        "proprio": 0.0,
+        "qpos": 0.0,
+        "qvel": 0.0,
+        "t": 0.0
+      },
+      "within_round_uniqueness": true,
+      "stages": {
+        "settle": 504,
+        "approach_base": 994,
+        "reach_handle": 35,
+        "grasp": 3
+      }
+    },
+    "validation_recovery": {
+      "branches": 192,
+      "unique_anchor_snapshots": 192,
+      "complete_h32": 68,
+      "incomplete_kept_prefixes": 124,
+      "actual_physics_substeps": 28112,
+      "duplicate_anchor_snapshots": 0,
+      "held_image_or_exposure_mismatches": 0,
+      "source_states_without_prior_student_action": 0,
+      "non_teacher_intervals": 0,
+      "max_parent_start_or_prefix_error": {
+        "history_prefix_contact": 0.0,
+        "history_prefix_previous_action": 0.0,
+        "history_prefix_proprio": 0.0,
+        "object_state": 0.0,
+        "previous_action": 0.0,
+        "proprio": 0.0,
+        "qpos": 0.0,
+        "qvel": 0.0,
+        "t": 0.0
+      },
+      "within_round_uniqueness": true,
+      "stages": {
+        "approach_base": 166,
+        "settle": 26
+      }
+    }
+  },
+  "r3_paired_monitors": {
+    "model_trajectory": {
+      "first_monitor": {
+        "step": 64,
+        "wall_s": 14.704173151403666,
+        "bc": 0.6210544109344482,
+        "weighted_h32": 0.25162050127983093,
+        "h32_position": 1.25686514377594,
+        "h32_velocity": 0.4557625353336334,
+        "h32_imu": 0.36483144760131836,
+        "h32_object": 0.016392312943935394,
+        "h32_contact": 5.9626909205690026e-05,
+        "h32_vision": 0.021287664771080017,
+        "old_group_gradient_norm": 648.2461547851562,
+        "slope_gradient_norm": 59.7257194519043
+      },
+      "last_monitor": {
+        "step": 512,
+        "wall_s": 114.76638353988528,
+        "bc": 1.1462559700012207,
+        "weighted_h32": 0.5477988123893738,
+        "h32_position": 2.5428452491760254,
+        "h32_velocity": 1.2417283058166504,
+        "h32_imu": 0.8261826634407043,
+        "h32_object": 0.02716338075697422,
+        "h32_contact": 6.711920286761597e-05,
+        "h32_vision": 0.0890718623995781,
+        "old_group_gradient_norm": 439060.09375,
+        "slope_gradient_norm": 37365.23046875
+      },
+      "monitor_semantics": "means over first/last 64 updates; recorded old gradient norm is before clipping"
+    },
+    "supervised_aggregate": {
+      "first_monitor": {
+        "step": 64,
+        "wall_s": 0.7085650004446507,
+        "bc": 0.5783998370170593,
+        "old_group_gradient_norm": 2.4129791259765625,
+        "slope_gradient_norm": 0.2915307879447937
+      },
+      "last_monitor": {
+        "step": 512,
+        "wall_s": 4.7440419513732195,
+        "bc": 0.5799806118011475,
+        "old_group_gradient_norm": 2.3854598999023438,
+        "slope_gradient_norm": 0.28306594491004944
+      },
+      "monitor_semantics": "means over first/last 64 updates; recorded old gradient norm is before clipping"
+    }
+  },
+  "r6_first_h32_batch": {
+    "complete_anchors": 177,
+    "unweighted_group_losses": {
+      "position": 1.9007925987243652,
+      "velocity": 0.5538838505744934,
+      "imu": 0.5308495163917542,
+      "object": 0.007367465645074844,
+      "contact": 2.0010333173559047e-05,
+      "vision": 0.007862004451453686
+    },
+    "unweighted_group_actor_gradient_L2": {
+      "position": 885.3989868164062,
+      "velocity": 934.7066650390625,
+      "imu": 634.0480346679688,
+      "object": 2.33677339553833,
+      "contact": 0.010248550213873386,
+      "vision": 0.9078733921051025
+    },
+    "weight": 0.15,
+    "group_weights": {
+      "position": 1.0,
+      "velocity": 0.6,
+      "imu": 0.3,
+      "object": 1.0,
+      "contact": 0.3,
+      "vision": 1.0
+    },
+    "weighted_loss": 0.36114197969436646,
+    "weighted_action_bias_gradient_23": [
+      -0.0859108418226242,
+      0.11003123968839645,
+      0.07612026482820511,
+      0.08235140144824982,
+      -0.24558237195014954,
+      0.029241859912872314,
+      -0.010241895914077759,
+      0.15738123655319214,
+      -0.09096160531044006,
+      -0.07437246292829514,
+      -0.11471372842788696,
+      -0.04785269498825073,
+      -0.17708885669708252,
+      0.028330132365226746,
+      0.0812624916434288,
+      0.1335325986146927,
+      -0.0867152214050293,
+      -0.00951039046049118,
+      0.13279259204864502,
+      0.08384525775909424,
+      -0.11110866069793701,
+      0.15696384012699127,
+      1.1986488103866577
+    ]
+  },
+  "mm02_manifest_video": null,
+  "raw_server_run_not_read_in_this_review": "/root/autodl-tmp/mm02-20261125",
+  "review_actual_training_and_physics": 0,
+  "new_pool_early_label_fraction": 0.9864145565737691
+}

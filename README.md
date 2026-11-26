@@ -1,5 +1,19 @@
 # dog-and-arm：M1＋Piper H 腿臂协同控制
 
+<!-- mm03-plan-20261126-start -->
+## 2026-11-26 · MM02 已审查，下一执行轮为 MM03 三路并行
+
+MM02 最终监督/H32 各 0/20，停稳与触门均 0；36 个支撑/倾斜首败的记录倾角均不足 1°，可限定为持续未满足四轮支撑条件，具体失载机制仍须逐轮日志。新纠正池 98.64% 标签在驶近/停稳；旧完整示范仍占每批一半。R2 曾出现的停稳未保留到 R6。仓库没有 MM02 视频，本次实际审查了 MM01 教师/失败及旧混合双侧影片，身份分开。
+
+用户要求扩大并行推进：A 做44案通道救回、失败视频与带臂学习轮腿层；B 补全阶段数据并训练 D23/H9；C 同父比较 BC、H8/H32、梯度受控H32和真实物理前向/模型反向，再接 H9-WM。初始8轮，三个微调种子，按4轮工作块接续；具体预算、候选规则与新盲测在登记中。三路同步开工，不等待旧B0或桌面实机。保存验证最好包与latest。
+
+[详细审查](reports/MULTIMODAL_MM02_REVIEW_20261126.md) · [MM03执行计划](docs/MULTIMODAL_MM03_EXECUTION_20261126.md) · [论文依据](docs/MM03_RESEARCH_BASIS_20261126.md) · [机器登记](results/planning/multimodal_mm03_20261126/registration.json) · [启动词](prompts/MM03_START.txt)
+
+按25核CPU/96GB显存建立有界共享队列并据实际吞吐调整。后台不设墙钟强杀/固定完成时间；原回合仿真时限保留。普通推送GitHub，完整大资产保留AutoDL并登记恢复位置，推送后不在用户电脑做额外归档。真实硬件由用户择时。
+
+**本次仅完成审查、论文调研、计划/启动词与发布；新增Actor/低层/WM/bridge/Critic更新、物理步和硬件动作均0，MM03尚未启动。** 下方历史“当前/下一轮”按原时间阅读，以本节及MM03登记为当前入口。
+<!-- mm03-plan-20261126-end -->
+
 <!-- mm02-frozen-20261125-start -->
 ## 2026-11-26 00:10 北京时间 · MM-02 已结束
 
@@ -78,9 +92,9 @@ MM-01正式监督/H32各0/12，24案无门接触；首次失败合计自碰12、
 
 ## 用户现在需要做什么
 
-在开发平台正常fetch最新main并保留现有修改，将[MULTIMODAL_START.txt](prompts/MULTIMODAL_START.txt)交给执行端，按[MM-02集中计划](docs/MULTIMODAL_MM02_EXECUTION_20261125.md)实施全身在轨教师纠正、四轮数据聚合、监督/WM配对和从frame0完整评测。NEXT_RUN与B0_START是同文兼容入口，不再启动旧u1000或标准迁移续训。
+在开发平台保留已有修改并正常 fetch/pull 最新 main，将 [MM03_START.txt](prompts/MM03_START.txt) 交给 Codex 执行。按 [MM03 集中计划](docs/MULTIMODAL_MM03_EXECUTION_20261126.md) 同时推进轮腿稳定层、完整多模态任务和模型优化三路，完成真实训练与原判评测。NEXT_RUN、MULTIMODAL_START、B0_START 是同文入口。
 
-现有MM-01完整资产位于AutoDL的/root/autodl-tmp/mm01-20261125，实际恢复源从[原manifest](results/multimodal/mm01_20261125/manifest.json)核对；新轮使用独立目录。首次纯学生完整成功立即交同回合1080p原速视频。[桌面Piper专用入口](prompts/PIPER_DESKTOP_START.txt)继续由用户自行选择时间。
+MM02 原完整训练资产位于 AutoDL `/root/autodl-tmp/mm02-20261125`，按 [原 manifest](results/multimodal/mm02_20261125/manifest.json) 恢复；MM03 使用独立目录。首次纯学习完整成功立即交同回合1080p原速视频，代表失败也发布。后台不加墙钟强杀，GitHub推送后不再在用户电脑归档。[桌面 Piper 专用入口](prompts/PIPER_DESKTOP_START.txt) 由用户择时。
 
 ## H0：相机和机械臂联合运行
 
