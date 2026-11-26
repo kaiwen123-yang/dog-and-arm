@@ -106,12 +106,45 @@ class Request:
     done: Future = field(default_factory=Future)
 
 
+class FrozenTaskGraph:
+    """Replay a frozen task head at the callers' actual batch width on the inference GPU."""
+
+    def __init__(self, actor, inputs):
+        import torch
+        self.actor = actor
+        self.inputs = tuple(t.clone() for t in inputs)
+        stream = torch.cuda.Stream(device=inputs[0].device)
+        current = torch.cuda.current_stream(inputs[0].device)
+        stream.wait_stream(current)
+        with torch.cuda.stream(stream):
+            # Initialize the linear-algebra handles on the stream used for capture.
+            actor.infer_features(*self.inputs)
+            actor.infer_features(*self.inputs)
+        current.wait_stream(stream)
+        self.graph = torch.cuda.CUDAGraph()
+        with torch.cuda.graph(self.graph, stream=stream, capture_error_mode="thread_local"):
+            parts = actor.infer_features(*self.inputs)
+            self.widths = tuple(t.shape[-1] for t in parts)
+            self.output = torch.cat(parts, dim=-1)
+
+    def run(self, inputs):
+        for fixed, current in zip(self.inputs, inputs, strict=True):
+            fixed.copy_(current)
+        self.graph.replay()
+        rows = self.output.cpu().numpy()
+        first, second, _ = self.widths
+        return rows[:, :first], rows[:, first:first+second], rows[:, first+second:]
+
+
 class ModelBatcher:
-    def __init__(self, root, device, max_batch, window_ms):
+    def __init__(self, root, device, max_batch, window_ms, *, task_graphs=True):
         self.root, self.device, self.max_batch = root, device, max_batch
         self.window = window_ms / 1000.
         self.pending = queue.Queue(maxsize=2*max_batch)
         self.models = OrderedDict()
+        self.use_task_graphs = task_graphs
+        self.graphs = OrderedDict()
+        self.graph_calls = 0
         self.calls = self.batches = self.max_seen = 0
         self.wait_sum = 0.
         self.last_stats = time.monotonic()
@@ -135,7 +168,9 @@ class ModelBatcher:
             self.models[key] = (actor.eval(), vocab, {})
         self.models.move_to_end(key)
         while len(self.models) > 32:
-            self.models.popitem(last=False)
+            removed, _ = self.models.popitem(last=False)
+            for entry in [k for k in self.graphs if k[0] == removed]:
+                del self.graphs[entry]
         return self.models[key]
 
     def client_loop(self, conn):
@@ -202,6 +237,7 @@ class ModelBatcher:
                 raise ValueError("Wrong multimodal input byte count")
         p, a = tensor(histories), tensor(actions)
         kind = group[0].client.kind
+        values = None
         high = estimate = None
         if kind in ("low", "low_oracle"):
             commands = tensor(rates)
@@ -221,11 +257,30 @@ class ModelBatcher:
                 texts.update({t: encoded[j].clone() for j,t in enumerate(missing)})
             args = (torch.stack([req.client.visual for req in group]), torch.stack([texts[t] for t in labels]),
                     p, a, torch.tensor(timing, dtype=torch.float32,device=self.device))
-            if kind == "task" and any(x.body[1] for x in group):
+            if kind == "task" and self.use_task_graphs:
+                key = (group[0].client.key, len(group))
+                if key not in self.graphs:
+                    if len(self.graphs) >= 48:
+                        self.graphs.popitem(last=False)
+                    try:
+                        self.graphs[key] = FrozenTaskGraph(actor, args)
+                    except torch.OutOfMemoryError:
+                        self.graphs[key] = None
+                        print("Using eager inference for a batch that could not reserve CUDA graph memory",
+                              key, flush=True)
+                self.graphs.move_to_end(key)
+                graph = self.graphs[key]
+                if graph is None:
+                    raw, high, estimate = actor.infer_features(*args)
+                else:
+                    values = graph.run(args)
+                    self.graph_calls += 1
+            elif kind == "task" and any(x.body[1] for x in group):
                 raw, high, estimate = actor.infer_features(*args)
             else:
                 raw = actor.act_features_raw(*args)
-        values = [x.detach().float().cpu().numpy() if x is not None else None for x in (raw, high, estimate)]
+        if values is None:
+            values = [x.detach().float().cpu().numpy() if x is not None else None for x in (raw, high, estimate)]
         if any(x is not None and not np.isfinite(x).all() for x in values):
             raise FloatingPointError("Nonfinite actor response")
         for i, req in enumerate(group):
@@ -264,6 +319,7 @@ class ModelBatcher:
                     stats = dict(calls=self.calls, forwards=self.batches, max_batch=self.max_seen,
                                  mean_batch=self.calls/self.batches, queue_wait_mean_ms=1000*self.wait_sum/self.calls,
                                  device=self.device, queued=self.pending.qsize(), models=len(self.models),
+                                 graph_calls=self.graph_calls, cached_graphs=len(self.graphs), coalesce_ms=self.window*1000,
                                  peak_torch_allocated_bytes=torch.cuda.max_memory_allocated())
                     from scripts.multimodal.mm03_launch import read,write
                     stats["pid"]=os.getpid()
