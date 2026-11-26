@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-26T10:46:40+08:00",
+  "as_of_beijing": "2026-11-26T10:55:29+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "L16 第 2 个训练块",
+  "milestone": "L16 工程评测完成",
   "runtime": {
     "supervisor": {
       "pid": 399163,
@@ -73,18 +73,20 @@
         "7"
       ],
       "git_commit": "aa22541fd8f7d2552a4d41fb673fb83138162930",
-      "state": "running",
+      "state": "complete",
       "pid": 404015,
       "pid_stamp": "1171672454",
-      "live": true
+      "exit_code": 0,
+      "ended_beijing": "2026-11-26T10:55:24+08:00",
+      "live": false
     },
     "B": {
       "unit": "B",
-      "attempt": 4,
-      "started_beijing": "2026-11-26T10:28:57+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt004.log",
-      "wrapper": 407425,
-      "wrapper_stamp": "1171750516",
+      "attempt": 5,
+      "started_beijing": "2026-11-26T10:50:21+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt005.log",
+      "wrapper": 414812,
+      "wrapper_stamp": "1171878850",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.venv/bin/python",
         "-u",
@@ -95,10 +97,10 @@
         "--workers",
         "7"
       ],
-      "git_commit": "9092bb96cc352618528836f078b8466472b48140",
+      "git_commit": "32b0d8f6f0ad19ad0833119bca1100fb7c2d7dde",
       "state": "running",
-      "pid": 407427,
-      "pid_stamp": "1171750521",
+      "pid": 414814,
+      "pid_stamp": "1171878856",
       "live": true
     },
     "C": {
@@ -174,42 +176,42 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 120,
+    "samples": 146,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-26T10:46:35+08:00",
-      "time": 1795661195.8227873,
-      "cpu_stat": "usage_usec 11042973023142\nuser_usec 10754914329137\nsystem_usec 288058694005\nnr_periods 21218126\nnr_throttled 150629\nthrottled_usec 81942732550",
+      "beijing": "2026-11-26T10:55:18+08:00",
+      "time": 1795661718.7889044,
+      "cpu_stat": "usage_usec 11050750752295\nuser_usec 10762428734857\nsystem_usec 288322017437\nnr_periods 21223355\nnr_throttled 150637\nthrottled_usec 81967687796",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "117627486208",
+      "ram_bytes": "117592690688",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 420537307136,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 20646, 97887, 70",
+      "disk_free_bytes": 417413406720,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 19332, 97887, 35",
       "inference": {
-        "calls": 24537,
-        "forwards": 16652,
-        "max_batch": 5,
-        "mean_batch": 1.4735166946913283,
-        "queue_wait_mean_ms": 1.1550150946035902,
+        "calls": 279469,
+        "forwards": 169190,
+        "max_batch": 7,
+        "mean_batch": 1.651805662273184,
+        "queue_wait_mean_ms": 1.6439630167471952,
         "device": "cuda",
-        "queued": 1,
-        "models": 2,
-        "peak_torch_allocated_bytes": 34055168,
+        "queued": 2,
+        "models": 10,
+        "peak_torch_allocated_bytes": 42619904,
         "pid": 413236
       },
       "lane_pids": {
         "inference": 413236,
         "A": 404015,
-        "B": 407427,
+        "B": 414814,
         "C": 411312,
         "video": 399173
       }
     },
-    "peak_sampled_gpu_used_MiB": 23464,
+    "peak_sampled_gpu_used_MiB": 24760,
     "peak_sampled_gpu_util_percent": 100,
     "scope": "sampled whole allocated GPU incl. unrelated users; service Torch peak and queue waits are separate"
   },
@@ -217,17 +219,17 @@
     {
       "method": "D23",
       "seed": 1701,
-      "round": 0,
-      "full": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1701/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1701/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1701/receipt.json",
+      "round": 1,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/D23/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/D23/seed1701/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/D23/seed1701/paired/receipt.json",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
       "rank": [
         0,
         0,
         0,
-        -8,
-        0
+        -7,
+        -1
       ],
       "development": [
         {
@@ -289,7 +291,7 @@
       ],
       "physical_cases": 8,
       "paired_model_updates_at_checkpoint": 0,
-      "initialization_only": true,
+      "initialization_only": false,
       "common_H9_parent": false
     },
     {
@@ -698,45 +700,40 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r01/collect",
-    "cases_done": 48,
-    "planned": 48,
+    "partition": "rounds/r02/collect",
+    "cases_done": 14,
+    "planned": 24,
     "workers": 7,
-    "wall_s": 271.9256886076182,
-    "completed_here": 48,
-    "steps_here": 620702,
-    "steps_s": 2282.6162661507756,
+    "launch_workers": 7,
+    "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
+    "wall_s": 25.106769278645515,
+    "completed_here": 14,
+    "steps_here": 35667,
+    "steps_s": 1420.6128874708088,
     "resumed_cases": 0,
     "processes": [
-      412086,
-      412089,
-      412090,
-      412091,
-      412092,
-      412093,
-      412094
+      415886,
+      415889,
+      415890,
+      415891,
+      415892,
+      415893,
+      415894
     ]
   },
   "A_current": {
-    "phase": "development_2",
-    "complete": 7,
-    "scheduled": 120,
+    "phase": "low_true_velocity_oracle",
+    "complete": 24,
+    "scheduled": 24,
     "resumed": 0,
     "case": "006_tr_nominal_forward_right_stop_2",
     "last_success": false,
     "last_steps": 15000,
-    "completed_physics_steps": 105000,
-    "active": [
-      "007_tr_nominal_alternating_motion_stop_3",
-      "008_tr_offset_zero_1",
-      "009_tr_offset_forward_stop_2",
-      "010_tr_offset_reverse_stop_3",
-      "011_tr_offset_left_turn_stop_0",
-      "012_tr_offset_right_turn_stop_1"
-    ],
-    "newly_completed_episodes_s": 0.2790197113041425,
-    "measured_physics_steps_s": 4185.295669562137,
-    "timestamp": "2026-11-26T02:46:37.336099+00:00"
+    "completed_physics_steps": 360000,
+    "active": [],
+    "newly_completed_episodes_s": 0.21457898049087223,
+    "measured_physics_steps_s": 3218.6847073630834,
+    "timestamp": "2026-11-26T02:55:24.053452+00:00"
   },
   "C_current": {
     "stage": "training",
