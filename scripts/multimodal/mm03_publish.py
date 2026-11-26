@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import socket
 import subprocess
+import sys
 import time
 import traceback
 
@@ -134,11 +135,18 @@ def main():
         except BlockingIOError:
             return
         last_attempt=0.
+        modules=[Path(__file__).with_name(s) for s in ("mm03_publish.py","mm03_report.py","mm03_resources.py","mm03_first.py","mm03_videos.py")]
+        version=[p.stat().st_mtime_ns for p in modules]
         while True:
             try:
+                if version!=[p.stat().st_mtime_ns for p in modules]:
+                    os.execv(sys.executable,[sys.executable,"-u","-m","scripts.multimodal.mm03_publish",*sys.argv[1:]])
                 from scripts.multimodal.mm03_resources import update
                 update(a.root)
                 success = deliver(a.root,video_only=True)
+                if (a.root/"B/formal_cases.json").is_file() and not read(a.root/"videos/mm03/examples.json").get("formal_cases_complete"):
+                    from scripts.multimodal.mm03_videos import task_examples
+                    task_examples(a.root)
                 if time.monotonic()-last_attempt>35:
                     last_attempt=time.monotonic()
                     publish(a.root,a.repo)

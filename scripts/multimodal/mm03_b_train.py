@@ -1,5 +1,6 @@
 """Execute one reproducible MM03 high-level optimization, WM refresh or bridge binding."""
 import argparse
+from collections import Counter
 import hashlib
 import json
 import os
@@ -242,6 +243,7 @@ def train(s):
     ck, final = out / "last.pt", out / "full.pt"
     step0 = 0
     obj = native = None
+    native_allocation = None
     cap = None
     variant = s.get("variant", "C0")
     if variant != "C0":
@@ -252,6 +254,15 @@ def train(s):
             emit(measure_file,measure_low_derivatives(actor,pool.batch(part[0,:32])))
         obj = MM03Objective(s["bundle"], DEVICE, vocab, seed+937*s["round"])
         obj.verify_actor(actor)
+        at_start = obj.targets["prev_contact"][:,0,:2].bool()
+        in_window = obj.targets["contact"][:,:32,:2].bool()
+        anchor_coverage = dict(source="R6 qualified complete native teacher recoveries",
+             starts=len(obj.keys), phase_counts=dict(Counter(ep["meta"]["anchor_phase"] for ep in obj.replay.episodes)),
+             starts_with_either_finger=int(at_start.any(-1).sum()),starts_with_both_fingers=int(at_start.all(-1).sum()),
+             windows_with_either_finger=int(in_window.any((-1,-2)).sum()),
+             windows_with_both_fingers=int(in_window.all(-1).any(-1).sum()),
+             source_contact_threshold_N=.01,training_split_only=True)
+        emit(out / "trajectory_anchor_coverage.json",anchor_coverage)
         cap_file = out / "fixed_cap.json"
         shared_cap = Path(s["root"]) / "B" / "models" / "H9-WM" / f'seed{seed}' / "trajectory_cap.json"
         if shared_cap.exists():
@@ -266,7 +277,27 @@ def train(s):
         emit(cap_file,dict(**calibration,retained_across_rounds=True))
         if variant == "CF32":
             from scripts.multimodal.mm03_c_native import NativePool
-            native = NativePool(s["native_workers"])
+            allocation_path = out / "native_pool_allocation.json"
+            if allocation_path.exists():
+                native_allocation = read(allocation_path)
+            elif "native_worker_source" in s:
+                native_allocation = dict(workers=s["native_workers"],source=s["native_worker_source"])
+            else:
+                # Legacy coordinators recorded only their original 3-worker proposal.
+                # Freeze a separate run receipt before the first native update.
+                file = Path(s["root"]) / "resources" / "worker_targets.json"
+                targets = read(file) if file.is_file() else {}
+                n = targets.get("B_CF",targets.get("workers",{}).get("B_CF",3))
+                native_allocation = dict(workers=n,source="B_CF before first native update on legacy specification",
+                                         initial_proposal=s["native_workers"],worker_target_file=str(file))
+            n = native_allocation["workers"]
+            if type(n) is not int or not 1<=n<=25:
+                raise ValueError(f"Invalid frozen native worker count {n}")
+            emit(allocation_path,native_allocation)
+            native = NativePool(n)
+            with (out / "native_pool_processes.jsonl").open("a") as f:
+                print(json.dumps(dict(workers=n,optimizer_pid=os.getpid(),native_pids=[w.pid for w in native.workers],
+                                      checkpoint=str(parent_path))),file=f)
     totals = dict(model_updates=0, model_queries=0, native_substeps=0, legal_model_slots=0,
                   command_label_draws=0, bc_rows=0)
     prior_wall = 0.
@@ -363,7 +394,9 @@ def train(s):
     paid_totals["uncommitted_physical_batches"] = len(uncommitted)
     emit(out / "receipt.json", dict(stage=s["stage"], method=s["method"], round=s["round"], seed=seed,
          retained=steps, paid=attempts+steps-step0, rollback=attempts-step0, paid_model_cost=paid_totals,
-         retained_cost=payload["totals"], full=str(final), deploy=str(deploy), parent=str(parent_path),
+         retained_cost=payload["totals"], native_pool_allocation=native_allocation,
+         trajectory_anchor_coverage=anchor_coverage if obj is not None else None,
+         full=str(final), deploy=str(deploy), parent=str(parent_path),
          low=s["low"], parent_sha256=sha(parent_path), full_sha256=sha(final), deploy_sha256=sha(deploy),
          row_order=order["batch_rows_sha256"], schedule_offset=offset,
          wall_s=payload["wall_s"], all_parameters=sum(p.numel() for p in actor.parameters()),

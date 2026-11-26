@@ -88,13 +88,15 @@ def budgets(root, rows):
         stable=read(f.parent/"receipt.json") or read(f.parent/"progress.json")
         c.append(dict(variant=f.parent.parent.name,seed=int(f.parent.name[4:]),paid=len(recs),
             retained=stable.get("retained",stable.get("step",0)),bc_rows_paid=256*len(recs),
+            model_gradient_updates=sum(s["model_queries"]>0 and s["grad_trajectory"]>0 and s["coefficient"]>0 for s in recs),
             model_queries=sum(s["model_queries"] for s in recs),native_substeps=sum(s["native_substeps"] for s in recs),
             full=str(f.parent/"final.pt") if (f.parent/"final.pt").is_file() else None))
     cs=[]
     for f in sorted((root/"C").glob("*/seed*/short_recovery.json")):
         data=read(f)
         cs.append(dict(variant=f.parent.parent.name,seed=int(f.parent.name[4:]),cases=len(data),
-            survived=sum(x["survived_32"] for x in data),native_substeps=sum(x["physical_substeps"] for x in data)))
+            survived=sum(x["survived_32"] for x in data),native_substeps=sum(x["physical_substeps"] for x in data),
+            wm_queries=sum((x["physical_substeps"]+9)//10 for x in data)))
     bridge=read(root/"C/bridge/bridge.json") or read(root/"C/bridge/progress.json")
     direction=read(root/"C/directional_response.json")
     parity=read(root/"A/cpu_parity/comparison.json")
@@ -103,7 +105,18 @@ def budgets(root, rows):
                 "C/directional_check":direction.get("native_substeps",0),
                 "B/true_forward_optimization":sum(x["native_substeps"] for x in b)}
     high=sum(x["paid"] for x in b if x["stage"] not in ("wm","bridge"))
+    high_by_stage=Counter()
+    for x in b:
+        high_by_stage[x["stage"]]+=x["paid"]
+    diagnostics={"C_cap_calibration":read(root/"C/calibration.json").get("steps",0),
+                 "C_model_and_native_direction":direction.get("model_queries",0),
+                 "C_local_fp64_direction":read(root/"C/directional_local_fp64.json").get("model_queries",0),
+                 "C_short_recovery":sum(x["wm_queries"] for x in cs)}
     return dict(as_of_beijing=now(),low_updates=sum(x["paid"] for x in a),B_high_updates=high,
+        B_updates_by_stage=dict(high_by_stage),B_primary_high_updates=high-high_by_stage["cost"],
+        B_cost_sensitivity_updates=high_by_stage["cost"],C_diagnostic_model_queries=diagnostics,
+        B_training_model_queries=sum(x["model_queries"] for x in b),
+        C_training_model_queries=sum(x["model_queries"] for x in c),
         C_actor_updates=sum(x["paid"] for x in c),wm_updates=sum(x["paid"] for x in b if x["stage"]=="wm"),
         bridge_updates=sum(x["paid"] for x in b if x["stage"]=="bridge")+bridge.get("paid",0),critic_updates=0,
         completed_episodes=len(rows),episode_substeps=sum(physics.values()),
@@ -142,7 +155,7 @@ def slimcopy(src,dest):
 def mirror_records(root,out):
     small=("A/design.json","A/channel_results.json","A/command_reference.json","A/low/compatibility.json",
            "A/completion.json","A/complete.json","B/teacher_registration.json","B/candidate_freeze.json",
-           "B/completion.json","C/parent.json","C/calibration.json","C/directional_response.json",
+           "B/completion.json","C/parent.json","C/calibration.json","C/directional_response.json","C/contact_anchor_inventory.json",
            "C/directional_local_fp64.json","C/development_anchors.json","C/selection.json","C/bridge/bridge.json",
            "service/upgrade1.json","A/low/summary.json","A/low/development_results.json",
            "A/cpu_parity/comparison.json","A/low/block2_design.json","parent_receipt.json","resources/worker_targets.json","B/low_abi_readback.json","B/prefix_p6_parity_pull.json",
@@ -150,8 +163,10 @@ def mirror_records(root,out):
     for name in small:
         slimcopy(root/name, out/"receipts"/name)
     for lane,globs in (("A",("low/seed*/block*/train_result.json","parity/*.json")),
-                       ("B",("models/*/seed*/*.json","rounds/r*/block.json","rounds/r*/collection_complete.json")),
-                       ("C",("*/seed*/receipt.json","*/seed*/short_recovery.json"))):
+                       ("B",("models/*/seed*/*.json","rounds/r*/block.json","rounds/r*/collection_complete.json",
+                             "warm/schedules/*.json","rounds/r*/schedules/*.json","rounds/r*/low_seed*.json",
+                             "rounds/r*/*/seed*/*/receipt.json","rounds/r*/wm/seed*/receipt.json","cost/seed*/train/receipt.json")),
+                       ("C",("*/seed*/receipt.json","*/seed*/short_recovery.json","schedules/*.json"))):
         for pattern in globs:
             for src in (root/lane).glob(pattern):
                 slimcopy(src,out/"receipts"/src.relative_to(root))
@@ -172,6 +187,10 @@ def mirror_records(root,out):
         for seed,s in read(root/"A/completion.json").get("seeds",{}).items():
             if s.get("best_deploy"):
                 slimcopy(Path(s["best_deploy"]),out/"models/L16"/f"seed{seed}"/"deploy.pt")
+    winner=read(root/"C/selection.json").get("selected_model_variant")
+    if winner:
+        for src in (root/"C"/winner).glob("seed*/deploy.pt"):
+            slimcopy(src,out/"models/C"/winner/src.parent.name/"deploy.pt")
 
 
 def scored(n,total):

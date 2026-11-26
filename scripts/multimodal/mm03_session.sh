@@ -14,10 +14,14 @@ if [[ -d "$publish_repo" ]] && ! tmux has-session -t "=${session}-publish" 2>/de
         "$repo" "$repo:$repo/scripts" "$run/service/policy.sock" "$repo/.venv/bin/python" "$run" "$publish_repo" "$run/logs/publication.log"
     tmux new-session -d -s "${session}-publish" -c "$repo" "$publisher"
 fi
-if tmux has-session -t "=$session" 2>/dev/null; then
-    exec .venv/bin/python -u -m scripts.multimodal.mm03_launch run --root "$run"
-fi
 printf -v line 'cd %q && export PYTHONPATH=%q && unset PYTHONHOME && exec %q -u -m scripts.multimodal.mm03_launch run --root %q >>%q 2>&1' \
     "$repo" "$repo:$repo/scripts" "$repo/.venv/bin/python" "$run" "$run/logs/supervisor.log"
-tmux new-session -d -s "$session" -c "$repo" "$line"
+if tmux has-session -t "=$session" 2>/dev/null; then
+    if .venv/bin/python -c 'import sys; from pathlib import Path; from scripts.multimodal.mm03_launch import alive,read; sys.exit(0 if alive(read(Path(sys.argv[1])/"status/supervisor.json")) else 1)' "$run"; then
+        exec .venv/bin/python -u -m scripts.multimodal.mm03_launch run --root "$run"
+    fi
+    tmux new-window -d -t "$session" -n supervisor -c "$repo" "$line"
+else
+    tmux new-session -d -s "$session" -c "$repo" "$line"
+fi
 printf 'tmux %s\nlog %s\n' "$session" "$run/logs/supervisor.log"

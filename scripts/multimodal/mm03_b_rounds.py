@@ -255,9 +255,22 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
     bridge_spec = out / "bridge" / "spec.json"
     stage(read(bridge_spec) if bridge_spec.exists() else dict(**bspec,root=str(root)))
     paired = out / "paired"
-    stage(train_spec(root,method,seed,r,"paired",paired_parent,low,member,paired,512,offset=2048,
-                     variant=variant, bundle=str(out / "bridge" / "trajectory_bundle.pt"),
-                     native_workers=max(1, min(3, workers))))
+    paired_spec = paired / "spec.json"
+    if paired_spec.is_file():
+        spec = read(paired_spec)
+    else:
+        allocation = dict(native_workers=max(1,min(3,workers)))
+        if variant=="CF32":
+            targets_file = root / "resources" / "worker_targets.json"
+            targets = read(targets_file) if targets_file.is_file() else {}
+            count = targets.get("B_CF", targets.get("workers",{}).get("B_CF",3))
+            if type(count) is not int or not 1<=count<=25:
+                raise ValueError(f"Invalid B_CF native worker target: {count}")
+            allocation = dict(native_workers=count,native_worker_source="B_CF at new paired specification",
+                              worker_target_file=str(targets_file))
+        spec = train_spec(root,method,seed,r,"paired",paired_parent,low,member,paired,512,offset=2048,
+                          variant=variant,bundle=str(out / "bridge" / "trajectory_bundle.pt"),**allocation)
+    stage(spec)
     return paired
 
 
