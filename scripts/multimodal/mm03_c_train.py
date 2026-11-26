@@ -51,6 +51,8 @@ def record_replay(folder,attempt,step,keys,rows,stats,objective):
             "p_history":objective.obs["history"][rows].cpu().numpy(),
             "previous_history":objective.obs["previous"][rows].cpu().numpy(),
             "vision0":objective.obs["low"][rows].cpu().numpy(),
+            "fresh0":objective.targets["fresh"][rows,0].cpu().numpy(),
+            "clock0":objective.obs["sensor"][rows,2].cpu().numpy(),
             "object0":objective.targets["o"][rows,0].cpu().numpy(),
             "contact0":objective.targets["prev_contact"][rows,0].cpu().numpy(),
             "valid":stats["valid"].cpu().numpy()}
@@ -274,9 +276,6 @@ def compare(root, workers, parent_path, bundle, dev):
                     actor.freeze_encoders()
                     val.verify_actor(actor)
                     report(out/"short_recovery.json",recovery_rows(actor,val,native,cap))
-        if not (output/"directional_response.json").exists():
-            from scripts.multimodal.mm03_c_direction import compare_directions
-            compare_directions(output,parent_actor,training,native,cap)
         selection(root)
         report(output/"current.json",dict(stage="completed",selected=read(output/"selection.json")["variant"]))
     finally:

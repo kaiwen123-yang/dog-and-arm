@@ -1,0 +1,268 @@
+"""Execute one reproducible MM03 high-level optimization, WM refresh or bridge binding."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import random
+import time
+
+import numpy as np
+import torch
+
+from learning.multimodal.actor import load_actor
+from learning.multimodal.mm03_task import SCHEMA, TaskActor, load_task_actor, migrate, migrate_optimizer, optimizer_for
+from learning.multimodal.mm03_task_data import SharedRows
+from scripts.multimodal.mm03_b import emit, freeze_file, read
+from scripts.multimodal.train_actor import atomic_save, peak
+
+DEVICE = torch.device("cuda:0")
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def global_rng():
+    return dict(python=random.getstate(), numpy=np.random.get_state(),
+                torch=torch.get_rng_state(), cuda=torch.cuda.get_rng_state(DEVICE))
+
+
+def restore_rng(state):
+    random.setstate(state["python"])
+    np.random.set_state(state["numpy"])
+    torch.set_rng_state(state["torch"].cpu())
+    torch.cuda.set_rng_state(state["cuda"].cpu(), DEVICE)
+
+
+def refresh_wm(s):
+    from learning.multimodal.world_model import PerceptualDynamics
+    from learning.multimodal.wm_replay import PhysicalReplay
+    from scripts.multimodal.train_wm import physical_loss
+    out = Path(s["output"])
+    parent = torch.load(s["parent"], map_location=DEVICE, weights_only=False)
+    mp = read(s["members"])
+    # Keep the original R6 training evidence; each refresh includes new physical
+    # training episodes selected from the common pool. No development/test data.
+    members = list(dict.fromkeys(mp["wm"]))
+    model = PerceptualDynamics(parent["width"]).to(DEVICE)
+    model.load_state_dict(parent["model"])
+    optimizer = torch.optim.AdamW(model.parameters(), lr=.001, weight_decay=.0001)
+    optimizer.load_state_dict(parent["optimizer"])
+    rng = torch.Generator(device=DEVICE).manual_seed(s["data_seed"])
+    replay = PhysicalReplay(None, "train", DEVICE, episode_dirs=members)
+    out.mkdir(parents=True, exist_ok=True)
+    ck = out / "wm.pt"
+    step0 = 0
+    if ck.exists():
+        resume = torch.load(ck, map_location=DEVICE, weights_only=False)
+        if resume["task_spec"] != s:
+            raise ValueError("WM resume specification changed")
+        model.load_state_dict(resume["model"])
+        optimizer.load_state_dict(resume["optimizer"])
+        rng.set_state(resume["sampler_rng"].cpu())
+        step0 = resume["round_updates"]
+    journal = out / "applied_steps.txt"
+    paid0 = sum(1 for _ in journal.open()) if journal.exists() else 0
+    started = time.monotonic()
+    if paid0 < step0:
+        raise ValueError("WM missing applied step ledger")
+    with journal.open("a", buffering=1) as f:
+        for step in range(step0 + 1, 1001):
+            win = replay.window(replay.draw_starts(7, 128, rng, True), 7)
+            loss = physical_loss(model, win)
+            optimizer.zero_grad(set_to_none=True)
+            loss.backward()
+            grad = torch.nn.utils.clip_grad_norm_(model.parameters(), 5., error_if_nonfinite=True)
+            optimizer.step()
+            print(step, file=f)
+            if step == 1 or step % 25 == 0:
+                state = dict(schema="MM03-actual-action-h7-v1", task_spec=s, width=model.width,
+                     parent=s["parent"], round=s["round"], round_updates=step, updates=parent["updates"]+step,
+                     model=model.state_dict(), optimizer=optimizer.state_dict(), sampler_rng=rng.get_state(),
+                     rng=global_rng(), members=members, horizon=7, batch=128)
+                atomic_save(ck, state)
+                emit(out / "progress.json", dict(stage="wm", retained=step, paid=paid0+step-step0,
+                     loss=float(loss.detach()), grad=float(grad), **peak(DEVICE)))
+    emit(out / "receipt.json", dict(stage="wm", retained=1000, paid=paid0+1000-step0,
+         rollback=paid0-step0, source=s["parent"], members=len(members), children=s["round"], wm=str(ck),
+         batch=128, horizon=7, members_file=s["members"], wall_s_last_run=time.monotonic()-started))
+
+
+def bridge(s):
+    from scripts.multimodal.mm03_c import bind_bridge
+    out = Path(s["output"])
+    actor, vocab, _ = load_task_actor(s["parent"], DEVICE)
+    actor.requires_grad_(False)
+    mp = read(s["members"])
+    bundle = bind_bridge(actor, vocab, s["wm"], mp["wm"], mp["recovery"], out,
+                         s["round"], s["parent"], DEVICE)
+    report = read(out / "bridge.json")
+    emit(out / "receipt.json", dict(stage="bridge", retained=600, paid=report["paid"],
+         binding=report["encoder_id"], bundle=str(bundle), wall_s_last_run=report["last_run_wall_s"]))
+
+
+def train(s):
+    from learning.multimodal.mm03_model import MM03Objective, gradient_step
+    out = Path(s["output"])
+    out.mkdir(parents=True, exist_ok=True)
+    parent_path = Path(s["parent"])
+    arch = "D23" if s["method"].startswith("D23") else "H9"
+    seed = s["seed"]
+    random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
+    if s["stage"] == "warm":
+        old, vocab, parent = load_actor(parent_path, DEVICE)
+        if parent["configuration"]["branch"] != "supervised_aggregate" or parent["configuration"]["round"] != 6:
+            raise ValueError("The warm fork requires its complete MM02 R6 supervised checkpoint")
+        for name in ("optimizer", "optimizer_names", "rng", "sampler_state", "original_train_ids"):
+            if name not in parent:
+                raise KeyError(f"Incomplete MM02 package, missing {name}")
+        actor = migrate(old, parent, vocab, s["low"], arch, DEVICE)
+        optimizer, names, lineage = migrate_optimizer(actor, parent)
+        emit(out / "migration.json", dict(**lineage, training_rng_fork=seed,
+             old_sampler=parent["sampler_state"], inherited_actor_updates=parent["lineage_new_actor_steps"],
+             inherited_common_updates=parent["inherited_original_common_steps"], new_low=s["low"],
+             normalized_and_affine_reused=True, low_requires_grad=False))
+        del old
+    else:
+        actor, vocab, parent = load_task_actor(parent_path, DEVICE)
+        if arch != actor.mode:
+            raise ValueError(f"Unexpected parent architecture in {parent_path}")
+        optimizer, names = optimizer_for(actor)
+        if names != parent["optimizer_names"]:
+            raise ValueError("High-level Adam names changed")
+        optimizer.load_state_dict(parent["optimizer"])
+        if s["low"] != parent["low_path"]:
+            from learning.multimodal.mm03_low import LowPolicy
+            actor.low.load_state_dict(LowPolicy.load(s["low"], DEVICE).state_dict())
+    actor.set_encoder_grad(s["stage"] != "paired")
+    actor.low.requires_grad_(False).eval()
+    member = read(s["members"])
+    pool = SharedRows(member, vocab, DEVICE)
+    schedule, order = pool.schedule(Path(s["schedule"]), s["data_seed"], s["schedule_steps"])
+    offset, steps = s["offset"], s["steps"]
+    part = schedule[offset:offset+steps]
+    if len(part) != steps:
+        raise ValueError("Requested more BC rows than frozen in this common order")
+    ck, final = out / "last.pt", out / "full.pt"
+    step0 = 0
+    obj = native = None
+    cap = None
+    variant = s.get("variant", "C0")
+    if variant != "C0":
+        if s["stage"] != "paired" or s["method"] != "H9-WM":
+            raise ValueError("Model objective requested for an unpaired experiment")
+        obj = MM03Objective(s["bundle"], DEVICE, vocab, seed+937*s["round"])
+        obj.verify_actor(actor)
+        cap_file = out / "fixed_cap.json"
+        if cap_file.exists():
+            cap = read(cap_file)["cap"]
+        else:
+            cap, evidence = obj.calibrate(actor)
+            emit(cap_file, dict(cap=cap, actor_before_updates=str(parent_path), **evidence))
+        if variant == "CF32":
+            from scripts.multimodal.mm03_c_native import NativePool
+            native = NativePool(s["native_workers"])
+    totals = dict(model_updates=0, model_queries=0, native_substeps=0, legal_model_slots=0,
+                  command_label_draws=0, bc_rows=0)
+    prior_wall = 0.
+    if final.exists() or ck.exists():
+        r = torch.load(final if final.exists() else ck, map_location=DEVICE, weights_only=False)
+        if r["spec"] != s or r["row_order"] != order["batch_rows_sha256"]:
+            raise ValueError("High-level resume changed a frozen dependency")
+        actor.load_state_dict(r["actor"])
+        optimizer.load_state_dict(r["optimizer"])
+        step0, totals, prior_wall = r["update"], r["totals"], r["wall_s"]
+        restore_rng(r["rng"])
+        if obj is not None:
+            obj.rng.set_state(r["objective_rng"].cpu())
+    journal = out / "applied.jsonl"
+    attempts = sum(1 for _ in journal.open()) if journal.exists() else 0
+    if attempts < step0:
+        raise ValueError("High-level update ledger fell behind checkpoint")
+    groups = [[p for p in group["params"] if p.requires_grad] for group in optimizer.param_groups]
+    started = time.monotonic()
+    try:
+        with journal.open("a", buffering=1) as log:
+            for step in range(step0+1, steps+1):
+                batch = pool.batch(part[step-1])
+                bc = actor.bc_loss(batch)
+                traj, stats = None, None
+                if obj is not None:
+                    traj, stats = obj.loss_for(actor, obj.sample(), variant, cap, native=native)
+                    if not torch.isfinite(traj):
+                        raise FloatingPointError("Nonfinite trajectory objective")
+                if not torch.isfinite(bc):
+                    raise FloatingPointError("Nonfinite BC objective")
+                if s["stage"] == "paired":
+                    g = gradient_step(bc, traj, variant, optimizer, groups, [2.] * len(groups))
+                else:
+                    optimizer.zero_grad(set_to_none=True)
+                    bc.backward()
+                    norm = [float(torch.nn.utils.clip_grad_norm_(g, 2., error_if_nonfinite=True)) for g in groups if g]
+                    optimizer.step()
+                    g = dict(bc=float(bc.detach()), preclip_by_group=norm)
+                n_real = 0 if stats is None else int(stats["native_substeps"])
+                n_query = 0 if stats is None else int(stats["model_queries"])
+                legal = 0 if stats is None else int(stats["valid"].sum())
+                totals["model_updates"] += int(legal > 0)
+                totals["model_queries"] += n_query
+                totals["native_substeps"] += n_real
+                totals["legal_model_slots"] += legal
+                totals["bc_rows"] += len(batch["action"])
+                totals["command_label_draws"] += int(batch["command_valid"].sum())
+                print(json.dumps(dict(update=step, native_substeps=n_real, model_queries=n_query, legal=legal,
+                                      command_draws=int(batch["command_valid"].sum()), **g), allow_nan=False), file=log)
+                if step == 1 or step % 64 == 0 or step == steps:
+                    elapsed = prior_wall + time.monotonic() - started
+                    state = dict(schema=SCHEMA, architecture=arch, method=s["method"], affine_mode=actor.affine_mode,
+                        actor=actor.state_dict(), vocabulary=vocab.tokens, optimizer=optimizer.state_dict(),
+                        optimizer_names=names, spec=s, low_path=s["low"], low_sha256=sha(s["low"]),
+                        rng=global_rng(), row_order=order["batch_rows_sha256"], next_schedule_row=offset+step,
+                        sampler=order["end_generator_state"], update=step, wall_s=elapsed, totals=totals,
+                        objective_rng=obj.rng.get_state() if obj is not None else None)
+                    atomic_save(final if step == steps else ck, state)
+                    emit(out / "progress.json", dict(stage=s["stage"], method=s["method"], seed=seed,
+                         step=step, steps=steps, paid=attempts+step-step0, loss=g["bc"], **totals, **peak(DEVICE)))
+                    if step == 1 or step % 512 == 0:
+                        print(f'{s["method"]} seed{seed} {s["stage"]} r{s["round"]} {step}/{steps} BC={g["bc"]:.5g}', flush=True)
+    finally:
+        if native is not None:
+            native.close()
+    payload = torch.load(final, map_location="cpu", weights_only=False)
+    deploy = out / "deploy.pt"
+    atomic_save(deploy, {k: payload[k] for k in ("schema", "architecture", "affine_mode", "actor",
+                                                "vocabulary", "low_path", "low_sha256", "method")})
+    paid_totals = dict(model_queries=0, native_substeps=0, legal=0)
+    for line in journal.read_text().splitlines():
+        rec = json.loads(line)
+        for k in paid_totals:
+            paid_totals[k] += rec[k]
+    emit(out / "receipt.json", dict(stage=s["stage"], method=s["method"], round=s["round"], seed=seed,
+         retained=steps, paid=attempts+steps-step0, rollback=attempts-step0, paid_model_cost=paid_totals,
+         retained_cost=payload["totals"], full=str(final), deploy=str(deploy), parent=str(parent_path),
+         low=s["low"], parent_sha256=sha(parent_path), full_sha256=sha(final), deploy_sha256=sha(deploy),
+         row_order=order["batch_rows_sha256"], schedule_offset=offset,
+         wall_s=payload["wall_s"], all_parameters=sum(p.numel() for p in actor.parameters()),
+         high_parameters=sum(p.numel() for n,p in actor.named_parameters() if not n.startswith("low.")), **peak(DEVICE)))
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("spec", type=Path)
+    s = read(parser.parse_args().spec)
+    torch.set_num_threads(1)
+    torch.set_float32_matmul_precision("high")
+    torch.cuda.set_device(DEVICE)
+    torch.cuda.reset_peak_memory_stats(DEVICE)
+    if not (Path(s["output"]) / "receipt.json").is_file():
+        if s["stage"] == "wm":
+            refresh_wm(s)
+        elif s["stage"] == "bridge":
+            bridge(s)
+        else:
+            train(s)
+
+
+if __name__ == "__main__":
+    main()
+

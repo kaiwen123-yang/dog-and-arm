@@ -94,7 +94,7 @@ class PhysicsLog:
                     target_units="canonical physical target incl. full jaw; servo ctrl has half jaw plus bias")
 
 
-def run_rescue(job, folder):
+def run_rescue(job, folder, *, client_factory=None):
     scene, cfg, model, d, teacher, judge = init_resources(job)
     mask = np.zeros(23, dtype=bool)
     mask[list(MASKS[job["variant"]])] = True
@@ -107,8 +107,11 @@ def run_rescue(job, folder):
     start = time.monotonic()
     try:
         if source != "teacher":
-            from scripts.multimodal.mm03_inference import PolicyClient
-            client = PolicyClient(job["checkpoint"], kind="mm02")
+            if client_factory is None:
+                from scripts.multimodal.mm03_inference import PolicyClient
+                client = PolicyClient(job["checkpoint"], kind="mm02")
+            else:
+                client = client_factory(job["checkpoint"])
             client.reset(instruction(job["side"], job["goal"]))
         while not (judge.failure or judge.passed):
             now = float(d.time)

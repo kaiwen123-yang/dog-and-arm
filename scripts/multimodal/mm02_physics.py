@@ -149,7 +149,7 @@ def init_resources(job):
     return scene,cfg,model,d,teacher,judge
 
 
-def execute(run, job, *, anchor=None, client=None, sensors=None, resources=None):
+def execute(run, job, *, anchor=None, client=None, sensors=None, resources=None, deliver_success=True):
     root = Path(run)
     root_dir = root / job["partition"]
     case = root_dir / job["id"]
@@ -256,7 +256,7 @@ def execute(run, job, *, anchor=None, client=None, sensors=None, resources=None)
         if candidates:
             emit(case/"candidates.json",candidates)
         emit(case/"result.json",result)
-        if anchor is None and job["mode"]=="pure" and judge.passed:
+        if deliver_success and anchor is None and job["mode"]=="pure" and judge.passed:
             deliver_first(root,case,path,result)
         return result
     finally:
