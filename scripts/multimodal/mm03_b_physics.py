@@ -33,7 +33,7 @@ def complete_result(case, root):
     result = dict(meta["case_result"], raw_episode=str(path),
                   bc_labels=meta["bc_labels"], camera_frames=meta["frames"])
     emit(case / "result.json", result)
-    if result["mode"] == "pure" and result["success"]:
+    if result["mode"] == "pure" and result["success"] and "reload" not in result["partition"]:
         events = root / "B" / "success"
         emit(events / (result["episode_id"] + ".json"), dict(case=str(case / "result.json"),
              episode=str(path), checkpoint=result["checkpoint"], split=result["partition"],
@@ -173,7 +173,8 @@ def episode(task):
         verdict = judge.result()
         result = {**job, **verdict, "episode_id": job["id"], "ordered_event_count": len(judge.events),
             "source": ("original_P6_teacher_prefix_then_student" if mode == "prefix" else
-                       "command_adapter_teacher" if mode == "teacher" else "pure_frame0"),
+                       "command_adapter_teacher" if mode == "teacher" else
+                       "original_P6_held_reference" if mode == "p6_reference" else "pure_frame0"),
             "teacher_steps": teacher_decisions, "teacher_substeps": 10 * teacher_decisions -
             (10 - writer.arrays["substeps"][-1] if use_teacher else 0),
             "student_steps": tick - teacher_decisions, "prefix_switch_tick": switched,

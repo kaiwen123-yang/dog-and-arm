@@ -211,6 +211,11 @@ def run_command(job, folder):
                 "max_stop_drift_m": max_stop_drift, "median_motion_velocity_to_request_vx_wz": ratios,
                 "tracking_direction_at_least_half_request": response, "estimator_oracle": job["stage"] == "oracle",
                 "engineering_only": True, "wall_s": time.monotonic()-start}
+    except Exception as exc:
+        exc.mm03_steps = steps
+        exc.mm03_decisions = len(a["actual"])
+        np.savez(folder/"last_native_state.npz", time=data.time, qpos=data.qpos, qvel=data.qvel, previous=previous)
+        raise
     finally:
         sensors.close()
         if client is not None:

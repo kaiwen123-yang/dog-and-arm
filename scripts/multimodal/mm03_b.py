@@ -3,6 +3,7 @@ import argparse
 from concurrent.futures import ProcessPoolExecutor, wait, FIRST_COMPLETED
 from itertools import product
 import json
+import multiprocessing
 import os
 from pathlib import Path
 import sys
@@ -73,7 +74,7 @@ def batch(root, jobs, workers):
     start = time.monotonic()
     steps = 0
     fresh = 0
-    with ProcessPoolExecutor(max_workers=workers) as pool:
+    with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("forkserver")) as pool:
         pending = {}
         def refill():
             for job in seq:
@@ -99,6 +100,22 @@ def batch(root, jobs, workers):
     return [results[j["id"]] for j in jobs]
 
 
+def refresh_coordinator(root):
+    """Request a one-time code reload at a recorded optimizer-stage boundary."""
+    root = Path(root).resolve()
+    state = read(root / "status" / "B.json")
+    if state["state"] != "running":
+        raise ValueError("Only an active B coordinator can receive a refresh request")
+    pid = state["pid"]
+    stamp = Path(f"/proc/{pid}/stat").read_text().split(") ",1)[1].split()[19]
+    if str(state["pid_stamp"]) != stamp:
+        raise ValueError("B process identity changed")
+    req = dict(parent_pid=pid, parent_stamp=stamp, attempt=state["attempt"],
+               reason="adopt verified CPU/GPU pipelining at an existing durable training receipt")
+    emit(root / "B" / "coordinator_refresh.json", req)
+    print(json.dumps(req), flush=True)
+
+
 def run(args):
     root = args.root.resolve()
     out = root / "B"
@@ -120,7 +137,11 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", required=True, type=Path)
     p.add_argument("--workers", type=int, default=8)
+    p.add_argument("--refresh-coordinator", action="store_true")
     args = p.parse_args()
+    if args.refresh_coordinator:
+        refresh_coordinator(args.root)
+        raise SystemExit(0)
     if args.workers < 1:
         p.error("workers must be positive")
     if Path(sys.prefix) != (REPO / ".venv") and os.getenv("MM03_B_NATIVE_BOOT") != "1":

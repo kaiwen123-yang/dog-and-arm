@@ -156,9 +156,14 @@ def resource_sample(root):
     except (OSError, subprocess.CalledProcessError) as err:
         stats["gpu_read_error"] = str(err)
     stats["inference"] = read(root/"service/inference_stats.json")
+    memo = Path("/sys/fs/cgroup/memory.stat")
+    if memo.is_file():
+        parts = (s.split() for s in memo.read_text().splitlines())
+        stats["memory_components_bytes"] = {k:int(v) for k,v in parts if k in ("anon","file","shmem")}
     stats["lane_pids"] = {name:read(state_file(root,name)).get("pid") for name in UNITS}
     with (root/"resources.jsonl").open("a") as f:
         f.write(json.dumps(stats,separators=(",",":"))+"\n")
+    return stats
 
 
 def service_ready(root):
@@ -221,7 +226,7 @@ def supervise(args):
             children[name]=submit(root,name)
             requested.discard(name)
         if time.monotonic()-last_resource >= 20:
-            resource_sample(root)
+            write(root/"resources/latest.json",resource_sample(root))
             last_resource=time.monotonic()
         terminal = all(records[name].get("state") in ("complete","failed") or
                        (records[name].get("state")=="running" and not alive(records[name]))

@@ -1,5 +1,9 @@
 # dog-and-arm 项目指令
 
+## MM03 实验运行入口
+
+AutoDL 代码位于 `/root/autodl-tmp/dog-and-arm-mm03`，完整仿真与训练数据位于 `/root/autodl-tmp/mm03-20261126`。进入代码树执行 `bash scripts/multimodal/mm03_session.sh` 启动或恢复三路队列。运行事实见 [PROJECT_STATE.md](PROJECT_STATE.md)、[原判实测报告](reports/MULTIMODAL_MM03_RESULTS.md) 与[恢复清单](results/multimodal/mm03_20261126/manifest.json)。下方计划记录属于开工前的历史版本。
+
 <!-- mm03-plan-20261126-start -->
 ## 2026-11-26 · MM02 已审查，下一执行轮为 MM03 三路并行
 

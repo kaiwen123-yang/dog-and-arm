@@ -8,6 +8,12 @@ cd "$repo"
 mkdir -p "$run/logs"
 export PYTHONPATH="$repo:$repo/scripts"
 unset PYTHONHOME
+publish_repo=${MM03_PUBLISH_REPO:-"$(dirname "$repo")/dog-and-arm-mm03-publish"}
+if [[ -d "$publish_repo" ]] && ! tmux has-session -t "=${session}-publish" 2>/dev/null; then
+    printf -v publisher 'cd %q && export MUJOCO_GL=egl OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=%q MM03_INFERENCE_SOCKET=%q && exec %q -u -m scripts.multimodal.mm03_publish watch --root %q --repo %q >>%q 2>&1' \
+        "$repo" "$repo:$repo/scripts" "$run/service/policy.sock" "$repo/.venv/bin/python" "$run" "$publish_repo" "$run/logs/publication.log"
+    tmux new-session -d -s "${session}-publish" -c "$repo" "$publisher"
+fi
 if tmux has-session -t "=$session" 2>/dev/null; then
     exec .venv/bin/python -u -m scripts.multimodal.mm03_launch run --root "$run"
 fi

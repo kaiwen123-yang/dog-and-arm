@@ -44,8 +44,10 @@ def work(item):
         emit(attempt/"result.json", result)
         attempt.rename(case)
         return result
-    except BaseException:
-        emit(attempt/"exception.json", dict(job=job, pid=os.getpid(), traceback=traceback.format_exc()))
+    except BaseException as exc:
+        emit(attempt/"exception.json", dict(job=job, pid=os.getpid(), traceback=traceback.format_exc(),
+             completed_physics_steps=getattr(exc, "mm03_steps", None), decision_calls=getattr(exc, "mm03_decisions", None),
+             resume="new native trial from original frame0; preceding completed trials retained"))
         raise
 
 
@@ -203,6 +205,8 @@ def run(args):
             prefix = f"low/seed{seed}/block2"
             tests.extend([(prefix+"/oracle", j) for j in trials("oracle", seed, 2, state/prefix/"deploy.pt")])
         batch(root, args.workers, tests, "low_true_velocity_oracle")
+    subprocess.run([str(REPO/".conda/envs/arm-and-dog/bin/python"), "-u", "-m", "scripts.multimodal.mm03_a_summary",
+                    "--root", str(root), "--low-scores"], cwd=REPO, check=True)
     emit(state/"complete.json", dict(status="completed_A", low=summaries,
          rescue=44, initial_command_trials=96, source="native simulation",
          adapter_reference="B/teachers (four shared nominal cases)", hardware_commands=0))

@@ -68,10 +68,14 @@ class CommandTeacher(P6CorrectionTeacher):
         super().__init__(model, frame0, cfg)
         self.local = LocalVelocityTeacher(model, frame0, cfg)
         self.request = np.zeros(2)
+        self.original_boundary_label = None
 
     def before(self, data):
         label = super().before(data)
         if label is not None:
+            # The original P6 and local-v1 use the same continuously updated
+            # P6 control state. Prefix execution may consume the original here.
+            self.original_boundary_label = label
             # last_speed already passed alignment/deadband/hysteresis. The yaw
             # request is upstream of PI and downstream of its enable decision.
             self.request = np.array([self.drive.last_speed, self.drive.effective_yaw_request])

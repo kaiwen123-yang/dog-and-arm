@@ -43,6 +43,9 @@ def main():
         if row["teacher_steps"] or row["mode"] != "pure" or row["parent_tick"] != 0:
             raise ValueError("Not a frame0 pure-student development episode")
     emit(args.root/group/"cases.json",rows)
+    from scripts.multimodal.mm03_c_transition import consume
+    if consume(args.root,args.variant,args.seed):
+        raise SystemExit(75)
 
 
 

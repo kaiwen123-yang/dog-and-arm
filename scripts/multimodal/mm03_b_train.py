@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import random
 import time
@@ -135,11 +136,35 @@ def bridge(s):
          binding=report["encoder_id"], bundle=str(bundle), wall_s_last_run=report["last_run_wall_s"]))
 
 
+def check_first_h9_fork(s, parent_path):
+    if s["method"]!="H9-WM" or s["round"]!=1 or s["stage"]!="paired":
+        return
+    duplicate_path = Path(s["output"]).parent / "bc" / "full.pt"
+    ref = torch.load(parent_path,map_location="cpu",weights_only=False)
+    other = torch.load(duplicate_path,map_location="cpu",weights_only=False)
+    if ref["row_order"] != other["row_order"] or ref["low_sha256"] != other["low_sha256"]:
+        raise ValueError("First H9 comparison requires the same physical rows and same frozen L16")
+    actual = [float((ref["actor"][k]-other["actor"][k]).abs().max()) for k in ref["actor"]]
+    if ref["optimizer_names"] != other["optimizer_names"]:
+        raise ValueError("H9 optimizer names changed across the duplicated BC stage")
+    adam = [float((v-other["optimizer"]["state"][pid][k]).abs().max())
+            for pid,state in ref["optimizer"]["state"].items() for k,v in state.items()
+            if torch.is_tensor(v)]
+    same = max(actual + adam)==0.
+    emit(Path(s["output"]) / "paired_parent_check.json",dict(common_parent=str(parent_path),
+         ignored_duplicate_path=str(duplicate_path), duplicate_bc_updates_paid=other["update"],
+         duplicate_represented_in_common_parent=other["update"] if same else 0,
+         distinct_duplicate_updates_discarded=0 if same else other["update"],
+         actor_max_abs=max(actual), adam_max_abs=max(adam), identical=same,
+         paired_starts_exactly_same_file=True, row_order=ref["row_order"], frozen_low=ref["low_sha256"]))
+
+
 def train(s):
     from learning.multimodal.mm03_model import MM03Objective, gradient_step
     out = Path(s["output"])
     out.mkdir(parents=True, exist_ok=True)
     parent_path = Path(s["parent"])
+    check_first_h9_fork(s,parent_path)
     arch = "D23" if s["method"].startswith("D23") else "H9"
     seed = s["seed"]
     random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
@@ -298,6 +323,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("spec", type=Path)
     s = read(parser.parse_args().spec)
+    from scripts.multimodal.mm03_b_rounds import index_warm_candidates
+    index_warm_candidates(Path(s["root"]))
     torch.set_num_threads(1)
     torch.set_float32_matmul_precision("high")
     torch.cuda.set_device(DEVICE)
@@ -309,6 +336,20 @@ def main():
             bridge(s)
         else:
             train(s)
+    request = Path(s["root"]) / "B" / "coordinator_refresh.json"
+    if request.is_file():
+        req = read(request)
+        stamp = Path(f"/proc/{os.getppid()}/stat").read_text().split(") ",1)[1].split()[19]
+        if req["parent_pid"] == os.getppid() and str(req["parent_stamp"]) == stamp:
+            path = Path(s["output"]) / "receipt.json"
+            if not path.is_file():
+                raise ValueError("Refresh requires a completed and committed stage receipt")
+            emit(request.with_name(f'coordinator_refresh_attempt{req["attempt"]}_ack.json'),
+                 dict(**req, finished_receipt=str(path), retained=read(path)["retained"],
+                      paid=read(path)["paid"], command="mm03_launch retry --unit B"))
+            request.rename(request.with_name(f'coordinator_refresh_attempt{req["attempt"]}.consumed'))
+            print("B coordinator reached the requested code refresh boundary; committed",path,flush=True)
+            raise SystemExit(75)
 
 
 if __name__ == "__main__":

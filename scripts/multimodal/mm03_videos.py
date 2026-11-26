@@ -124,26 +124,13 @@ def original_videos(root):
     return records
 
 
-def first_success(root):
-    claims = sorted((root/"B/success").glob("*.json"),key=lambda p:(p.stat().st_mtime_ns,p.name))
-    if not claims:
-        return
-    dst = root/"videos/mm03"
-    dst.mkdir(parents=True,exist_ok=True)
-    fixed = dst/"first_case.json"
-    if not fixed.exists():
-        write(fixed,read(claims[0]))
-    record=read(fixed)
-    case = Path(record["case"])
-    result=read(case)
-    if result["mode"]!="pure" or not result["success"] or result["ordered_event_count"]!=12 or result["teacher_steps"]:
-        raise ValueError("Claim does not satisfy the original full-task judge")
-    render(case,Path(record["episode"]),dst/"first_student_success_1080p.mp4","MM03 first success",False)
-
-
 if __name__=="__main__":
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", type=Path, required=True)
     p.add_argument("--first-success", action="store_true")
     opt=p.parse_args()
-    (first_success if opt.first_success else original_videos)(opt.root)
+    if opt.first_success:
+        from scripts.multimodal.mm03_first import deliver
+        deliver(opt.root)
+    else:
+        original_videos(opt.root)

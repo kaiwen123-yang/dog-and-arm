@@ -1,4 +1,5 @@
 """Continuous B work blocks with matched data, replayable pair forks and an isolated terminal split."""
+from concurrent.futures import ThreadPoolExecutor
 from itertools import product
 from pathlib import Path
 import subprocess
@@ -117,32 +118,37 @@ def train_spec(root, method, seed, r, role, parent, low, members, output, steps,
 
 def prepare(root, workers):
     members = membership(root, 0)
-    while True:
-        pending = []
-        for seed in SEEDS:
-            low = initial_low(root, seed)
-            if not low.is_file():
-                pending.append(seed)
-                continue
-            for method in BASE:
+    finished = set()
+    while len(finished) < len(SEEDS):
+        ready = [seed for seed in SEEDS if seed not in finished and initial_low(root, seed).is_file()]
+        if not ready:
+            emit(root / "B" / "waiting.json", dict(stage="warm", missing_frozen_low_seeds=sorted(set(SEEDS)-finished)))
+            time.sleep(8)
+            continue
+        # One GPU optimizer queues completed packages to the native pool. The next
+        # training fork overlaps real rollout of the previous one, with at most one
+        # GPU dataset materialized and one bounded seven-worker native pool.
+        with ThreadPoolExecutor(max_workers=1) as gpu:
+            work = []
+            for seed, method in product(ready, BASE):
                 out = train_dir(root, 0, method, seed)
-                stage(train_spec(root, method, seed, 0, "warm", PARENT["supervised_aggregate/training"]["source"],
-                                 low, members, out, 4096))
+                spec = train_spec(root, method, seed, 0, "warm",
+                                  PARENT["supervised_aggregate/training"]["source"],
+                                  initial_low(root,seed), members, out, 4096)
+                work.append((seed,method,out,gpu.submit(stage,spec)))
+            for seed, method, out, future in work:
+                future.result()
                 path = out / "development.json"
                 if not path.exists():
-                    rows = batch(root, eval_jobs("warm/development", "evaluation", method, seed, 0,
+                    rows = batch(root, eval_jobs("warm/development","evaluation",method,seed,0,
                                                  out / "deploy.pt", DEV), workers)
-                    emit(path, rows)
-                # While other seeds train L16, begin genuine round-one physical collection.
-                package = out / "deploy.pt"
-                matrix = collect_jobs(method, seed, 1, package)
+                    emit(path,rows)
+                update_selected(root,method,seed,0,out,read(path))
+                matrix = collect_jobs(method,seed,1,out / "deploy.pt")
                 if method == "H9":
-                    matrix += collect_jobs("H9-WM", seed, 1, package)
-                batch(root, matrix, workers)
-        if not pending:
-            return
-        emit(root / "B" / "waiting.json", dict(stage="warm", missing_frozen_low_seeds=pending))
-        time.sleep(8)
+                    matrix += collect_jobs("H9-WM",seed,1,out / "deploy.pt")
+                batch(root,matrix,workers)
+        finished.update(ready)
 
 
 def rank(rows, r):
@@ -151,25 +157,49 @@ def rank(rows, r):
     for row in rows:
         tasks[row["side"], row["goal"]].append(row["ordered_event_count"])
         reason = (row["first_failure"] or {}).get("reason", "")
-        bad += int(reason.startswith(("wheel_support_or_tilt", "unexpected_contact:", "arm_joint_limit:")))
+        bad += int(reason.startswith(("wheel_support_or_tilt","arm_joint_limit:")) or
+                   any(tag in reason for tag in ("robot_self","self_collision","self_contact")))
     return [sum(x["success"] for x in rows), min(min(tasks[k]) for k in TASKS),
             sum(x["ordered_event_count"] for x in rows), -bad, -r]
 
 
 def update_selected(root, method, seed, r, package, rows):
+    import fcntl
+    target = root / "B" / "models" / method / f"seed{seed}"
+    target.mkdir(parents=True, exist_ok=True)
+    with (target / "index.lock").open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        _update_selected(root,method,seed,r,package,rows)
+
+
+def _update_selected(root, method, seed, r, package, rows):
     target = root / "B" / "models" / method / f"seed{seed}"
     record = dict(method=method, seed=seed, round=r, full=str(package / "full.pt"),
                   deploy=str(package / "deploy.pt"), receipt=str(package / "receipt.json"),
                   low=read(package / "receipt.json")["low"], rank=rank(rows, r),
                   development=[dict(scene=x["scene"], side=x["side"], goal=x["goal"],
                                     success=x["success"], events=x["ordered_event_count"]) for x in rows],
-                  physical_cases=len(rows))
+                  physical_cases=len(rows), paired_model_updates_at_checkpoint=(
+                    read(package / "receipt.json").get("retained_cost", {}).get("model_updates", 0)),
+                  initialization_only=r==0, common_H9_parent=(method=="H9-WM" and r==0))
     latest = target / "latest.json"
     if not latest.exists() or read(latest)["round"] <= r:
         emit(latest, record)
     best = target / "best.json"
     if not best.exists() or record["rank"] > read(best)["rank"]:
         emit(best, record)
+
+
+def index_warm_candidates(root):
+    if (root / "B" / "candidate_freeze.json").exists():
+        return
+    for method, seed in product(BASE, SEEDS):
+        out = train_dir(root,0,method,seed)
+        score = out / "development.json"
+        if score.is_file() and (out / "receipt.json").is_file():
+            update_selected(root,method,seed,0,out,read(score))
+            if method == "H9" and (train_dir(root,1,"H9-WM",seed) / "bc" / "receipt.json").is_file():
+                update_selected(root,"H9-WM",seed,0,out,read(score))
 
 
 def low_for(root, r, seed):
@@ -209,6 +239,8 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
     # is then explicitly used by both 512-step forks (including optimizer moments).
     paired_parent = out / "bc" / "full.pt"
     if method == "H9-WM" and r == 1:
+        warm = train_dir(root,0,"H9",seed)
+        update_selected(root,method,seed,0,warm,read(warm / "development.json"))
         paired_parent = train_dir(root, r, "H9", seed) / "bc" / "full.pt"
     bspec = dict(stage="bridge", output=str(out / "bridge"), parent=str(paired_parent),
                  seed=seed, round=r, members=str(member), wm=str(wm / "wm.pt"))
@@ -217,6 +249,11 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
     stage(train_spec(root,method,seed,r,"paired",paired_parent,low,member,paired,512,offset=2048,
                      variant=variant, bundle=str(out / "bridge" / "trajectory_bundle.pt"),
                      native_workers=max(1, min(3, workers))))
+    return paired
+
+
+def score_round(root,r,method,seed,workers,paired):
+    out=train_dir(root,r,method,seed)
     dev = eval_jobs(f"rounds/r{r:02d}/development", "evaluation", method, seed, r, paired / "deploy.pt", DEV)
     rows = batch(root,dev,workers)
     emit(out / "development.json", rows)
@@ -241,8 +278,16 @@ def fill_round(root, r, workers, include_model, selected):
          prefix_reached=sum(x["prefix_reached"] is True for x in col),
          substeps=sum(x["physics_steps"] for x in col), episodes=[x["raw_episode"] for x in col]))
     membership(root,r)
-    for method, seed in product(METHODS if include_model else BASE, SEEDS):
-        fit_round(root,r,method,seed,workers,selected if method=="H9-WM" else "C0")
+    with ThreadPoolExecutor(max_workers=1) as gpu:
+        jobs = [(m,seed,gpu.submit(fit_round,root,r,m,seed,workers,
+                selected if m=="H9-WM" else "C0")) for m,seed in product(METHODS if include_model else BASE, SEEDS)]
+        for method, seed, job in jobs:
+            ck = job.result()
+            score_round(root,r,method,seed,workers,ck)
+            if r<8 or r%4:
+                # The next round is already inside the authorized active work block.
+                # Never start a ninth or later work block before its progress decision.
+                batch(root,collect_jobs(method,seed,r+1,ck / "deploy.pt"),workers)
 
 
 def catch_up(root, r, workers, variant):
@@ -253,7 +298,8 @@ def catch_up(root, r, workers, variant):
                 continue
             ck = previous(root,index,"H9-WM",seed) / "deploy.pt"
             batch(root,collect_jobs("H9-WM",seed,index,ck),workers)
-            fit_round(root,index,"H9-WM",seed,workers,variant)
+            paired = fit_round(root,index,"H9-WM",seed,workers,variant)
+            score_round(root,index,"H9-WM",seed,workers,paired)
 
 
 def matched_progress(root, r, methods):
@@ -321,6 +367,23 @@ def close(root, r, methods, workers, selection):
          isolated_teacher_cases=len(feasibility),hardware_motion_commands=0,candidate_freeze=str(root / "B" / "candidate_freeze.json")))
 
 
+def current_selection(root):
+    path = root / "C" / "selection.json"
+    if not path.exists():
+        return None
+    result = read(path)
+    if result.get("schema") != "mm03-selection-v2":
+        # An older already-running C worker can emit the earlier tie breaker.
+        # Reindex the same frozen C development rows, without any retraining or blind data.
+        subprocess.run([str(TORCH),"-c",
+            "import sys; from pathlib import Path; from scripts.multimodal.mm03_c_train import selection; "
+            "selection(Path(sys.argv[1]))",str(root)],check=True)
+        result = read(path)
+        if result.get("schema") != "mm03-selection-v2":
+            raise ValueError("The registered C ranking was not produced")
+    return result
+
+
 def longitudinal(root, workers):
     root=Path(root)
     if (root/"B"/"completion.json").exists():
@@ -329,7 +392,7 @@ def longitudinal(root, workers):
     r=1
     selection_path=root/"C"/"selection.json"
     while True:
-        selection=read(selection_path) if selection_path.exists() else None
+        selection=current_selection(root)
         variant=(selection or {}).get("selected_variant") or (selection or {}).get("selected_model_variant")
         if variant:
             catch_up(root,r-1,workers,variant)
@@ -353,7 +416,7 @@ def longitudinal(root, workers):
             emit(root/"B"/"waiting.json",dict(stage="terminal_dependencies",completed_round=r,
                  A_complete=(root/"A"/"completion.json").exists(),C_complete=selection_path.exists()))
             time.sleep(15)
-        selection=read(selection_path)
+        selection=current_selection(root)
         variant=selection.get("selected_variant") or selection.get("selected_model_variant")
         if variant:
             catch_up(root,r,workers,variant)

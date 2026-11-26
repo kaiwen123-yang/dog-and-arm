@@ -144,6 +144,11 @@ def run_rescue(job, folder, *, client_factory=None):
         return {**job, **judge.result(), **summary, "source": source, "executor_source_mask": mask.tolist(),
                 "wall_s": time.monotonic()-start, "teacher_query_steps": teacher.step,
                 "teacher_failure": teacher.failure, "decisions": len(rec.arrays["action_raw"])}
+    except Exception as exc:
+        exc.mm03_steps = int(judge.steps)
+        exc.mm03_decisions = len(rec.arrays["action_raw"])
+        np.savez(folder/"last_native_state.npz", time=d.time, qpos=d.qpos, qvel=d.qvel, previous=previous)
+        raise
     finally:
         rec.sensors.close()
         if client is not None:

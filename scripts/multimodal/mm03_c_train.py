@@ -236,18 +236,21 @@ def selection(root):
         by_task={}
         for row in long:
             key=(row["side"],int(row["goal"]))
-            by_task[key]=by_task.get(key,0)+row["ordered_event_count"]
-        safety_fail=sum(any(v in r for v in ("support","self","unexpected_contact","joint_limit")) for r in
-                        ((row["first_failure"] or {}).get("reason","") for row in long))
-        rank=(sum(row["success"] for row in long),min(by_task.values(),default=0),sum(by_task.values()),-safety_fail,
+            by_task.setdefault(key,[]).append(row["ordered_event_count"])
+        reasons=[(row["first_failure"] or {}).get("reason","") for row in long]
+        safety_fail=sum(r.startswith(("wheel_support_or_tilt","arm_joint_limit:")) or
+                        any(tag in r for tag in ("robot_self","self_collision","self_contact")) for r in reasons)
+        worst=min((min(values) for values in by_task.values()),default=0)
+        rank=(sum(row["success"] for row in long),worst,sum(map(sum,by_task.values())),-safety_fail,
               sum(row["survived_32"] for row in short),-VARIANTS.index(fork))
         rows.append(dict(variant=fork,rank=list(rank),full_development_n=len(long),short_recovery_n=len(short),
                          by_seed=seeds,numerically_invalid=invalid,
-                         ordered_events_by_task={f"{a}{b}":v for (a,b),v in by_task.items()}))
+                         ordered_events_by_task={f"{a}{b}":sum(v) for (a,b),v in by_task.items()},
+                         min_ordered_events_by_task={f"{a}{b}":min(v) for (a,b),v in by_task.items()}))
     invalid=invalid_variants(root)
     legal=[row for row in rows if row["variant"]!="C0" and row["variant"] not in invalid and not row["numerically_invalid"]]
     winner=max(legal,key=lambda row:row["rank"])["variant"] if legal else None
-    report(root/"C/selection.json",dict(variant=winner,selected_model_variant=winner,
+    report(root/"C/selection.json",dict(schema="mm03-selection-v2",variant=winner,selected_model_variant=winner,
         rationale="three-seed original-judge full successes, worst-task and total event counts, support/collision/limit failures, short-window survival, registered order",
         ranking=rows,blind_evaluations=0))
 
