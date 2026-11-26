@@ -57,7 +57,7 @@ def teacher_jobs():
     return jobs
 
 
-def batch(root, jobs, workers):
+def batch(root, jobs, workers, *, cf_free_phase=False):
     from scripts.multimodal.mm03_b_physics import episode
     jobs = list(jobs)
     if not jobs:
@@ -90,8 +90,9 @@ def batch(root, jobs, workers):
     if not queue:
         return [results[j["id"]] for j in jobs]
     from scripts.multimodal.mm03_elastic import ordinary_admission
-    with ordinary_admission(root,partition,len(queue),initial_workers) as workers:
-        workers = min(workers,len(queue))
+    from scripts.multimodal.mm03_b_parallel import ordinary_capacity
+    with (ordinary_admission(root,partition,len(queue),initial_workers) as base_workers,
+          ordinary_capacity(root,base_workers,len(queue),cf_free_phase) as workers):
         seq = iter(queue)
         start_epoch = time.time()
         start = time.monotonic()
@@ -122,7 +123,8 @@ def batch(root, jobs, workers):
                      resumed_cases=len(done), processes=list(pool._processes)))
                 refill()
         duration = time.monotonic()-start
-        timing = dict(partition=partition, workers=workers, predicted_cases=predicted,
+        timing = dict(partition=partition, workers=workers, ordinary_base=base_workers,
+                      borrowed_cf_capacity=max(0,workers-base_workers), predicted_cases=predicted,
                       start_epoch=start_epoch, elapsed_s=duration, physical_substeps=steps, cases=fresh,
                       substeps_per_s=steps/duration, dispatch_order=[j["id"] for j in queue],
                       worker_case_wall_s=sum(results[j["id"]]["wall_s"] for j in queue))

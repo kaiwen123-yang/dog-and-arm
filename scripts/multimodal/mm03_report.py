@@ -11,6 +11,7 @@ from scripts.multimodal.mm03_launch import UNITS, alive, now, read, state_file, 
 OUT = Path("results/multimodal/mm03_20261126")
 REPORT = Path("reports/MULTIMODAL_MM03_RESULTS.md")
 SLUG = "kaiwen123-yang/dog-and-arm"
+CF_LATENCY = Path("performance/20261126-cf-latency")
 
 
 def lines(path):
@@ -110,6 +111,11 @@ def budgets(root, rows):
         read(perf/"cf_native_profile.json").get("true_physics_substeps",0)
         +read(perf/"native_scoring_comparison.json").get("diagnostic_native_substeps",0)
         +read(perf/"cached_native_windows.json").get("diagnostic_native_substeps",0))
+    latency=root/CF_LATENCY
+    additional["performance/cf32_latency_diagnostics"]=sum(read(latency/file).get(field,0) for file,field in (
+        ("full_h9_parity.json","captured_native_substeps"),("partial_direct23_parity.json","captured_native_substeps"),
+        ("live_native_overlap.json","actual_diagnostic_substeps"),("cf_profile.json","native_substeps"),
+        ("native_wheel_results.json","diagnostic_native_substeps")))
     high=sum(x["paid"] for x in b if x["stage"] not in ("wm","bridge"))
     high_by_stage=Counter()
     for x in b:
@@ -297,6 +303,24 @@ def snapshot(root,repo,milestone):
         manifest["performance_evidence"]="performance/summary.json"
         for name in (*FILES,"summary.json"):
             slimcopy(root/SUBDIR/name,out/"performance"/name)
+    latency=root/CF_LATENCY
+    latency_summary=read(latency/"summary.json")
+    latency_text=""
+    if latency_summary:
+        evidence=out/"performance/cf32_latency"
+        for name in ("summary.json","forecast.json","elastic_registration.json","elastic_trial.json",
+                     "b_ordinary_overlap.json","b_ordinary_lease_test.json","b_ordinary_production_lease.json",
+                     "full_h9_parity.json","partial_direct23_parity.json","live_native_overlap.json","cf_profile.json",
+                     "native_wheel_results.json","ordinary_tail_trial.json","ordinary_capacity.json","native_loading.json",
+                     "r08_recovery.json","latency_forecast.py","README.md"):
+            slimcopy(latency/name,evidence/name)
+        for test in sorted(latency.glob("r[0-9][0-9]-eight")):
+            for name in ("registration.json","baseline.json","challenger.json","decision.json"):
+                slimcopy(test/name,evidence/test.name/name)
+        manifest["cf32_latency_evidence"]="performance/cf32_latency/summary.json"
+        if (latency/"forecast.json").is_file():
+            manifest["current_forecast"]="performance/cf32_latency/forecast.json"
+        latency_text=latency_summary["summary_zh"]
     trial_dir=root/"performance/cf32-three-seeds-20261126"
     comparison=read(trial_dir/"decision.json")
     compare_text=""
@@ -349,6 +373,8 @@ def snapshot(root,repo,milestone):
                  f"[等预算阶段、实际GPU采样和数值对照](../{OUT.as_posix()}/performance/summary.json)"]
     if compare_text:
         report+=[compare_text+f" [逐分钟数据与完成时间估算](../{OUT.as_posix()}/performance/cf32_concurrency/README.md)"]
+    if latency_text:
+        report+=[latency_text+f" [同批次计时、生产吞吐与最新估时](../{OUT.as_posix()}/performance/cf32_latency/README.md)"]
     report+=["","## 视频与恢复",f"MM02 的四条原轨迹共 {len(videos)} 个全程或局部视频。[同回合视频索引](../{OUT.as_posix()}/videos/mm02/index.json)"]
     for example in read(root/"videos/mm03/examples.json").get("videos",[]):
         label="完整教师" if example["teacher_decisions"] else "全程学生"
@@ -368,9 +394,10 @@ def snapshot(root,repo,milestone):
     s=state.read_text()
     start,end="<!-- mm03-live -->","<!-- /mm03-live -->"
     i=s.find(start);j=s.find(end)
+    speed_note=(latency_text+" ") if latency_text else ""
     entry=(f"{start}\n## {stamp[:16].replace('T',' ')} 北京时间 · MM03 实际进度\n\n{summary} "
            f"云端 {status}。原始回合与完整包位于 {root}。"
-           f"[实测报告]({REPORT.as_posix()}) · [恢复清单]({OUT.as_posix()}/manifest.json)\n{end}")
+           f"{speed_note}[实测报告]({REPORT.as_posix()}) · [恢复清单]({OUT.as_posix()}/manifest.json)\n{end}")
     if i<0:
         title,rest=s.split("\n",1);s=title+"\n\n"+entry+"\n"+rest
     else:
@@ -391,5 +418,7 @@ def snapshot(root,repo,milestone):
             f.write("\n"+paragraph(speed)+f" [测量记录]({OUT.as_posix()}/performance/summary.json)\n")
         if compare_text and "三种子并行" in milestone:
             f.write("\n"+compare_text+f" [配置、原始更新计数与估时]({OUT.as_posix()}/performance/cf32_concurrency/)\n")
+        if latency_text and "空闲算力" in milestone:
+            f.write("\n"+latency_text+f" [逐段计时与预算]({OUT.as_posix()}/performance/cf32_latency/README.md)\n")
     return manifest
 

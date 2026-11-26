@@ -1,6 +1,6 @@
 """Bound concurrent task optimizers by seed, RAM and the shared GPU allocation."""
 from concurrent.futures import ThreadPoolExecutor
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 import os
 import subprocess
@@ -155,6 +155,45 @@ class SeedOptimizers:
         self.pool.shutdown(wait=True,cancel_futures=typ is not None and getattr(value,"returncode",None)==75)
 
 
+def native_slot_path(folder, index):
+    return folder/("native_cf32.lock" if index==0 else f"native_cf32_{index}.lock")
+
+
+@contextmanager
+def ordinary_capacity(root, base, cases, cf_free_phase):
+    """Borrow idle CF slots during the collecting barrier or after all paired receipts."""
+    if not cf_free_phase or base!=4 or cases<=base:
+        yield min(base,cases)
+        return
+    import fcntl
+    share=root/"resources/worker_targets.json"
+    cfg=read(share) if share.is_file() else {}
+    if (cfg.get("B_CF_slots"),cfg.get("B_CF"))!=(3,6):
+        yield base
+        return
+    folder=root/"B/locks"
+    folder.mkdir(parents=True,exist_ok=True)
+    width=base
+    with ExitStack() as reservations:
+        try:
+            # A live or waiting CF pool keeps full priority outside these two barriers.
+            for index in range(3):
+                handle=reservations.enter_context(native_slot_path(folder,index).open("a"))
+                fcntl.flock(handle,fcntl.LOCK_EX|fcntl.LOCK_NB)
+            _,headroom=host_memory()
+            quota,period=Path("/sys/fs/cgroup/cpu.max").read_text().split()
+            cores=len(os.sched_getaffinity(0)) if quota=="max" else int(quota)//int(period)
+            gpu_free=int(subprocess.check_output(["nvidia-smi","-i","0","--query-gpu=memory.free",
+                "--format=csv,noheader,nounits"],text=True).strip())*2**20
+            if gpu_free>=GPU_HEADROOM:
+                width=max(base,min(12,cases,cores//2,(headroom-HOST_HEADROOM)//(3*GIB//2)))
+        except (OSError,ValueError,subprocess.CalledProcessError):
+            pass
+        if width==base:
+            reservations.close()
+        yield width
+
+
 @contextmanager
 def native_pair_slot(spec):
     """Use one writer per frozen fork and a bounded number of independent native pools."""
@@ -180,7 +219,7 @@ def native_pair_slot(spec):
                 raise ValueError(f"Invalid number of CF32 optimizer slots: {slots}")
             workers=int(cfg.get("B_CF") or spec.get("native_workers",3))
             for index in range(slots):
-                file=folder/("native_cf32.lock" if index==0 else f"native_cf32_{index}.lock")
+                file=native_slot_path(folder,index)
                 candidate=file.open("a")
                 try:
                     fcntl.flock(candidate,fcntl.LOCK_EX|fcntl.LOCK_NB)

@@ -356,15 +356,15 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
     return paired
 
 
-def score_round(root,r,method,seed,workers,paired):
+def score_round(root,r,method,seed,workers,paired,*,cf_free_phase=False):
     out=train_dir(root,r,method,seed)
     dev = eval_jobs(f"rounds/r{r:02d}/development", "evaluation", method, seed, r, paired / "deploy.pt", DEV)
-    rows = batch(root,dev,workers)
+    rows = batch(root,dev,workers,cf_free_phase=cf_free_phase)
     emit(out / "development.json", rows)
     update_selected(root,method,seed,r,paired,rows)
     if not r % 4:
         reg = eval_jobs(f"rounds/r{r:02d}/regression","evaluation",method,seed,r,paired / "deploy.pt",DISCLOSED)
-        emit(out / "regression.json", batch(root,reg,workers))
+        emit(out / "regression.json", batch(root,reg,workers,cf_free_phase=cf_free_phase))
 
 
 def fill_round(root, r, workers, include_model, selected):
@@ -375,7 +375,7 @@ def fill_round(root, r, workers, include_model, selected):
         queue.append("H9-WM")
     for method, seed in product(queue, SEEDS):
         matrix += collect_jobs(method,seed,r,previous(root,r,method,seed) / "deploy.pt")
-    col = batch(root,matrix,workers)
+    col = batch(root,matrix,workers,cf_free_phase=True)
     directory = round_dir(root,r)
     initial = directory / "collection_complete.json"
     if not initial.is_file():
@@ -391,6 +391,8 @@ def fill_round(root, r, workers, include_model, selected):
     slots = allocation(root,membership(root,r),f"r{r:02d}")
     with SeedOptimizers(slots) as gpu:
         methods=METHODS if include_model else BASE
+        def paired_finished():
+            return all((train_dir(root,r,"H9-WM",s)/"paired/receipt.json").is_file() for s in SEEDS)
         schedules={seed:iter(methods) for seed in SEEDS}
         if include_model and selected=="CF32" and r>1:
             # Two independent native pairs and one seed's ordinary GPU fits can run together.
@@ -427,16 +429,18 @@ def fill_round(root, r, workers, include_model, selected):
                 emit(directory / method / f"seed{seed}" / "optimization_error.json",
                      dict(stage_command=exc.cmd,returncode=exc.returncode,independent_forks_continue=True))
                 continue
-            score_round(root,r,method,seed,workers,ck)
+            idle=paired_finished()
+            score_round(root,r,method,seed,workers,ck,cf_free_phase=idle)
             if r<8 or r%4:
-                batch(root,collect_jobs(method,seed,r+1,ck / "deploy.pt"),workers)
+                batch(root,collect_jobs(method,seed,r+1,ck / "deploy.pt"),workers,cf_free_phase=idle)
         for method, seed in failed:
             # Perform one receipt-based retry after independent work completed.
             # Repeated errors return control to the unified launcher and its logs.
             ck = fit_round(root,r,method,seed,workers,selected if method=="H9-WM" else "C0")
-            score_round(root,r,method,seed,workers,ck)
+            idle=paired_finished()
+            score_round(root,r,method,seed,workers,ck,cf_free_phase=idle)
             if r<8 or r%4:
-                batch(root,collect_jobs(method,seed,r+1,ck / "deploy.pt"),workers)
+                batch(root,collect_jobs(method,seed,r+1,ck / "deploy.pt"),workers,cf_free_phase=idle)
 
 
 def catch_up(root, r, workers, variant):
@@ -528,7 +532,7 @@ def close(root, r, methods, workers, selection):
         for seed,out,future in cost_jobs:
             future.result()
             jobs = eval_jobs("cost/disclosed","evaluation","D23-cost",seed,r,out/"train"/"deploy.pt",DISCLOSED)
-            emit(out/"regression.json",batch(root,jobs,workers))
+            emit(out/"regression.json",batch(root,jobs,workers,cf_free_phase=True))
     records = [read(root / "B" / "models" / method / f"seed{seed}" / "best.json") for method,seed in product(methods,SEEDS)]
     import hashlib
     for record in records:
