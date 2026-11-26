@@ -288,6 +288,9 @@ def train(s):
                 file = Path(s["root"]) / "resources" / "worker_targets.json"
                 targets = read(file) if file.is_file() else {}
                 n = targets.get("B_CF",targets.get("workers",{}).get("B_CF",3))
+                if n==0:
+                    from scripts.multimodal.mm03_resources import update
+                    n=update(Path(s["root"])).get("B_CF") or 3
                 native_allocation = dict(workers=n,source="B_CF before first native update on legacy specification",
                                          initial_proposal=s["native_workers"],worker_target_file=str(file))
             n = native_allocation["workers"]
@@ -392,8 +395,19 @@ def train(s):
             extra_physics += int(data["native_substeps"])
     paid_totals["uncommitted_physics_substeps"] = extra_physics
     paid_totals["uncommitted_physical_batches"] = len(uncommitted)
+    comparison_cost = None
+    if s["method"]=="D23-cost":
+        trained_low = read(Path(s["root"])/"A"/"completion.json")["seeds"][str(seed)]
+        selected_block = next((b["block"] for b in trained_low["blocks"]
+                               if Path(b["deployment"]).resolve()==Path(s["low"]).resolve()),None)
+        comparison_cost = dict(matched_all_low_paid_updates=trained_low["paid_updates"],
+             selected_parent_low=s["low"], selected_parent_low_block=selected_block,
+             updates_in_selected_low_lineage=sum(b["updates"] for b in trained_low["blocks"]
+                 if selected_block is not None and b["block"]<=selected_block),
+             A_best_block=trained_low["best_block"], A_latest_block=trained_low["latest_block"],
+             common_eligible_only=True)
     emit(out / "receipt.json", dict(stage=s["stage"], method=s["method"], round=s["round"], seed=seed,
-         retained=steps, paid=attempts+steps-step0, rollback=attempts-step0, paid_model_cost=paid_totals,
+         cost_sensitivity=comparison_cost,retained=steps, paid=attempts+steps-step0, rollback=attempts-step0, paid_model_cost=paid_totals,
          retained_cost=payload["totals"], native_pool_allocation=native_allocation,
          trajectory_anchor_coverage=anchor_coverage if obj is not None else None,
          full=str(final), deploy=str(deploy), parent=str(parent_path),
@@ -426,7 +440,12 @@ def main():
             if str(identity["parent_stamp"])==str(unit["pid_stamp"]):
                 print("Prior stage completed the requested coordinator refresh; new stage deferred",flush=True)
                 raise SystemExit(75)
-    from scripts.multimodal.mm03_b_rounds import index_warm_candidates
+    from scripts.multimodal.mm03_b_rounds import collection_ledgers,index_warm_candidates,preserve_initial_collection
+    preserve_initial_collection(run_root,s["round"])
+    if (s["stage"]=="wm" and s["seed"]==1701) or (
+            s["stage"]=="bc" and s.get("method")=="H9-WM") or (
+            s["stage"]=="cost" and s["seed"]==1701):
+        collection_ledgers(run_root,terminal=s["stage"]=="cost")
     index_warm_candidates(run_root)
     torch.set_num_threads(1)
     torch.set_float32_matmul_precision("high")

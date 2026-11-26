@@ -28,8 +28,16 @@ def command(*argv, repo, capture=True):
             env.setdefault("ALL_PROXY",route["url"])
         elif argv[0]=="git" and not env.get("HTTPS_PROXY"):
             argv=("git","-c","http.proxy=",*argv[1:])
-    return subprocess.run(argv,cwd=repo,env=env,check=True,text=True,
-                          stdout=subprocess.PIPE if capture else None).stdout
+    network=argv[0]=="gh" or any(arg in ("fetch","push") for arg in argv)
+    output=subprocess.PIPE if capture else None
+    try:
+        return subprocess.run(argv,cwd=repo,env=env,check=True,text=True,stdout=output).stdout
+    except subprocess.CalledProcessError:
+        if not network or not Path("/etc/network_turbo").is_file():
+            raise
+    print(now(),"Retrying GitHub using the execution host's network_turbo service",flush=True)
+    command_line=["bash","-c",'. /etc/network_turbo >/dev/null 2>&1 && exec "$@"',"mm03-github",*argv]
+    return subprocess.run(command_line,cwd=repo,env=env,check=True,text=True,stdout=output).stdout
 
 
 def git(repo,*args):
@@ -40,6 +48,9 @@ def git(repo,*args):
 
 def reached(root):
     milestones=[]
+    started=read(root/"launch_config.json").get("created_beijing","")[:10]
+    if started and started!=now()[:10] and not (root/"B/completion.json").is_file():
+        milestones.append(now()[:10]+" 跨日运行记录")
     complete_episodes=(root/"A/channel_results.json").is_file() and (root/"B/teacher_cases.json").is_file()
     if complete_episodes and (root/"videos/mm02/index.json").is_file():
         milestones.append("44 案干预与 96 条完整教师")

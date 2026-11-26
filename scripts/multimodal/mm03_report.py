@@ -1,5 +1,6 @@
 """Summarize durable MM03 receipts at a publication boundary without touching simulation data."""
 from collections import Counter, defaultdict
+import csv
 from pathlib import Path
 import json
 import os
@@ -153,7 +154,7 @@ def slimcopy(src,dest):
 
 
 def mirror_records(root,out):
-    small=("A/design.json","A/channel_results.json","A/command_reference.json","A/low/compatibility.json",
+    small=("background_handoff.json","A/design.json","A/channel_results.json","A/command_reference.json","A/budget.json","A/low/compatibility.json",
            "A/completion.json","A/complete.json","B/teacher_registration.json","B/candidate_freeze.json",
            "B/completion.json","C/parent.json","C/calibration.json","C/directional_response.json","C/contact_anchor_inventory.json",
            "C/directional_local_fp64.json","C/development_anchors.json","C/selection.json","C/bridge/bridge.json",
@@ -187,6 +188,8 @@ def mirror_records(root,out):
         for seed,s in read(root/"A/completion.json").get("seeds",{}).items():
             if s.get("best_deploy"):
                 slimcopy(Path(s["best_deploy"]),out/"models/L16"/f"seed{seed}"/"deploy.pt")
+            if s.get("latest_deploy") and s["latest_deploy"]!=s.get("best_deploy"):
+                slimcopy(Path(s["latest_deploy"]),out/"models/L16"/f"seed{seed}"/"latest_deploy.pt")
     winner=read(root/"C/selection.json").get("selected_model_variant")
     if winner:
         for src in (root/"C"/winner).glob("seed*/deploy.pt"):
@@ -195,6 +198,25 @@ def mirror_records(root,out):
 
 def scored(n,total):
     return f"{n}/{total}" if total else "待评测"
+
+
+def case_csv(path, rows):
+    if not rows:
+        return
+    from learning.multimodal.judge import PHASES
+    fields=["method","seed","partition","scene","side","goal","success","ordered_events","teacher_steps",
+            "physics_steps","failure","failure_phase","max_door_deg","checkpoint","source_case"]
+    with path.open("w",newline="",encoding="utf-8-sig") as f:
+        writer=csv.DictWriter(f,fieldnames=fields+[phase+"_s" for phase in PHASES])
+        writer.writeheader()
+        for row in rows:
+            value={k:row.get(k) for k in fields}
+            first=row.get("first_failure") or {}
+            value.update(failure=first.get("reason"),failure_phase=first.get("phase"),
+                         max_door_deg=row.get("maximum_hinge_deg"),source_case=row["result"])
+            for e in row.get("events",[]):
+                value[e["phase"]+"_s"]=e["time_s"]
+            writer.writerow(value)
 
 
 def task_tables(root, rows, formal):
@@ -271,6 +293,9 @@ def snapshot(root,repo,milestone):
     resc=[r for r in rows if r["lane"]=="A" and r["group"]=="rescue"]
     teach=[r for r in rows if r["lane"]=="B" and r["group"]=="teachers"]
     formal=[r for r in rows if r["lane"]=="B" and (r["group"]=="formal" or r["group"].startswith("formal/"))]
+    case_csv(out/"formal_cases.csv",formal)
+    case_csv(out/"diagnostic_evaluation.csv",[r for r in rows if r["lane"]=="B" and
+             (r["group"] in ("cost/disclosed","isolated_teacher","first_success_reloads"))])
     status=", ".join(f"{k} {v.get('state','pending')}" for k,v in states.items() if k in "ABC")
     summary=(f"A 已有 {len(resc)}/44 个干预或教师参考案。B 的新完整教师通过 {sum(r['success'] for r in teach)}/{len(teach)}"
              f"（计划 96），已回执的正式纯学生案 {len(formal)}/324。L16、B 高层、C 分支、WM、bridge "
@@ -321,7 +346,11 @@ def snapshot(root,repo,milestone):
         s=s[:i]+entry+s[j+len(end):]
     state.write_text(s)
     log=repo/"DAILY_WORK_LOG.md"
+    day=stamp[:10]
+    new_day=not any(line.startswith("## "+day) for line in log.read_text().splitlines())
     with log.open("a") as f:
+        if new_day:
+            f.write(f"\n## {day}（北京时间）\n")
         f.write(f"\n### {stamp[:16].replace('T',' ')}｜MM03 {milestone}（北京时间）\n\n{summary} "
                 f"已结束且有回执的物理回合 {len(rows):,} 个，累计 {cost['episode_substeps']:,} 子步。"
                 f"额外真前向、恢复短窗、方向检查及在跑进程分别见[账本]({OUT.as_posix()}/budget.json)"

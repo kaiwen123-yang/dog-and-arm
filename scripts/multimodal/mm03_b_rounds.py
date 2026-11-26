@@ -1,4 +1,5 @@
 """Continuous B work blocks with matched data, replayable pair forks and an isolated terminal split."""
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from itertools import product
 from pathlib import Path
@@ -110,6 +111,73 @@ def membership(root, r):
     return path
 
 
+def preserve_initial_collection(root,r):
+    if r<1:
+        return
+    directory = round_dir(root,r)
+    initial = directory / "collection_complete.json"
+    immutable = directory / "collection_at_membership_freeze.json"
+    if initial.is_file() and (directory / "members.json").is_file() and not immutable.exists():
+        # Never relabel a later reread as the initial pool. The membership is the source
+        # of truth if a continuing old coordinator updated its delivery summary later.
+        membership_paths = set(read(directory/"members.json")["corrections"])
+        snapshot = read(initial)
+        used = [p for p in snapshot["episodes"] if p in membership_paths]
+        if len(used)!=len(snapshot["episodes"]):
+            used_rows = [read(Path(p).parent/"result.json") for p in used]
+            snapshot = dict(planned_cases=len(used), recorded=len(used),
+                frame0=sum(x["mode"]=="pure" for x in used_rows),prefixes=sum(x["mode"]=="prefix" for x in used_rows),
+                prefix_reached=sum(x["prefix_reached"] is True for x in used_rows),
+                substeps=sum(x["physics_steps"] for x in used_rows),episodes=used,
+                recovered_from_original_frozen_membership=True)
+        freeze_file(immutable,snapshot)
+
+
+def collection_ledgers(root,terminal=False):
+    dirs = sorted((root/"B"/"rounds").glob("r*/members.json"))
+    stages = [(int(p.parent.name[1:]),p.parent,read(p)) for p in dirs]
+    first_pool = {}
+    for r,_,mp in stages:
+        for path in mp["corrections"]:
+            first_pool.setdefault(path,r)
+    for r,directory,mp in stages:
+        preserve_initial_collection(root,r)
+        initial_file = directory/"collection_at_membership_freeze.json"
+        if not initial_file.is_file():
+            continue
+        initial = read(initial_file)
+        joined = set(mp["corrections"])
+        start = set(initial["episodes"])
+        by_method,rows = Counter(),[]
+        seen = set()
+        for f in sorted((directory/"collect").glob("*/result.json")):
+            result = read(f)
+            uid,path = result["id"],result["raw_episode"]
+            if uid in seen or result["round"]!=r:
+                raise ValueError(f"Duplicate or misassigned task collection member: {uid}")
+            seen.add(uid)
+            first = first_pool.get(path)
+            if first is not None and first<r:
+                raise ValueError(f"Round {r} case appears in an earlier frozen pool: {uid}")
+            in_own = path in joined
+            state = ("used_in_own_round" if in_own else
+                     "first_used_in_later_frozen_pool" if first is not None else
+                     "never_used_before_candidate_freeze" if terminal else "awaits_next_unfrozen_pool")
+            rows.append(dict(id=uid, method=result["method"],seed=result["seed"],mode=result["mode"],
+                 episode=path,physics_steps=result["physics_steps"],in_initial_collection=path in start,
+                 in_own_frozen_pool=in_own,first_frozen_common_pool_round=first,status=state,
+                 warm_H9_clone_before_treatment=result["method"]=="H9-WM" and r==1))
+            by_method[result["method"],result["seed"]]+=1
+        summary = dict(round=r,initial_receipt=str(initial_file),initial_cases=len(start),
+            frozen_membership=str(directory/"members.json"),actual_unique_cases=len(rows),
+            actual_substeps=sum(x["physics_steps"] for x in rows),
+            late_cases=sum(not x["in_initial_collection"] for x in rows),
+            counts_by_training_use=dict(Counter(x["status"] for x in rows)),
+            by_method_seed={f"{k[0]}/{k[1]}":v for k,v in by_method.items()},
+            terminal_freeze=terminal,cases=rows)
+        emit(directory/"collection_actual.json",summary)
+
+
 def train_spec(root, method, seed, r, role, parent, low, members, output, steps, offset=0, **extra):
     anchor = round_dir(root, r) if r else root / "B" / "warm"
     sched = anchor / "schedules" / f"seed{seed}.npy"
@@ -181,13 +249,15 @@ def update_selected(root, method, seed, r, package, rows):
 
 def _update_selected(root, method, seed, r, package, rows):
     target = root / "B" / "models" / method / f"seed{seed}"
+    measured = read(package / "receipt.json")
     record = dict(method=method, seed=seed, round=r, full=str(package / "full.pt"),
                   deploy=str(package / "deploy.pt"), receipt=str(package / "receipt.json"),
-                  low=read(package / "receipt.json")["low"], rank=rank(rows, r),
+                  full_sha256=measured["full_sha256"],deploy_sha256=measured["deploy_sha256"],
+                  low=measured["low"], rank=rank(rows, r),
                   development=[dict(scene=x["scene"], side=x["side"], goal=x["goal"],
                                     success=x["success"], events=x["ordered_event_count"]) for x in rows],
                   physical_cases=len(rows), paired_model_updates_at_checkpoint=(
-                    read(package / "receipt.json").get("retained_cost", {}).get("model_updates", 0)),
+                    measured.get("retained_cost", {}).get("model_updates",0)),
                   initialization_only=r==0, common_H9_parent=(method=="H9-WM" and r==0))
     latest = target / "latest.json"
     if not latest.exists() or read(latest)["round"] <= r:
@@ -264,6 +334,9 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
             targets_file = root / "resources" / "worker_targets.json"
             targets = read(targets_file) if targets_file.is_file() else {}
             count = targets.get("B_CF", targets.get("workers",{}).get("B_CF",3))
+            if count==0:
+                from scripts.multimodal.mm03_resources import update
+                count=update(root).get("B_CF") or 3
             if type(count) is not int or not 1<=count<=25:
                 raise ValueError(f"Invalid B_CF native worker target: {count}")
             allocation = dict(native_workers=count,native_worker_source="B_CF at new paired specification",
@@ -295,14 +368,17 @@ def fill_round(root, r, workers, include_model, selected):
         matrix += collect_jobs(method,seed,r,previous(root,r,method,seed) / "deploy.pt")
     col = batch(root,matrix,workers)
     directory = round_dir(root,r)
-    emit(directory / "collection_complete.json", dict(planned_cases=len(matrix), recorded=len(col),
-         frame0=sum(x["mode"]=="pure" for x in col), prefixes=sum(x["mode"]=="prefix" for x in col),
-         prefix_reached=sum(x["prefix_reached"] is True for x in col),
-         substeps=sum(x["physics_steps"] for x in col), episodes=[x["raw_episode"] for x in col]))
+    initial = directory / "collection_complete.json"
+    if not initial.is_file():
+        emit(initial,dict(planned_cases=len(matrix), recorded=len(col),
+             frame0=sum(x["mode"]=="pure" for x in col), prefixes=sum(x["mode"]=="prefix" for x in col),
+             prefix_reached=sum(x["prefix_reached"] is True for x in col),
+             substeps=sum(x["physics_steps"] for x in col), episodes=[x["raw_episode"] for x in col]))
     if r==1:
         from scripts.multimodal.mm03_b_physics import verify_handoffs
         verify_handoffs(root)
     membership(root,r)
+    collection_ledgers(root)
     with ThreadPoolExecutor(max_workers=1) as gpu:
         jobs = [(m,seed,gpu.submit(fit_round,root,r,m,seed,workers,
                 selected if m=="H9-WM" else "C0")) for m,seed in product(METHODS if include_model else BASE, SEEDS)]
@@ -339,6 +415,7 @@ def catch_up(root, r, workers, variant):
                 continue
             ck = previous(root,index,"H9-WM",seed) / "deploy.pt"
             batch(root,collect_jobs("H9-WM",seed,index,ck),workers)
+            collection_ledgers(root)
             paired = fit_round(root,index,"H9-WM",seed,workers,variant)
             score_round(root,index,"H9-WM",seed,workers,paired)
 
@@ -375,6 +452,7 @@ def a_complete(root):
 
 def close(root, r, methods, workers, selection):
     reg = read(REG)
+    collection_ledgers(root,terminal=True)
     a = read(root / "A" / "completion.json")
     # Finish cost sensitivity on disclosed scenes before the new combinations are opened.
     for seed in SEEDS:
@@ -389,6 +467,14 @@ def close(root, r, methods, workers, selection):
         jobs = eval_jobs("cost/disclosed","evaluation","D23-cost",seed,r,out / "train" / "deploy.pt",DISCLOSED)
         emit(out / "regression.json",batch(root,jobs,workers))
     records = [read(root / "B" / "models" / method / f"seed{seed}" / "best.json") for method,seed in product(methods,SEEDS)]
+    import hashlib
+    for record in records:
+        package = read(record["receipt"])
+        for kind in ("full","deploy"):
+            actual = hashlib.sha256(Path(record[kind]).read_bytes()).hexdigest()
+            if actual!=package[kind+"_sha256"]:
+                raise ValueError(f"Selected package changed before the blind freeze: {record[kind]}")
+            record[kind+"_sha256"] = actual
     freeze_file(root / "B" / "candidate_freeze.json", dict(round=r, packages=records,
         selection=selection, rule="8 matched development cases; success, minimum across tasks, total events, fewer support/collision/limit failures, earlier checkpoint",
         new_blind_count=16, planned_formal_total=324, methods=list(methods)))
