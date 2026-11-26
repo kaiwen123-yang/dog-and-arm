@@ -1,8 +1,8 @@
 # MM03 多模态腿臂仿真实验
 
-2026-11-26T17:09:57+08:00（北京时间），CF32计算重叠与空闲算力提速。
+2026-11-26T17:24:53+08:00（北京时间），r08 工作块。
 
-A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、208,479、7,680、24,000、43,800 次。
+A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、208,896、7,680、24,000、43,800 次。
 
 原生 MuJoCo 3.3.0，2 ms 伺服、20 ms 学习控制、100 ms 腕部 RGB-D。按原 12 事件判分。真实硬件运动命令 0。
 
@@ -66,7 +66,7 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 ## 真实教师前缀后的学生续演
 
-已结束 864 案，864 案实际切换到学生，9 案继续完成全部事件。
+已结束 866 案，866 案实际切换到学生，9 案继续完成全部事件。
 
 ## 正式纯学生评测
 
@@ -83,7 +83,7 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 | H9 | 1702 | 8 | 0/8 | 3/8 | 0/8 | door_contact_outside_manipulation (3)、unexpected_contact:robot_self (3) |
 | H9 | 1703 | 8 | 0/8 | 0/8 | 0/8 | unexpected_contact:robot_self (3)、timeout:approach_base (3) |
 | H9-WM | 1701 | 8 | 0/8 | 2/8 | 0/8 | timeout:approach_base (6)、timeout:settle (2) |
-| H9-WM | 1702 | 7 | 0/8 | 4/8 | 0/8 | timeout:settle (4)、timeout:approach_base (4) |
+| H9-WM | 1702 | 8 | 0/8 | 2/8 | 0/8 | timeout:approach_base (5)、unexpected_contact:robot_self (2) |
 | H9-WM | 1703 | 8 | 0/8 | 2/8 | 0/8 | timeout:approach_base (6)、timeout:settle (1) |
 
 ## 训练吞吐
