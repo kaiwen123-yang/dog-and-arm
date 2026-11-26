@@ -1,0 +1,67 @@
+{
+  "registered_beijing": "2026-11-26T10:44:44.961188+08:00",
+  "seeds": [
+    1701,
+    1702,
+    1703
+  ],
+  "updates_per_seed": 4000,
+  "extra_physics_steps": 0,
+  "extra_optimizer_updates": 0,
+  "old_code": "aa22541fd8f7d2552a4d41fb673fb83138162930",
+  "training_fixture": "/root/autodl-tmp/mm03-20261126/A/command_teacher/020_tr_nominal_forward_left_stop_0",
+  "observed_case": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block1/development/000_tr_nominal_zero_0",
+  "observed_teacher_max_abs_leg": 0.0,
+  "observed_block1_max_abs_leg": 0.6382136940956116,
+  "compatibility": [
+    {
+      "seed": 1701,
+      "block": 0,
+      "rows": 128,
+      "standalone_max_abs": 0.0,
+      "embedded_max_abs": 0.0
+    },
+    {
+      "seed": 1701,
+      "block": 1,
+      "rows": 128,
+      "standalone_max_abs": 0.0,
+      "embedded_max_abs": 0.0,
+      "absolute_mode_bound_violation": 0.0
+    },
+    {
+      "seed": 1702,
+      "block": 0,
+      "rows": 128,
+      "standalone_max_abs": 0.0,
+      "embedded_max_abs": 0.0
+    },
+    {
+      "seed": 1702,
+      "block": 1,
+      "rows": 128,
+      "standalone_max_abs": 0.0,
+      "embedded_max_abs": 0.0,
+      "absolute_mode_bound_violation": 0.0
+    },
+    {
+      "seed": 1703,
+      "block": 0,
+      "rows": 128,
+      "standalone_max_abs": 0.0,
+      "embedded_max_abs": 0.0
+    },
+    {
+      "seed": 1703,
+      "block": 1,
+      "rows": 128,
+      "standalone_max_abs": 0.0,
+      "embedded_max_abs": 0.0,
+      "absolute_mode_bound_violation": 0.0
+    }
+  ],
+  "old_block1": "prev + motion_increment + .04*learned_residual; residual adds on every stationary tick",
+  "block2": "0.96*previous + 0.04*bounded_absolute + motion_increment; motion term vanishes at zero request and zero previous wheel target",
+  "absolute_target": "per-channel max(abs(eligible training teacher targets)) * tanh(learned output)",
+  "transfer": "preserve block1 and optimizer. Reset weight and bias of the final stationary layer and their two Adam slots; all incoming source rows and physical tests unchanged"
+}

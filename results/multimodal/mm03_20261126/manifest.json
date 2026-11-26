@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-26T10:55:29+08:00",
+  "as_of_beijing": "2026-11-26T11:08:39+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "L16 工程评测完成",
+  "milestone": "后台稳定运行交接",
   "runtime": {
     "supervisor": {
       "pid": 399163,
@@ -176,31 +176,31 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 146,
+    "samples": 185,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-26T10:55:18+08:00",
-      "time": 1795661718.7889044,
-      "cpu_stat": "usage_usec 11050750752295\nuser_usec 10762428734857\nsystem_usec 288322017437\nnr_periods 21223355\nnr_throttled 150637\nthrottled_usec 81967687796",
+      "beijing": "2026-11-26T11:08:23+08:00",
+      "time": 1795662503.0879314,
+      "cpu_stat": "usage_usec 11058515087345\nuser_usec 10769938878024\nsystem_usec 288576209321\nnr_periods 21231198\nnr_throttled 150640\nthrottled_usec 81981588817",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "117592690688",
+      "ram_bytes": "116363866112",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 417413406720,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 19332, 97887, 35",
+      "disk_free_bytes": 413775372288,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 28087, 97887, 4",
       "inference": {
-        "calls": 279469,
-        "forwards": 169190,
-        "max_batch": 7,
-        "mean_batch": 1.651805662273184,
-        "queue_wait_mean_ms": 1.6439630167471952,
+        "calls": 456715,
+        "forwards": 278799,
+        "max_batch": 9,
+        "mean_batch": 1.6381514998260396,
+        "queue_wait_mean_ms": 1.7672316983728635,
         "device": "cuda",
-        "queued": 2,
-        "models": 10,
-        "peak_torch_allocated_bytes": 42619904,
+        "queued": 0,
+        "models": 14,
+        "peak_torch_allocated_bytes": 50153984,
         "pid": 413236
       },
       "lane_pids": {
@@ -211,7 +211,7 @@
         "video": 399173
       }
     },
-    "peak_sampled_gpu_used_MiB": 24760,
+    "peak_sampled_gpu_used_MiB": 28525,
     "peak_sampled_gpu_util_percent": 100,
     "scope": "sampled whole allocated GPU incl. unrelated users; service Torch peak and queue waits are separate"
   },
@@ -700,25 +700,26 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r02/collect",
-    "cases_done": 14,
-    "planned": 24,
-    "workers": 7,
+    "partition": "rounds/r02/development",
+    "cases_done": 5,
+    "planned": 8,
+    "workers": 8,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 25.106769278645515,
-    "completed_here": 14,
-    "steps_here": 35667,
-    "steps_s": 1420.6128874708088,
+    "wall_s": 9.897932481020689,
+    "completed_here": 5,
+    "steps_here": 11495,
+    "steps_s": 1161.353648556574,
     "resumed_cases": 0,
     "processes": [
-      415886,
-      415889,
-      415890,
-      415891,
-      415892,
-      415893,
-      415894
+      418605,
+      418609,
+      418610,
+      418611,
+      418612,
+      418613,
+      418614,
+      418615
     ]
   },
   "A_current": {
@@ -738,6 +739,6 @@
   "C_current": {
     "stage": "training",
     "variant": "CF32",
-    "seed": 1701
+    "seed": 1702
   }
 }

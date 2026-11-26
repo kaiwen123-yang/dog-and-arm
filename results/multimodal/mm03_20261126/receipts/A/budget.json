@@ -1,0 +1,473 @@
+{
+  "groups": {
+    "rescue44": {
+      "cases": 44,
+      "successes": 4,
+      "decisions": 42470,
+      "physics_steps": 424484
+    },
+    "command_reference96": {
+      "cases": 96,
+      "successes": 30,
+      "decisions": 144000,
+      "physics_steps": 1440000
+    },
+    "independent_cpu_repeat": {
+      "cases": 1,
+      "successes": 0,
+      "decisions": 746,
+      "physics_steps": 7455
+    },
+    "seed1701/block0/development": {
+      "cases": 40,
+      "successes": 13,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1701/block1/development": {
+      "cases": 40,
+      "successes": 2,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1701/block1/correction": {
+      "cases": 32,
+      "successes": 16,
+      "decisions": 48000,
+      "physics_steps": 480000
+    },
+    "seed1701/block2/development": {
+      "cases": 40,
+      "successes": 0,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1701/block2/correction": {
+      "cases": 32,
+      "successes": 2,
+      "decisions": 48000,
+      "physics_steps": 480000
+    },
+    "seed1701/block2/oracle": {
+      "cases": 8,
+      "successes": 0,
+      "decisions": 12000,
+      "physics_steps": 120000
+    },
+    "seed1702/block0/development": {
+      "cases": 40,
+      "successes": 13,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1702/block1/development": {
+      "cases": 40,
+      "successes": 0,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1702/block1/correction": {
+      "cases": 32,
+      "successes": 13,
+      "decisions": 48000,
+      "physics_steps": 480000
+    },
+    "seed1702/block2/development": {
+      "cases": 40,
+      "successes": 0,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1702/block2/correction": {
+      "cases": 32,
+      "successes": 1,
+      "decisions": 48000,
+      "physics_steps": 480000
+    },
+    "seed1702/block2/oracle": {
+      "cases": 8,
+      "successes": 0,
+      "decisions": 12000,
+      "physics_steps": 120000
+    },
+    "seed1703/block0/development": {
+      "cases": 40,
+      "successes": 13,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1703/block1/development": {
+      "cases": 40,
+      "successes": 1,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1703/block1/correction": {
+      "cases": 32,
+      "successes": 11,
+      "decisions": 48000,
+      "physics_steps": 480000
+    },
+    "seed1703/block2/development": {
+      "cases": 40,
+      "successes": 1,
+      "decisions": 60000,
+      "physics_steps": 600000
+    },
+    "seed1703/block2/correction": {
+      "cases": 32,
+      "successes": 1,
+      "decisions": 48000,
+      "physics_steps": 480000
+    },
+    "seed1703/block2/oracle": {
+      "cases": 8,
+      "successes": 1,
+      "decisions": 12000,
+      "physics_steps": 120000
+    }
+  },
+  "training_blocks": [
+    {
+      "seed": 1701,
+      "block": 0,
+      "update": 12000,
+      "rows": {
+        "teacher": 114051
+      },
+      "batch": 512,
+      "losses": [
+        0.00013292119547259063,
+        1.8604932847665623e-05,
+        3.451493466855027e-05
+      ],
+      "extra_trained_parameters": 34198,
+      "wall_s": 89.72216753661633,
+      "gpu_peak_bytes": 166538752,
+      "updates": 12000,
+      "bc_rows": 6144000,
+      "total_seed_updates": 12000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
+      "resume_parent": null,
+      "seed_scope": "new L16 and estimator initialization"
+    },
+    {
+      "seed": 1701,
+      "block": 1,
+      "update": 4000,
+      "rows": {
+        "teacher": 114051,
+        "corrected": 37680,
+        "contact_teacher": 73348,
+        "contact_prefix": 96
+      },
+      "batch": 512,
+      "losses": [
+        4.781013488769531,
+        0.01301131397485733,
+        1.0554972887039185
+      ],
+      "code_commit": "9092bb96cc352618528836f078b8466472b48140",
+      "draws_per_batch_by_pool": {
+        "teacher": 212,
+        "corrected": 123,
+        "contact_teacher": 170,
+        "contact_prefix": 7
+      },
+      "extra_trained_parameters": 39554,
+      "stationary_feedback_introduced_here": true,
+      "wall_s": 30.872359981760383,
+      "gpu_peak_bytes": 225385472,
+      "updates": 4000,
+      "bc_rows": 2048000,
+      "total_seed_updates": 16000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block1/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block1/deploy.pt",
+      "resume_parent": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/latest.pt",
+      "seed_scope": "new L16 and estimator initialization"
+    },
+    {
+      "seed": 1701,
+      "block": 2,
+      "update": 4000,
+      "rows": {
+        "teacher": 114051,
+        "corrected": 55870,
+        "contact_teacher": 73348,
+        "contact_prefix": 182
+      },
+      "batch": 512,
+      "losses": [
+        942.4884033203125,
+        0.012962996028363705,
+        1.8365603685379028
+      ],
+      "code_commit": "4b11382ddeb64fce694af4732f9b0e09b2f5e471",
+      "draws_per_batch_by_pool": {
+        "teacher": 201,
+        "corrected": 141,
+        "contact_teacher": 161,
+        "contact_prefix": 9
+      },
+      "extra_trained_parameters": 39554,
+      "stationary_feedback_introduced_here": false,
+      "stationary_mode": "bounded_absolute",
+      "stationary_final_Adam_reset_at_block_start": true,
+      "wall_s": 35.42817678488791,
+      "gpu_peak_bytes": 238732800,
+      "updates": 4000,
+      "bc_rows": 2048000,
+      "total_seed_updates": 20000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block2/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block2/deploy.pt",
+      "resume_parent": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block1/latest.pt",
+      "seed_scope": "new L16 and estimator initialization"
+    },
+    {
+      "seed": 1702,
+      "block": 0,
+      "update": 12000,
+      "rows": {
+        "teacher": 114051
+      },
+      "batch": 512,
+      "losses": [
+        0.00013892041170038283,
+        1.771969982655719e-05,
+        3.6233261198503897e-05
+      ],
+      "extra_trained_parameters": 34198,
+      "wall_s": 87.41883679293096,
+      "gpu_peak_bytes": 166538752,
+      "updates": 12000,
+      "bc_rows": 6144000,
+      "total_seed_updates": 12000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt",
+      "resume_parent": null,
+      "seed_scope": "new L16 and estimator initialization"
+    },
+    {
+      "seed": 1702,
+      "block": 1,
+      "update": 4000,
+      "rows": {
+        "teacher": 114051,
+        "corrected": 37115,
+        "contact_teacher": 73348,
+        "contact_prefix": 96
+      },
+      "batch": 512,
+      "losses": [
+        1.9568074941635132,
+        0.01841876655817032,
+        1.1234360933303833
+      ],
+      "code_commit": "9092bb96cc352618528836f078b8466472b48140",
+      "draws_per_batch_by_pool": {
+        "teacher": 212,
+        "corrected": 122,
+        "contact_teacher": 171,
+        "contact_prefix": 7
+      },
+      "extra_trained_parameters": 39554,
+      "stationary_feedback_introduced_here": true,
+      "wall_s": 35.327267568558455,
+      "gpu_peak_bytes": 224996352,
+      "updates": 4000,
+      "bc_rows": 2048000,
+      "total_seed_updates": 16000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block1/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block1/deploy.pt",
+      "resume_parent": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/latest.pt",
+      "seed_scope": "new L16 and estimator initialization"
+    },
+    {
+      "seed": 1702,
+      "block": 2,
+      "update": 4000,
+      "rows": {
+        "teacher": 114051,
+        "corrected": 44927,
+        "contact_teacher": 73348,
+        "contact_prefix": 182
+      },
+      "batch": 512,
+      "losses": [
+        613.7186279296875,
+        0.008223709650337696,
+        1.0168523788452148
+      ],
+      "code_commit": "4b11382ddeb64fce694af4732f9b0e09b2f5e471",
+      "draws_per_batch_by_pool": {
+        "teacher": 207,
+        "corrected": 130,
+        "contact_teacher": 166,
+        "contact_prefix": 9
+      },
+      "extra_trained_parameters": 39554,
+      "stationary_feedback_introduced_here": false,
+      "stationary_mode": "bounded_absolute",
+      "stationary_final_Adam_reset_at_block_start": true,
+      "wall_s": 36.361894903704524,
+      "gpu_peak_bytes": 231467520,
+      "updates": 4000,
+      "bc_rows": 2048000,
+      "total_seed_updates": 20000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block2/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block2/deploy.pt",
+      "resume_parent": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block1/latest.pt",
+      "seed_scope": "new L16 and estimator initialization"
+    },
+    {
+      "seed": 1703,
+      "block": 0,
+      "update": 12000,
+      "rows": {
+        "teacher": 114051
+      },
+      "batch": 512,
+      "losses": [
+        0.00013896956807002425,
+        2.2635471395915374e-05,
+        3.65345404134132e-05
+      ],
+      "extra_trained_parameters": 34198,
+      "wall_s": 76.71178881078959,
+      "gpu_peak_bytes": 166538752,
+      "updates": 12000,
+      "bc_rows": 6144000,
+      "total_seed_updates": 12000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/deploy.pt",
+      "resume_parent": null,
+      "seed_scope": "new L16 and estimator initialization"
+    },
+    {
+      "seed": 1703,
+      "block": 1,
+      "update": 4000,
+      "rows": {
+        "teacher": 114051,
+        "corrected": 33409,
+        "contact_teacher": 73348,
+        "contact_prefix": 96
+      },
+      "batch": 512,
+      "losses": [
+        3.415266275405884,
+        0.01500595360994339,
+        1.2734228372573853
+      ],
+      "code_commit": "9092bb96cc352618528836f078b8466472b48140",
+      "draws_per_batch_by_pool": {
+        "teacher": 215,
+        "corrected": 117,
+        "contact_teacher": 173,
+        "contact_prefix": 7
+      },
+      "extra_trained_parameters": 39554,
+      "stationary_feedback_introduced_here": true,
+      "wall_s": 33.639628211036325,
+      "gpu_peak_bytes": 222443008,
+      "updates": 4000,
+      "bc_rows": 2048000,
+      "total_seed_updates": 16000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block1/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block1/deploy.pt",
+      "resume_parent": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/latest.pt",
+      "seed_scope": "new L16 and estimator initialization"
+    },
+    {
+      "seed": 1703,
+      "block": 2,
+      "update": 4000,
+      "rows": {
+        "teacher": 114051,
+        "corrected": 55684,
+        "contact_teacher": 73348,
+        "contact_prefix": 182
+      },
+      "batch": 512,
+      "losses": [
+        2487.3486328125,
+        0.020976953208446503,
+        3.99993896484375
+      ],
+      "code_commit": "4b11382ddeb64fce694af4732f9b0e09b2f5e471",
+      "draws_per_batch_by_pool": {
+        "teacher": 201,
+        "corrected": 141,
+        "contact_teacher": 161,
+        "contact_prefix": 9
+      },
+      "extra_trained_parameters": 39554,
+      "stationary_feedback_introduced_here": false,
+      "stationary_mode": "bounded_absolute",
+      "stationary_final_Adam_reset_at_block_start": true,
+      "wall_s": 35.35102951899171,
+      "gpu_peak_bytes": 238717952,
+      "updates": 4000,
+      "bc_rows": 2048000,
+      "total_seed_updates": 20000,
+      "latest": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block2/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block2/deploy.pt",
+      "resume_parent": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block1/latest.pt",
+      "seed_scope": "new L16 and estimator initialization"
+    }
+  ],
+  "failed_native_attempts": [
+    {
+      "source": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/development/.000_tr_nominal_zero_0.attempt-ea1yiyhi/exception.json",
+      "steps": 0,
+      "reason": "\tsize mismatch for control.4.bias: copying a param with shape torch.Size([20]) from checkpoint, the shape in current model is torch.Size([32]).",
+      "proof": "initial inference could not load model"
+    },
+    {
+      "source": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/development/.001_tr_nominal_forward_stop_1.attempt-cbk7ymv8/exception.json",
+      "steps": 0,
+      "reason": "\tsize mismatch for control.4.bias: copying a param with shape torch.Size([20]) from checkpoint, the shape in current model is torch.Size([32]).",
+      "proof": "initial inference could not load model"
+    },
+    {
+      "source": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/development/.002_tr_nominal_reverse_stop_2.attempt-dgyn4s2v/exception.json",
+      "steps": 0,
+      "reason": "\tsize mismatch for control.4.bias: copying a param with shape torch.Size([20]) from checkpoint, the shape in current model is torch.Size([32]).",
+      "proof": "initial inference could not load model"
+    },
+    {
+      "source": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/development/.003_tr_nominal_left_turn_stop_3.attempt-79xpz40x/exception.json",
+      "steps": 0,
+      "reason": "\tsize mismatch for control.4.bias: copying a param with shape torch.Size([20]) from checkpoint, the shape in current model is torch.Size([32]).",
+      "proof": "initial inference could not load model"
+    },
+    {
+      "source": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/development/.004_tr_nominal_right_turn_stop_0.attempt-l1uff4bc/exception.json",
+      "steps": 0,
+      "reason": "\tsize mismatch for control.4.bias: copying a param with shape torch.Size([20]) from checkpoint, the shape in current model is torch.Size([32]).",
+      "proof": "initial inference could not load model"
+    },
+    {
+      "source": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/development/.005_tr_nominal_forward_left_stop_1.attempt-bdgcppow/exception.json",
+      "steps": 0,
+      "reason": "\tsize mismatch for control.4.bias: copying a param with shape torch.Size([20]) from checkpoint, the shape in current model is torch.Size([32]).",
+      "proof": "initial inference could not load model"
+    },
+    {
+      "source": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/development/.006_tr_nominal_forward_right_stop_2.attempt-5q6zo_vz/exception.json",
+      "steps": 0,
+      "reason": "\tsize mismatch for control.4.bias: copying a param with shape torch.Size([20]) from checkpoint, the shape in current model is torch.Size([32]).",
+      "proof": "initial inference could not load model"
+    }
+  ],
+  "completed_scored_cases": 717,
+  "completed_physics_steps": 10511939,
+  "failed_attempt_physics_steps_known": 0,
+  "failed_attempts_without_substep_counter": 0,
+  "bc_updates": 60000,
+  "bc_samples": 30720000,
+  "offline_estimator_evaluations": 540000,
+  "additional_shared_B_adapter_episodes_charged_to_A": 0,
+  "hardware_motion_commands": 0
+}

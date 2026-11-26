@@ -1,20 +1,37 @@
 {
-  "as_of_beijing": "2026-11-26T10:55:29+08:00",
+  "as_of_beijing": "2026-11-26T11:08:39+08:00",
   "low_updates": 60000,
-  "B_high_updates": 39936,
-  "C_actor_updates": 6459,
-  "wm_updates": 3000,
-  "bridge_updates": 4200,
+  "B_high_updates": 42496,
+  "B_updates_by_stage": {
+    "bc": 14336,
+    "bridge": 4200,
+    "paired": 3584,
+    "wm": 4000,
+    "warm": 24576
+  },
+  "B_primary_high_updates": 42496,
+  "B_cost_sensitivity_updates": 0,
+  "C_diagnostic_model_queries": {
+    "C_cap_calibration": 5664,
+    "C_model_and_native_direction": 1152,
+    "C_local_fp64_direction": 2432,
+    "C_short_recovery": 12191
+  },
+  "B_training_model_queries": 0,
+  "C_training_model_queries": 4074269,
+  "C_actor_updates": 6672,
+  "wm_updates": 4000,
+  "bridge_updates": 4800,
   "critic_updates": 0,
-  "completed_episodes": 1259,
-  "episode_substeps": 17015618,
+  "completed_episodes": 1378,
+  "episode_substeps": 18765750,
   "extra_substeps": {
-    "C/true_forward_optimization": 3186877,
-    "C/short_recovery_evaluation": 112119,
+    "C/true_forward_optimization": 5352267,
+    "C/short_recovery_evaluation": 121570,
     "C/directional_check": 5120,
     "B/true_forward_optimization": 0
   },
-  "accounted_native_substeps": 20319734,
+  "accounted_native_substeps": 24244707,
   "physical_by_group": {
     "A/command_teacher": {
       "cases": 96,
@@ -59,16 +76,22 @@
       "native_substeps": 2465106
     },
     "B/rounds/r01/development": {
-      "cases": 24,
+      "cases": 48,
       "success": 0,
-      "ordered_events": 0,
-      "native_substeps": 61390
+      "ordered_events": 8,
+      "native_substeps": 405857
     },
     "B/rounds/r02/collect": {
-      "cases": 62,
+      "cases": 144,
       "success": 0,
-      "ordered_events": 133,
-      "native_substeps": 413334
+      "ordered_events": 443,
+      "native_substeps": 1735331
+    },
+    "B/rounds/r02/development": {
+      "cases": 5,
+      "success": 0,
+      "ordered_events": 0,
+      "native_substeps": 11495
     },
     "B/teachers": {
       "cases": 96,
@@ -83,10 +106,10 @@
       "native_substeps": 257602
     },
     "C/development": {
-      "cases": 96,
+      "cases": 104,
       "success": 0,
-      "ordered_events": 33,
-      "native_substeps": 777023
+      "ordered_events": 37,
+      "native_substeps": 849196
     }
   },
   "A_stages": [
@@ -438,6 +461,58 @@
       "deploy": null
     },
     {
+      "stage": "bc",
+      "method": "D23",
+      "seed": 1701,
+      "round": 2,
+      "retained": 2048,
+      "paid": 2048,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/D23/seed1701/bc",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/D23/seed1701/bc/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/D23/seed1701/bc/deploy.pt"
+    },
+    {
+      "stage": "bridge",
+      "method": null,
+      "seed": 1701,
+      "round": 2,
+      "retained": 600,
+      "paid": 600,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/D23/seed1701/bridge",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": null,
+      "deploy": null
+    },
+    {
+      "stage": "paired",
+      "method": "D23",
+      "seed": 1701,
+      "round": 2,
+      "retained": 512,
+      "paid": 512,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/D23/seed1701/paired",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/D23/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/D23/seed1701/paired/deploy.pt"
+    },
+    {
+      "stage": "wm",
+      "method": null,
+      "seed": 1701,
+      "round": 2,
+      "retained": 1000,
+      "paid": 1000,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/wm/seed1701",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": null,
+      "deploy": null
+    },
+    {
       "stage": "warm",
       "method": "D23",
       "seed": 1701,
@@ -523,6 +598,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 0,
       "model_queries": 0,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C0/seed1701/final.pt"
@@ -533,6 +609,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 0,
       "model_queries": 0,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C0/seed1702/final.pt"
@@ -543,6 +620,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 0,
       "model_queries": 0,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C0/seed1703/final.pt"
@@ -553,6 +631,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 524288,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C32/seed1701/final.pt"
@@ -563,6 +642,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 524288,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C32/seed1702/final.pt"
@@ -573,6 +653,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 524288,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C32/seed1703/final.pt"
@@ -583,6 +664,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 524288,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C32G/seed1701/final.pt"
@@ -593,6 +675,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 524288,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C32G/seed1702/final.pt"
@@ -603,6 +686,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 524288,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C32G/seed1703/final.pt"
@@ -613,6 +697,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 131072,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C8/seed1701/final.pt"
@@ -623,6 +708,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 131072,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C8/seed1702/final.pt"
@@ -633,6 +719,7 @@
       "paid": 512,
       "retained": 512,
       "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
       "model_queries": 131072,
       "native_substeps": 0,
       "full": "/root/autodl-tmp/mm03-20261126/C/C8/seed1703/final.pt"
@@ -640,11 +727,23 @@
     {
       "variant": "CF32",
       "seed": 1701,
-      "paid": 315,
-      "retained": 312,
-      "bc_rows_paid": 80640,
-      "model_queries": 318754,
-      "native_substeps": 3186877,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_gradient_updates": 512,
+      "model_queries": 520260,
+      "native_substeps": 5201867,
+      "full": "/root/autodl-tmp/mm03-20261126/C/CF32/seed1701/final.pt"
+    },
+    {
+      "variant": "CF32",
+      "seed": 1702,
+      "paid": 16,
+      "retained": 16,
+      "bc_rows_paid": 4096,
+      "model_gradient_updates": 16,
+      "model_queries": 15065,
+      "native_substeps": 150400,
       "full": null
     }
   ],
@@ -654,84 +753,104 @@
       "seed": 1701,
       "cases": 32,
       "survived": 28,
-      "native_substeps": 9291
+      "native_substeps": 9291,
+      "wm_queries": 932
     },
     {
       "variant": "C0",
       "seed": 1702,
       "cases": 32,
       "survived": 28,
-      "native_substeps": 9410
+      "native_substeps": 9410,
+      "wm_queries": 944
     },
     {
       "variant": "C0",
       "seed": 1703,
       "cases": 32,
       "survived": 28,
-      "native_substeps": 9169
+      "native_substeps": 9169,
+      "wm_queries": 920
     },
     {
       "variant": "C32",
       "seed": 1701,
       "cases": 32,
       "survived": 29,
-      "native_substeps": 9439
+      "native_substeps": 9439,
+      "wm_queries": 946
     },
     {
       "variant": "C32",
       "seed": 1702,
       "cases": 32,
       "survived": 28,
-      "native_substeps": 9284
+      "native_substeps": 9284,
+      "wm_queries": 931
     },
     {
       "variant": "C32",
       "seed": 1703,
       "cases": 32,
       "survived": 28,
-      "native_substeps": 9219
+      "native_substeps": 9219,
+      "wm_queries": 925
     },
     {
       "variant": "C32G",
       "seed": 1701,
       "cases": 32,
       "survived": 28,
-      "native_substeps": 9312
+      "native_substeps": 9312,
+      "wm_queries": 934
     },
     {
       "variant": "C32G",
       "seed": 1702,
       "cases": 32,
       "survived": 27,
-      "native_substeps": 9091
+      "native_substeps": 9091,
+      "wm_queries": 913
     },
     {
       "variant": "C32G",
       "seed": 1703,
       "cases": 32,
       "survived": 29,
-      "native_substeps": 9437
+      "native_substeps": 9437,
+      "wm_queries": 946
     },
     {
       "variant": "C8",
       "seed": 1701,
       "cases": 32,
       "survived": 29,
-      "native_substeps": 9438
+      "native_substeps": 9438,
+      "wm_queries": 946
     },
     {
       "variant": "C8",
       "seed": 1702,
       "cases": 32,
       "survived": 29,
-      "native_substeps": 9482
+      "native_substeps": 9482,
+      "wm_queries": 950
     },
     {
       "variant": "C8",
       "seed": 1703,
       "cases": 32,
       "survived": 29,
-      "native_substeps": 9547
+      "native_substeps": 9547,
+      "wm_queries": 957
+    },
+    {
+      "variant": "CF32",
+      "seed": 1701,
+      "cases": 32,
+      "survived": 29,
+      "native_substeps": 9451,
+      "wm_queries": 947
     }
   ],
   "C_comparison_bridge": {
