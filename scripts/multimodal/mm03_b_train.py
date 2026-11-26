@@ -40,6 +40,7 @@ def refresh_wm(s):
     from learning.multimodal.world_model import PerceptualDynamics
     from learning.multimodal.wm_replay import PhysicalReplay
     from scripts.multimodal.train_wm import physical_loss
+    from scripts.multimodal.mm03_h7_graph import H7Backward
     out = Path(s["output"])
     parent = torch.load(s["parent"], map_location=DEVICE, weights_only=False)
     mp = read(s["members"])
@@ -94,15 +95,19 @@ def refresh_wm(s):
         if step0:
             raise ValueError("A resumed WM stage is missing its parent validation score")
         emit(prior_value, dict(h7_loss=validation_loss(), physical_windows=len(hold_ids), sources=validation))
+    backward = H7Backward(model)
     with journal.open("a", buffering=1) as f:
         for step in range(step0 + 1, 1001):
             win = replay.window(replay.draw_starts(7, 128-forward_per_batch, rng, True), 7)
             if forward_per_batch:
                 cf = forward.sample(forward_per_batch, forward_rng)
                 win = {key: torch.cat((win[key], val), 0) for key,val in cf.items()}
-            loss = physical_loss(model, win)
-            optimizer.zero_grad(set_to_none=True)
-            loss.backward()
+            loss = backward.backward(win)
+            if step==step0+3:
+                emit(out/f"h7_capture_{step0}_{os.getpid()}.json",
+                     dict(training_step=step, check=backward.check, accepted=not backward.disabled,
+                          extra_gradient_evaluations=backward.extra_gradient_evaluations,
+                          additional_optimizer_updates=0))
             grad = torch.nn.utils.clip_grad_norm_(model.parameters(), 5., error_if_nonfinite=True)
             optimizer.step()
             print(step, file=f)
@@ -120,7 +125,10 @@ def refresh_wm(s):
          rollback=paid0-step0, source=s["parent"], members=len(members), children=s["round"], wm=str(ck),
          batch=128, horizon=7, members_file=s["members"], wall_s_last_run=time.monotonic()-started,
          validation_h7_before=read(prior_value)["h7_loss"], validation_h7_after=validation_loss(),
-         cf_h7_available=forward.count if forward is not None else 0,
+        h7_graph_check=backward.check,graph_replays_last_run=backward.replays,
+        graph_updates_last_run=0 if backward.disabled else backward.replays,
+        extra_capture_gradient_evaluations_last_run=backward.extra_gradient_evaluations,
+        cf_h7_available=forward.count if forward is not None else 0,
          cf_h7_retained=1000*forward_per_batch, cf_h7_paid=(paid0+1000-step0)*forward_per_batch))
 
 
