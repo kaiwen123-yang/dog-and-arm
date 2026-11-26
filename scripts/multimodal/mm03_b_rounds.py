@@ -395,9 +395,13 @@ def fill_round(root, r, workers, include_model, selected):
             return all((train_dir(root,r,"H9-WM",s)/"paired/receipt.json").is_file() for s in SEEDS)
         schedules={seed:iter(methods) for seed in SEEDS}
         if include_model and selected=="CF32" and r>1:
-            # Two independent native pairs and one seed's ordinary GPU fits can run together.
-            schedules[SEEDS[0]]=iter(("H9-WM","D23","H9"))
-            schedules[SEEDS[1]]=iter(("H9-WM","D23","H9"))
+            # Give the measured three-seed layout a common start after the eight-round block.
+            target=root/"resources/worker_targets.json"
+            comparison=root/"performance/cf32-three-seeds-20261126/decision.json"
+            three_first=(r>8 and slots==3 and target.is_file() and read(target).get("B_CF_slots")==3
+                         and comparison.is_file() and read(comparison).get("winner")=="three")
+            for early in (SEEDS if three_first else SEEDS[:2]):
+                schedules[early]=iter(("H9-WM","D23","H9"))
         def independent_fits():
             futures={}
             def next_for(seed):
