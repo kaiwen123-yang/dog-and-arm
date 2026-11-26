@@ -30,7 +30,8 @@ def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=No
             if c_done and a_done:
                 winner=read(root/"C/selection.json").get("selected_model_variant")
                 reserve_cf=winner=="CF32" and not frozen
-                target.update(B=9 if reserve_cf else 15,B_CF=8 if reserve_cf else 0,B_CF_slots=1,B_GPU=3)
+                target.update(B=6 if reserve_cf else 15,B_CF=8 if reserve_cf else 0,
+                              B_CF_slots=2 if reserve_cf else 1,B_GPU=3)
                 reason=f"A and C returned their slots; task collection and {winner} paired optimization share the native budget"
             elif a_done:
                 target.update(B=9,C=8)

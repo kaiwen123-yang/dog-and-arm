@@ -1,6 +1,6 @@
 """Continuous B work blocks with matched data, replayable pair forks and an isolated terminal split."""
 from collections import Counter
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 from itertools import product
 from pathlib import Path
 import subprocess
@@ -390,10 +390,32 @@ def fill_round(root, r, workers, include_model, selected):
     collection_ledgers(root)
     slots = allocation(root,membership(root,r),f"r{r:02d}")
     with SeedOptimizers(slots) as gpu:
-        jobs = [(m,seed,gpu.submit(seed,fit_round,root,r,m,seed,workers,
-                selected if m=="H9-WM" else "C0")) for m,seed in product(METHODS if include_model else BASE, SEEDS)]
+        methods=METHODS if include_model else BASE
+        schedules={seed:iter(methods) for seed in SEEDS}
+        if include_model and selected=="CF32" and r>1:
+            # Two independent native pairs and one seed's ordinary GPU fits can run together.
+            schedules[SEEDS[0]]=iter(("H9-WM","D23","H9"))
+            schedules[SEEDS[1]]=iter(("H9-WM","D23","H9"))
+        def independent_fits():
+            futures={}
+            def next_for(seed):
+                method=next(schedules[seed],None)
+                if method is not None:
+                    job=gpu.submit(seed,fit_round,root,r,method,seed,workers,
+                                   selected if method=="H9-WM" else "C0")
+                    futures[job]=(method,seed)
+            for seed in SEEDS:
+                next_for(seed)
+            while futures:
+                completed,_=wait(futures,return_when=FIRST_COMPLETED)
+                for job in completed:
+                    method,seed=futures.pop(job)
+                    exc=job.exception()
+                    if getattr(exc,"returncode",None)!=75:
+                        next_for(seed)
+                    yield method,seed,job
         failed = []
-        for method, seed, job in jobs:
+        for method, seed, job in independent_fits():
             try:
                 ck = job.result()
             except subprocess.CalledProcessError as exc:
@@ -418,24 +440,41 @@ def fill_round(root, r, workers, include_model, selected):
 
 
 def catch_up(root, r, workers, variant):
-    for index in range(1,r+1):
-        pending = []
-        for seed in SEEDS:
-            out = train_dir(root,index,"H9-WM",seed)
-            if not (out/"development.json").is_file() or (index%4==0 and not (out/"regression.json").is_file()):
-                pending.append(seed)
-        if not pending:
-            continue
-        slots = allocation(root,membership(root,index),f"catchup{index:02d}")
-        with SeedOptimizers(slots) as gpu:
-            fits = []
-            for seed in pending:
-                ck = previous(root,index,"H9-WM",seed) / "deploy.pt"
-                batch(root,collect_jobs("H9-WM",seed,index,ck),workers)
-                collection_ledgers(root)
-                fits.append((seed,gpu.submit(seed,fit_round,root,index,"H9-WM",seed,workers,variant)))
-            for seed,future in fits:
+    # D23/H9 have already frozen these rounds' memberships and BC schedules.
+    # A late model seed only depends on its own preceding paired checkpoint.
+    pending = {}
+    for seed in SEEDS:
+        missing = []
+        for i in range(1,r+1):
+            out = train_dir(root,i,"H9-WM",seed)
+            if not (out/"development.json").is_file() or (i%4==0 and not (out/"regression.json").is_file()):
+                if not (round_dir(root,i)/"members.json").is_file():
+                    raise ValueError(f"Late model fork requires the already frozen r{i:02d} pool")
+                missing.append(i)
+        if missing:
+            pending[seed] = iter(missing)
+    if not pending:
+        return
+    slots = allocation(root,membership(root,r),f"catchup{r:02d}")
+    with SeedOptimizers(slots) as gpu:
+        futures = {}
+        def next_for(seed):
+            index = next(pending[seed],None)
+            if index is None:
+                return
+            source = previous(root,index,"H9-WM",seed) / "deploy.pt"
+            batch(root,collect_jobs("H9-WM",seed,index,source),workers)
+            collection_ledgers(root)
+            future = gpu.submit(seed,fit_round,root,index,"H9-WM",seed,workers,variant)
+            futures[future] = (seed,index)
+        for seed in pending:
+            next_for(seed)
+        while futures:
+            ready,_ = wait(futures,return_when=FIRST_COMPLETED)
+            for future in ready:
+                seed,index = futures.pop(future)
                 score_round(root,index,"H9-WM",seed,workers,future.result())
+                next_for(seed)
 
 
 def matched_progress(root, r, methods):
@@ -581,4 +620,3 @@ def longitudinal(root, workers):
                 continue
         close(root,r,methods,workers,selection)
         return
-
