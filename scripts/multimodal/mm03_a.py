@@ -103,6 +103,37 @@ def train(root, seed, block, workers):
         subprocess.run(args, cwd=REPO, stdout=log, stderr=subprocess.STDOUT, check=True)
 
 
+def finalize(root):
+    """Publish paid updates and the best/latest durable packages to B."""
+    state = Path(root)/"A"
+    if not (state/"complete.json").is_file():
+        raise ValueError("A still has physical work in progress")
+    summaries = {}
+    for seed in SEEDS:
+        base = state/"low"/f"seed{seed}"
+        blocks = []
+        for path in sorted(base.glob("block*/train_result.json")):
+            fit = json.loads(path.read_text())
+            rows = [json.loads(p.read_text()) for p in sorted((path.parent/"development").glob("*/result.json"))]
+            if len(rows)!=40:
+                raise ValueError(f"Cannot select low-level package without 40 development results: {path}")
+            b = fit["block"]
+            blocks.append(dict(block=b, updates=fit["updates"], successes=sum(r["success"] for r in rows),
+                               mean_support=sum(r["all_supported_fraction"] for r in rows)/40,
+                               mean_stop_drift_m=sum(r["max_stop_drift_m"] for r in rows)/40,
+                               deployment=fit["deploy"], full=fit["latest"], eligible_rows=fit["rows"]))
+        if not blocks:
+            raise ValueError(f"No completed low-level block for {seed}")
+        best = max(blocks, key=lambda x: (x["successes"], x["mean_support"], -x["mean_stop_drift_m"], -x["block"]))
+        latest = blocks[-1]
+        summaries[str(seed)] = dict(seed=seed, paid_updates=sum(b["updates"] for b in blocks),
+             best_block=best["block"], best_deploy=best["deployment"], best_full=best["full"],
+             latest_block=latest["block"], latest_deploy=latest["deployment"], latest_full=latest["full"], blocks=blocks)
+    emit(state/"completion.json", dict(status="completed_A", seeds=summaries,
+         selection="40 local successes, mean four-wheel-supported fraction, smaller mean stopping drift, earlier block"))
+    return summaries
+
+
 def run(args):
     from scripts.multimodal.mm03_a_commands import make_jobs
     from scripts.multimodal.mm03_a_rescue import rescue_jobs
@@ -158,7 +189,9 @@ def run(args):
                 raise ValueError("Incomplete local development suite")
             summaries[seed] = dict(block=block, successes=count, cases=len(rows),
                                    latest=str(state/"low"/f"seed{seed}"/f"block{block}"/"deploy.pt"))
-            if count<36:
+            # The initial command sweep contains free-space arm trajectories.
+            # All seeds get a first corrective block that includes real door contacts.
+            if block == 0 or count<36:
                 retry.append(seed)
         emit(state/"low"/"summary.json", summaries)
         active = retry
@@ -173,6 +206,7 @@ def run(args):
     emit(state/"complete.json", dict(status="completed_A", low=summaries,
          rescue=44, initial_command_trials=96, source="native simulation",
          adapter_reference="B/teachers (four shared nominal cases)", hardware_commands=0))
+    finalize(root)
 
 
 if __name__ == "__main__":

@@ -129,7 +129,14 @@ def apply_fork(folder, fork, seed, pool, cache, schedule, schedule_meta,
                 if fork=="CF32":
                     keys=[objective.keys[j] for j in idx.cpu().tolist()]
                     cost["shared_native_replay"]=record_replay(folder/"shared_replay",paid+1,i+1,keys,idx,stats,objective)
-            measures=gradient_step(loss_bc,loss_traj,fork,optimizer,groups,[2.]*len(groups))
+            if not torch.isfinite(loss_bc) or (loss_traj is not None and not torch.isfinite(loss_traj)):
+                raise FloatingPointError(f"{fork} seed {seed} nonfinite objective at attempted update {i+1}")
+            try:
+                measures=gradient_step(loss_bc,loss_traj,fork,optimizer,groups,[2.]*len(groups))
+            except RuntimeError as exc:
+                if "non-finite" not in str(exc).lower() and "nonfinite" not in str(exc).lower():
+                    raise
+                raise FloatingPointError(f"{fork} seed {seed} update {i+1}: {exc}") from exc
             paid+=1
             row=dict(applied=paid,step=i+1,bc_rows_sha=digest_values(schedule[i]),
                      anchor_rows_sha=digest_values(idx.cpu().numpy()) if fork!="C0" else None,**measures,**cost)
@@ -209,22 +216,36 @@ def full_development(root, fork, seed, out, workers):
 def selection(root):
     rows=[]
     for fork in VARIANTS:
-        long,short=[],[]
+        long,short,invalid,seeds=[],[],{},[]
         for seed in SEEDS:
             out=root/"C"/fork/f"seed{seed}"
-            long.extend(full for full in read(out/"development/cases.json"))
-            short.extend(read(out/"short_recovery.json"))
+            if (out/"numerical_failure.json").is_file():
+                invalid[str(seed)]=read(out/"numerical_failure.json")
+                continue
+            full=read(out/"development/cases.json")
+            recovered=read(out/"short_recovery.json")
+            long.extend(full)
+            short.extend(recovered)
+            receipt=read(out/"receipt.json")
+            seeds.append(dict(seed=seed,updates_paid=receipt["paid"],updates_retained=receipt["retained"],
+                              full_success=sum(r["success"] for r in full),full_n=len(full),
+                              ordered_events=sum(r["ordered_event_count"] for r in full),
+                              short_survived=sum(r["survived_32"] for r in recovered),short_n=len(recovered),
+                              evaluation_physics=sum(r["physics_steps"] for r in full)+sum(r["physical_substeps"] for r in recovered),
+                              training_cost=receipt["actual_cost"]))
         by_task={}
         for row in long:
             key=(row["side"],int(row["goal"]))
             by_task[key]=by_task.get(key,0)+row["ordered_event_count"]
         safety_fail=sum(any(v in r for v in ("support","self","unexpected_contact","joint_limit")) for r in
                         ((row["first_failure"] or {}).get("reason","") for row in long))
-        rank=(sum(row["success"] for row in long),min(by_task.values()),sum(by_task.values()),-safety_fail,
+        rank=(sum(row["success"] for row in long),min(by_task.values(),default=0),sum(by_task.values()),-safety_fail,
               sum(row["survived_32"] for row in short),-VARIANTS.index(fork))
         rows.append(dict(variant=fork,rank=list(rank),full_development_n=len(long),short_recovery_n=len(short),
+                         by_seed=seeds,numerically_invalid=invalid,
                          ordered_events_by_task={f"{a}{b}":v for (a,b),v in by_task.items()}))
-    legal=[row for row in rows if row["variant"]!="C0" and row["variant"] not in invalid_variants(root)]
+    invalid=invalid_variants(root)
+    legal=[row for row in rows if row["variant"]!="C0" and row["variant"] not in invalid and not row["numerically_invalid"]]
     winner=max(legal,key=lambda row:row["rank"])["variant"] if legal else None
     report(root/"C/selection.json",dict(variant=winner,selected_model_variant=winner,
         rationale="three-seed original-judge full successes, worst-task and total event counts, support/collision/limit failures, short-window survival, registered order",
@@ -236,7 +257,7 @@ def invalid_variants(root):
     for fork in VARIANTS[1:]:
         for seed in SEEDS:
             path=root/"C"/fork/f"seed{seed}"/"applications.jsonl"
-            if not any(json.loads(s)["grad_trajectory"]>0 for s in path.open()):
+            if not path.is_file() or not any(json.loads(s)["grad_trajectory"]>0 for s in path.open()):
                 invalid.add(fork)
     return invalid
 
@@ -280,7 +301,17 @@ def compare(root, workers, parent_path, bundle, dev):
                 out=output/fork/f"seed{seed}"
                 report(output/"current.json",dict(stage="training",variant=fork,seed=seed))
                 schedule,meta=schedules[seed]
-                apply_fork(out,fork,seed,pool,cache,schedule,meta,training,cap,parent_path,native,dev)
+                if (out/"numerical_failure.json").exists():
+                    continue
+                try:
+                    apply_fork(out,fork,seed,pool,cache,schedule,meta,training,cap,parent_path,native,dev)
+                except FloatingPointError as exc:
+                    log=out/"applications.jsonl"
+                    paid=sum(1 for _ in log.open()) if log.is_file() else 0
+                    report(out/"numerical_failure.json",dict(variant=fork,seed=seed,reason=str(exc),
+                           paid_updates=paid,checkpoint=str(out/"latest.pt") if (out/"latest.pt").is_file() else None,
+                           development_cases_not_run=8,recovery_cases_not_run=32))
+                    continue
                 report(output/"current.json",dict(stage="physical_development",variant=fork,seed=seed))
                 full_development(root,fork,seed,out,workers)
                 if not (out/"short_recovery.json").exists():

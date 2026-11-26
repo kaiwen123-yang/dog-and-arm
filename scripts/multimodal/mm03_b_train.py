@@ -10,9 +10,9 @@ import numpy as np
 import torch
 
 from learning.multimodal.actor import load_actor
-from learning.multimodal.mm03_task import SCHEMA, TaskActor, load_task_actor, migrate, migrate_optimizer, optimizer_for
+from learning.multimodal.mm03_task import SCHEMA, load_task_actor, migrate, migrate_optimizer, optimizer_for
 from learning.multimodal.mm03_task_data import SharedRows
-from scripts.multimodal.mm03_b import emit, freeze_file, read
+from scripts.multimodal.mm03_b import emit, read
 from scripts.multimodal.train_actor import atomic_save, peak
 
 DEVICE = torch.device("cuda:0")
@@ -51,6 +51,14 @@ def refresh_wm(s):
     rng = torch.Generator(device=DEVICE).manual_seed(s["data_seed"])
     replay = PhysicalReplay(None, "train", DEVICE, episode_dirs=members)
     out.mkdir(parents=True, exist_ok=True)
+    # The first comparison's current-student native paths become common training data
+    # only after C freezes its winner. The registered 128 windows still total 128.
+    forward = None
+    forward_rng = np.random.default_rng(s["data_seed"] + 13517)
+    if s.get("use_selected_C_replay"):
+        from learning.multimodal.mm03_model_replay import SharedForwardReplay
+        forward = SharedForwardReplay(s["root"], DEVICE)
+    forward_per_batch = 32 if forward is not None and forward.count else 0
     ck = out / "wm.pt"
     step0 = 0
     if ck.exists():
@@ -61,14 +69,35 @@ def refresh_wm(s):
         optimizer.load_state_dict(resume["optimizer"])
         rng.set_state(resume["sampler_rng"].cpu())
         step0 = resume["round_updates"]
+        if forward_per_batch:
+            forward_rng.bit_generator.state = resume["cf_rng"]
+            if resume["cf_available_windows"] != forward.count:
+                raise ValueError("Common post-selection CF replay changed across recovery")
     journal = out / "applied_steps.txt"
     paid0 = sum(1 for _ in journal.open()) if journal.exists() else 0
     started = time.monotonic()
     if paid0 < step0:
         raise ValueError("WM missing applied step ledger")
+    # Fix evaluation starts once. These held-out H7 physical windows are scored
+    # before/after refresh and never supplied to the optimizer.
+    validation = read(Path("/root/autodl-tmp/mm02-20261125/round6/wm_membership.json"))["validation_demo"]
+    holdout = PhysicalReplay(None, "validation", DEVICE, episode_dirs=validation)
+    starts, _ = holdout.starts(7)
+    hold_ids = starts[torch.linspace(0, len(starts)-1, min(256, len(starts)), device=DEVICE).long()]
+    def validation_loss():
+        with torch.no_grad():
+            return float(physical_loss(model, holdout.window(hold_ids, 7)))
+    prior_value = out / "before_refresh.json"
+    if not prior_value.exists():
+        if step0:
+            raise ValueError("A resumed WM stage is missing its parent validation score")
+        emit(prior_value, dict(h7_loss=validation_loss(), physical_windows=len(hold_ids), sources=validation))
     with journal.open("a", buffering=1) as f:
         for step in range(step0 + 1, 1001):
-            win = replay.window(replay.draw_starts(7, 128, rng, True), 7)
+            win = replay.window(replay.draw_starts(7, 128-forward_per_batch, rng, True), 7)
+            if forward_per_batch:
+                cf = forward.sample(forward_per_batch, forward_rng)
+                win = {key: torch.cat((win[key], val), 0) for key,val in cf.items()}
             loss = physical_loss(model, win)
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
@@ -79,13 +108,18 @@ def refresh_wm(s):
                 state = dict(schema="MM03-actual-action-h7-v1", task_spec=s, width=model.width,
                      parent=s["parent"], round=s["round"], round_updates=step, updates=parent["updates"]+step,
                      model=model.state_dict(), optimizer=optimizer.state_dict(), sampler_rng=rng.get_state(),
-                     rng=global_rng(), members=members, horizon=7, batch=128)
+                     rng=global_rng(), members=members, horizon=7, batch=128,
+                     cf_rng=forward_rng.bit_generator.state,
+                     cf_available_windows=forward.count if forward is not None else 0)
                 atomic_save(ck, state)
                 emit(out / "progress.json", dict(stage="wm", retained=step, paid=paid0+step-step0,
                      loss=float(loss.detach()), grad=float(grad), **peak(DEVICE)))
     emit(out / "receipt.json", dict(stage="wm", retained=1000, paid=paid0+1000-step0,
          rollback=paid0-step0, source=s["parent"], members=len(members), children=s["round"], wm=str(ck),
-         batch=128, horizon=7, members_file=s["members"], wall_s_last_run=time.monotonic()-started))
+         batch=128, horizon=7, members_file=s["members"], wall_s_last_run=time.monotonic()-started,
+         validation_h7_before=read(prior_value)["h7_loss"], validation_h7_after=validation_loss(),
+         cf_h7_available=forward.count if forward is not None else 0,
+         cf_h7_retained=1000*forward_per_batch, cf_h7_paid=(paid0+1000-step0)*forward_per_batch))
 
 
 def bridge(s):

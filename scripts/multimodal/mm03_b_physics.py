@@ -110,7 +110,10 @@ def episode(task):
             pred = None
             if student is not None:
                 # This also updates the causal policy during the real teacher prefix.
-                pred = student.step(p, prev, image, writer.arrays["image_t"][-1], t)
+                proposal = student.step(p, prev, image, writer.arrays["image_t"][-1], t, return_aux=True)
+                pred = proposal["raw"]
+                writer.arrays["student_high_request"].append(proposal["high"].copy())
+                writer.arrays["student_estimated_vx_wz"].append(proposal["estimate"].copy())
             if mode == "prefix" and switched is None and tick >= 1 and judge.i >= job["switch_phase"] and d.time >= .30:
                 switched = tick
             use_teacher = mode in ("teacher", "p6_reference") or (mode == "prefix" and switched is None)

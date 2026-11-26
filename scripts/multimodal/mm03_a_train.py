@@ -175,10 +175,22 @@ def fit(root, seed, block):
     start = 0
     loaded = latest if latest.is_file() else parent
     accumulated = 0.
+    lifted = False
     if loaded:
         old = torch.load(loaded, map_location="cpu", weights_only=False)
-        model.load_state_dict(old["model"])
-        opt.load_state_dict(old["optimizer"])
+        lifted = model.inherit(old["model"])
+        old_opt = old["optimizer"]
+        if lifted:
+            # Existing names/order are identical. Newly appended stationary
+            # parameters start with Adam's normal lazy zero moments.
+            current = opt.state_dict()["param_groups"][0]["params"]
+            original = old_opt["param_groups"][0]["params"]
+            if original != current[:len(original)] or len(current)-len(original)!=4:
+                raise ValueError("Original Adam ordering changed at correction transfer")
+            old_opt["param_groups"][0]["params"] = current
+            model.leg_scale.copy_(data["teacher"][:, :12].std(0, unbiased=False).clamp_min(.02))
+        opt.load_state_dict(old_opt)
+        lifted = lifted or bool(old.get("stationary_feedback_introduced_here", False) and loaded == latest)
         draw.set_state(old["draw"])
         torch.set_rng_state(old["cpu_rng"])
         torch.cuda.set_rng_state(old["cuda_rng"])
@@ -200,6 +212,7 @@ def fit(root, seed, block):
     model.train()
     def checkpoint(i):
         return dict(schema=model.schema, seed=seed, block=block, update=i, model=model.state_dict(),
+                    stationary_feedback_introduced_here=lifted,
                     optimizer=opt.state_dict(), cpu_rng=torch.get_rng_state(), cuda_rng=torch.cuda.get_rng_state(),
                     draw=draw.get_state(), membership=str(folder/"members.json"),
                     wall_s=accumulated+time.monotonic()-tick, parent_full=str(parent) if parent else None,
@@ -226,6 +239,7 @@ def fit(root, seed, block):
             loss_log.clear()
             receipt = dict(seed=seed, block=block, update=i, rows=counts, batch=512, losses=losses,
                            extra_trained_parameters=sum(p.numel() for p in model.parameters()),
+                           stationary_feedback_introduced_here=lifted,
                            wall_s=accumulated+time.monotonic()-tick, gpu_peak_bytes=torch.cuda.max_memory_allocated())
             save(latest, {**checkpoint(i), "last_metrics": receipt})
             write_json(folder/"progress.json", receipt)
