@@ -191,6 +191,36 @@ def check_first_h9_fork(s, parent_path):
          paired_starts_exactly_same_file=True, row_order=ref["row_order"], frozen_low=ref["low_sha256"]))
 
 
+def reconcile_paid_checkpoint(journal,saved,retained):
+    """Complete the durable CF32 log append from the optimizer checkpoint, never resimulate an acknowledged step."""
+    data=journal.read_bytes() if journal.is_file() else b""
+    lines=data.split(b"\n")
+    partial=lines.pop()
+    h=lambda value:hashlib.sha256(value).hexdigest()
+    entry=saved.get("paid_application") if saved else None
+    if entry is None:
+        indices=[json.loads(line)["update"] for line in lines]
+        # Legacy runs may already have charged historical replay. Their final
+        # contiguous frontier must match this checkpoint and leave no paid later step.
+        aligned=(not indices and retained==0) or (indices and indices[-1]==retained and
+                   set(indices)==set(range(1,retained+1)) and all(
+                    1<=v<=u+1 for u,v in zip([0]+indices[:-1],indices,strict=True)))
+        if partial or not aligned:
+            raise ValueError("CF32 ledger/checkpoint gap: recover the paid update before any further native simulation")
+        return len(lines),h(lines[-1]) if lines else None
+    expected=entry["json_line"].encode("utf-8")
+    paid=entry["paid"]
+    if len(lines)==paid and not partial:
+        if lines[-1]!=expected or (h(lines[-2]) if len(lines)>1 else None)!=entry["previous_line_sha256"]:
+            raise ValueError("Committed CF32 log differs from its optimizer checkpoint")
+    elif len(lines)==paid-1 and (h(lines[-1]) if lines else None)==entry["previous_line_sha256"] and expected.startswith(partial):
+        with journal.open("ab") as f:
+            f.write(expected[len(partial):]+b"\n");f.flush();os.fsync(f.fileno())
+    else:
+        raise ValueError("CF32 log cannot be completed from the atomic checkpoint")
+    return paid,h(expected)
+
+
 def train(s, data_cache=None):
     from learning.multimodal.mm03_model import MM03Objective, gradient_step
     out = Path(s["output"])
@@ -325,6 +355,7 @@ def train(s, data_cache=None):
     totals = dict(model_updates=0, model_queries=0, native_substeps=0, legal_model_slots=0,
                   command_label_draws=0, bc_rows=0)
     prior_wall = 0.
+    r = None
     if final.exists() or ck.exists():
         r = torch.load(final if final.exists() else ck, map_location=DEVICE, weights_only=False)
         if r["spec"] != s or r["row_order"] != order["batch_rows_sha256"]:
@@ -336,7 +367,11 @@ def train(s, data_cache=None):
         if obj is not None:
             obj.rng.set_state(r["objective_rng"].cpu())
     journal = out / "applied.jsonl"
-    attempts = sum(1 for _ in journal.open()) if journal.exists() else 0
+    if variant=="CF32":
+        attempts,last_line_sha = reconcile_paid_checkpoint(journal,r,step0)
+    else:
+        attempts = sum(1 for _ in journal.open()) if journal.exists() else 0
+        last_line_sha = None
     if attempts < step0:
         raise ValueError("High-level update ledger fell behind checkpoint")
     groups = [[p for p in group["params"] if p.requires_grad] for group in optimizer.param_groups]
@@ -376,12 +411,15 @@ def train(s, data_cache=None):
                 totals["legal_model_slots"] += legal
                 totals["bc_rows"] += len(batch["action"])
                 totals["command_label_draws"] += int(batch["command_valid"].sum())
-                print(json.dumps(dict(update=step, native_substeps=n_real, model_queries=n_query, legal=legal,
+                entry = dict(update=step, native_substeps=n_real, model_queries=n_query, legal=legal,
                                       capped=0 if stats is None else int(stats["capped"]),
                                       terminal_cases=0 if stats is None else len(stats["terminals"]),
                                       shared_native_replay=saved_native if variant=="CF32" else None,
-                                      command_draws=int(batch["command_valid"].sum()), **g), allow_nan=False), file=log)
-                if step == 1 or step % 64 == 0 or step == steps:
+                                      command_draws=int(batch["command_valid"].sum()), **g)
+                encoded = json.dumps(entry,allow_nan=False)
+                if variant!="CF32":
+                    print(encoded,file=log)
+                if variant=="CF32" or step == 1 or step % 64 == 0 or step == steps:
                     elapsed = prior_wall + time.monotonic() - started
                     state = dict(schema=SCHEMA, architecture=arch, method=s["method"], affine_mode=actor.affine_mode,
                         actor=actor.state_dict(), vocabulary=vocab.tokens, optimizer=optimizer.state_dict(),
@@ -389,7 +427,13 @@ def train(s, data_cache=None):
                         rng=global_rng(), row_order=order["batch_rows_sha256"], next_schedule_row=offset+step,
                         sampler=order["end_generator_state"], update=step, wall_s=elapsed, totals=totals,
                         objective_rng=obj.rng.get_state() if obj is not None else None)
+                    if variant=="CF32":
+                        state["paid_application"] = dict(paid=attempts+step-step0,json_line=encoded,
+                                                          previous_line_sha256=last_line_sha)
                     atomic_save(final if step == steps else ck, state)
+                    if variant=="CF32":
+                        print(encoded,file=log);log.flush();os.fsync(log.fileno())
+                        last_line_sha = hashlib.sha256(encoded.encode("utf-8")).hexdigest()
                     emit(out / "progress.json", dict(stage=s["stage"], method=s["method"], seed=seed,
                          step=step, steps=steps, paid=attempts+step-step0, loss=g["bc"], **totals, **peak(DEVICE)))
                     if step == 1 or step % 512 == 0:
@@ -429,6 +473,10 @@ def train(s, data_cache=None):
              common_eligible_only=True)
     emit(out / "receipt.json", dict(stage=s["stage"], method=s["method"], round=s["round"], seed=seed,
          cost_sensitivity=comparison_cost,retained=steps, paid=attempts+steps-step0, rollback=attempts-step0, paid_model_cost=paid_totals,
+         disaster_recovery=(dict(source=str(out/"recovery_after_sigkill"/"reconstruction.json"),
+             native_substeps=read(out/"recovery_after_sigkill"/"reconstruction.json")["native_restore_substeps"],
+             repeated_deterministic_forward_backward_adam=1,new_training_updates=0,new_training_samples=0)
+             if (out/"recovery_after_sigkill"/"reconstruction.json").is_file() else None),
          shared_row_cache_reused=reused,shared_row_setup_s=data_setup_s,
          row_tensor_device=pool.residency["device"],row_tensor_bytes=pool.residency["actual_row_tensor_bytes"],
          retained_cost=payload["totals"], native_pool_allocation=native_allocation,
