@@ -95,18 +95,35 @@ class NativePool:
             self.log_change("resize_before_independent_batch",old,[w.pid for w in self.workers])
             self.clear_timing()
 
-    def exchange(self, op, payloads):
+    def dispatch(self, op, payloads):
         pending = []
         for worker, grouped in zip(self.workers, payloads):
             if grouped:
-                send(worker.stdin, (op, grouped))
+                try:
+                    send(worker.stdin, (op, grouped))
+                except (OSError, ValueError):
+                    # Workers already dispatched can be blocked sending images. Consume
+                    # their replies before higher-level checkpoint recovery waits on them.
+                    self.collect(pending)
+                    raise
                 pending.append(worker)
+        return pending
+
+    @staticmethod
+    def collect(pending):
         result = {}
+        problem = None
         for worker in pending:
-            ok, reply = receive(worker.stdout)
-            if not ok:
-                raise RuntimeError(reply)
-            result.update(reply)
+            try:
+                ok, reply = receive(worker.stdout)
+                if ok:
+                    result.update(reply)
+                else:
+                    problem = problem or RuntimeError(reply)
+            except (EOFError, OSError) as error:
+                problem = problem or error
+        if problem is not None:
+            raise problem
         return result
 
     def reset(self, paths):
@@ -117,20 +134,27 @@ class NativePool:
         payloads = [{} for _ in self.workers]
         for i, path in enumerate(paths):
             payloads[self.owner[i]][i] = str(path)
-        records=self.exchange("reset", payloads)
+        records=self.collect(self.dispatch("reset", payloads))
         self.windows += len(paths)
         self.reset_wall += time.monotonic()-begin
         return records
 
-    def advance(self, slots, actions):
+    def start_step(self, slots, actions):
         payloads = [{} for _ in self.workers]
         for i, action in zip(slots, actions, strict=True):
             payloads[self.owner[i]][i] = np.asarray(action, dtype=np.float32)
         begin=time.monotonic()
-        records=self.exchange("step", payloads)
+        return begin,self.dispatch("step",payloads)
+
+    def finish_step(self, ticket):
+        begin,pending=ticket
+        records=self.collect(pending)
         self.advance_wall += time.monotonic()-begin
         self.native_steps += sum(r["substeps"] for r in records.values())
         return records
+
+    def advance(self, slots, actions):
+        return self.finish_step(self.start_step(slots,actions))
 
     def close(self):
         old=[w.pid for w in self.workers]

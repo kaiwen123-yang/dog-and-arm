@@ -155,16 +155,27 @@ class MM03Objective:
         steps = calls = 0
         terminals = []
         sequences = []
+        active_slots = list(range(len(rows)))
+        full_order = True
         for tick in range(h):
             if not len(ids):
                 break
             action = actor.act_features(visual,text,hist,prev,sensor)
-            nxt = self.model.step(state,action,prev[:,-1])
             calls += len(ids)
             if real:
-                ids_list = ids.detach().cpu().tolist()
+                ids_list = active_slots
                 action_np = action.detach().cpu().numpy()
-                replies = native.advance(ids_list,action_np)
+                if hasattr(native,"start_step"):
+                    ticket = native.start_step(ids_list,action_np)
+                    # Both successors depend on the same current action. Drain every
+                    # reply even if the independent differentiable CUDA step raises.
+                    try:
+                        nxt = self.model.step(state,action,prev[:,-1])
+                    finally:
+                        replies = native.finish_step(ticket)
+                else:
+                    nxt = self.model.step(state,action,prev[:,-1])
+                    replies = native.advance(ids_list,action_np)
                 output = [replies[i] for i in ids_list]
                 steps += sum(r["substeps"] for r in output)
                 for slot, r in zip(ids_list,output):
@@ -181,12 +192,16 @@ class MM03Objective:
                                r["failure"] != "nonfinite_or_solver_warning"]
                 if not valid_local:
                     break
-                take = torch.tensor(valid_local,device=self.device)
-                ids = ids[take]
-                nxt = Belief(*(x[take] for x in nxt))
-                hist,prev,sensor,action,hold,frame,visual,text,z0,zbridge0 = (
-                    x[take] for x in (hist,prev,sensor,action,hold,frame,visual,text,z0,zbridge0))
-                output = [output[j] for j in valid_local]
+                if len(valid_local)!=len(output):
+                    full_order=False
+                    take = torch.tensor(valid_local,device=self.device)
+                    ids = ids[take]
+                    nxt = Belief(*(x[take] for x in nxt))
+                    hist,prev,sensor,action,hold,frame,visual,text,z0,zbridge0 = (
+                        x[take] for x in (hist,prev,sensor,action,hold,frame,visual,text,z0,zbridge0))
+                    output = [output[j] for j in valid_local]
+                    active_slots = [ids_list[j] for j in valid_local]
+                    action_np = action_np[valid_local]
                 inserted = [j for j,r in enumerate(output) if r["image"] is not None]
                 photos = torch.tensor(inserted,dtype=torch.long,device=self.device)
                 current_z = visual.detach().clone()
@@ -212,22 +227,24 @@ class MM03Objective:
                     # Keep each actual new exposure once. Held images are recoverable from
                     # this sequence or the original anchor snapshot on the source disk.
                     fresh_images=[output[j]["image"] for j in inserted]
-                    sequences.append(dict(slot=ids.detach().cpu().numpy(),tick=tick,
-                        exposure_slots=ids[photos].detach().cpu().numpy(),exposures=fresh_images,
+                    slot_array=np.asarray(active_slots,dtype=np.int64)
+                    sequences.append(dict(slot=slot_array,tick=tick,
+                        exposure_slots=slot_array[inserted],exposures=fresh_images,
                         exposure_times=np.asarray([output[j]["image_t"] for j in inserted],dtype=np.float64),
-                        measured_features=current_z[photos].detach().cpu().numpy(),
-                        action=action.detach().cpu().numpy(),p=p.cpu().numpy(),o=nxt.obj.detach().cpu().numpy(),
-                        vision=hold.detach().cpu().numpy(),contact=np.stack([r["contact"] for r in output]),
-                        fresh=fresh_mask.cpu().numpy()[:,0],clock=clock.cpu().numpy()[:,0]))
-                keep = torch.tensor([j for j,r in enumerate(output) if not r["done"]],dtype=torch.long,device=self.device)
+                        measured_features=current_z[photos].detach(),
+                        action=action_np,p=p.detach(),o=nxt.obj.detach(),
+                        vision=hold.detach(),contact=np.stack([r["contact"] for r in output]),
+                        fresh=fresh_mask[:,0].detach(),clock=clock[:,0].detach()))
+                survivors = [j for j,r in enumerate(output) if not r["done"]]
             else:
+                nxt = self.model.step(state,action,prev[:,-1])
                 clock = sensor[:,2:3]+.02
                 ticks = torch.round(clock/.02).long()
                 fresh_mask = ticks.remainder(5) == 0
                 age = torch.where(fresh_mask,0.,sensor[:,0:1]+.02)
                 estimated = z0+self.bridge(self.model.v_units(nxt.vision))-zbridge0
                 visual = torch.where(fresh_mask,estimated,visual)
-            available = {key: val[ids] for key,val in target.items()}
+            available = target if real and full_order else {key: val[ids] for key,val in target.items()}
             cost = per_step(self.model,nxt,available,tick,vision_weights[ids,tick])
             if cap is not None:
                 capped = capped+(cost.detach()>cap).sum()
@@ -239,11 +256,25 @@ class MM03Objective:
             valid = torch.where(fresh_mask,1.,sensor[:,1:2])
             sensor = torch.cat((age*valid,valid,clock),1)
             state = nxt
-            if real:
+            if real and len(survivors)!=len(active_slots):
+                full_order=False
+                active_slots=[active_slots[j] for j in survivors]
+                keep=torch.tensor(survivors,dtype=torch.long,device=self.device)
                 ids,hist,prev,sensor,hold,frame,visual,text,z0,zbridge0 = (
                     x[keep] for x in (ids,hist,prev,sensor,hold,frame,visual,text,z0,zbridge0))
                 state = Belief(*(x[keep] for x in state))
         loss = (costs*weights).sum(-1).div(weights.sum()).mean()
+        if sequences:
+            # Replay storage is outside the gradient graph. Consolidate many small
+            # GPU-to-host transfers without changing each interval's dtype or shape.
+            for key in ("measured_features","p","o","vision","fresh","clock"):
+                blocks=[s[key] for s in sequences]
+                combined=torch.cat(blocks,dim=0).cpu().numpy()
+                offset=0
+                for s,block in zip(sequences,blocks,strict=True):
+                    end=offset+len(block)
+                    s[key]=combined[offset:end]
+                    offset=end
         stats = dict(valid=mask, per_step=costs.detach(), native_substeps=steps, model_queries=calls,
                      capped=capped, terminals=terminals, sequences=sequences)
         return loss,stats

@@ -26,7 +26,7 @@ def configure_locked(root, enabled, reason):
     directory=root/"resources"
     path=directory/"ordinary_elastic_policy.json"
     if not enabled:
-        write(path,dict(enabled=False,changed_beijing=now(),reason=reason))
+        write(path,dict(enabled=False,protocol=PROTOCOL,changed_beijing=now(),reason=reason))
         return
     source=root/"performance/20261126-cf-latency/elastic_trial.json"
     registration=root/"performance/20261126-cf-latency/elastic_registration.json"
@@ -195,7 +195,11 @@ def ordinary_admission(root, partition, planned, default_workers):
         if type(workers) is not int or not 1<=workers<=25:
             raise ValueError(f"Invalid native B worker target: {workers}")
         was_lent=prior.get("elastic_cf",{}).get("mode")=="idle_loan"
-        if was_lent or cfg.get("elastic_cf",{}).get("mode")=="ordinary_reserved":
+        # Explicit disable can remove the nested target before the already-running
+        # CF optimizers reach their next reset. Still observe that last reclaim.
+        recently_managed=(policy.get("protocol")==PROTOCOL and workers==4 and
+                          cfg.get("B_CF")==6 and cfg.get("B_CF_slots")==3)
+        if was_lent or recently_managed or cfg.get("elastic_cf",{}).get("mode")=="ordinary_reserved":
             # New pools start at top-level six. Existing ones inspect the nested target
             # and finish their ongoing 32-step window before draining their last worker.
             base=cfg["B_CF"]
