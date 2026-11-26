@@ -1,0 +1,948 @@
+{
+  "as_of_beijing": "2026-11-26T11:36:28.406017+08:00",
+  "measurement": "From earliest paid cohort spec file mtime to latest paid cohort receipt mtime. Full wall window includes handoff. Measures optimizer cohorts only. Physics/evaluation are separately co-scheduled, and the two rounds have different training membership.",
+  "method": "For every included seed read one 1000-update WM, plus each listed method's 2048 BC, 600 bridge and 512 paired receipt. Sum paid per type. Divide previous wall by current wall; integrate completed GPU-stage execution intervals with at least two distinct seed IDs. R2 has no pre-existing per-PID execution journal.",
+  "image_pool_GiB": {
+    "r02": 4.31,
+    "r03": 5.3
+  },
+  "new_updates_for_this_measurement": 0,
+  "additional_native_steps": 0,
+  "completed": {
+    "three_seeds_D23": {
+      "baseline": {
+        "round": 2,
+        "methods": [
+          "D23"
+        ],
+        "seeds": [
+          1701,
+          1702,
+          1703
+        ],
+        "paid": {
+          "wm": 3000,
+          "bc": 6144,
+          "bridge": 1800,
+          "paired": 1536
+        },
+        "start_epoch": 1795662345.0732367,
+        "end_epoch": 1795662846.1360924,
+        "start_record": "B/rounds/r02/wm/seed1701/spec.json",
+        "end_record": "B/rounds/r02/D23/seed1703/paired/receipt.json",
+        "wall_s": 501.062855686,
+        "cross_seed_overlap_s": null,
+        "max_simultaneous_seed_count": null,
+        "interval_events_in": "executions.jsonl beside each receipt when available",
+        "row_cache": [],
+        "receipts": [
+          {
+            "receipt": "B/rounds/r02/wm/seed1701/receipt.json",
+            "spec": "B/rounds/r02/wm/seed1701/spec.json",
+            "seed": 1701,
+            "stage": "wm",
+            "spec_mtime_ns": 1795662345073236643,
+            "receipt_mtime_ns": 1795662428433273814,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/wm/seed1702/receipt.json",
+            "spec": "B/rounds/r02/wm/seed1702/spec.json",
+            "seed": 1702,
+            "stage": "wm",
+            "spec_mtime_ns": 1795662509557203545,
+            "receipt_mtime_ns": 1795662594617034025,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/wm/seed1703/receipt.json",
+            "spec": "B/rounds/r02/wm/seed1703/spec.json",
+            "seed": 1703,
+            "stage": "wm",
+            "spec_mtime_ns": 1795662677280789345,
+            "receipt_mtime_ns": 1795662763708462124,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1701/bc/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1701/bc/spec.json",
+            "seed": 1701,
+            "stage": "bc",
+            "spec_mtime_ns": 1795662429593273508,
+            "receipt_mtime_ns": 1795662479265241020,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f0efb984416380b64fe31764eac6e0e25b60faac7859a3b226b519454d0e4a36"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1701/bridge/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1701/bridge/spec.json",
+            "seed": 1701,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795662480333239919,
+            "receipt_mtime_ns": 1795662489993229221,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1701/paired/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1701/paired/spec.json",
+            "seed": 1701,
+            "stage": "paired",
+            "spec_mtime_ns": 1795662491145227855,
+            "receipt_mtime_ns": 1795662508393205220,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f0efb984416380b64fe31764eac6e0e25b60faac7859a3b226b519454d0e4a36"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1702/bc/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1702/bc/spec.json",
+            "seed": 1702,
+            "stage": "bc",
+            "spec_mtime_ns": 1795662595809031025,
+            "receipt_mtime_ns": 1795662646524888784,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "37cb273f8fb57aa6ae3334c8eb582dce50b518bc816ba23483060565cb0e6bd3"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1702/bridge/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1702/bridge/spec.json",
+            "seed": 1702,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795662647780884912,
+            "receipt_mtime_ns": 1795662657520854330,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1702/paired/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1702/paired/spec.json",
+            "seed": 1702,
+            "stage": "paired",
+            "spec_mtime_ns": 1795662658732850457,
+            "receipt_mtime_ns": 1795662676132793227,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "37cb273f8fb57aa6ae3334c8eb582dce50b518bc816ba23483060565cb0e6bd3"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1703/bc/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1703/bc/spec.json",
+            "seed": 1703,
+            "stage": "bc",
+            "spec_mtime_ns": 1795662765260455653,
+            "receipt_mtime_ns": 1795662816688230339,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "1d3ef99f4b18ba3986589e2631b40e4a62f221a898700f5915ced60e1629b817"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1703/bridge/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1703/bridge/spec.json",
+            "seed": 1703,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795662818228223279,
+            "receipt_mtime_ns": 1795662828028177938,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1703/paired/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1703/paired/spec.json",
+            "seed": 1703,
+            "stage": "paired",
+            "spec_mtime_ns": 1795662829076173048,
+            "receipt_mtime_ns": 1795662846136092329,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "1d3ef99f4b18ba3986589e2631b40e4a62f221a898700f5915ced60e1629b817"
+          }
+        ]
+      },
+      "observed": {
+        "round": 3,
+        "methods": [
+          "D23"
+        ],
+        "seeds": [
+          1701,
+          1702,
+          1703
+        ],
+        "paid": {
+          "wm": 3000,
+          "bc": 6144,
+          "bridge": 1800,
+          "paired": 1536
+        },
+        "start_epoch": 1795663437.2763948,
+        "end_epoch": 1795663754.6180012,
+        "start_record": "B/rounds/r03/wm/seed1701/spec.json",
+        "end_record": "B/rounds/r03/D23/seed1703/paired/receipt.json",
+        "wall_s": 317.341606467,
+        "cross_seed_overlap_s": 144.54298949241638,
+        "max_simultaneous_seed_count": 2,
+        "interval_events_in": "executions.jsonl beside each receipt when available",
+        "row_cache": [
+          {
+            "seed": 1701,
+            "method": "D23",
+            "reused": true,
+            "bc_load_s": 9.86150798201561,
+            "paired_load_s": 0.000742422416806221
+          },
+          {
+            "seed": 1702,
+            "method": "D23",
+            "reused": true,
+            "bc_load_s": 11.001746453344822,
+            "paired_load_s": 0.0006956662982702255
+          },
+          {
+            "seed": 1703,
+            "method": "D23",
+            "reused": true,
+            "bc_load_s": 10.144166249781847,
+            "paired_load_s": 0.0007028430700302124
+          }
+        ],
+        "receipts": [
+          {
+            "receipt": "B/rounds/r03/wm/seed1701/receipt.json",
+            "spec": "B/rounds/r03/wm/seed1701/spec.json",
+            "seed": 1701,
+            "stage": "wm",
+            "spec_mtime_ns": 1795663437276394718,
+            "receipt_mtime_ns": 1795663524699752551,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/wm/seed1702/receipt.json",
+            "spec": "B/rounds/r03/wm/seed1702/spec.json",
+            "seed": 1702,
+            "stage": "wm",
+            "spec_mtime_ns": 1795663526039742591,
+            "receipt_mtime_ns": 1795663627802977030,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/wm/seed1703/receipt.json",
+            "spec": "B/rounds/r03/wm/seed1703/spec.json",
+            "seed": 1703,
+            "stage": "wm",
+            "spec_mtime_ns": 1795663527639730694,
+            "receipt_mtime_ns": 1795663690762495266,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1701/bc/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1701/bc/spec.json",
+            "seed": 1701,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663592923241374,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f9121b83202e23a3771723ef6c4b53e8b6607c622d65733d59a460889f3a05e5"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1701/bridge/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1701/bridge/spec.json",
+            "seed": 1701,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663599407192380,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1701/paired/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1701/paired/spec.json",
+            "seed": 1701,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663605587145620,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f9121b83202e23a3771723ef6c4b53e8b6607c622d65733d59a460889f3a05e5"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1702/bc/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1702/bc/spec.json",
+            "seed": 1702,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663676686603461,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f3a4c72c8638132ffa35fc524a6a9448acb295a5e1dd99cf7fc1e21aac022b31"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1702/bridge/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1702/bridge/spec.json",
+            "seed": 1702,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663683162553718,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1702/paired/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1702/paired/spec.json",
+            "seed": 1702,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663689290506593,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f3a4c72c8638132ffa35fc524a6a9448acb295a5e1dd99cf7fc1e21aac022b31"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1703/bc/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1703/bc/spec.json",
+            "seed": 1703,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663606667137442,
+            "receipt_mtime_ns": 1795663742026099018,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "bb4c37eb19a3da775f1f1fa97e3c35bd07d51db7b805dea3d4f5d6baa31b984a"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1703/bridge/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1703/bridge/spec.json",
+            "seed": 1703,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663606667137442,
+            "receipt_mtime_ns": 1795663748550048354,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1703/paired/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1703/paired/spec.json",
+            "seed": 1703,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663606667137442,
+            "receipt_mtime_ns": 1795663754618001185,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "bb4c37eb19a3da775f1f1fa97e3c35bd07d51db7b805dea3d4f5d6baa31b984a"
+          }
+        ],
+        "completed_coordinator_handoffs": [
+          {
+            "ack": "B/coordinator_refresh_attempt5_ack.json",
+            "completed_stage_receipt": "B/rounds/r03/wm/seed1701/receipt.json",
+            "at_epoch": 1795663524.7437522
+          }
+        ],
+        "window_note": "Wall time includes checkpoint handoffs, any queue gaps, and concurrent work on other registered methods and physical rollouts."
+      },
+      "throughput_ratio": 1.5789384230589534,
+      "elapsed_reduction_fraction": 0.3666630785622077
+    },
+    "six_D23_H9": {
+      "baseline": {
+        "round": 2,
+        "methods": [
+          "D23",
+          "H9"
+        ],
+        "seeds": [
+          1701,
+          1702,
+          1703
+        ],
+        "paid": {
+          "wm": 3000,
+          "bc": 12288,
+          "bridge": 3600,
+          "paired": 3072
+        },
+        "start_epoch": 1795662345.0732367,
+        "end_epoch": 1795663111.1586132,
+        "start_record": "B/rounds/r02/wm/seed1701/spec.json",
+        "end_record": "B/rounds/r02/H9/seed1703/paired/receipt.json",
+        "wall_s": 766.085376597,
+        "cross_seed_overlap_s": null,
+        "max_simultaneous_seed_count": null,
+        "interval_events_in": "executions.jsonl beside each receipt when available",
+        "row_cache": [],
+        "receipts": [
+          {
+            "receipt": "B/rounds/r02/wm/seed1701/receipt.json",
+            "spec": "B/rounds/r02/wm/seed1701/spec.json",
+            "seed": 1701,
+            "stage": "wm",
+            "spec_mtime_ns": 1795662345073236643,
+            "receipt_mtime_ns": 1795662428433273814,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/wm/seed1702/receipt.json",
+            "spec": "B/rounds/r02/wm/seed1702/spec.json",
+            "seed": 1702,
+            "stage": "wm",
+            "spec_mtime_ns": 1795662509557203545,
+            "receipt_mtime_ns": 1795662594617034025,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/wm/seed1703/receipt.json",
+            "spec": "B/rounds/r02/wm/seed1703/spec.json",
+            "seed": 1703,
+            "stage": "wm",
+            "spec_mtime_ns": 1795662677280789345,
+            "receipt_mtime_ns": 1795662763708462124,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1701/bc/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1701/bc/spec.json",
+            "seed": 1701,
+            "stage": "bc",
+            "spec_mtime_ns": 1795662429593273508,
+            "receipt_mtime_ns": 1795662479265241020,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f0efb984416380b64fe31764eac6e0e25b60faac7859a3b226b519454d0e4a36"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1701/bridge/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1701/bridge/spec.json",
+            "seed": 1701,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795662480333239919,
+            "receipt_mtime_ns": 1795662489993229221,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1701/paired/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1701/paired/spec.json",
+            "seed": 1701,
+            "stage": "paired",
+            "spec_mtime_ns": 1795662491145227855,
+            "receipt_mtime_ns": 1795662508393205220,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f0efb984416380b64fe31764eac6e0e25b60faac7859a3b226b519454d0e4a36"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1702/bc/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1702/bc/spec.json",
+            "seed": 1702,
+            "stage": "bc",
+            "spec_mtime_ns": 1795662595809031025,
+            "receipt_mtime_ns": 1795662646524888784,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "37cb273f8fb57aa6ae3334c8eb582dce50b518bc816ba23483060565cb0e6bd3"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1702/bridge/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1702/bridge/spec.json",
+            "seed": 1702,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795662647780884912,
+            "receipt_mtime_ns": 1795662657520854330,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1702/paired/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1702/paired/spec.json",
+            "seed": 1702,
+            "stage": "paired",
+            "spec_mtime_ns": 1795662658732850457,
+            "receipt_mtime_ns": 1795662676132793227,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "37cb273f8fb57aa6ae3334c8eb582dce50b518bc816ba23483060565cb0e6bd3"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1703/bc/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1703/bc/spec.json",
+            "seed": 1703,
+            "stage": "bc",
+            "spec_mtime_ns": 1795662765260455653,
+            "receipt_mtime_ns": 1795662816688230339,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "1d3ef99f4b18ba3986589e2631b40e4a62f221a898700f5915ced60e1629b817"
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1703/bridge/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1703/bridge/spec.json",
+            "seed": 1703,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795662818228223279,
+            "receipt_mtime_ns": 1795662828028177938,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/D23/seed1703/paired/receipt.json",
+            "spec": "B/rounds/r02/D23/seed1703/paired/spec.json",
+            "seed": 1703,
+            "stage": "paired",
+            "spec_mtime_ns": 1795662829076173048,
+            "receipt_mtime_ns": 1795662846136092329,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "1d3ef99f4b18ba3986589e2631b40e4a62f221a898700f5915ced60e1629b817"
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1701/bc/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1701/bc/spec.json",
+            "seed": 1701,
+            "stage": "bc",
+            "spec_mtime_ns": 1795662847208087189,
+            "receipt_mtime_ns": 1795662901951814304,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f0efb984416380b64fe31764eac6e0e25b60faac7859a3b226b519454d0e4a36"
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1701/bridge/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1701/bridge/spec.json",
+            "seed": 1701,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795662903227807710,
+            "receipt_mtime_ns": 1795662912775758048,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1701/paired/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1701/paired/spec.json",
+            "seed": 1701,
+            "stage": "paired",
+            "spec_mtime_ns": 1795662914051751369,
+            "receipt_mtime_ns": 1795662935211639157,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f0efb984416380b64fe31764eac6e0e25b60faac7859a3b226b519454d0e4a36"
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1702/bc/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1702/bc/spec.json",
+            "seed": 1702,
+            "stage": "bc",
+            "spec_mtime_ns": 1795662937111628951,
+            "receipt_mtime_ns": 1795662992239323878,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "37cb273f8fb57aa6ae3334c8eb582dce50b518bc816ba23483060565cb0e6bd3"
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1702/bridge/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1702/bridge/spec.json",
+            "seed": 1702,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795662993807314957,
+            "receipt_mtime_ns": 1795663004407254317,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1702/paired/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1702/paired/spec.json",
+            "seed": 1702,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663006303243408,
+            "receipt_mtime_ns": 1795663025927129437,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "37cb273f8fb57aa6ae3334c8eb582dce50b518bc816ba23483060565cb0e6bd3"
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1703/bc/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1703/bc/spec.json",
+            "seed": 1703,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663027611119566,
+            "receipt_mtime_ns": 1795663077902818559,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "1d3ef99f4b18ba3986589e2631b40e4a62f221a898700f5915ced60e1629b817"
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1703/bridge/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1703/bridge/spec.json",
+            "seed": 1703,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663079514808718,
+            "receipt_mtime_ns": 1795663090370742145,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r02/H9/seed1703/paired/receipt.json",
+            "spec": "B/rounds/r02/H9/seed1703/paired/spec.json",
+            "seed": 1703,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663091822733202,
+            "receipt_mtime_ns": 1795663111158613240,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "1d3ef99f4b18ba3986589e2631b40e4a62f221a898700f5915ced60e1629b817"
+          }
+        ]
+      },
+      "observed": {
+        "round": 3,
+        "methods": [
+          "D23",
+          "H9"
+        ],
+        "seeds": [
+          1701,
+          1702,
+          1703
+        ],
+        "paid": {
+          "wm": 3000,
+          "bc": 12288,
+          "bridge": 3600,
+          "paired": 3072
+        },
+        "start_epoch": 1795663437.2763948,
+        "end_epoch": 1795664112.6271558,
+        "start_record": "B/rounds/r03/wm/seed1701/spec.json",
+        "end_record": "B/rounds/r03/H9/seed1703/paired/receipt.json",
+        "wall_s": 675.350761042,
+        "cross_seed_overlap_s": 267.7732229232788,
+        "max_simultaneous_seed_count": 2,
+        "interval_events_in": "executions.jsonl beside each receipt when available",
+        "row_cache": [
+          {
+            "seed": 1701,
+            "method": "D23",
+            "reused": true,
+            "bc_load_s": 9.86150798201561,
+            "paired_load_s": 0.000742422416806221
+          },
+          {
+            "seed": 1702,
+            "method": "D23",
+            "reused": true,
+            "bc_load_s": 11.001746453344822,
+            "paired_load_s": 0.0006956662982702255
+          },
+          {
+            "seed": 1703,
+            "method": "D23",
+            "reused": true,
+            "bc_load_s": 10.144166249781847,
+            "paired_load_s": 0.0007028430700302124
+          },
+          {
+            "seed": 1701,
+            "method": "H9",
+            "reused": true,
+            "bc_load_s": 13.011600501835346,
+            "paired_load_s": 0.0006649363785982132
+          },
+          {
+            "seed": 1702,
+            "method": "H9",
+            "reused": true,
+            "bc_load_s": 10.684501133859158,
+            "paired_load_s": 0.00066327303647995
+          },
+          {
+            "seed": 1703,
+            "method": "H9",
+            "reused": false,
+            "bc_load_s": 11.730477983132005,
+            "paired_load_s": 9.349309066310525
+          }
+        ],
+        "receipts": [
+          {
+            "receipt": "B/rounds/r03/wm/seed1701/receipt.json",
+            "spec": "B/rounds/r03/wm/seed1701/spec.json",
+            "seed": 1701,
+            "stage": "wm",
+            "spec_mtime_ns": 1795663437276394718,
+            "receipt_mtime_ns": 1795663524699752551,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/wm/seed1702/receipt.json",
+            "spec": "B/rounds/r03/wm/seed1702/spec.json",
+            "seed": 1702,
+            "stage": "wm",
+            "spec_mtime_ns": 1795663526039742591,
+            "receipt_mtime_ns": 1795663627802977030,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/wm/seed1703/receipt.json",
+            "spec": "B/rounds/r03/wm/seed1703/spec.json",
+            "seed": 1703,
+            "stage": "wm",
+            "spec_mtime_ns": 1795663527639730694,
+            "receipt_mtime_ns": 1795663690762495266,
+            "retained": 1000,
+            "paid": 1000,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1701/bc/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1701/bc/spec.json",
+            "seed": 1701,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663592923241374,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f9121b83202e23a3771723ef6c4b53e8b6607c622d65733d59a460889f3a05e5"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1701/bridge/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1701/bridge/spec.json",
+            "seed": 1701,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663599407192380,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1701/paired/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1701/paired/spec.json",
+            "seed": 1701,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663605587145620,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f9121b83202e23a3771723ef6c4b53e8b6607c622d65733d59a460889f3a05e5"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1702/bc/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1702/bc/spec.json",
+            "seed": 1702,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663676686603461,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f3a4c72c8638132ffa35fc524a6a9448acb295a5e1dd99cf7fc1e21aac022b31"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1702/bridge/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1702/bridge/spec.json",
+            "seed": 1702,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663683162553718,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1702/paired/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1702/paired/spec.json",
+            "seed": 1702,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663540463635167,
+            "receipt_mtime_ns": 1795663689290506593,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f3a4c72c8638132ffa35fc524a6a9448acb295a5e1dd99cf7fc1e21aac022b31"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1703/bc/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1703/bc/spec.json",
+            "seed": 1703,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663606667137442,
+            "receipt_mtime_ns": 1795663742026099018,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "bb4c37eb19a3da775f1f1fa97e3c35bd07d51db7b805dea3d4f5d6baa31b984a"
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1703/bridge/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1703/bridge/spec.json",
+            "seed": 1703,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663606667137442,
+            "receipt_mtime_ns": 1795663748550048354,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/D23/seed1703/paired/receipt.json",
+            "spec": "B/rounds/r03/D23/seed1703/paired/spec.json",
+            "seed": 1703,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663606667137442,
+            "receipt_mtime_ns": 1795663754618001185,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "bb4c37eb19a3da775f1f1fa97e3c35bd07d51db7b805dea3d4f5d6baa31b984a"
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1701/bc/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1701/bc/spec.json",
+            "seed": 1701,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663529207719030,
+            "receipt_mtime_ns": 1795663749254042884,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f9121b83202e23a3771723ef6c4b53e8b6607c622d65733d59a460889f3a05e5"
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1701/bridge/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1701/bridge/spec.json",
+            "seed": 1701,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663690642496189,
+            "receipt_mtime_ns": 1795663756253988461,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1701/paired/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1701/paired/spec.json",
+            "seed": 1701,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663690642496189,
+            "receipt_mtime_ns": 1795663762905936689,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f9121b83202e23a3771723ef6c4b53e8b6607c622d65733d59a460889f3a05e5"
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1702/bc/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1702/bc/spec.json",
+            "seed": 1702,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663755877991385,
+            "receipt_mtime_ns": 1795663810737562932,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "f3a4c72c8638132ffa35fc524a6a9448acb295a5e1dd99cf7fc1e21aac022b31"
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1702/bridge/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1702/bridge/spec.json",
+            "seed": 1702,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663755877991385,
+            "receipt_mtime_ns": 1795663817613508998,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1702/paired/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1702/paired/spec.json",
+            "seed": 1702,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663755877991385,
+            "receipt_mtime_ns": 1795663824925451589,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "f3a4c72c8638132ffa35fc524a6a9448acb295a5e1dd99cf7fc1e21aac022b31"
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1703/bc/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1703/bc/spec.json",
+            "seed": 1703,
+            "stage": "bc",
+            "spec_mtime_ns": 1795663764225926409,
+            "receipt_mtime_ns": 1795663820917483065,
+            "retained": 2048,
+            "paid": 2048,
+            "row_order": "bb4c37eb19a3da775f1f1fa97e3c35bd07d51db7b805dea3d4f5d6baa31b984a"
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1703/bridge/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1703/bridge/spec.json",
+            "seed": 1703,
+            "stage": "bridge",
+            "spec_mtime_ns": 1795663764225926409,
+            "receipt_mtime_ns": 1795664097179280559,
+            "retained": 600,
+            "paid": 600,
+            "row_order": null
+          },
+          {
+            "receipt": "B/rounds/r03/H9/seed1703/paired/receipt.json",
+            "spec": "B/rounds/r03/H9/seed1703/paired/spec.json",
+            "seed": 1703,
+            "stage": "paired",
+            "spec_mtime_ns": 1795663764225926409,
+            "receipt_mtime_ns": 1795664112627155760,
+            "retained": 512,
+            "paid": 512,
+            "row_order": "bb4c37eb19a3da775f1f1fa97e3c35bd07d51db7b805dea3d4f5d6baa31b984a"
+          }
+        ],
+        "completed_coordinator_handoffs": [
+          {
+            "ack": "B/coordinator_refresh_attempt5_ack.json",
+            "completed_stage_receipt": "B/rounds/r03/wm/seed1701/receipt.json",
+            "at_epoch": 1795663524.7437522
+          },
+          {
+            "ack": "B/coordinator_refresh_attempt6_ack.json",
+            "completed_stage_receipt": "B/rounds/r03/H9/seed1703/bc/receipt.json",
+            "at_epoch": 1795663820.921483
+          }
+        ],
+        "window_note": "Wall time includes checkpoint handoffs, any queue gaps, and concurrent work on other registered methods and physical rollouts."
+      },
+      "throughput_ratio": 1.1343518372808308,
+      "elapsed_reduction_fraction": 0.11843929975278855
+    }
+  },
+  "pending": {}
+}

@@ -1,0 +1,239 @@
+{
+  "as_of_beijing": "2026-11-26T11:54:00+08:00",
+  "observed_cohort": {
+    "baseline_round": 2,
+    "optimized_round": 4,
+    "base_wall_s": 766.085376597,
+    "optimized_wall_s": 376.909658216,
+    "throughput_ratio": 2.032543767180332,
+    "wall_reduction": 0.5080056743932946,
+    "paid": {
+      "wm": 3000,
+      "bc": 12288,
+      "bridge": 3600,
+      "paired": 3072
+    },
+    "overlap_s": 288.3100554943085,
+    "scope": "Three D23 and three H9 fits plus their shared WM. Includes launch, data and optimizer time. Full-task physical scoring has its own ledger."
+  },
+  "graphics": {
+    "baseline_1s.json": {
+      "start": "2026-11-26T11:18:25.470055+08:00",
+      "end": "2026-11-26T11:19:09.745403+08:00",
+      "gpu_mean_percent": 27.155555555555555,
+      "gpu_median_percent": 23.0,
+      "cores": 9.383507409976916,
+      "peak_used_MiB": 28950.0,
+      "samples": 45
+    },
+    "two_seed_overlap_1s.json": {
+      "start": "2026-11-26T11:26:57.998338+08:00",
+      "end": "2026-11-26T11:27:46.886531+08:00",
+      "gpu_mean_percent": 84.75555555555556,
+      "gpu_median_percent": 95.0,
+      "cores": 14.746386317833363,
+      "peak_used_MiB": 34787.0,
+      "samples": 45
+    },
+    "optimized_mixed_window.json": {
+      "start": "2026-11-26T11:28:33.499888+08:00",
+      "end": "2026-11-26T11:32:45.477143+08:00",
+      "gpu_mean_percent": 39.94214876033058,
+      "gpu_median_percent": 25.0,
+      "cores": 11.656783134432755,
+      "peak_used_MiB": 40223.0,
+      "samples": 121
+    }
+  },
+  "frozen_task_actions": {
+    "cases": 2080,
+    "identical": true,
+    "rows": [
+      {
+        "method": "H9",
+        "batch": 1,
+        "decisions_compared": 80,
+        "eager_ms": 1.6500284895300865,
+        "graph_ms": 0.7551925024017692,
+        "speedup": 2.184911111117277,
+        "batch_mean_ms": {
+          "eager": [
+            1.672169892117381,
+            1.627887086942792
+          ],
+          "graph": [
+            0.7457965053617954,
+            0.7645884994417429
+          ]
+        },
+        "differing_responses": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "method": "H9",
+        "batch": 3,
+        "decisions_compared": 240,
+        "eager_ms": 2.1086973953060806,
+        "graph_ms": 1.1919584241695702,
+        "speedup": 1.769103143656371,
+        "batch_mean_ms": {
+          "eager": [
+            2.112217526882887,
+            2.1051772637292743
+          ],
+          "graph": [
+            1.2299246853217483,
+            1.1539921630173922
+          ]
+        },
+        "differing_responses": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "method": "H9",
+        "batch": 9,
+        "decisions_compared": 720,
+        "eager_ms": 2.5536029716022313,
+        "graph_ms": 1.984549406915903,
+        "speedup": 1.286741948929691,
+        "batch_mean_ms": {
+          "eager": [
+            2.656275941990316,
+            2.4509300012141466
+          ],
+          "graph": [
+            2.298942394554615,
+            1.6701564192771912
+          ]
+        },
+        "differing_responses": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "method": "D23",
+        "batch": 1,
+        "decisions_compared": 80,
+        "eager_ms": 1.0291446349583566,
+        "graph_ms": 0.5817273631691933,
+        "speedup": 1.7691184910946567,
+        "batch_mean_ms": {
+          "eager": [
+            1.0271204868331552,
+            1.031168783083558
+          ],
+          "graph": [
+            0.5388713674619794,
+            0.6245833588764071
+          ]
+        },
+        "differing_responses": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "method": "D23",
+        "batch": 3,
+        "decisions_compared": 240,
+        "eager_ms": 1.544271013699472,
+        "graph_ms": 1.042488170787692,
+        "speedup": 1.4813319296780496,
+        "batch_mean_ms": {
+          "eager": [
+            1.5490645077079535,
+            1.5394775196909904
+          ],
+          "graph": [
+            0.9984277421608567,
+            1.0865485994145274
+          ]
+        },
+        "differing_responses": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "method": "D23",
+        "batch": 9,
+        "decisions_compared": 720,
+        "eager_ms": 2.0738044404424727,
+        "graph_ms": 1.5292516793124378,
+        "speedup": 1.3560910009102423,
+        "batch_mean_ms": {
+          "eager": [
+            2.092454954981804,
+            2.0551539259031415
+          ],
+          "graph": [
+            1.5362352598458529,
+            1.5222680987790227
+          ]
+        },
+        "differing_responses": 0,
+        "max_abs_difference": 0.0
+      }
+    ]
+  },
+  "h7_backward": {
+    "bench_loss_and_all_gradients_exact": true,
+    "bench_eager_ms": 65.96767221344635,
+    "bench_graph_ms": 4.9291421310044825,
+    "bench_speedup": 13.38319538373773,
+    "qualified_production_stages": [
+      {
+        "round": "r05",
+        "seed": "seed1701",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 12.557963836938143,
+        "previous_same_seed_wall_s": 73.70898330025375,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r05/wm/seed1701/receipt.json"
+      },
+      {
+        "round": "r05",
+        "seed": "seed1702",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 12.569242276251316,
+        "previous_same_seed_wall_s": 74.71908607892692,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r05/wm/seed1702/receipt.json"
+      },
+      {
+        "round": "r05",
+        "seed": "seed1703",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 8.16805593110621,
+        "previous_same_seed_wall_s": 76.06159785762429,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r05/wm/seed1703/receipt.json"
+      }
+    ],
+    "validation": "Two actual eager warmup updates and a matching loss/all-gradient check at the first replay of each WM process. Sampling, clipping and the AdamW step retain their registered order."
+  },
+  "native_dispatch": {
+    "measured_completed_reordered_batches": 8,
+    "counted_new_native_cases": 192,
+    "worker_counts": [
+      12
+    ],
+    "source": "/root/autodl-tmp/mm03-20261126/B/native_batch_timings",
+    "timing_replay": "dispatch_replay.json"
+  },
+  "formal_results_source": "physical_cases.jsonl",
+  "hardware_motion_commands": 0
+}

@@ -1,8 +1,8 @@
 # MM03 多模态腿臂仿真实验
 
-2026-11-26T11:08:39+08:00（北京时间），后台稳定运行交接。
+2026-11-26T11:54:00+08:00（北京时间），r04 工作块。
 
-A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、42,496、6,672、4,000、4,800 次。
+A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、96,256、7,680、15,000、17,400 次。
 
 原生 MuJoCo 3.3.0，2 ms 伺服、20 ms 学习控制、100 ms 腕部 RGB-D。按原 12 事件判分。真实硬件运动命令 0。
 
@@ -45,7 +45,8 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 | C8 | 1702 | 512/512 | 0/8 | 29/32 | 0 |
 | C8 | 1703 | 512/512 | 0/8 | 29/32 | 0 |
 | CF32 | 1701 | 512/512 | 0/8 | 29/32 | 5,201,867 |
-| CF32 | 1702 | 16/16 | 0/0 | 0/0 | 150,400 |
+| CF32 | 1702 | 512/512 | 0/8 | 29/32 | 5,206,904 |
+| CF32 | 1703 | 512/512 | 0/8 | 29/32 | 5,214,005 |
 
 ## L16 独立工程评测
 
@@ -65,7 +66,7 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 ## 真实教师前缀后的学生续演
 
-已结束 180 案，180 案实际切换到学生，0 案继续完成全部事件。
+已结束 410 案，410 案实际切换到学生，1 案继续完成全部事件。
 
 ## 正式纯学生评测
 
@@ -75,12 +76,18 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 | 方法 | 微调种子 | 轮次 | 全程成功 | 驶近 | 停稳 | 首败最多的原因 |
 |---|---:|---:|---:|---:|---:|---|
-| D23 | 1701 | 1 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (7)、unexpected_contact:robot_frame (1) |
-| D23 | 1702 | 1 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
-| D23 | 1703 | 1 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (7)、unexpected_contact:robot_frame (1) |
-| H9 | 1701 | 1 | 0/8 | 2/8 | 1/8 | timeout:approach_base (5)、door_contact_outside_manipulation (1) |
-| H9 | 1702 | 1 | 0/8 | 2/8 | 0/8 | timeout:approach_base (4)、timeout:settle (2) |
-| H9 | 1703 | 1 | 0/8 | 2/8 | 1/8 | timeout:approach_base (5)、door_contact_outside_manipulation (1) |
+| D23 | 1701 | 5 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
+| D23 | 1702 | 5 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
+| D23 | 1703 | 4 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
+| H9 | 1701 | 4 | 0/8 | 4/8 | 0/8 | timeout:settle (4)、unexpected_contact:robot_self (3) |
+| H9 | 1702 | 4 | 0/8 | 3/8 | 0/8 | unexpected_contact:robot_self (4)、timeout:settle (2) |
+| H9 | 1703 | 4 | 0/8 | 4/8 | 0/8 | timeout:settle (3)、unexpected_contact:robot_self (3) |
+
+## 训练吞吐
+
+三个种子的 D23 和 H9 共六条训练链完成相同更新预算，第 2 轮耗时 766.1 秒，第 4 轮耗时 376.9 秒，训练阶段吞吐为原来的 2.03 倍。整卡 GPU 利用率在优化前的短窗口平均为 27.2%，双优化器重叠时为 84.8%，另一个包含物理采集的窗口为 39.9%。
+
+[等预算阶段、实际GPU采样和数值对照](../results/multimodal/mm03_20261126/performance/summary.json)
 
 
 

@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-26T11:08:39+08:00",
+  "as_of_beijing": "2026-11-26T11:54:00+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "后台稳定运行交接",
+  "milestone": "r04 工作块",
   "runtime": {
     "supervisor": {
       "pid": 399163,
@@ -36,11 +36,11 @@
     },
     "inference": {
       "unit": "inference",
-      "attempt": 3,
-      "started_beijing": "2026-11-26T10:44:23+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt003.log",
-      "wrapper": 413234,
-      "wrapper_stamp": "1171843055",
+      "attempt": 4,
+      "started_beijing": "2026-11-26T11:23:12+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt004.log",
+      "wrapper": 421098,
+      "wrapper_stamp": "1172075942",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.conda/envs/arm-and-dog/bin/python",
         "-u",
@@ -49,10 +49,10 @@
         "--root",
         "/root/autodl-tmp/mm03-20261126"
       ],
-      "git_commit": "4b11382ddeb64fce694af4732f9b0e09b2f5e471",
+      "git_commit": "bcd1f4f11af5a8719c8deea1a4787e7a070a2d5f",
       "state": "running",
-      "pid": 413236,
-      "pid_stamp": "1171843060",
+      "pid": 421100,
+      "pid_stamp": "1172075948",
       "live": true
     },
     "A": {
@@ -82,11 +82,11 @@
     },
     "B": {
       "unit": "B",
-      "attempt": 5,
-      "started_beijing": "2026-11-26T10:50:21+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt005.log",
-      "wrapper": 414812,
-      "wrapper_stamp": "1171878850",
+      "attempt": 7,
+      "started_beijing": "2026-11-26T11:34:45+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt007.log",
+      "wrapper": 423067,
+      "wrapper_stamp": "1172145306",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.venv/bin/python",
         "-u",
@@ -97,10 +97,10 @@
         "--workers",
         "7"
       ],
-      "git_commit": "32b0d8f6f0ad19ad0833119bca1100fb7c2d7dde",
+      "git_commit": "120b88f5884056be02eaae8bf65b8d5f0fc9e5e3",
       "state": "running",
-      "pid": 414814,
-      "pid_stamp": "1171878856",
+      "pid": 423070,
+      "pid_stamp": "1172145311",
       "live": true
     },
     "C": {
@@ -121,10 +121,12 @@
         "4"
       ],
       "git_commit": "9b465fa95c709d5e1d20e9f1e9cff9e0adbb1940",
-      "state": "running",
+      "state": "complete",
       "pid": 411312,
       "pid_stamp": "1171795765",
-      "live": true
+      "exit_code": 0,
+      "ended_beijing": "2026-11-26T11:53:29+08:00",
+      "live": false
     },
     "video": {
       "unit": "video",
@@ -176,42 +178,45 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 185,
+    "samples": 321,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-26T11:08:23+08:00",
-      "time": 1795662503.0879314,
-      "cpu_stat": "usage_usec 11058515087345\nuser_usec 10769938878024\nsystem_usec 288576209321\nnr_periods 21231198\nnr_throttled 150640\nthrottled_usec 81981588817",
+      "beijing": "2026-11-26T11:53:58+08:00",
+      "time": 1795665238.180038,
+      "cpu_stat": "usage_usec 11089764515905\nuser_usec 10799909822703\nsystem_usec 289854693201\nnr_periods 21258549\nnr_throttled 150657\nthrottled_usec 82036047307",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "116363866112",
+      "ram_bytes": "52067270656",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 413775372288,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 28087, 97887, 4",
+      "disk_free_bytes": 397432991744,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 17414, 97887, 52",
       "inference": {
-        "calls": 456715,
-        "forwards": 278799,
-        "max_batch": 9,
-        "mean_batch": 1.6381514998260396,
-        "queue_wait_mean_ms": 1.7672316983728635,
+        "calls": 523766,
+        "forwards": 281308,
+        "max_batch": 12,
+        "mean_batch": 1.861895146956361,
+        "queue_wait_mean_ms": 1.5809388085916682,
         "device": "cuda",
         "queued": 0,
-        "models": 14,
-        "peak_torch_allocated_bytes": 50153984,
-        "pid": 413236
+        "models": 16,
+        "graph_calls": 270694,
+        "cached_graphs": 48,
+        "coalesce_ms": 0.7,
+        "peak_torch_allocated_bytes": 1123682304,
+        "pid": 421100
       },
       "lane_pids": {
-        "inference": 413236,
+        "inference": 421100,
         "A": 404015,
-        "B": 414814,
+        "B": 423070,
         "C": 411312,
         "video": 399173
       }
     },
-    "peak_sampled_gpu_used_MiB": 28525,
+    "peak_sampled_gpu_used_MiB": 42651,
     "peak_sampled_gpu_util_percent": 100,
     "scope": "sampled whole allocated GPU incl. unrelated users; service Torch peak and queue waits are separate"
   },
@@ -531,17 +536,19 @@
     {
       "method": "H9",
       "seed": 1702,
-      "round": 0,
-      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/receipt.json",
+      "round": 3,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r03/H9/seed1702/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r03/H9/seed1702/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r03/H9/seed1702/paired/receipt.json",
+      "full_sha256": "b4d3cf1a4f60f72cbf2329b92bdb80d4b85843acf2e14ba5a41ce24da020e961",
+      "deploy_sha256": "583553f3cc02dcf325790803ad6633f60bf9d7e42c848cc8d988b137ffdc9b45",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt",
       "rank": [
         0,
         0,
-        4,
+        5,
         0,
-        0
+        -3
       ],
       "development": [
         {
@@ -549,14 +556,14 @@
           "side": "pull",
           "goal": 15,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "tr_nominal",
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "tr_nominal",
@@ -598,12 +605,12 @@
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 0
         }
       ],
       "physical_cases": 8,
       "paired_model_updates_at_checkpoint": 0,
-      "initialization_only": true,
+      "initialization_only": false,
       "common_H9_parent": false
     },
     {
@@ -693,33 +700,37 @@
     "/root/autodl-tmp/mm03-20261126/B/models/H9/seed1702/latest.json",
     "/root/autodl-tmp/mm03-20261126/B/models/H9/seed1703/latest.json"
   ],
-  "C_selected": null,
+  "C_selected": "CF32",
   "mm02_original_videos": 8,
   "first_pure_success": null,
   "candidate_freeze": null,
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r02/development",
-    "cases_done": 5,
-    "planned": 8,
-    "workers": 8,
+    "partition": "rounds/r06/collect",
+    "cases_done": 3,
+    "planned": 24,
+    "workers": 12,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 9.897932481020689,
-    "completed_here": 5,
-    "steps_here": 11495,
-    "steps_s": 1161.353648556574,
+    "wall_s": 12.336843749508262,
+    "completed_here": 3,
+    "steps_here": 8336,
+    "steps_s": 675.6995686463378,
     "resumed_cases": 0,
     "processes": [
-      418605,
-      418609,
-      418610,
-      418611,
-      418612,
-      418613,
-      418614,
-      418615
+      425806,
+      425809,
+      425810,
+      425811,
+      425812,
+      425813,
+      425814,
+      425815,
+      425816,
+      425817,
+      425818,
+      425819
     ]
   },
   "A_current": {
@@ -737,8 +748,8 @@
     "timestamp": "2026-11-26T02:55:24.053452+00:00"
   },
   "C_current": {
-    "stage": "training",
-    "variant": "CF32",
-    "seed": 1702
-  }
+    "stage": "completed",
+    "selected": "CF32"
+  },
+  "performance_evidence": "performance/summary.json"
 }
