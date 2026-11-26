@@ -87,7 +87,7 @@ if __name__=="__main__":
     p.add_argument("--b-gpu-slots",type=int,choices=(1,2,3))
     p.add_argument("--b-cf-workers",type=int)
     p.add_argument("--b-cf-slots",type=int,choices=(1,2,3))
-    p.add_argument("--elastic",choices=("on","off"))
+    p.add_argument("--elastic",choices=("on","off"),help="Use verified ordinary-idle CF pool widths and reclaim on demand")
     p.add_argument("--reason")
     args=p.parse_args()
     print(json.dumps(update(args.root,args.b_workers,args.c_workers,args.reason,args.b_gpu_slots,args.b_cf_workers,args.b_cf_slots,

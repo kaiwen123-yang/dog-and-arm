@@ -4,6 +4,7 @@ from datetime import datetime
 import fcntl
 import json
 import os
+import subprocess
 from pathlib import Path
 import time
 
@@ -120,6 +121,48 @@ def max_private_bytes(pools):
     return maximum
 
 
+def eight_requested(root):
+    # The tested round is immutable. A dead or expired controller cannot strand
+    # temporary workers; only its own completed 7/8 decision can keep eight.
+    marker=read(root/"resources"/"ordinary_eight_trial.json")
+    if type(marker.get("round")) is not int:
+        return False
+    folder=root/"performance/20261126-cf-latency"/f'r{marker["round"]:02d}-eight'
+    decision=read(folder/"decision.json")
+    if decision:
+        return (decision.get("valid") is True and decision.get("winner")=="eight" and
+                decision.get("round")==marker["round"] and bool(decision.get("checks")) and all(decision["checks"].values()))
+    return (marker.get("active") is True and marker.get("expires_epoch",0)>time.time() and
+            marker.get("pid_stamp") and marker["pid_stamp"]==pid_stamp(marker.get("pid")))
+
+
+def eight_compute_headroom(root):
+    """A 24-native-worker loan additionally needs measured CPU/GPU headroom."""
+    cg=Path("/sys/fs/cgroup")
+    current=dict(line.split() for line in (cg/"cpu.stat").read_text().splitlines())
+    quota,period=(cg/"cpu.max").read_text().split()
+    with (root/"resources.jsonl").open("rb") as f:
+        f.seek(0,2)
+        size=f.tell()
+        f.seek(max(0,size-16000))
+        lines=f.read().splitlines()
+    recent=None
+    for row in reversed(lines[1:]):
+        try:
+            item=json.loads(row)
+        except (ValueError,UnicodeDecodeError):
+            continue
+        dt=time.time()-item["time"]
+        if 6<=dt<=70:
+            usage=dict(line.split() for line in item["cpu_stat"].splitlines())
+            recent=(int(current["usage_usec"])-int(usage["usage_usec"]))/1e6/dt
+            break
+    gpu=float(subprocess.check_output(["nvidia-smi","-i","0","--query-gpu=memory.free",
+                    "--format=csv,noheader,nounits"],text=True).strip())/1024
+    budget=float(quota)/float(period) if quota!="max" else float(os.cpu_count())
+    return recent,gpu,budget
+
+
 def reconcile_locked(root, base, *, live=None, memory=None):
     """Called under the same allocation.lock used by the ordinary admission barrier."""
     policy=read(root/"resources"/"ordinary_elastic_policy.json")
@@ -134,6 +177,8 @@ def reconcile_locked(root, base, *, live=None, memory=None):
     applicable=(policy.get("enabled") and capable and expected==(4,6,3,3) and
                 base.get("A_finished") and base.get("C_finished") and not base.get("candidates_frozen"))
     idle=False
+    width=7
+    cpu_load=gpu_free=None
     actual={}
     available=None
     growth=0
@@ -141,17 +186,27 @@ def reconcile_locked(root, base, *, live=None, memory=None):
         quiet=time.time()-ce["idle_since"]
         if quiet>=policy["idle_delay_s"]:
             actual=native_pools(root) if live is None else live
-            if len(actual)==3 and all(len(v) in (6,7) for v in actual.values()):
+            if len(actual)==3 and all(len(v) in (6,7,8) for v in actual.values()):
                 try:
                     available=memory_available() if memory is None else memory
                     largest=max_private_bytes(actual)
-                    growth=sum(max(0,7-len(v)) for v in actual.values())*largest
+                    if eight_requested(root):
+                        try:
+                            cpu_load,gpu_free,cpu_budget=eight_compute_headroom(root)
+                        except (OSError,ValueError,subprocess.CalledProcessError):
+                            cpu_load,gpu_free,cpu_budget=None,0,0
+                        growth8=sum(max(0,8-len(v)) for v in actual.values())*largest
+                        if (cpu_load is not None and cpu_budget>=25 and cpu_load<=22 and gpu_free>=15 and
+                                available>=policy["minimum_host_reserve_bytes"]+growth8):
+                            width=8
+                    growth=sum(max(0,width-len(v)) for v in actual.values())*largest
                     idle=(available>=policy["minimum_host_reserve_bytes"]+growth and largest>0)
-                except (OSError,ValueError):
+                except (OSError,ValueError,subprocess.CalledProcessError):
                     pass  # retain the measured four-worker ordinary allocation when telemetry is unavailable
     # Top-level fields remain the admitted baseline for newly constructed pools.
     # Existing pools already read the nested workers values at the next independent reset.
-    active=7 if idle else 6
+    active=width if idle else 6
+    ordinary_loan=min(4,3*(active-6))
     mode="idle_loan" if idle else "ordinary_reserved"
     if not applicable:
         mode="inactive"
@@ -164,15 +219,16 @@ def reconcile_locked(root, base, *, live=None, memory=None):
             return base
         updated=dict(base)
         updated["workers"]={k:base[k] for k in ("B","C","B_CF","B_GPU","B_CF_slots")}
-        updated["workers"].update(B=1 if idle else 4,B_CF=active)
+        updated["workers"].update(B=4-ordinary_loan,B_CF=active)
         updated["elastic_cf"]=dict(protocol=PROTOCOL,mode=mode,changed_beijing=now(),reserved_ordinary=4,
-            effective_ordinary_capacity=1 if idle else 4,effective_workers_per_cf=active,
-            borrowed_ordinary_cores=3 if idle else 0,host_available_bytes=available,
+            effective_ordinary_capacity=4-ordinary_loan,effective_workers_per_cf=active,
+            borrowed_ordinary_cores=ordinary_loan,additional_shared_cpu_slots=3*(active-6)-ordinary_loan,
+            measured_cgroup_cpu_cores=cpu_load,measured_gpu_free_GiB=gpu_free,host_available_bytes=available,
             estimated_incremental_host_bytes=growth,live_pool_sizes={str(p):len(v) for p,v in actual.items()})
     write(root/"resources"/"worker_targets.json",updated)
     event(root,"allocation",mode=mode,base={k:base.get(k) for k in ("B","B_CF","B_CF_slots","B_GPU")},
           actual_cf_sizes={str(p):len(v) for p,v in actual.items()},host_available_bytes=available,
-          ordinary_execution_locked=busy(root))
+          effective_workers_per_cf=active,ordinary_execution_locked=busy(root))
     return updated
 
 
