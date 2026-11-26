@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 import time
+import uuid
 
 import numpy as np
 import torch
@@ -46,8 +47,12 @@ def record_replay(folder,attempt,step,keys,rows,stats,objective):
     folder.mkdir(parents=True,exist_ok=True)
     name=folder/f"applied{attempt:04d}_step{step:04d}.npz"
     if name.exists():
-        raise FileExistsError(name)
+        # An interruption can leave a completed native batch before its optimizer ledger entry.
+        # Preserve it and give the replay of this update a distinct physical execution identity.
+        name=folder/f"applied{attempt:04d}_step{step:04d}_{uuid.uuid4().hex}.npz"
     arrays={"keys":np.asarray(keys), "rows":rows.detach().cpu().numpy(),
+            "native_substeps":np.int64(stats["native_substeps"]),
+            "terminal_metadata":np.asarray(json.dumps(stats["terminals"],allow_nan=False)),
             "p_history":objective.obs["history"][rows].cpu().numpy(),
             "previous_history":objective.obs["previous"][rows].cpu().numpy(),
             "vision0":objective.obs["low"][rows].cpu().numpy(),
@@ -151,6 +156,13 @@ def apply_fork(folder, fork, seed, pool, cache, schedule, schedule_meta,
         raise ValueError("Deployment export differs from frozen C training state")
     all_rows=[json.loads(s) for s in log.open()]
     counted=Counter()
+    if fork=="CF32":
+        indexed={Path(r["shared_native_replay"]) for r in all_rows}
+        uncommitted=sorted(set((folder/"shared_replay").glob("*.npz"))-indexed)
+        for path in uncommitted:
+            with np.load(path,allow_pickle=False) as physical:
+                counted["uncommitted_native_substeps"]+=int(physical["native_substeps"]) if "native_substeps" in physical else int(physical["valid"].sum())*10
+        counted["uncommitted_physical_batches"]=len(uncommitted)
     for row in all_rows:
         for key in ("model_queries","native_substeps","valid_control_steps","terminal_cases","capped"):
             counted[key]+=row[key]

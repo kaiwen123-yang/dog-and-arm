@@ -13,10 +13,12 @@ class LowPolicy(nn.Module):
         self.register_buffer("feature_mean", torch.zeros(150))
         self.register_buffer("feature_std", torch.ones(150))
         self.register_buffer("leg_increment_scale", torch.full((12,), .004))
+        self.register_buffer("leg_center", torch.zeros(12))
+        self.register_buffer("leg_scale", torch.full((12,), .05))
         self.register_buffer("wheel_loss_scale", torch.full((4,), .1))
         self.register_buffer("velocity_units", torch.tensor([.07, .10]))
         self.estimator = nn.Sequential(nn.Linear(150, 64), nn.SiLU(), nn.Linear(64, 32), nn.SiLU(), nn.Linear(32, 2))
-        self.control = nn.Sequential(nn.Linear(154, 96), nn.SiLU(), nn.Linear(96, 64), nn.SiLU(), nn.Linear(64, 20))
+        self.control = nn.Sequential(nn.Linear(154, 96), nn.SiLU(), nn.Linear(96, 64), nn.SiLU(), nn.Linear(64, 32))
         nn.init.normal_(self.control[-1].weight, std=.005)
         nn.init.zeros_(self.control[-1].bias)
 
@@ -31,6 +33,8 @@ class LowPolicy(nn.Module):
             self.feature_std.copy_(x.std(0, unbiased=False).clamp_min(.01))
             leg_change = (labels[:, :12]-x[:, 104:116]).abs()
             self.leg_increment_scale.copy_(torch.quantile(leg_change, .995, dim=0).clamp(.0005, .05))
+            self.leg_center.copy_(labels[:, :12].mean(0))
+            self.leg_scale.copy_(labels[:, :12].std(0, unbiased=False).clamp_min(.02))
             self.wheel_loss_scale.copy_(torch.quantile(labels[:, 12:].abs(), .9, dim=0).clamp_min(.04))
 
     def estimate(self, history, previous):
@@ -48,7 +52,11 @@ class LowPolicy(nn.Module):
         # The homogeneous wheel output encodes the registered zero-speed convention.
         prior = x[..., 104:120]
         gate = (rates.abs().sum(-1, keepdim=True) + 8*prior[..., 12:16].abs().mean(-1, keepdim=True)).clamp(max=1.)
-        leg = prior[..., :12] + gate*coefficients[..., :12]*self.leg_increment_scale
+        absolute_leg = self.leg_center + self.leg_scale*coefficients[..., 20:32]
+        # Absolute feedback remains trainable at zero command and zero wheel
+        # speed, even when a previous learned leg target has accumulated error.
+        leg = (prior[..., :12] + .04*(absolute_leg-prior[..., :12])
+               + gate*coefficients[..., :12]*self.leg_increment_scale)
         wheels = rates[..., :1]*coefficients[..., 12:16] + rates[..., 1:]*coefficients[..., 16:20]
         return torch.cat((leg, wheels), -1).clamp(-1., 1.), estimate
 

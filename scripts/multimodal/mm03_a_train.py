@@ -1,6 +1,7 @@
 """Fit the command-conditioned wheel/leg layer and causal velocity estimator."""
 import argparse
 from datetime import datetime, timezone
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -67,6 +68,12 @@ def contact_mask(path, prefix):
 def contact_members(root, block):
     state = root/"A"
     manifest = state/f"block{block}_contact_members.json"
+    with (state/f"block{block}_contact_members.lock").open("a+") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        return snapshot_contact(root, block, manifest)
+
+
+def snapshot_contact(root, block, manifest):
     if manifest.exists():
         return json.loads(manifest.read_text())["members"]
     while True:
@@ -220,13 +227,14 @@ def fit(root, seed, block):
             receipt = dict(seed=seed, block=block, update=i, rows=counts, batch=512, losses=losses,
                            extra_trained_parameters=sum(p.numel() for p in model.parameters()),
                            wall_s=accumulated+time.monotonic()-tick, gpu_peak_bytes=torch.cuda.max_memory_allocated())
-            save(latest, checkpoint(i))
+            save(latest, {**checkpoint(i), "last_metrics": receipt})
             write_json(folder/"progress.json", receipt)
             print(json.dumps(receipt), flush=True)
     # The latest snapshot is atomic before the deploy path becomes visible to B.
     save(folder/"deploy.pt", dict(schema=model.schema, model=model.state_dict(), seed=seed, block=block,
          updates_this_block=target, full_checkpoint=str(latest)))
-    receipt = json.loads((folder/"progress.json").read_text())
+    receipt = torch.load(latest, map_location="cpu", weights_only=False)["last_metrics"]
+    write_json(folder/"progress.json", receipt)
     write_json(folder/"train_result.json", {**receipt, "updates": target, "bc_rows": target*512,
                "total_seed_updates": 12000+4000*block, "latest": str(latest), "deploy": str(folder/"deploy.pt"),
                "resume_parent": str(parent) if parent else None, "seed_scope": "new L16 and estimator initialization"})
