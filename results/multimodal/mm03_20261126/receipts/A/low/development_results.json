@@ -1466,6 +1466,1701 @@
       ]
     },
     {
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block1/deploy.pt",
+      "seed": 1701,
+      "block": 1,
+      "dev_success": 2,
+      "dev_total": 40,
+      "estimator_error": {
+        "all": {
+          "rows": 60000,
+          "mae": [
+            0.2012165877271044,
+            0.2675704889268475
+          ],
+          "rmse": [
+            0.2884028809662672,
+            0.4693047430328031
+          ]
+        },
+        "moving_request": {
+          "rows": 30500,
+          "mae": [
+            0.2539157237426364,
+            0.3833824464649095
+          ],
+          "rmse": [
+            0.3429464039829081,
+            0.6178156756182391
+          ]
+        },
+        "stopped_request": {
+          "rows": 29500,
+          "mae": [
+            0.14673104032121542,
+            0.1478327023196984
+          ],
+          "rmse": [
+            0.2181120926894095,
+            0.2309216709429273
+          ]
+        },
+        "arm_moving": {
+          "rows": 41863,
+          "mae": [
+            0.23105002785276224,
+            0.3282634165292786
+          ],
+          "rmse": [
+            0.32463917375624557,
+            0.5485485036070263
+          ]
+        }
+      },
+      "cases": [
+        {
+          "id": "000_tr_nominal_zero_0",
+          "scene": "tr_nominal",
+          "arm": "stowed",
+          "command": "zero",
+          "success": false,
+          "first_failure": null,
+          "physics_steps": 15000,
+          "supported_fraction": 0.9994666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.016,
+          "last_second_peak_speed_m_s": 0.0026582342578461006,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.014752800127687097,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.04385558568791157,
+            0.10385694697792011
+          ],
+          "estimator_rmse": [
+            0.06935215150230516,
+            0.13133037683320176
+          ]
+        },
+        {
+          "id": "001_tr_nominal_forward_stop_1",
+          "scene": "tr_nominal",
+          "arm": "pregrasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1251,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 2.402959432690679
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.6187333333333334,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.322,
+          "last_second_peak_speed_m_s": 0.002122147701273785,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.011628887151180704,
+          "median_velocity_to_command_vx_wz": [
+            0.6009758503514961,
+            null
+          ],
+          "estimator_mae": [
+            0.30281613466261464,
+            0.41678071056681076
+          ],
+          "estimator_rmse": [
+            0.35197796944775506,
+            0.6175789349112011
+          ]
+        },
+        {
+          "id": "002_tr_nominal_reverse_stop_2",
+          "scene": "tr_nominal",
+          "arm": "grasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4585,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.6347057952226135
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9458666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.486,
+          "last_second_peak_speed_m_s": 0.0009716177427728723,
+          "final_sustained_settle_delay_from_stop_s": 0.7100000000000009,
+          "max_stop_drift_m": 0.0018796851645469159,
+          "median_velocity_to_command_vx_wz": [
+            0.9194188954300883,
+            null
+          ],
+          "estimator_mae": [
+            0.06311467944567938,
+            0.1118301373960979
+          ],
+          "estimator_rmse": [
+            0.13204189061935775,
+            0.2731069681777539
+          ]
+        },
+        {
+          "id": "003_tr_nominal_left_turn_stop_3",
+          "scene": "tr_nominal",
+          "arm": "complete_pull_or_push_segment",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1694,
+            "wheel_n": [
+              213.19340272944518,
+              0.0,
+              137.78898225943476,
+              65.56487734372813
+            ],
+            "tilt_deg": 0.728384412576607
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7306,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.368,
+          "last_second_peak_speed_m_s": 0.0036210287343125345,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.00910133220271935,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            0.13724091546301337
+          ],
+          "estimator_mae": [
+            0.13361842115682368,
+            0.2756553177298526
+          ],
+          "estimator_rmse": [
+            0.19113092887604674,
+            0.47784897695717266
+          ]
+        },
+        {
+          "id": "004_tr_nominal_right_turn_stop_0",
+          "scene": "tr_nominal",
+          "arm": "stowed",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1653,
+            "wheel_n": [
+              0.0,
+              212.52425181157656,
+              0.0,
+              270.30809661078393
+            ],
+            "tilt_deg": 1.646344632444131
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7194666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 5.7,
+          "last_second_peak_speed_m_s": 0.013734989402749708,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.016665135507877994,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -0.41084850291816377
+          ],
+          "estimator_mae": [
+            0.17356595904685734,
+            0.1468712021410805
+          ],
+          "estimator_rmse": [
+            0.1971316233005553,
+            0.2824075151221746
+          ]
+        },
+        {
+          "id": "005_tr_nominal_forward_left_stop_1",
+          "scene": "tr_nominal",
+          "arm": "pregrasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1846,
+            "wheel_n": [
+              333.3309337177866,
+              0.0,
+              121.77972363497048,
+              0.0
+            ],
+            "tilt_deg": 0.6132779904702176
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8872,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.802,
+          "last_second_peak_speed_m_s": 0.0017532928287238045,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.0070528770803466164,
+          "median_velocity_to_command_vx_wz": [
+            0.8098707343123934,
+            0.12540955751611438
+          ],
+          "estimator_mae": [
+            0.18901105635853066,
+            0.2284308158665117
+          ],
+          "estimator_rmse": [
+            0.22022452337174445,
+            0.32065610757490787
+          ]
+        },
+        {
+          "id": "006_tr_nominal_forward_right_stop_2",
+          "scene": "tr_nominal",
+          "arm": "grasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2600,
+            "wheel_n": [
+              151.44208802053694,
+              0.0,
+              71.4238283796806,
+              68.87048071107964
+            ],
+            "tilt_deg": 0.4476133121741835
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.1678,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 24.578,
+          "last_second_peak_speed_m_s": 0.0018575626867078057,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.018442349273640805,
+          "median_velocity_to_command_vx_wz": [
+            0.04822396270522589,
+            0.4859240874277052
+          ],
+          "estimator_mae": [
+            0.3005425823511873,
+            0.17594512425486028
+          ],
+          "estimator_rmse": [
+            0.41610767278878413,
+            0.34460165026249817
+          ]
+        },
+        {
+          "id": "007_tr_nominal_alternating_motion_stop_3",
+          "scene": "tr_nominal",
+          "arm": "complete_pull_or_push_segment",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1294,
+            "wheel_n": [
+              0.0,
+              219.539699681686,
+              0.0,
+              192.08285254391117
+            ],
+            "tilt_deg": 1.8057557969630507
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9488666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.23600000000000002,
+          "last_second_peak_speed_m_s": 0.005285947908896034,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.004848896714307186,
+          "median_velocity_to_command_vx_wz": [
+            0.8662622951693282,
+            -0.20288346773629462
+          ],
+          "estimator_mae": [
+            0.08389541292909962,
+            0.11142773834726055
+          ],
+          "estimator_rmse": [
+            0.11618883857074364,
+            0.2750381664632339
+          ]
+        },
+        {
+          "id": "008_tr_offset_zero_1",
+          "scene": "tr_offset",
+          "arm": "pregrasp_hold",
+          "command": "zero",
+          "success": true,
+          "first_failure": null,
+          "physics_steps": 15000,
+          "supported_fraction": 0.9994666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.016,
+          "last_second_peak_speed_m_s": 0.003998390286841306,
+          "final_sustained_settle_delay_from_stop_s": 8.288,
+          "max_stop_drift_m": 0.01334577722207187,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.18183580473598868,
+            0.1759119847923348
+          ],
+          "estimator_rmse": [
+            0.19774098553303807,
+            0.19503558992448153
+          ]
+        },
+        {
+          "id": "009_tr_offset_forward_stop_2",
+          "scene": "tr_offset",
+          "arm": "grasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2271,
+            "wheel_n": [
+              98.6706722223249,
+              0.0,
+              0.0,
+              86.06234787277117
+            ],
+            "tilt_deg": 0.6398695632791818
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.21886666666666665,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 14.862,
+          "last_second_peak_speed_m_s": 0.021257587812705106,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.025693381130518517,
+          "median_velocity_to_command_vx_wz": [
+            0.7608199588339333,
+            null
+          ],
+          "estimator_mae": [
+            0.5596498640770514,
+            0.6152599362411969
+          ],
+          "estimator_rmse": [
+            0.660332447490988,
+            0.8035667222281925
+          ]
+        },
+        {
+          "id": "010_tr_offset_reverse_stop_3",
+          "scene": "tr_offset",
+          "arm": "complete_pull_or_push_segment",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 3078,
+            "wheel_n": [
+              214.0791146170448,
+              0.0,
+              0.0,
+              231.81149714519282
+            ],
+            "tilt_deg": 0.165195176807267
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.2657333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 18.682000000000002,
+          "last_second_peak_speed_m_s": 0.13691086746623687,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.02928104951470952,
+          "median_velocity_to_command_vx_wz": [
+            0.4138556966906603,
+            null
+          ],
+          "estimator_mae": [
+            0.20224887312704587,
+            0.1620506472948861
+          ],
+          "estimator_rmse": [
+            0.2745011332880542,
+            0.2711427196908546
+          ]
+        },
+        {
+          "id": "011_tr_offset_left_turn_stop_0",
+          "scene": "tr_offset",
+          "arm": "stowed",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1249,
+            "wheel_n": [
+              184.11063041945155,
+              0.0,
+              0.0,
+              175.087300026947
+            ],
+            "tilt_deg": 0.19597321185607636
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.6212666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.09,
+          "last_second_peak_speed_m_s": 0.0020080363952127665,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.008420936552181194,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            2.963320666754777
+          ],
+          "estimator_mae": [
+            0.18182014386664327,
+            0.437352041150365
+          ],
+          "estimator_rmse": [
+            0.23324567474515875,
+            0.6993341786987575
+          ]
+        },
+        {
+          "id": "012_tr_offset_right_turn_stop_1",
+          "scene": "tr_offset",
+          "arm": "pregrasp_hold",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2703,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.20404041845008591
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7176666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.556,
+          "last_second_peak_speed_m_s": 0.0038486375579055818,
+          "final_sustained_settle_delay_from_stop_s": 7.626000000000001,
+          "max_stop_drift_m": 0.03829578005764498,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            1.0825723346893765
+          ],
+          "estimator_mae": [
+            0.25867543889404365,
+            0.39006842186158047
+          ],
+          "estimator_rmse": [
+            0.3213983947233983,
+            0.6447952753624806
+          ]
+        },
+        {
+          "id": "013_tr_offset_forward_left_stop_2",
+          "scene": "tr_offset",
+          "arm": "grasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4814,
+            "wheel_n": [
+              104.65110264230252,
+              157.42094965952458,
+              0.0,
+              263.03459111582305
+            ],
+            "tilt_deg": 3.3493877478463014
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7454666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.20400000000000001,
+          "last_second_peak_speed_m_s": 0.003508325170527225,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.023301876786196954,
+          "median_velocity_to_command_vx_wz": [
+            0.8901347359992896,
+            -0.3674148269773558
+          ],
+          "estimator_mae": [
+            0.3251424758465608,
+            0.4442101794130916
+          ],
+          "estimator_rmse": [
+            0.3577675631903785,
+            0.5579223040574302
+          ]
+        },
+        {
+          "id": "014_tr_offset_forward_right_stop_3",
+          "scene": "tr_offset",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2195,
+            "wheel_n": [
+              99.15237070177001,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.936563930154562
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.17373333333333332,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 19.642,
+          "last_second_peak_speed_m_s": 0.00874457545674157,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.0779441152550415,
+          "median_velocity_to_command_vx_wz": [
+            0.055857403043672996,
+            0.3092768551133236
+          ],
+          "estimator_mae": [
+            0.6496976766597526,
+            0.5364516119956066
+          ],
+          "estimator_rmse": [
+            0.7326527864270922,
+            0.7115898421317043
+          ]
+        },
+        {
+          "id": "015_tr_offset_alternating_motion_stop_0",
+          "scene": "tr_offset",
+          "arm": "stowed",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 5723,
+            "wheel_n": [
+              144.62149926414185,
+              78.9885965494346,
+              65.49392459630552,
+              137.75733963013707
+            ],
+            "tilt_deg": 5.000301927887494
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.732,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 5.7,
+          "last_second_peak_speed_m_s": 0.0032106972081721494,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.020578096990578606,
+          "median_velocity_to_command_vx_wz": [
+            0.8499507640320318,
+            0.4514573270919273
+          ],
+          "estimator_mae": [
+            0.16340479224658278,
+            0.12477913948671661
+          ],
+          "estimator_rmse": [
+            0.1799627344756459,
+            0.20241388881639208
+          ]
+        },
+        {
+          "id": "016_tr_load_zero_2",
+          "scene": "tr_load",
+          "arm": "grasp_hold",
+          "command": "zero",
+          "success": true,
+          "first_failure": null,
+          "physics_steps": 15000,
+          "supported_fraction": 0.9983333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.024,
+          "last_second_peak_speed_m_s": 0.0011017527839499925,
+          "final_sustained_settle_delay_from_stop_s": 0.0,
+          "max_stop_drift_m": 0.0009990906835811058,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.02299193095276465,
+            0.07337449084168786
+          ],
+          "estimator_rmse": [
+            0.047132494164848625,
+            0.17952144105864815
+          ]
+        },
+        {
+          "id": "017_tr_load_forward_stop_3",
+          "scene": "tr_load",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1251,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 2.3710332918928425
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.6134666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.0,
+          "last_second_peak_speed_m_s": 0.002644591755244546,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.00988256814823549,
+          "median_velocity_to_command_vx_wz": [
+            0.5687653210360005,
+            null
+          ],
+          "estimator_mae": [
+            0.28961441303788343,
+            0.39694120667994626
+          ],
+          "estimator_rmse": [
+            0.3582685116766099,
+            0.6190058355157345
+          ]
+        },
+        {
+          "id": "018_tr_load_reverse_stop_0",
+          "scene": "tr_load",
+          "arm": "stowed",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 6284,
+            "wheel_n": [
+              143.26034863672942,
+              78.38810425763039,
+              77.94314882379999,
+              126.5938604625759
+            ],
+            "tilt_deg": 5.000167255604662
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9419333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.098,
+          "last_second_peak_speed_m_s": 0.0012213576962226724,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.004654992465907147,
+          "median_velocity_to_command_vx_wz": [
+            0.9982063225015818,
+            null
+          ],
+          "estimator_mae": [
+            0.16340294891358068,
+            0.23420913883980454
+          ],
+          "estimator_rmse": [
+            0.18258446471592732,
+            0.4241253449976446
+          ]
+        },
+        {
+          "id": "019_tr_load_left_turn_stop_1",
+          "scene": "tr_load",
+          "arm": "pregrasp_hold",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1684,
+            "wheel_n": [
+              210.96957244808982,
+              0.0,
+              137.50499106714784,
+              85.65530163540846
+            ],
+            "tilt_deg": 0.777423721821618
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5998666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.506,
+          "last_second_peak_speed_m_s": 0.0021157339320413667,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.015996414168880035,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            2.199935598805371
+          ],
+          "estimator_mae": [
+            0.15451928176287313,
+            0.31519905416008276
+          ],
+          "estimator_rmse": [
+            0.2136342079709893,
+            0.5389535028663078
+          ]
+        },
+        {
+          "id": "020_tr_load_right_turn_stop_2",
+          "scene": "tr_load",
+          "arm": "grasp_hold",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2332,
+            "wheel_n": [
+              0.0,
+              167.63181198625952,
+              0.0,
+              177.5845252079429
+            ],
+            "tilt_deg": 1.3879542737737889
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8679333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.6880000000000001,
+          "last_second_peak_speed_m_s": 0.0015451454607358097,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.008992130760010136,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            0.23504685125633723
+          ],
+          "estimator_mae": [
+            0.11482404380692136,
+            0.17879483586276979
+          ],
+          "estimator_rmse": [
+            0.16369090547581241,
+            0.3336643040666216
+          ]
+        },
+        {
+          "id": "021_tr_load_forward_left_stop_3",
+          "scene": "tr_load",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1443,
+            "wheel_n": [
+              0.0,
+              205.33664989834278,
+              0.0,
+              320.3173300025006
+            ],
+            "tilt_deg": 1.8297050385025426
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8962666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.446,
+          "last_second_peak_speed_m_s": 0.0033918284697826142,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.005538650153482722,
+          "median_velocity_to_command_vx_wz": [
+            0.7645220450029637,
+            0.2928028911188413
+          ],
+          "estimator_mae": [
+            0.1507539985139462,
+            0.19571345256449119
+          ],
+          "estimator_rmse": [
+            0.18721497165496356,
+            0.3070869437932005
+          ]
+        },
+        {
+          "id": "022_tr_load_forward_right_stop_0",
+          "scene": "tr_load",
+          "arm": "stowed",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1965,
+            "wheel_n": [
+              211.4136762944083,
+              0.0,
+              0.0,
+              177.41181185374583
+            ],
+            "tilt_deg": 0.9998789568344184
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.6900666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.676,
+          "last_second_peak_speed_m_s": 0.002501120153201901,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.014339344230828997,
+          "median_velocity_to_command_vx_wz": [
+            0.7403980263896193,
+            -1.1503481650676668
+          ],
+          "estimator_mae": [
+            0.26646757236222096,
+            0.40359522536700143
+          ],
+          "estimator_rmse": [
+            0.3217701080922544,
+            0.6499820596342253
+          ]
+        },
+        {
+          "id": "023_tr_load_alternating_motion_stop_1",
+          "scene": "tr_load",
+          "arm": "pregrasp_hold",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1302,
+            "wheel_n": [
+              0.0,
+              223.1142377526304,
+              0.0,
+              233.39070949707937
+            ],
+            "tilt_deg": 2.113843479033138
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9196666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.444,
+          "last_second_peak_speed_m_s": 0.0020455367805218183,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.004617678893782255,
+          "median_velocity_to_command_vx_wz": [
+            0.8445668768832062,
+            0.47381359236857007
+          ],
+          "estimator_mae": [
+            0.11998743932141238,
+            0.1548350672576004
+          ],
+          "estimator_rmse": [
+            0.14530065717267723,
+            0.28696763090057764
+          ]
+        },
+        {
+          "id": "024_va_pose_zero_3",
+          "scene": "va_pose",
+          "arm": "complete_pull_or_push_segment",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "unexpected_contact:robot_panel",
+            "step": 3676,
+            "wheel_n": [
+              104.5137036157068,
+              118.51380047621466,
+              99.78355568968558,
+              104.47018307100714
+            ],
+            "tilt_deg": 1.8183511887496753
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9994666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.016,
+          "last_second_peak_speed_m_s": 0.005387455234645548,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.005100082434427942,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.10142100978985082,
+            0.10537365821905162
+          ],
+          "estimator_rmse": [
+            0.12426117834429679,
+            0.13006679969541024
+          ]
+        },
+        {
+          "id": "025_va_pose_forward_stop_0",
+          "scene": "va_pose",
+          "arm": "stowed",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1925,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 2.337797550614773
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5157333333333334,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 9.968,
+          "last_second_peak_speed_m_s": 0.0023075649250065056,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.01478913689482677,
+          "median_velocity_to_command_vx_wz": [
+            0.6477388927912492,
+            null
+          ],
+          "estimator_mae": [
+            0.2517392240293746,
+            0.2057512835210752
+          ],
+          "estimator_rmse": [
+            0.28572370087002597,
+            0.3178072989624032
+          ]
+        },
+        {
+          "id": "026_va_pose_reverse_stop_1",
+          "scene": "va_pose",
+          "arm": "pregrasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 3070,
+            "wheel_n": [
+              211.71128831272884,
+              0.0,
+              0.0,
+              234.86048829793458
+            ],
+            "tilt_deg": 0.20437699126615383
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5672,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 2.926,
+          "last_second_peak_speed_m_s": 0.10337348390847136,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.04113921531858513,
+          "median_velocity_to_command_vx_wz": [
+            1.9175587342582432,
+            null
+          ],
+          "estimator_mae": [
+            0.26516954328683945,
+            0.3662022880322256
+          ],
+          "estimator_rmse": [
+            0.3589269800881954,
+            0.5320652281793508
+          ]
+        },
+        {
+          "id": "027_va_pose_left_turn_stop_2",
+          "scene": "va_pose",
+          "arm": "grasp_hold",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2045,
+            "wheel_n": [
+              0.0,
+              90.90540254084573,
+              0.0,
+              281.26616200754677
+            ],
+            "tilt_deg": 2.299422990258131
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.624,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.888,
+          "last_second_peak_speed_m_s": 0.004697921715752843,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.008190363480776558,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            1.536929041815028
+          ],
+          "estimator_mae": [
+            0.2187704528035735,
+            0.3778478227284789
+          ],
+          "estimator_rmse": [
+            0.2627052051295214,
+            0.5692309945564522
+          ]
+        },
+        {
+          "id": "028_va_pose_right_turn_stop_3",
+          "scene": "va_pose",
+          "arm": "complete_pull_or_push_segment",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2703,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.3273551917582589
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7052,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.654,
+          "last_second_peak_speed_m_s": 0.004768508987454263,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.020754356661487866,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            1.197805395191498
+          ],
+          "estimator_mae": [
+            0.19749850717289488,
+            0.39440754028332714
+          ],
+          "estimator_rmse": [
+            0.26586513498806635,
+            0.6554788903808988
+          ]
+        },
+        {
+          "id": "029_va_pose_forward_left_stop_0",
+          "scene": "va_pose",
+          "arm": "stowed",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 6227,
+            "wheel_n": [
+              64.04907787466371,
+              198.28899692030797,
+              179.24884328122172,
+              55.9095550030057
+            ],
+            "tilt_deg": 5.003833085579163
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5425333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 7.7,
+          "last_second_peak_speed_m_s": 0.01009864021215152,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.02834558898719051,
+          "median_velocity_to_command_vx_wz": [
+            0.7202310656783633,
+            0.22087032532942452
+          ],
+          "estimator_mae": [
+            0.23538203505004338,
+            0.2702115268683168
+          ],
+          "estimator_rmse": [
+            0.27604923658277714,
+            0.34806623222142424
+          ]
+        },
+        {
+          "id": "030_va_pose_forward_right_stop_1",
+          "scene": "va_pose",
+          "arm": "pregrasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2193,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.9547073440790268
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.6358666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 2.102,
+          "last_second_peak_speed_m_s": 0.00719334337636014,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.01557935414336836,
+          "median_velocity_to_command_vx_wz": [
+            0.6375889472387775,
+            0.944758551907305
+          ],
+          "estimator_mae": [
+            0.3277827804838192,
+            0.4398499704631322
+          ],
+          "estimator_rmse": [
+            0.42540670284320875,
+            0.6923722890866657
+          ]
+        },
+        {
+          "id": "031_va_pose_alternating_motion_stop_2",
+          "scene": "va_pose",
+          "arm": "grasp_hold",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1275,
+            "wheel_n": [
+              298.1158777142082,
+              24.330317635430085,
+              0.0,
+              177.640867634571
+            ],
+            "tilt_deg": 0.8996221127158656
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8504,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.62,
+          "last_second_peak_speed_m_s": 0.0028326307554291477,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.01552436447621191,
+          "median_velocity_to_command_vx_wz": [
+            1.0920685497253768,
+            0.5106692078636683
+          ],
+          "estimator_mae": [
+            0.22580282810097965,
+            0.24746726394624421
+          ],
+          "estimator_rmse": [
+            0.24659901677625093,
+            0.36879026405733284
+          ]
+        },
+        {
+          "id": "032_te_combination_zero_0",
+          "scene": "te_combination",
+          "arm": "stowed",
+          "command": "zero",
+          "success": false,
+          "first_failure": null,
+          "physics_steps": 15000,
+          "supported_fraction": 0.9994666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.016,
+          "last_second_peak_speed_m_s": 0.007147517387098177,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.010538462873822617,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.05274302655140188,
+            0.11879215192660315
+          ],
+          "estimator_rmse": [
+            0.07877687986876743,
+            0.14632239037415143
+          ]
+        },
+        {
+          "id": "033_te_combination_forward_stop_1",
+          "scene": "te_combination",
+          "arm": "pregrasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1252,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 2.35019315133813
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4662,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.924,
+          "last_second_peak_speed_m_s": 0.0013510622480831657,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.04976453799930743,
+          "median_velocity_to_command_vx_wz": [
+            0.2971032755779352,
+            null
+          ],
+          "estimator_mae": [
+            0.3151644323350453,
+            0.5167207248455792
+          ],
+          "estimator_rmse": [
+            0.3987963857895664,
+            0.7625702963629402
+          ]
+        },
+        {
+          "id": "034_te_combination_reverse_stop_2",
+          "scene": "te_combination",
+          "arm": "grasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4190,
+            "wheel_n": [
+              206.142258246445,
+              0.0,
+              266.12117647903614,
+              0.0
+            ],
+            "tilt_deg": 0.27946206911620225
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9678,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.182,
+          "last_second_peak_speed_m_s": 0.0017982746523564324,
+          "final_sustained_settle_delay_from_stop_s": 2.129999999999999,
+          "max_stop_drift_m": 0.002987539756412208,
+          "median_velocity_to_command_vx_wz": [
+            0.9815568286662382,
+            null
+          ],
+          "estimator_mae": [
+            0.047369438844832606,
+            0.09546917682112954
+          ],
+          "estimator_rmse": [
+            0.07680006426325636,
+            0.22391626026569295
+          ]
+        },
+        {
+          "id": "035_te_combination_left_turn_stop_3",
+          "scene": "te_combination",
+          "arm": "complete_pull_or_push_segment",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1686,
+            "wheel_n": [
+              199.09080138974235,
+              0.0,
+              155.28799857451938,
+              65.99825088940678
+            ],
+            "tilt_deg": 0.8452426090197047
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7091333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.67,
+          "last_second_peak_speed_m_s": 0.0034447187577699334,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.008582729179101483,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            2.0919996497614832
+          ],
+          "estimator_mae": [
+            0.153366431785738,
+            0.27341102728626065
+          ],
+          "estimator_rmse": [
+            0.21671975421263243,
+            0.4801925872597698
+          ]
+        },
+        {
+          "id": "036_te_combination_right_turn_stop_0",
+          "scene": "te_combination",
+          "arm": "stowed",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1654,
+            "wheel_n": [
+              0.0,
+              131.04865027897674,
+              45.23448931410576,
+              202.65345048746101
+            ],
+            "tilt_deg": 1.5182145227696173
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8766,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.28800000000000003,
+          "last_second_peak_speed_m_s": 0.0027750687398433505,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.010911464182668747,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -0.4325670897162346
+          ],
+          "estimator_mae": [
+            0.16948188241796713,
+            0.15566845980311578
+          ],
+          "estimator_rmse": [
+            0.18786186474930852,
+            0.3064952083867833
+          ]
+        },
+        {
+          "id": "037_te_combination_forward_left_stop_1",
+          "scene": "te_combination",
+          "arm": "pregrasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1371,
+            "wheel_n": [
+              235.85945914878408,
+              0.0,
+              291.74133348319896,
+              0.0
+            ],
+            "tilt_deg": 1.0469625116553347
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9371333333333334,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.388,
+          "last_second_peak_speed_m_s": 0.007674408085881299,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.05199864515811381,
+          "median_velocity_to_command_vx_wz": [
+            0.8954693090492627,
+            0.04458723322286086
+          ],
+          "estimator_mae": [
+            0.12214770705978541,
+            0.17890557332536386
+          ],
+          "estimator_rmse": [
+            0.1530884969579183,
+            0.2722613929141331
+          ]
+        },
+        {
+          "id": "038_te_combination_forward_right_stop_2",
+          "scene": "te_combination",
+          "arm": "grasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2612,
+            "wheel_n": [
+              229.1088992112057,
+              0.0,
+              17.76174936824136,
+              172.58469260672507
+            ],
+            "tilt_deg": 0.18656348254353566
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5668,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.6260000000000001,
+          "last_second_peak_speed_m_s": 0.0012002022950416945,
+          "final_sustained_settle_delay_from_stop_s": 4.786000000000001,
+          "max_stop_drift_m": 0.1646558204553652,
+          "median_velocity_to_command_vx_wz": [
+            0.760396235876725,
+            0.4351827534345232
+          ],
+          "estimator_mae": [
+            0.1869568909145199,
+            0.43844665535668176
+          ],
+          "estimator_rmse": [
+            0.2979276244559258,
+            0.7725579644288131
+          ]
+        },
+        {
+          "id": "039_te_combination_alternating_motion_stop_3",
+          "scene": "te_combination",
+          "arm": "complete_pull_or_push_segment",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1302,
+            "wheel_n": [
+              0.0,
+              218.84715487871125,
+              0.0,
+              233.78044561535089
+            ],
+            "tilt_deg": 2.0924930571948495
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.923,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.376,
+          "last_second_peak_speed_m_s": 0.005183718863358357,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.002873825129630992,
+          "median_velocity_to_command_vx_wz": [
+            0.8693907838383972,
+            -0.23939991865263666
+          ],
+          "estimator_mae": [
+            0.08241078869353434,
+            0.1087500065577539
+          ],
+          "estimator_rmse": [
+            0.14066428980387782,
+            0.2731667814680134
+          ]
+        }
+      ]
+    },
+    {
       "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt",
       "seed": 1702,
       "block": 0,
@@ -2916,6 +4611,1731 @@
           "estimator_rmse": [
             0.0004890168409035461,
             0.0002463153005118619
+          ]
+        }
+      ]
+    },
+    {
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block1/deploy.pt",
+      "seed": 1702,
+      "block": 1,
+      "dev_success": 0,
+      "dev_total": 40,
+      "estimator_error": {
+        "all": {
+          "rows": 60000,
+          "mae": [
+            0.5089607440458587,
+            0.9417750372975044
+          ],
+          "rmse": [
+            0.7514963640970598,
+            1.2862807216170689
+          ]
+        },
+        "moving_request": {
+          "rows": 30500,
+          "mae": [
+            0.6365533530187278,
+            1.1842293597021867
+          ],
+          "rmse": [
+            0.8999002886109229,
+            1.5573826655522547
+          ]
+        },
+        "stopped_request": {
+          "rows": 29500,
+          "mae": [
+            0.3770429618874683,
+            0.6911019243028333
+          ],
+          "rmse": [
+            0.5580013051161566,
+            0.9259926839382797
+          ]
+        },
+        "arm_moving": {
+          "rows": 52439,
+          "mae": [
+            0.5347033367621513,
+            1.0154198793323115
+          ],
+          "rmse": [
+            0.779536164746363,
+            1.351051417645041
+          ]
+        }
+      },
+      "cases": [
+        {
+          "id": "000_tr_nominal_zero_0",
+          "scene": "tr_nominal",
+          "arm": "stowed",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 943,
+            "wheel_n": [
+              140.89289994321553,
+              0.0,
+              107.88168761038837,
+              115.1515194295409
+            ],
+            "tilt_deg": 0.6553281973870961
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4682,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.6,
+          "last_second_peak_speed_m_s": 0.01748622613324106,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.028212329666568444,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.20707349803708833,
+            0.8377944957355697
+          ],
+          "estimator_rmse": [
+            0.2601064288244956,
+            1.097203052943578
+          ]
+        },
+        {
+          "id": "001_tr_nominal_forward_stop_1",
+          "scene": "tr_nominal",
+          "arm": "pregrasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1049,
+            "wheel_n": [
+              151.36233117433497,
+              0.0,
+              0.0,
+              256.3456745230993
+            ],
+            "tilt_deg": 1.076502444683687
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.37393333333333334,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 3.934,
+          "last_second_peak_speed_m_s": 0.0029267920905830416,
+          "final_sustained_settle_delay_from_stop_s": 7.724,
+          "max_stop_drift_m": 0.08395407037170291,
+          "median_velocity_to_command_vx_wz": [
+            -0.599461920422992,
+            null
+          ],
+          "estimator_mae": [
+            0.386092419667007,
+            0.7944558388405227
+          ],
+          "estimator_rmse": [
+            0.5811925136000692,
+            1.227547305855002
+          ]
+        },
+        {
+          "id": "002_tr_nominal_reverse_stop_2",
+          "scene": "tr_nominal",
+          "arm": "grasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1213,
+            "wheel_n": [
+              199.91965111326843,
+              0.0,
+              275.4163877130113,
+              0.0
+            ],
+            "tilt_deg": 0.2835778471527208
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.0708,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 24.158,
+          "last_second_peak_speed_m_s": 0.06193412603041908,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.03285195330302213,
+          "median_velocity_to_command_vx_wz": [
+            0.17320863331128927,
+            null
+          ],
+          "estimator_mae": [
+            0.7708914729355696,
+            1.1700037172169686
+          ],
+          "estimator_rmse": [
+            0.9373083934635681,
+            1.3316252434665083
+          ]
+        },
+        {
+          "id": "003_tr_nominal_left_turn_stop_3",
+          "scene": "tr_nominal",
+          "arm": "complete_pull_or_push_segment",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1104,
+            "wheel_n": [
+              237.47085991610143,
+              0.0,
+              0.0,
+              176.48548574913744
+            ],
+            "tilt_deg": 0.5097132070936232
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.058133333333333335,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 27.892,
+          "last_second_peak_speed_m_s": 0.05319682328433765,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.11007272317372686,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -0.48614779848641987
+          ],
+          "estimator_mae": [
+            0.5574524232984913,
+            0.8826984946750648
+          ],
+          "estimator_rmse": [
+            0.8931835079771973,
+            1.3100566877426754
+          ]
+        },
+        {
+          "id": "004_tr_nominal_right_turn_stop_0",
+          "scene": "tr_nominal",
+          "arm": "stowed",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1074,
+            "wheel_n": [
+              0.0,
+              360.78879449811353,
+              244.91192085427656,
+              66.3879114759065
+            ],
+            "tilt_deg": 1.5163200995995705
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.17046666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 3.132,
+          "last_second_peak_speed_m_s": 0.2861894887434527,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.10395797075514444,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -2.2649047187286966
+          ],
+          "estimator_mae": [
+            0.2005585943046601,
+            0.9944447848815567
+          ],
+          "estimator_rmse": [
+            0.3071019355672588,
+            1.2640456466400254
+          ]
+        },
+        {
+          "id": "005_tr_nominal_forward_left_stop_1",
+          "scene": "tr_nominal",
+          "arm": "pregrasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 942,
+            "wheel_n": [
+              187.51797088250336,
+              42.093239450299606,
+              0.0,
+              189.42385612418013
+            ],
+            "tilt_deg": 0.48079671915578515
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.05193333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 25.356,
+          "last_second_peak_speed_m_s": 0.011043345427692417,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.04790096170106975,
+          "median_velocity_to_command_vx_wz": [
+            -0.42679893523653034,
+            0.1345028498903836
+          ],
+          "estimator_mae": [
+            0.958728644913566,
+            1.4854954753218232
+          ],
+          "estimator_rmse": [
+            1.1797966593547202,
+            1.8169793326270727
+          ]
+        },
+        {
+          "id": "006_tr_nominal_forward_right_stop_2",
+          "scene": "tr_nominal",
+          "arm": "grasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1084,
+            "wheel_n": [
+              523.3862433220834,
+              0.0,
+              0.0,
+              520.0400937462831
+            ],
+            "tilt_deg": 0.8227245616027347
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.1642,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 2.262,
+          "last_second_peak_speed_m_s": 0.08535274661191218,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.06543819273773009,
+          "median_velocity_to_command_vx_wz": [
+            0.3985459253363811,
+            -8.860540148385097
+          ],
+          "estimator_mae": [
+            0.23720578986539476,
+            0.7335892825017022
+          ],
+          "estimator_rmse": [
+            0.4026051289265051,
+            1.0207449333871772
+          ]
+        },
+        {
+          "id": "007_tr_nominal_alternating_motion_stop_3",
+          "scene": "tr_nominal",
+          "arm": "complete_pull_or_push_segment",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1101,
+            "wheel_n": [
+              162.45504955480578,
+              0.0,
+              0.0,
+              191.5599090037696
+            ],
+            "tilt_deg": 0.6065495378666113
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.0586,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 27.45,
+          "last_second_peak_speed_m_s": 0.14037856835469087,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.07146080321036577,
+          "median_velocity_to_command_vx_wz": [
+            0.04052484252228638,
+            -0.1692714667303987
+          ],
+          "estimator_mae": [
+            0.7439308761364033,
+            1.0515124989430453
+          ],
+          "estimator_rmse": [
+            0.9541921501892578,
+            1.3209231793886351
+          ]
+        },
+        {
+          "id": "008_tr_offset_zero_1",
+          "scene": "tr_offset",
+          "arm": "pregrasp_hold",
+          "command": "zero",
+          "success": false,
+          "first_failure": null,
+          "physics_steps": 15000,
+          "supported_fraction": 0.9781333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.038,
+          "last_second_peak_speed_m_s": 0.0016963993345950753,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.004653129311585144,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.2346013598751588,
+            0.27562243230016126
+          ],
+          "estimator_rmse": [
+            0.2544940990482203,
+            0.34122819810016397
+          ]
+        },
+        {
+          "id": "009_tr_offset_forward_stop_2",
+          "scene": "tr_offset",
+          "arm": "grasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1113,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 1.4816613671837873
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5594666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 2.826,
+          "last_second_peak_speed_m_s": 0.004121194182007884,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.014781202095543566,
+          "median_velocity_to_command_vx_wz": [
+            1.0877089909929376,
+            null
+          ],
+          "estimator_mae": [
+            0.3126991655428877,
+            0.6712831850760073
+          ],
+          "estimator_rmse": [
+            0.3938936255320983,
+            0.9410557919050095
+          ]
+        },
+        {
+          "id": "010_tr_offset_reverse_stop_3",
+          "scene": "tr_offset",
+          "arm": "complete_pull_or_push_segment",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1357,
+            "wheel_n": [
+              126.85565550361194,
+              0.0,
+              71.59765681237589,
+              108.83882459221617
+            ],
+            "tilt_deg": 0.9443646881087467
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5852666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.644,
+          "last_second_peak_speed_m_s": 0.006662806438410852,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.021134355613464925,
+          "median_velocity_to_command_vx_wz": [
+            0.8873320007060288,
+            null
+          ],
+          "estimator_mae": [
+            0.18236656045172314,
+            0.6390470006199588
+          ],
+          "estimator_rmse": [
+            0.2389148866467623,
+            0.9847858958740825
+          ]
+        },
+        {
+          "id": "011_tr_offset_left_turn_stop_0",
+          "scene": "tr_offset",
+          "arm": "stowed",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1276,
+            "wheel_n": [
+              181.12289773021266,
+              0.0,
+              0.0,
+              217.9124546740443
+            ],
+            "tilt_deg": 0.2514424017283114
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.076,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 26.158,
+          "last_second_peak_speed_m_s": 0.30051561796659,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.014713673695202746,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            1.3143665391475445
+          ],
+          "estimator_mae": [
+            0.4394593075471566,
+            0.7941453296805873
+          ],
+          "estimator_rmse": [
+            0.5827312616173002,
+            1.0374947444238856
+          ]
+        },
+        {
+          "id": "012_tr_offset_right_turn_stop_1",
+          "scene": "tr_offset",
+          "arm": "pregrasp_hold",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1065,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.9355425727572939
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.06926666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 24.492,
+          "last_second_peak_speed_m_s": 0.25665811224589213,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.031118955785853556,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -1.3114406687983529
+          ],
+          "estimator_mae": [
+            0.6501742370353241,
+            0.994297861736993
+          ],
+          "estimator_rmse": [
+            0.8972032657474012,
+            1.3402439267655113
+          ]
+        },
+        {
+          "id": "013_tr_offset_forward_left_stop_2",
+          "scene": "tr_offset",
+          "arm": "grasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1060,
+            "wheel_n": [
+              0.0,
+              144.86890688681,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.9315795203375631
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.06726666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 23.516000000000002,
+          "last_second_peak_speed_m_s": 0.05131892792314171,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.029665957199536904,
+          "median_velocity_to_command_vx_wz": [
+            0.08012372104870152,
+            1.562876469804492
+          ],
+          "estimator_mae": [
+            0.8051125150680873,
+            1.3642005776439958
+          ],
+          "estimator_rmse": [
+            0.9836498340051977,
+            1.6541405563059082
+          ]
+        },
+        {
+          "id": "014_tr_offset_forward_right_stop_3",
+          "scene": "tr_offset",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1071,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.7288664362425971
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.0618,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 22.254,
+          "last_second_peak_speed_m_s": 0.595814728077333,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.18922835966320328,
+          "median_velocity_to_command_vx_wz": [
+            0.16706916722957024,
+            -0.9982861389411035
+          ],
+          "estimator_mae": [
+            0.45939910409034446,
+            0.8245064680581381
+          ],
+          "estimator_rmse": [
+            0.6270428213429153,
+            1.1712518957149425
+          ]
+        },
+        {
+          "id": "015_tr_offset_alternating_motion_stop_0",
+          "scene": "tr_offset",
+          "arm": "stowed",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1074,
+            "wheel_n": [
+              0.0,
+              168.49960436958085,
+              165.38407319496056,
+              0.0
+            ],
+            "tilt_deg": 1.1160012157232913
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4014666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 6.2940000000000005,
+          "last_second_peak_speed_m_s": 0.02138007834873361,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.02863674340091894,
+          "median_velocity_to_command_vx_wz": [
+            1.0338126537339938,
+            0.03810618249492324
+          ],
+          "estimator_mae": [
+            0.25754646332674747,
+            0.6128082986371677
+          ],
+          "estimator_rmse": [
+            0.37028194054235314,
+            0.9887233528044589
+          ]
+        },
+        {
+          "id": "016_tr_load_zero_2",
+          "scene": "tr_load",
+          "arm": "grasp_hold",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 995,
+            "wheel_n": [
+              0.0,
+              100.87319753166811,
+              116.24312674718755,
+              0.0
+            ],
+            "tilt_deg": 1.472374384478588
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.6817333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.686,
+          "last_second_peak_speed_m_s": 0.06420989591784973,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.07060025682516552,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.216163070435861,
+            0.5821866107331201
+          ],
+          "estimator_rmse": [
+            0.26351699686320934,
+            0.7018318324955739
+          ]
+        },
+        {
+          "id": "017_tr_load_forward_stop_3",
+          "scene": "tr_load",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1067,
+            "wheel_n": [
+              0.0,
+              61.32566559447834,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 2.4347094580021698
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.050133333333333335,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 25.566,
+          "last_second_peak_speed_m_s": 0.09414989301572854,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.018849952731282923,
+          "median_velocity_to_command_vx_wz": [
+            -0.10650399895510096,
+            null
+          ],
+          "estimator_mae": [
+            0.5464117722568906,
+            0.8761732073609406
+          ],
+          "estimator_rmse": [
+            0.6382143573561376,
+            1.0239138000303396
+          ]
+        },
+        {
+          "id": "018_tr_load_reverse_stop_0",
+          "scene": "tr_load",
+          "arm": "stowed",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1166,
+            "wheel_n": [
+              208.54432078717136,
+              26.718579059389523,
+              0.0,
+              240.73078311704754
+            ],
+            "tilt_deg": 1.1139727524831353
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.23426666666666668,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.118,
+          "last_second_peak_speed_m_s": 0.08129336000592094,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.22266922278910492,
+          "median_velocity_to_command_vx_wz": [
+            1.12900145101649,
+            null
+          ],
+          "estimator_mae": [
+            0.21407575450710284,
+            1.069417676307552
+          ],
+          "estimator_rmse": [
+            0.28431627995214503,
+            1.3361216519628194
+          ]
+        },
+        {
+          "id": "019_tr_load_left_turn_stop_1",
+          "scene": "tr_load",
+          "arm": "pregrasp_hold",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1061,
+            "wheel_n": [
+              0.0,
+              112.50274192756284,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 1.7738088634849152
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.05853333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 25.056,
+          "last_second_peak_speed_m_s": 0.06641707249395172,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.044218756639954886,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -0.5506304806520705
+          ],
+          "estimator_mae": [
+            0.6142488508008087,
+            0.9950515343090871
+          ],
+          "estimator_rmse": [
+            0.9921853098685206,
+            1.4843634785850506
+          ]
+        },
+        {
+          "id": "020_tr_load_right_turn_stop_2",
+          "scene": "tr_load",
+          "arm": "grasp_hold",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1076,
+            "wheel_n": [
+              105.6905985304983,
+              154.9113866877119,
+              177.07913001669465,
+              0.0
+            ],
+            "tilt_deg": 0.8466364213772629
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.0558,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 27.682000000000002,
+          "last_second_peak_speed_m_s": 0.0873300970588922,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.09367532349029963,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -3.9048434014772972
+          ],
+          "estimator_mae": [
+            0.45431833233251534,
+            0.7332691407301487
+          ],
+          "estimator_rmse": [
+            0.6806450163017634,
+            1.0503665470183214
+          ]
+        },
+        {
+          "id": "021_tr_load_forward_left_stop_3",
+          "scene": "tr_load",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1082,
+            "wheel_n": [
+              308.7760589381855,
+              0.0,
+              125.16325971996088,
+              0.0
+            ],
+            "tilt_deg": 0.4286751438458263
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.0542,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 27.936,
+          "last_second_peak_speed_m_s": 0.1196605576350547,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.02675533304821288,
+          "median_velocity_to_command_vx_wz": [
+            -0.11169833738860954,
+            -2.617787979261829
+          ],
+          "estimator_mae": [
+            0.6016258603903737,
+            0.9104529126480095
+          ],
+          "estimator_rmse": [
+            0.7547140199421688,
+            1.151571927511922
+          ]
+        },
+        {
+          "id": "022_tr_load_forward_right_stop_0",
+          "scene": "tr_load",
+          "arm": "stowed",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1094,
+            "wheel_n": [
+              243.87604866902717,
+              66.5181551668041,
+              132.63786533198055,
+              0.0
+            ],
+            "tilt_deg": 0.8885556328626278
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.1402,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 2.388,
+          "last_second_peak_speed_m_s": 0.2998918091071986,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.1115125206766384,
+          "median_velocity_to_command_vx_wz": [
+            1.2183770955386646,
+            3.578024715030602
+          ],
+          "estimator_mae": [
+            0.2233278669222709,
+            1.0253011857118206
+          ],
+          "estimator_rmse": [
+            0.32789783457047333,
+            1.2960159976628691
+          ]
+        },
+        {
+          "id": "023_tr_load_alternating_motion_stop_1",
+          "scene": "tr_load",
+          "arm": "pregrasp_hold",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1073,
+            "wheel_n": [
+              305.0015103971536,
+              0.0,
+              0.0,
+              301.35962905048365
+            ],
+            "tilt_deg": 0.33407531369236076
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.05686666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 26.768,
+          "last_second_peak_speed_m_s": 0.0038474548487384295,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.0016898539215082628,
+          "median_velocity_to_command_vx_wz": [
+            0.004009169032597542,
+            -0.07398381520387787
+          ],
+          "estimator_mae": [
+            0.887684121908488,
+            1.2586978838691634
+          ],
+          "estimator_rmse": [
+            1.053417513473228,
+            1.4858177285180356
+          ]
+        },
+        {
+          "id": "024_va_pose_zero_3",
+          "scene": "va_pose",
+          "arm": "complete_pull_or_push_segment",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "unexpected_contact:robot_panel",
+            "step": 7038,
+            "wheel_n": [
+              142.91799040874284,
+              82.30167680328111,
+              59.562301091528994,
+              142.13429707813762
+            ],
+            "tilt_deg": 2.153475534962724
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9656,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.2,
+          "last_second_peak_speed_m_s": 0.008037268130417993,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.023582526980067367,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.10945122414966658,
+            0.2009302614316839
+          ],
+          "estimator_rmse": [
+            0.1656148855943073,
+            0.35726860290490886
+          ]
+        },
+        {
+          "id": "025_va_pose_forward_stop_0",
+          "scene": "va_pose",
+          "arm": "stowed",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1345,
+            "wheel_n": [
+              0.0,
+              97.20668248556852,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 2.0665275772561724
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4099333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 2.886,
+          "last_second_peak_speed_m_s": 0.0017391987988729695,
+          "final_sustained_settle_delay_from_stop_s": 7.077999999999999,
+          "max_stop_drift_m": 0.11075257362908889,
+          "median_velocity_to_command_vx_wz": [
+            0.9030291761595733,
+            null
+          ],
+          "estimator_mae": [
+            0.290395987963704,
+            0.7796012405622168
+          ],
+          "estimator_rmse": [
+            0.4516847556459642,
+            1.2109533383748745
+          ]
+        },
+        {
+          "id": "026_va_pose_reverse_stop_1",
+          "scene": "va_pose",
+          "arm": "pregrasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1326,
+            "wheel_n": [
+              168.52963200596292,
+              0.0,
+              108.92787152437073,
+              127.23391513485639
+            ],
+            "tilt_deg": 0.8014499976267005
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5208666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.3820000000000001,
+          "last_second_peak_speed_m_s": 0.0012511428956875526,
+          "final_sustained_settle_delay_from_stop_s": 8.236,
+          "max_stop_drift_m": 0.07720954365782574,
+          "median_velocity_to_command_vx_wz": [
+            0.6959331318340707,
+            null
+          ],
+          "estimator_mae": [
+            0.24115819431950633,
+            0.6994879262682289
+          ],
+          "estimator_rmse": [
+            0.3339206097242304,
+            1.0738835686580752
+          ]
+        },
+        {
+          "id": "027_va_pose_left_turn_stop_2",
+          "scene": "va_pose",
+          "arm": "grasp_hold",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1124,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 1.8530230849161495
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.06766666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 25.996000000000002,
+          "last_second_peak_speed_m_s": 0.02036442718944875,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.034507049932444384,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -0.40129747899371615
+          ],
+          "estimator_mae": [
+            0.669598807295793,
+            1.0129547777439876
+          ],
+          "estimator_rmse": [
+            0.9948904950070732,
+            1.4996114027031915
+          ]
+        },
+        {
+          "id": "028_va_pose_right_turn_stop_3",
+          "scene": "va_pose",
+          "arm": "complete_pull_or_push_segment",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1206,
+            "wheel_n": [
+              195.59072095040617,
+              0.0,
+              0.0,
+              176.97874632901352
+            ],
+            "tilt_deg": 1.0708284352981348
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.07006666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 25.592000000000002,
+          "last_second_peak_speed_m_s": 0.4586741977998324,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.04054704815951451,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            0.1612597481591393
+          ],
+          "estimator_mae": [
+            0.6434810567201729,
+            0.9779155798232095
+          ],
+          "estimator_rmse": [
+            0.8501948525199575,
+            1.2696586021868994
+          ]
+        },
+        {
+          "id": "029_va_pose_forward_left_stop_0",
+          "scene": "va_pose",
+          "arm": "stowed",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1111,
+            "wheel_n": [
+              0.0,
+              321.94906399117707,
+              190.09335591620882,
+              0.0
+            ],
+            "tilt_deg": 1.1804743205890584
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.07793333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 13.836,
+          "last_second_peak_speed_m_s": 0.012675143740705977,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.01795327615210935,
+          "median_velocity_to_command_vx_wz": [
+            0.23070765935947501,
+            -0.692193035872906
+          ],
+          "estimator_mae": [
+            0.6746679199618263,
+            1.3219659816924152
+          ],
+          "estimator_rmse": [
+            0.8803871370310171,
+            1.69121640459676
+          ]
+        },
+        {
+          "id": "030_va_pose_forward_right_stop_1",
+          "scene": "va_pose",
+          "arm": "pregrasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1483,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 1.003855675152627
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4471333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.818,
+          "last_second_peak_speed_m_s": 0.006996835354456164,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.04243016025785004,
+          "median_velocity_to_command_vx_wz": [
+            0.21458339913249574,
+            1.3774538443104514
+          ],
+          "estimator_mae": [
+            0.3138717569002245,
+            0.8436979903516961
+          ],
+          "estimator_rmse": [
+            0.4665806151028821,
+            1.243399848350906
+          ]
+        },
+        {
+          "id": "031_va_pose_alternating_motion_stop_2",
+          "scene": "va_pose",
+          "arm": "grasp_hold",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1075,
+            "wheel_n": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 2.319182607364167
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5318666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 7.446,
+          "last_second_peak_speed_m_s": 0.0014131633313581825,
+          "final_sustained_settle_delay_from_stop_s": 8.995999999999999,
+          "max_stop_drift_m": 0.016397709555471093,
+          "median_velocity_to_command_vx_wz": [
+            0.847316648345802,
+            0.06323872734731406
+          ],
+          "estimator_mae": [
+            0.1497936191490092,
+            0.40804311531568843
+          ],
+          "estimator_rmse": [
+            0.2895632477264995,
+            0.9121422941598907
+          ]
+        },
+        {
+          "id": "032_te_combination_zero_0",
+          "scene": "te_combination",
+          "arm": "stowed",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1328,
+            "wheel_n": [
+              172.40565920482706,
+              0.0,
+              0.0,
+              185.59436503950897
+            ],
+            "tilt_deg": 1.1237396587034316
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4710666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.734,
+          "last_second_peak_speed_m_s": 0.04666408352810151,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.06602672717284865,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.21904185635046453,
+            0.8071741832387828
+          ],
+          "estimator_rmse": [
+            0.26458050079445955,
+            1.0560101894729474
+          ]
+        },
+        {
+          "id": "033_te_combination_forward_stop_1",
+          "scene": "te_combination",
+          "arm": "pregrasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1092,
+            "wheel_n": [
+              305.44912994525254,
+              0.0,
+              9.937664894605547,
+              296.3383637878234
+            ],
+            "tilt_deg": 0.37182508035542783
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.06673333333333334,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 19.274,
+          "last_second_peak_speed_m_s": 0.04878475275756978,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.08545669199068473,
+          "median_velocity_to_command_vx_wz": [
+            -0.20109360571704446,
+            null
+          ],
+          "estimator_mae": [
+            0.8635153843936568,
+            1.318599273782531
+          ],
+          "estimator_rmse": [
+            1.0023279895257449,
+            1.5049455448869822
+          ]
+        },
+        {
+          "id": "034_te_combination_reverse_stop_2",
+          "scene": "te_combination",
+          "arm": "grasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1165,
+            "wheel_n": [
+              0.0,
+              165.6511595010826,
+              132.0802935066564,
+              0.0
+            ],
+            "tilt_deg": 1.2253583471868659
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.07106666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 21.386,
+          "last_second_peak_speed_m_s": 0.1921341419905561,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.1044919758428131,
+          "median_velocity_to_command_vx_wz": [
+            0.17554872411346073,
+            null
+          ],
+          "estimator_mae": [
+            0.7108666833451267,
+            1.1122474519093049
+          ],
+          "estimator_rmse": [
+            0.844067904588752,
+            1.2437802380296763
+          ]
+        },
+        {
+          "id": "035_te_combination_left_turn_stop_3",
+          "scene": "te_combination",
+          "arm": "complete_pull_or_push_segment",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1103,
+            "wheel_n": [
+              0.0,
+              62.955637551757064,
+              0.0,
+              178.60672802779894
+            ],
+            "tilt_deg": 1.8904294884049202
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.0624,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 27.086000000000002,
+          "last_second_peak_speed_m_s": 0.07810735666108985,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.0320959058156114,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -0.922737628123617
+          ],
+          "estimator_mae": [
+            0.8294959662072764,
+            1.2189153954456542
+          ],
+          "estimator_rmse": [
+            1.238182255064094,
+            1.742133969599261
+          ]
+        },
+        {
+          "id": "036_te_combination_right_turn_stop_0",
+          "scene": "te_combination",
+          "arm": "stowed",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1225,
+            "wheel_n": [
+              2.0898039736856604,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.7003158718413348
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4155333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.518,
+          "last_second_peak_speed_m_s": 0.009320139043267237,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.01616262074494169,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            0.06269068411201104
+          ],
+          "estimator_mae": [
+            0.2603848834720951,
+            0.7498226325407352
+          ],
+          "estimator_rmse": [
+            0.35877493510293473,
+            1.1263598602681073
+          ]
+        },
+        {
+          "id": "037_te_combination_forward_left_stop_1",
+          "scene": "te_combination",
+          "arm": "pregrasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1071,
+            "wheel_n": [
+              0.0,
+              265.43397626922354,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 2.1103563993359193
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.05726666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 21.764,
+          "last_second_peak_speed_m_s": 0.0085495630106396,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.009265684137787894,
+          "median_velocity_to_command_vx_wz": [
+            0.5716937778006479,
+            -2.2958335881806127
+          ],
+          "estimator_mae": [
+            1.0891233515707315,
+            1.615689664098143
+          ],
+          "estimator_rmse": [
+            1.3257823232593173,
+            1.971470753808081
+          ]
+        },
+        {
+          "id": "038_te_combination_forward_right_stop_2",
+          "scene": "te_combination",
+          "arm": "grasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1105,
+            "wheel_n": [
+              0.0,
+              62.84918374895825,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 1.2972093293455922
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.0568,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 27.138,
+          "last_second_peak_speed_m_s": 0.03150177027630256,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.013588215803943727,
+          "median_velocity_to_command_vx_wz": [
+            3.5630689140717415e-05,
+            0.010212102922203231
+          ],
+          "estimator_mae": [
+            1.2117054735965136,
+            1.7002029421493468
+          ],
+          "estimator_rmse": [
+            1.2963598441737476,
+            1.7790381276489209
+          ]
+        },
+        {
+          "id": "039_te_combination_alternating_motion_stop_3",
+          "scene": "te_combination",
+          "arm": "complete_pull_or_push_segment",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 1075,
+            "wheel_n": [
+              363.60664985575687,
+              0.0,
+              0.0,
+              296.38588871621073
+            ],
+            "tilt_deg": 0.8231733575608385
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.06393333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 27.418,
+          "last_second_peak_speed_m_s": 0.044938737721855644,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.02464949952899217,
+          "median_velocity_to_command_vx_wz": [
+            0.016527217820266622,
+            -0.3897486203953411
+          ],
+          "estimator_mae": [
+            0.9207295347886543,
+            1.3272971820074586
+          ],
+          "estimator_rmse": [
+            1.103811675033281,
+            1.5457860600700524
           ]
         }
       ]
@@ -4384,6 +7804,1721 @@
           ]
         }
       ]
+    },
+    {
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block1/deploy.pt",
+      "seed": 1703,
+      "block": 1,
+      "dev_success": 1,
+      "dev_total": 40,
+      "estimator_error": {
+        "all": {
+          "rows": 60000,
+          "mae": [
+            1.7950842599084016,
+            2.101225340308831
+          ],
+          "rmse": [
+            4.43065741869858,
+            4.9543276616102085
+          ]
+        },
+        "moving_request": {
+          "rows": 30500,
+          "mae": [
+            2.815132698416823,
+            3.262405449561338
+          ],
+          "rmse": [
+            6.0331266378831305,
+            6.762975713456674
+          ]
+        },
+        "stopped_request": {
+          "rows": 29500,
+          "mae": [
+            0.7404579082302034,
+            0.9006831934545427
+          ],
+          "rmse": [
+            1.5147376607424272,
+            1.6231129271491058
+          ]
+        },
+        "arm_moving": {
+          "rows": 46055,
+          "mae": [
+            1.748668254420515,
+            2.0683603820372802
+          ],
+          "rmse": [
+            4.181457054626914,
+            4.66334528034702
+          ]
+        }
+      },
+      "cases": [
+        {
+          "id": "000_tr_nominal_zero_0",
+          "scene": "tr_nominal",
+          "arm": "stowed",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 6566,
+            "wheel_n": [
+              221.89525234596329,
+              0.0,
+              0.0,
+              207.7136326163395
+            ],
+            "tilt_deg": 0.061091493146975005
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9066,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.5680000000000001,
+          "last_second_peak_speed_m_s": 0.19021797871217497,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.05417043822120943,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.2487156021145444,
+            0.49421470660931055
+          ],
+          "estimator_rmse": [
+            0.3712990827434202,
+            0.5990868166582439
+          ]
+        },
+        {
+          "id": "001_tr_nominal_forward_stop_1",
+          "scene": "tr_nominal",
+          "arm": "pregrasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "unexpected_contact:robot_panel",
+            "step": 6706,
+            "wheel_n": [
+              112.84486664341892,
+              121.92478326179898,
+              54.40388676584438,
+              121.36053600672332
+            ],
+            "tilt_deg": 4.7094506229411595
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7933333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.174,
+          "last_second_peak_speed_m_s": 0.0024564366933746955,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.036338307321257035,
+          "median_velocity_to_command_vx_wz": [
+            0.9293026791601251,
+            null
+          ],
+          "estimator_mae": [
+            0.1333904191318564,
+            0.388157293515332
+          ],
+          "estimator_rmse": [
+            0.22919265257093827,
+            0.4805153092582979
+          ]
+        },
+        {
+          "id": "002_tr_nominal_reverse_stop_2",
+          "scene": "tr_nominal",
+          "arm": "grasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4901,
+            "wheel_n": [
+              245.84546900837805,
+              47.314691964549205,
+              31.593508513390248,
+              164.9286629554655
+            ],
+            "tilt_deg": 5.002543115368937
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5929333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 9.338000000000001,
+          "last_second_peak_speed_m_s": 0.003849802444768146,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.49978399719324085,
+          "median_velocity_to_command_vx_wz": [
+            1.0878458100856947,
+            null
+          ],
+          "estimator_mae": [
+            0.15905959692851926,
+            0.20206476361403383
+          ],
+          "estimator_rmse": [
+            0.32116584909308993,
+            0.3630395702820033
+          ]
+        },
+        {
+          "id": "003_tr_nominal_left_turn_stop_3",
+          "scene": "tr_nominal",
+          "arm": "complete_pull_or_push_segment",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 5809,
+            "wheel_n": [
+              138.5861596345691,
+              196.1106414332132,
+              172.0583512879008,
+              103.45286436583172
+            ],
+            "tilt_deg": 5.002814976336674
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.45893333333333336,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 9.132,
+          "last_second_peak_speed_m_s": 0.316896311148541,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.5762851814897336,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            1.1971166798601258
+          ],
+          "estimator_mae": [
+            0.3685017827617533,
+            0.5277980553353846
+          ],
+          "estimator_rmse": [
+            0.6310768442607062,
+            0.7627016010543657
+          ]
+        },
+        {
+          "id": "004_tr_nominal_right_turn_stop_0",
+          "scene": "tr_nominal",
+          "arm": "stowed",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 6041,
+            "wheel_n": [
+              188.22238051845125,
+              0.0,
+              0.0,
+              156.41752574505296
+            ],
+            "tilt_deg": 1.1104509834251417
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.3841333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 17.44,
+          "last_second_peak_speed_m_s": 0.5581015480120424,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.19490623880149907,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            0.0032729070333993226
+          ],
+          "estimator_mae": [
+            4.842559629565624,
+            5.259402460607156
+          ],
+          "estimator_rmse": [
+            7.6801800034330645,
+            8.392574558558843
+          ]
+        },
+        {
+          "id": "005_tr_nominal_forward_left_stop_1",
+          "scene": "tr_nominal",
+          "arm": "pregrasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4812,
+            "wheel_n": [
+              87.30313472571275,
+              0.0,
+              257.3780481672729,
+              41.75905431497508
+            ],
+            "tilt_deg": 2.6750925079864256
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8459333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.116,
+          "last_second_peak_speed_m_s": 0.0014670823309933768,
+          "final_sustained_settle_delay_from_stop_s": 4.003999999999998,
+          "max_stop_drift_m": 0.007615145497410014,
+          "median_velocity_to_command_vx_wz": [
+            1.0992757832939204,
+            1.7096830410685502
+          ],
+          "estimator_mae": [
+            0.11674258679329781,
+            0.3962741791543037
+          ],
+          "estimator_rmse": [
+            0.20287359984897224,
+            0.5136896622451048
+          ]
+        },
+        {
+          "id": "006_tr_nominal_forward_right_stop_2",
+          "scene": "tr_nominal",
+          "arm": "grasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2270,
+            "wheel_n": [
+              226.80533738886606,
+              0.0,
+              27.97039409855085,
+              159.91314002122917
+            ],
+            "tilt_deg": 2.318049318134107
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.17793333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 22.958000000000002,
+          "last_second_peak_speed_m_s": 0.2525969856840484,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.154525019328164,
+          "median_velocity_to_command_vx_wz": [
+            0.6236339446617476,
+            4.598074668508219
+          ],
+          "estimator_mae": [
+            6.779424246310325,
+            7.8664614969374185
+          ],
+          "estimator_rmse": [
+            8.298487854034345,
+            9.704689551192464
+          ]
+        },
+        {
+          "id": "007_tr_nominal_alternating_motion_stop_3",
+          "scene": "tr_nominal",
+          "arm": "complete_pull_or_push_segment",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 10910,
+            "wheel_n": [
+              0.0,
+              221.04638689825612,
+              108.82047095360761,
+              0.0
+            ],
+            "tilt_deg": 5.004791838304547
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9100666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.222,
+          "last_second_peak_speed_m_s": 0.10232209954987984,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.10017717608850145,
+          "median_velocity_to_command_vx_wz": [
+            1.056899128535182,
+            0.4604923278658861
+          ],
+          "estimator_mae": [
+            0.14633411112018954,
+            0.40538771272034985
+          ],
+          "estimator_rmse": [
+            0.25490926029864386,
+            0.6044843399851842
+          ]
+        },
+        {
+          "id": "008_tr_offset_zero_1",
+          "scene": "tr_offset",
+          "arm": "pregrasp_hold",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2796,
+            "wheel_n": [
+              222.9510476775661,
+              5.157094400057176,
+              0.0,
+              209.414685396424
+            ],
+            "tilt_deg": 0.15655188465730094
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.1736,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 24.508,
+          "last_second_peak_speed_m_s": 0.0008202059116935034,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.0005275555253567174,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.18184981667466507,
+            0.2531749979879086
+          ],
+          "estimator_rmse": [
+            0.25044510463729674,
+            0.2733596992919315
+          ]
+        },
+        {
+          "id": "009_tr_offset_forward_stop_2",
+          "scene": "tr_offset",
+          "arm": "grasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 12078,
+            "wheel_n": [
+              85.58228069215065,
+              140.08323473880316,
+              98.04587809639553,
+              104.32129230750235
+            ],
+            "tilt_deg": 5.001350708486237
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9644666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.08,
+          "last_second_peak_speed_m_s": 0.035618630026586495,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.015452651885655967,
+          "median_velocity_to_command_vx_wz": [
+            1.0812170077904337,
+            null
+          ],
+          "estimator_mae": [
+            0.11068959435073582,
+            0.2873370048416897
+          ],
+          "estimator_rmse": [
+            0.21756201435367595,
+            0.39117539946320645
+          ]
+        },
+        {
+          "id": "010_tr_offset_reverse_stop_3",
+          "scene": "tr_offset",
+          "arm": "complete_pull_or_push_segment",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2190,
+            "wheel_n": [
+              299.1020763128882,
+              206.82805691266927,
+              0.0,
+              425.50874333064775
+            ],
+            "tilt_deg": 2.402255445728082
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.20826666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 17.248,
+          "last_second_peak_speed_m_s": 0.001012076003396041,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.009866125175072463,
+          "median_velocity_to_command_vx_wz": [
+            1.6852278673136551,
+            null
+          ],
+          "estimator_mae": [
+            0.3049192246027901,
+            0.4014702896326393
+          ],
+          "estimator_rmse": [
+            0.3341065530485837,
+            0.4420775762756691
+          ]
+        },
+        {
+          "id": "011_tr_offset_left_turn_stop_0",
+          "scene": "tr_offset",
+          "arm": "stowed",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4810,
+            "wheel_n": [
+              0.0,
+              224.1432862320326,
+              201.78058429224575,
+              0.0
+            ],
+            "tilt_deg": 5.000725416492371
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7384666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.15,
+          "last_second_peak_speed_m_s": 0.04656682365036705,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.023372153480429154,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            0.7802786460749203
+          ],
+          "estimator_mae": [
+            0.1794324835253283,
+            0.5376374096058801
+          ],
+          "estimator_rmse": [
+            0.26408888023210064,
+            0.6797620305112195
+          ]
+        },
+        {
+          "id": "012_tr_offset_right_turn_stop_1",
+          "scene": "tr_offset",
+          "arm": "pregrasp_hold",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "persistent_saturation",
+            "step": 2622,
+            "wheel_n": [
+              154.850817906463,
+              69.64996971060808,
+              59.661701334374484,
+              160.92037690937053
+            ],
+            "tilt_deg": 2.642046724584473
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.16666666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 24.394000000000002,
+          "last_second_peak_speed_m_s": 0.5544089829559788,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.42071743836467423,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            0.0033932514040852686
+          ],
+          "estimator_mae": [
+            9.118152652947819,
+            10.201880824798916
+          ],
+          "estimator_rmse": [
+            11.619068665889941,
+            12.998760084969634
+          ]
+        },
+        {
+          "id": "013_tr_offset_forward_left_stop_2",
+          "scene": "tr_offset",
+          "arm": "grasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 5911,
+            "wheel_n": [
+              20.782670550050224,
+              225.56222425257945,
+              206.91410986281545,
+              30.347542083994174
+            ],
+            "tilt_deg": 5.002661935244018
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8001333333333334,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.168,
+          "last_second_peak_speed_m_s": 0.06696941471107382,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.041615912955896735,
+          "median_velocity_to_command_vx_wz": [
+            1.0657873419729116,
+            0.211622174439285
+          ],
+          "estimator_mae": [
+            0.18396321145995898,
+            0.4900078850697734
+          ],
+          "estimator_rmse": [
+            0.27703161795493175,
+            0.6273777243822732
+          ]
+        },
+        {
+          "id": "014_tr_offset_forward_right_stop_3",
+          "scene": "tr_offset",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 3866,
+            "wheel_n": [
+              209.25197211047302,
+              22.729156933920365,
+              16.443869383993448,
+              183.4685848147734
+            ],
+            "tilt_deg": 5.008163159766718
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.3678,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 14.11,
+          "last_second_peak_speed_m_s": 0.03972579511875938,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.05035936051542527,
+          "median_velocity_to_command_vx_wz": [
+            0.25829346450324914,
+            -0.01731696176276666
+          ],
+          "estimator_mae": [
+            5.18578968091242,
+            5.409454451494409
+          ],
+          "estimator_rmse": [
+            6.839877215096617,
+            7.375261797918315
+          ]
+        },
+        {
+          "id": "015_tr_offset_alternating_motion_stop_0",
+          "scene": "tr_offset",
+          "arm": "stowed",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 13081,
+            "wheel_n": [
+              57.12834451655408,
+              185.07921992553167,
+              184.97936934489985,
+              0.0
+            ],
+            "tilt_deg": 4.281179608539439
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9022666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.6960000000000001,
+          "last_second_peak_speed_m_s": 0.16246181449903496,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.03130979073229252,
+          "median_velocity_to_command_vx_wz": [
+            1.070157080809567,
+            -0.0163998543990062
+          ],
+          "estimator_mae": [
+            0.19439771749329135,
+            0.24861313580923888
+          ],
+          "estimator_rmse": [
+            0.3172308994407966,
+            0.3621444690055038
+          ]
+        },
+        {
+          "id": "016_tr_load_zero_2",
+          "scene": "tr_load",
+          "arm": "grasp_hold",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 9453,
+            "wheel_n": [
+              145.59000359108924,
+              93.49283273423309,
+              91.41895540061391,
+              96.45969014930225
+            ],
+            "tilt_deg": 5.000915092769724
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.9972,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.024,
+          "last_second_peak_speed_m_s": 0.009669013439016558,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.008949710234285842,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.0969990672991311,
+            0.1616148407272558
+          ],
+          "estimator_rmse": [
+            0.21306763508011767,
+            0.25575780562866846
+          ]
+        },
+        {
+          "id": "017_tr_load_forward_stop_3",
+          "scene": "tr_load",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "persistent_saturation",
+            "step": 4834,
+            "wheel_n": [
+              130.67718037852134,
+              79.04277551106682,
+              125.94879634215044,
+              97.29213047935256
+            ],
+            "tilt_deg": 1.7666115708635444
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.6995333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 4.11,
+          "last_second_peak_speed_m_s": 0.18991188683320906,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.3157958866566194,
+          "median_velocity_to_command_vx_wz": [
+            0.8932821083535696,
+            null
+          ],
+          "estimator_mae": [
+            0.18833183780757523,
+            0.3173461070400902
+          ],
+          "estimator_rmse": [
+            0.3379405167521804,
+            0.45491462688703904
+          ]
+        },
+        {
+          "id": "018_tr_load_reverse_stop_0",
+          "scene": "tr_load",
+          "arm": "stowed",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4386,
+            "wheel_n": [
+              16.047100549339326,
+              342.68934333875205,
+              296.8573498579395,
+              15.297989236451457
+            ],
+            "tilt_deg": 5.007187759345906
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4222,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 11.018,
+          "last_second_peak_speed_m_s": 0.2577098879096212,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.050396896809318886,
+          "median_velocity_to_command_vx_wz": [
+            1.7329943052179315,
+            null
+          ],
+          "estimator_mae": [
+            0.4040299122124324,
+            0.5235258129553113
+          ],
+          "estimator_rmse": [
+            0.5873348232500893,
+            0.7109709304809119
+          ]
+        },
+        {
+          "id": "019_tr_load_left_turn_stop_1",
+          "scene": "tr_load",
+          "arm": "pregrasp_hold",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 6121,
+            "wheel_n": [
+              255.4117556086175,
+              8.769832579835079,
+              11.378910276999894,
+              187.40071859881175
+            ],
+            "tilt_deg": 5.00402049991809
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.6950666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.6880000000000001,
+          "last_second_peak_speed_m_s": 0.2559299753997188,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.38226364537459295,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            1.0230901450882497
+          ],
+          "estimator_mae": [
+            0.21954941671121803,
+            0.4477054361408227
+          ],
+          "estimator_rmse": [
+            0.3776467774949012,
+            0.5825261822715535
+          ]
+        },
+        {
+          "id": "020_tr_load_right_turn_stop_2",
+          "scene": "tr_load",
+          "arm": "grasp_hold",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4173,
+            "wheel_n": [
+              135.88598097374236,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "tilt_deg": 0.5431412542862437
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.27666666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 20.88,
+          "last_second_peak_speed_m_s": 0.0009830180772377594,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.00950791832386604,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            2.738629464987512
+          ],
+          "estimator_mae": [
+            7.603858181834677,
+            7.832370307352874
+          ],
+          "estimator_rmse": [
+            10.29092145234882,
+            10.67723425536139
+          ]
+        },
+        {
+          "id": "021_tr_load_forward_left_stop_3",
+          "scene": "tr_load",
+          "arm": "complete_pull_or_push_segment",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 6782,
+            "wheel_n": [
+              144.68861650277432,
+              76.50038674386296,
+              74.62771807471091,
+              105.57029131604644
+            ],
+            "tilt_deg": 5.003957064012317
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8997333333333334,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.10200000000000001,
+          "last_second_peak_speed_m_s": 0.005880090125488826,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.016124248492835037,
+          "median_velocity_to_command_vx_wz": [
+            1.118917677238601,
+            1.2516846611271133
+          ],
+          "estimator_mae": [
+            0.10684551670117798,
+            0.3249445303810341
+          ],
+          "estimator_rmse": [
+            0.20070623652968667,
+            0.4372560213339246
+          ]
+        },
+        {
+          "id": "022_tr_load_forward_right_stop_0",
+          "scene": "tr_load",
+          "arm": "stowed",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "persistent_saturation",
+            "step": 1309,
+            "wheel_n": [
+              191.09430519314537,
+              38.91821086131357,
+              29.96135969895727,
+              177.6173733217527
+            ],
+            "tilt_deg": 2.6588992642142215
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.10333333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 24.84,
+          "last_second_peak_speed_m_s": 0.2118429189674715,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.08569558219387768,
+          "median_velocity_to_command_vx_wz": [
+            0.1318352009046896,
+            4.553909309534073
+          ],
+          "estimator_mae": [
+            7.408740261170584,
+            8.805244399758482
+          ],
+          "estimator_rmse": [
+            8.744093033395838,
+            10.443475724062138
+          ]
+        },
+        {
+          "id": "023_tr_load_alternating_motion_stop_1",
+          "scene": "tr_load",
+          "arm": "pregrasp_hold",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4051,
+            "wheel_n": [
+              115.95262039541173,
+              126.68855304131152,
+              139.64566873835932,
+              0.0
+            ],
+            "tilt_deg": 2.030500887772053
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7296666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.682,
+          "last_second_peak_speed_m_s": 0.7928366970076911,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.386392135457461,
+          "median_velocity_to_command_vx_wz": [
+            1.2376936536445524,
+            1.2164119873280694
+          ],
+          "estimator_mae": [
+            0.20838375734599202,
+            0.45448179729063365
+          ],
+          "estimator_rmse": [
+            0.36539999134593826,
+            0.6131893368975101
+          ]
+        },
+        {
+          "id": "024_va_pose_zero_3",
+          "scene": "va_pose",
+          "arm": "complete_pull_or_push_segment",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2985,
+            "wheel_n": [
+              221.72566820416327,
+              5.726906255313779,
+              0.0,
+              209.85319279968468
+            ],
+            "tilt_deg": 0.12792218646010323
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.18666666666666668,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 24.13,
+          "last_second_peak_speed_m_s": 0.0008641492123803555,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.0010025535262985993,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.16140180579130847,
+            0.22698368842103445
+          ],
+          "estimator_rmse": [
+            0.2417651403547085,
+            0.26479626358257796
+          ]
+        },
+        {
+          "id": "025_va_pose_forward_stop_0",
+          "scene": "va_pose",
+          "arm": "stowed",
+          "command": "forward_stop",
+          "success": true,
+          "first_failure": null,
+          "physics_steps": 15000,
+          "supported_fraction": 0.999,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.016,
+          "last_second_peak_speed_m_s": 0.0016080245327856465,
+          "final_sustained_settle_delay_from_stop_s": 0.41799999999999926,
+          "max_stop_drift_m": 0.004672180402009948,
+          "median_velocity_to_command_vx_wz": [
+            0.9721396037210455,
+            null
+          ],
+          "estimator_mae": [
+            0.07805594247211979,
+            0.05937481350104478
+          ],
+          "estimator_rmse": [
+            0.17542181837940693,
+            0.1441182030301393
+          ]
+        },
+        {
+          "id": "026_va_pose_reverse_stop_1",
+          "scene": "va_pose",
+          "arm": "pregrasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2421,
+            "wheel_n": [
+              335.87469349682686,
+              0.0,
+              0.0,
+              464.8746327943533
+            ],
+            "tilt_deg": 2.4075828022489216
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.16953333333333334,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 21.52,
+          "last_second_peak_speed_m_s": 9.838094968040233e-05,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.5140706396748964,
+          "median_velocity_to_command_vx_wz": [
+            0.5695483418489748,
+            null
+          ],
+          "estimator_mae": [
+            0.2687120798959683,
+            0.3655813909955541
+          ],
+          "estimator_rmse": [
+            0.3724517551863175,
+            0.5203193079340238
+          ]
+        },
+        {
+          "id": "027_va_pose_left_turn_stop_2",
+          "scene": "va_pose",
+          "arm": "grasp_hold",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4173,
+            "wheel_n": [
+              0.0,
+              17.307182195404476,
+              18.783742354025662,
+              0.0
+            ],
+            "tilt_deg": 4.882174658919903
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.2925333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 5.738,
+          "last_second_peak_speed_m_s": 0.0009713421466185724,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.053262305341510184,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -0.38147352029004433
+          ],
+          "estimator_mae": [
+            0.3012388697249059,
+            0.4466712597925859
+          ],
+          "estimator_rmse": [
+            0.3960645188044911,
+            0.6579693260878352
+          ]
+        },
+        {
+          "id": "028_va_pose_right_turn_stop_3",
+          "scene": "va_pose",
+          "arm": "complete_pull_or_push_segment",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "persistent_saturation",
+            "step": 3206,
+            "wheel_n": [
+              113.4550176732336,
+              103.61871523372548,
+              73.42716675252714,
+              132.3168055307201
+            ],
+            "tilt_deg": 3.7951245250453582
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.18573333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 23.378,
+          "last_second_peak_speed_m_s": 0.3282192875527833,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.2418123959851051,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            0.004188403867639644
+          ],
+          "estimator_mae": [
+            8.560325277530106,
+            9.36224714749519
+          ],
+          "estimator_rmse": [
+            11.040773798942936,
+            12.19344205370878
+          ]
+        },
+        {
+          "id": "029_va_pose_forward_left_stop_0",
+          "scene": "va_pose",
+          "arm": "stowed",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": null,
+          "physics_steps": 15000,
+          "supported_fraction": 0.9958666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.032,
+          "last_second_peak_speed_m_s": 0.0014309050553685584,
+          "final_sustained_settle_delay_from_stop_s": 1.9200000000000017,
+          "max_stop_drift_m": 0.0018862010141000786,
+          "median_velocity_to_command_vx_wz": [
+            1.000719027590717,
+            -0.02797447549932347
+          ],
+          "estimator_mae": [
+            0.06934531088478302,
+            0.09579776418546529
+          ],
+          "estimator_rmse": [
+            0.17330756842918693,
+            0.16825080607643828
+          ]
+        },
+        {
+          "id": "030_va_pose_forward_right_stop_1",
+          "scene": "va_pose",
+          "arm": "pregrasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 3438,
+            "wheel_n": [
+              189.8985519993892,
+              32.98197970805547,
+              0.0,
+              160.554494295894
+            ],
+            "tilt_deg": 5.004692392153455
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.21666666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 22.514,
+          "last_second_peak_speed_m_s": 0.44990612428790283,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.1295192946624214,
+          "median_velocity_to_command_vx_wz": [
+            0.0019074883020712783,
+            -0.025961632176751955
+          ],
+          "estimator_mae": [
+            5.7824353775949,
+            6.430519354144805
+          ],
+          "estimator_rmse": [
+            7.743768606367804,
+            8.661428098228846
+          ]
+        },
+        {
+          "id": "031_va_pose_alternating_motion_stop_2",
+          "scene": "va_pose",
+          "arm": "grasp_hold",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 3485,
+            "wheel_n": [
+              44.54873588029759,
+              349.7735849529095,
+              0.0,
+              112.53888165993123
+            ],
+            "tilt_deg": 2.958208321780565
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5464666666666667,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 9.884,
+          "last_second_peak_speed_m_s": 0.02248535914865735,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.07909430900873703,
+          "median_velocity_to_command_vx_wz": [
+            0.9318307036120412,
+            -0.20691984307954858
+          ],
+          "estimator_mae": [
+            0.19669011514405127,
+            0.27064396440982075
+          ],
+          "estimator_rmse": [
+            0.286563739726869,
+            0.3868349727019224
+          ]
+        },
+        {
+          "id": "032_te_combination_zero_0",
+          "scene": "te_combination",
+          "arm": "stowed",
+          "command": "zero",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 3394,
+            "wheel_n": [
+              216.14867872019352,
+              7.087689000698705,
+              0.0,
+              206.12610584562754
+            ],
+            "tilt_deg": 0.01722159603260115
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8389333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.246,
+          "last_second_peak_speed_m_s": 1.0094001702864683,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.5150032791916535,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            null
+          ],
+          "estimator_mae": [
+            0.2668833475736614,
+            0.53895694168984
+          ],
+          "estimator_rmse": [
+            0.46357007969420433,
+            0.7078199548616817
+          ]
+        },
+        {
+          "id": "033_te_combination_forward_stop_1",
+          "scene": "te_combination",
+          "arm": "pregrasp_hold",
+          "command": "forward_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 6087,
+            "wheel_n": [
+              214.16924959717994,
+              0.0,
+              160.9101695143931,
+              67.89933942805158
+            ],
+            "tilt_deg": 3.187068047693325
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7907333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 1.58,
+          "last_second_peak_speed_m_s": 0.0067404443114962055,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.04922055104890897,
+          "median_velocity_to_command_vx_wz": [
+            0.841341261398852,
+            null
+          ],
+          "estimator_mae": [
+            0.12422161304158302,
+            0.34082768977031175
+          ],
+          "estimator_rmse": [
+            0.23390914830069662,
+            0.42233116930016995
+          ]
+        },
+        {
+          "id": "034_te_combination_reverse_stop_2",
+          "scene": "te_combination",
+          "arm": "grasp_hold",
+          "command": "reverse_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4478,
+            "wheel_n": [
+              104.29827019911926,
+              131.67342507427384,
+              156.0150001831722,
+              27.36339415119566
+            ],
+            "tilt_deg": 5.001754486178145
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.5114,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 9.276,
+          "last_second_peak_speed_m_s": 0.14104353980394685,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.7130162787258914,
+          "median_velocity_to_command_vx_wz": [
+            1.0713007608543017,
+            null
+          ],
+          "estimator_mae": [
+            0.4574094867484061,
+            0.5484925461124416
+          ],
+          "estimator_rmse": [
+            0.8719988969376231,
+            0.906205174106705
+          ]
+        },
+        {
+          "id": "035_te_combination_left_turn_stop_3",
+          "scene": "te_combination",
+          "arm": "complete_pull_or_push_segment",
+          "command": "left_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 5835,
+            "wheel_n": [
+              132.05832880564898,
+              97.96640533891004,
+              86.51583277798258,
+              103.0590198977322
+            ],
+            "tilt_deg": 5.003293600181185
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.48593333333333333,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 8.700000000000001,
+          "last_second_peak_speed_m_s": 0.32958489192555807,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.5847313414518224,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            1.1272909881114044
+          ],
+          "estimator_mae": [
+            0.3633825409761309,
+            0.5306395997761865
+          ],
+          "estimator_rmse": [
+            0.6233992507020956,
+            0.7518653190419575
+          ]
+        },
+        {
+          "id": "036_te_combination_right_turn_stop_0",
+          "scene": "te_combination",
+          "arm": "stowed",
+          "command": "right_turn_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 7229,
+            "wheel_n": [
+              122.77159570478952,
+              0.0,
+              0.0,
+              124.12132974656917
+            ],
+            "tilt_deg": 0.7728669256606363
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.4552,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 15.08,
+          "last_second_peak_speed_m_s": 0.5578067754156277,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.22122944035497524,
+          "median_velocity_to_command_vx_wz": [
+            null,
+            -0.03826387157305643
+          ],
+          "estimator_mae": [
+            3.572016587108206,
+            3.8317726481709613
+          ],
+          "estimator_rmse": [
+            6.204651612660381,
+            6.661265028383582
+          ]
+        },
+        {
+          "id": "037_te_combination_forward_left_stop_1",
+          "scene": "te_combination",
+          "arm": "pregrasp_hold",
+          "command": "forward_left_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 4200,
+            "wheel_n": [
+              226.23369813087626,
+              0.0,
+              168.67532610858413,
+              21.941747238442037
+            ],
+            "tilt_deg": 1.588380719028696
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.7038666666666666,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.404,
+          "last_second_peak_speed_m_s": 0.12831823440254117,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.06611567229823476,
+          "median_velocity_to_command_vx_wz": [
+            1.0849443528434732,
+            1.7992630560719778
+          ],
+          "estimator_mae": [
+            0.1605612325807336,
+            0.4940428887816136
+          ],
+          "estimator_rmse": [
+            0.24629700879545988,
+            0.6108451637119982
+          ]
+        },
+        {
+          "id": "038_te_combination_forward_right_stop_2",
+          "scene": "te_combination",
+          "arm": "grasp_hold",
+          "command": "forward_right_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 2171,
+            "wheel_n": [
+              233.47411272965493,
+              0.0,
+              31.275406286499905,
+              167.92231071851248
+            ],
+            "tilt_deg": 2.5524014114785505
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.1826,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 23.882,
+          "last_second_peak_speed_m_s": 0.24983628973557223,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.15597085275427308,
+          "median_velocity_to_command_vx_wz": [
+            0.6423992266191063,
+            4.44160320174454
+          ],
+          "estimator_mae": [
+            6.799723339054861,
+            7.8848250852031585
+          ],
+          "estimator_rmse": [
+            8.290577601398473,
+            9.69203591339682
+          ]
+        },
+        {
+          "id": "039_te_combination_alternating_motion_stop_3",
+          "scene": "te_combination",
+          "arm": "complete_pull_or_push_segment",
+          "command": "alternating_motion_stop",
+          "success": false,
+          "first_failure": {
+            "reason": "wheel_support_or_tilt",
+            "step": 10793,
+            "wheel_n": [
+              0.0,
+              280.5032800857215,
+              179.0983878441055,
+              0.0
+            ],
+            "tilt_deg": 5.007083592600137
+          },
+          "physics_steps": 15000,
+          "supported_fraction": 0.8986,
+          "min_wheel_load_n": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_incomplete_support_s": 0.318,
+          "last_second_peak_speed_m_s": 0.3777568819560994,
+          "final_sustained_settle_delay_from_stop_s": null,
+          "max_stop_drift_m": 0.11980774556211855,
+          "median_velocity_to_command_vx_wz": [
+            1.0530878780284685,
+            0.5441493052021382
+          ],
+          "estimator_mae": [
+            0.15030716243845593,
+            0.3850669305229549
+          ],
+          "estimator_rmse": [
+            0.26466940308701137,
+            0.5653153175203853
+          ]
+        }
+      ]
     }
   ],
   "estimator_error_units": [
@@ -4394,5 +9529,5 @@
   "arm_moving_definition": "any actual arm joint speed exceeds 0.01 rad/s",
   "extra_optimizer_updates": 0,
   "physical_steps": 0,
-  "offline_estimator_evaluations": 180000
+  "offline_estimator_evaluations": 360000
 }
