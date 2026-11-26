@@ -1,15 +1,15 @@
 {
-  "as_of_beijing": "2026-11-26T12:29:35+08:00",
+  "as_of_beijing": "2026-11-26T13:15:52+08:00",
   "low_updates": 60000,
-  "B_high_updates": 108352,
+  "B_high_updates": 116416,
   "B_updates_by_stage": {
-    "bc": 67584,
-    "bridge": 19800,
-    "paired": 16192,
+    "bc": 73728,
+    "bridge": 21600,
+    "paired": 18112,
     "wm": 15000,
     "warm": 24576
   },
-  "B_primary_high_updates": 108352,
+  "B_primary_high_updates": 116416,
   "B_cost_sensitivity_updates": 0,
   "C_diagnostic_model_queries": {
     "C_cap_calibration": 5664,
@@ -17,22 +17,22 @@
     "C_local_fp64_direction": 2432,
     "C_short_recovery": 14084
   },
-  "B_training_model_queries": 851968,
+  "B_training_model_queries": 2818048,
   "C_training_model_queries": 5101443,
   "C_actor_updates": 7680,
   "wm_updates": 15000,
-  "bridge_updates": 20400,
+  "bridge_updates": 22200,
   "critic_updates": 0,
-  "completed_episodes": 2285,
-  "episode_substeps": 27705764,
+  "completed_episodes": 2404,
+  "episode_substeps": 29357383,
   "extra_substeps": {
     "C/true_forward_optimization": 15622776,
     "C/short_recovery_evaluation": 140461,
     "C/directional_check": 5120,
-    "B/true_forward_optimization": 8519680,
+    "B/true_forward_optimization": 28180480,
     "performance/native_replay_and_judge_checks": 78594
   },
-  "accounted_native_substeps": 52072395,
+  "accounted_native_substeps": 73384814,
   "physical_by_group": {
     "A/command_teacher": {
       "cases": 96,
@@ -77,28 +77,28 @@
       "native_substeps": 2465106
     },
     "B/rounds/r01/development": {
-      "cases": 56,
+      "cases": 72,
       "success": 0,
-      "ordered_events": 9,
-      "native_substeps": 505020
+      "ordered_events": 15,
+      "native_substeps": 716182
     },
     "B/rounds/r02/collect": {
-      "cases": 144,
+      "cases": 216,
       "success": 0,
-      "ordered_events": 443,
-      "native_substeps": 1735331
+      "ordered_events": 672,
+      "native_substeps": 2759710
     },
     "B/rounds/r02/development": {
-      "cases": 48,
+      "cases": 56,
       "success": 0,
-      "ordered_events": 3,
-      "native_substeps": 343196
+      "ordered_events": 5,
+      "native_substeps": 443564
     },
     "B/rounds/r03/collect": {
-      "cases": 144,
+      "cases": 167,
       "success": 1,
-      "ordered_events": 422,
-      "native_substeps": 1607275
+      "ordered_events": 497,
+      "native_substeps": 1922985
     },
     "B/rounds/r03/development": {
       "cases": 48,
@@ -540,13 +540,13 @@
       "method": "H9-WM",
       "seed": 1702,
       "round": 1,
-      "retained": 64,
-      "paid": 64,
+      "retained": 512,
+      "paid": 512,
       "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/H9-WM/seed1702/paired",
-      "native_substeps": 655360,
-      "model_queries": 65536,
-      "full": null,
-      "deploy": null
+      "native_substeps": 5242880,
+      "model_queries": 524288,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/H9-WM/seed1702/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/H9-WM/seed1702/paired/deploy.pt"
     },
     {
       "stage": "bc",
@@ -579,13 +579,13 @@
       "method": "H9-WM",
       "seed": 1703,
       "round": 1,
-      "retained": 256,
-      "paid": 256,
+      "retained": 512,
+      "paid": 512,
       "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/H9-WM/seed1703/paired",
-      "native_substeps": 2621440,
-      "model_queries": 262144,
-      "full": null,
-      "deploy": null
+      "native_substeps": 5242880,
+      "model_queries": 524288,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/H9-WM/seed1703/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r01/H9-WM/seed1703/paired/deploy.pt"
     },
     {
       "stage": "wm",
@@ -859,6 +859,123 @@
       "model_queries": 0,
       "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9/seed1703/paired/full.pt",
       "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9/seed1703/paired/deploy.pt"
+    },
+    {
+      "stage": "bc",
+      "method": "H9-WM",
+      "seed": 1701,
+      "round": 2,
+      "retained": 2048,
+      "paid": 2048,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1701/bc",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1701/bc/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1701/bc/deploy.pt"
+    },
+    {
+      "stage": "bridge",
+      "method": null,
+      "seed": 1701,
+      "round": 2,
+      "retained": 600,
+      "paid": 600,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1701/bridge",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": null,
+      "deploy": null
+    },
+    {
+      "stage": "paired",
+      "method": "H9-WM",
+      "seed": 1701,
+      "round": 2,
+      "retained": 512,
+      "paid": 512,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1701/paired",
+      "native_substeps": 5242880,
+      "model_queries": 524288,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1701/paired/deploy.pt"
+    },
+    {
+      "stage": "bc",
+      "method": "H9-WM",
+      "seed": 1702,
+      "round": 2,
+      "retained": 2048,
+      "paid": 2048,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1702/bc",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1702/bc/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1702/bc/deploy.pt"
+    },
+    {
+      "stage": "bridge",
+      "method": null,
+      "seed": 1702,
+      "round": 2,
+      "retained": 600,
+      "paid": 600,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1702/bridge",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": null,
+      "deploy": null
+    },
+    {
+      "stage": "paired",
+      "method": "H9-WM",
+      "seed": 1702,
+      "round": 2,
+      "retained": 192,
+      "paid": 192,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1702/paired",
+      "native_substeps": 1966080,
+      "model_queries": 196608,
+      "full": null,
+      "deploy": null
+    },
+    {
+      "stage": "bc",
+      "method": "H9-WM",
+      "seed": 1703,
+      "round": 2,
+      "retained": 2048,
+      "paid": 2048,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1703/bc",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1703/bc/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1703/bc/deploy.pt"
+    },
+    {
+      "stage": "bridge",
+      "method": null,
+      "seed": 1703,
+      "round": 2,
+      "retained": 600,
+      "paid": 600,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1703/bridge",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": null,
+      "deploy": null
+    },
+    {
+      "stage": "paired",
+      "method": "H9-WM",
+      "seed": 1703,
+      "round": 2,
+      "retained": 512,
+      "paid": 512,
+      "path": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1703/paired",
+      "native_substeps": 5242880,
+      "model_queries": 524288,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1703/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r02/H9-WM/seed1703/paired/deploy.pt"
     },
     {
       "stage": "wm",

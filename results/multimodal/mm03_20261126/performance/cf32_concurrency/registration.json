@@ -1,0 +1,30 @@
+{
+  "registered_beijing": "2026-11-26T13:03:44+08:00",
+  "round": 2,
+  "stage": "H9-WM/paired CF32 on-policy native MuJoCo 3.3.0",
+  "baseline": {
+    "B": 6,
+    "B_CF": 8,
+    "B_CF_slots": 2,
+    "B_GPU": 3
+  },
+  "challenger": {
+    "B": 4,
+    "B_CF": 6,
+    "B_CF_slots": 3,
+    "B_GPU": 3
+  },
+  "windows_each": 3,
+  "seconds_each": 60,
+  "primary": "total newly journaled unique actual optimizer updates divided by elapsed minutes",
+  "secondary": [
+    "executed native substeps/s",
+    "cost per update",
+    "GPU utilization",
+    "peak GPU and cgroup memory",
+    "per-seed updates and partial windows"
+  ],
+  "budget": "ordinary registered work only. Three fine-tuning seeds; same batch 256 BC, 32 model anchors and 32-control horizon, 10 native 2ms substeps when complete. Start third comparison after every seed has advanced with the new worker widths; all measured applications count toward the existing 512 per seed per round.",
+  "selection": "Keep faster pooled updates/min among stable configurations. A near tie (<3% relative) warrants an additional same-duration comparison when needed. On regression use receipt-bound drainage; never interrupt an in-flight solver/optimizer.",
+  "new_blind": "closed"
+}

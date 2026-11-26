@@ -1,43 +1,40 @@
 {
-  "B": 6,
+  "B": 4,
   "C": 8,
-  "B_CF": 8,
+  "B_CF": 6,
   "B_GPU": 3,
-  "B_CF_slots": 2,
-  "changed_beijing": "2026-11-26T12:16:52+08:00",
-  "reason": "CF32 won. Two independent, single-writer seed pools of eight plus six ordinary workers share 22 native slots. The old single-CF period used 5.5–6.3 of 25 CPU cores, 57.5 GiB anon; new verified compact native models cover all 12 train configurations. The second native pool checks live RAM and GPU headroom before admission.",
+  "B_CF_slots": 3,
+  "changed_beijing": "2026-11-26T13:06:46+08:00",
+  "reason": "Measure three independent H9-WM CF32 seeds on the same 25-core allocation: three native pools of six plus four ordinary workers.",
   "A_finished": true,
   "C_finished": true,
   "candidates_frozen": false,
   "previous": {
-    "B": 9,
+    "B": 4,
     "C": 8,
-    "B_CF": 8,
+    "B_CF": 6,
     "B_GPU": 3,
-    "B_CF_slots": 1
+    "B_CF_slots": 2
   },
   "B_throughput_before": {
-    "partition": "rounds/r06/collect",
+    "partition": "rounds/r02/collect",
     "cases_done": 24,
     "planned": 24,
-    "workers": 9,
+    "workers": 6,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 72.54846444353461,
+    "wall_s": 88.12000265531242,
     "completed_here": 24,
-    "steps_here": 325648,
-    "steps_s": 4488.695970311763,
+    "steps_here": 348282,
+    "steps_s": 3952.360298516212,
     "resumed_cases": 0,
     "processes": [
-      426798,
-      426801,
-      426802,
-      426803,
-      426804,
-      426805,
-      426806,
-      426807,
-      426808
+      431345,
+      431348,
+      431349,
+      431350,
+      431351,
+      431352
     ]
   },
   "A_last_batch": {
@@ -55,18 +52,18 @@
     "timestamp": "2026-11-26T02:55:24.053452+00:00"
   },
   "central_inference": {
-    "calls": 688494,
-    "forwards": 375505,
-    "max_batch": 12,
-    "mean_batch": 1.8335148666462497,
-    "queue_wait_mean_ms": 1.531096553031506,
+    "calls": 110771,
+    "forwards": 74864,
+    "max_batch": 6,
+    "mean_batch": 1.4796297285744817,
+    "queue_wait_mean_ms": 1.2161821118900162,
     "device": "cuda",
-    "queued": 2,
-    "models": 20,
-    "graph_calls": 364891,
-    "cached_graphs": 48,
+    "queued": 0,
+    "models": 3,
+    "graph_calls": 74864,
+    "cached_graphs": 18,
     "coalesce_ms": 0.7,
-    "peak_torch_allocated_bytes": 1123682304,
-    "pid": 421100
+    "peak_torch_allocated_bytes": 644914176,
+    "pid": 430836
   }
 }

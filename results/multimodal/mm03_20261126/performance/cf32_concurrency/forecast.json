@@ -1,0 +1,138 @@
+{
+  "as_of_beijing": "2026-11-26T13:13:12+08:00",
+  "selected": "three",
+  "CF_updates_min": 71.9999432407767,
+  "trained_CF_by_package": {
+    "B/rounds/r01/H9-WM/seed1701/paired/applied.jsonl": 512,
+    "B/rounds/r01/H9-WM/seed1702/paired/applied.jsonl": 512,
+    "B/rounds/r01/H9-WM/seed1703/paired/applied.jsonl": 512,
+    "B/rounds/r02/H9-WM/seed1701/paired/applied.jsonl": 511,
+    "B/rounds/r02/H9-WM/seed1702/paired/applied.jsonl": 147,
+    "B/rounds/r02/H9-WM/seed1703/paired/applied.jsonl": 509
+  },
+  "paid_CF_to_date": 2703,
+  "ordinary_workers": 4,
+  "observed_mean_case_s": {
+    "collect_pure": 14.469480115742911,
+    "collect_prefix": 30.393726187129875,
+    "development": 12.648339366963642,
+    "regression": 11.560093137218306
+  },
+  "cohort_utilization": {
+    "development": 0.5384917536889302,
+    "collect": 0.7167079013911173,
+    "regression": 0.5293042973812383
+  },
+  "measured_ordinary_gpu_stage_s": {
+    "wm": 29.757049798965454,
+    "bc": 54.069254994392395,
+    "bridge": 6.782479524612427,
+    "paired": 6.334992527961731
+  },
+  "round4_progress": true,
+  "fourth_round_improved": [
+    {
+      "method": "H9",
+      "seed": 1702,
+      "more_success": false,
+      "lost_successes": [],
+      "improved_tasks": [
+        [
+          "pull",
+          15
+        ],
+        [
+          "pull",
+          25
+        ]
+      ],
+      "progress": true
+    }
+  ],
+  "first_eight": {
+    "rounds": 8,
+    "terminal_scoring_included": false,
+    "remaining_CF_updates": 9585,
+    "CF_hours_at_steady_measured_rate": 2.218751749092027,
+    "ordinary_pending_cases": {
+      "collect_pure": 360,
+      "collect_prefix": 360,
+      "development": 312,
+      "regression": 240
+    },
+    "ordinary_native_reference_hours_by_kind": {
+      "collect_pure": 0.5047202663615786,
+      "collect_prefix": 1.0601852626480115,
+      "development": 0.5089165267128445,
+      "regression": 0.36400274833753454
+    },
+    "ordinary_pending_stages": {
+      "wm": 9,
+      "bc": 36,
+      "bridge": 36,
+      "paired": 18
+    },
+    "ordinary_gpu_stage_hours_if_serial": 0.7145849323272705,
+    "terminal_extra_hours": [
+      0.0,
+      0.0
+    ],
+    "hours_from_observation": [
+      3.4661421990269754,
+      5.892856378689528
+    ],
+    "range_beijing": [
+      "2026-11-26T16:30+08:00",
+      "2026-11-26T19:30+08:00"
+    ]
+  },
+  "possible_final_at_twelve": {
+    "rounds": 12,
+    "terminal_scoring_included": true,
+    "remaining_CF_updates": 15729,
+    "CF_hours_at_steady_measured_rate": 3.640975092484976,
+    "ordinary_pending_cases": {
+      "collect_pure": 792,
+      "collect_prefix": 792,
+      "development": 600,
+      "regression": 420
+    },
+    "ordinary_native_reference_hours_by_kind": {
+      "collect_pure": 1.110384585995473,
+      "collect_prefix": 2.332407577825626,
+      "development": 0.9786856282939317,
+      "regression": 0.6370048095906855
+    },
+    "ordinary_pending_stages": {
+      "wm": 21,
+      "bc": 72,
+      "bridge": 72,
+      "paired": 42
+    },
+    "ordinary_gpu_stage_hours_if_serial": 1.4645257270336152,
+    "terminal_extra_hours": [
+      0.524319851662777,
+      1.0406455419561014
+    ],
+    "hours_from_observation": [
+      7.215470222249804,
+      11.863223283888402
+    ],
+    "range_beijing": [
+      "2026-11-26T20:00+08:00",
+      "2026-11-27T01:30+08:00"
+    ]
+  },
+  "additional_four_h": [
+    3.2387243867174558,
+    4.929721363242773
+  ],
+  "assumptions": "Steady paired hours divide pending updates by the selected observed updates/min. The favorable/conservative scenarios use 95%/78% of the observed pairing rate, native case work x0.95/x1.25, overlap of 70%/35% of the shorter native/paired component, and 2.5/1.6 effective GPU fit slots. Cases may get longer as control improves. Round-12 close requires both rounds 8 and 12 to qualify for the registered plateau. Estimates are not job deadlines.",
+  "budget": {
+    "extra_training_updates": 0,
+    "extra_native_steps_outside_registration": 0,
+    "formal_cases": 324,
+    "cost_sensitivity_cases": 60,
+    "isolated_teacher_cases": 16
+  }
+}
