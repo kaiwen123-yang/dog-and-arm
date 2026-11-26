@@ -76,13 +76,21 @@ def budgets(root, rows):
         spec=read(f)
         if "stage" not in spec or "output" not in spec:continue
         folder=f.parent
-        rec=read(folder/"receipt.json") or read(folder/"progress.json")
+        receipt=read(folder/"receipt.json")
+        rec=receipt or read(folder/"progress.json")
         if not rec:continue
         retained=int(rec.get("retained",rec.get("step",0)))
+        paid=rec.get("paid",retained)
+        spend=rec.get("paid_model_cost",rec)
+        if not receipt and (folder/"applied.jsonl").is_file():
+            # An optimizer can advance past its most recent durable recovery package.
+            applied=list(lines(folder/"applied.jsonl"))
+            paid=max(paid,len(applied))
+            spend={k:max(spend.get(k,0),sum(row.get(k,0) for row in applied))
+                   for k in ("native_substeps","model_queries")}
         b.append(dict(stage=spec["stage"],method=spec.get("method"),seed=spec.get("seed"),
-            round=spec.get("round",0),retained=retained,paid=rec.get("paid",retained),path=str(folder),
-            native_substeps=rec.get("paid_model_cost",{}).get("native_substeps",rec.get("native_substeps",0)),
-            model_queries=rec.get("paid_model_cost",{}).get("model_queries",rec.get("model_queries",0)),
+            round=spec.get("round",0),retained=retained,paid=paid,path=str(folder),
+            native_substeps=spend.get("native_substeps",0),model_queries=spend.get("model_queries",0),
             full=rec.get("full"),deploy=rec.get("deploy")))
     c=[]
     for f in sorted((root/"C").glob("*/seed*/applications.jsonl")):
@@ -116,6 +124,9 @@ def budgets(root, rows):
         ("full_h9_parity.json","captured_native_substeps"),("partial_direct23_parity.json","captured_native_substeps"),
         ("live_native_overlap.json","actual_diagnostic_substeps"),("cf_profile.json","native_substeps"),
         ("native_wheel_results.json","diagnostic_native_substeps")))
+    recovery=read(latency/"r08_recovery.json")
+    if recovery:
+        additional["B/checkpoint_state_reconstruction"]=recovery["recomputed_native_substeps"]
     high=sum(x["paid"] for x in b if x["stage"] not in ("wm","bridge"))
     high_by_stage=Counter()
     for x in b:
@@ -135,7 +146,8 @@ def budgets(root, rows):
         extra_substeps=additional,accounted_native_substeps=sum(physics.values())+sum(additional.values()),
         physical_by_group=dict(sorted(kinds.items())),A_stages=a,B_stages=b,C_forks=c,C_short=cs,
         C_comparison_bridge=bridge,parity_receipt=parity,
-        accounting="Completed native case receipts and logged optimization/short-window steps. An open episode counts when it commits. Render playback integrates zero steps. Extra diagnostics appear separately.",
+        recovery_optimizer_applications=recovery.get("recomputed_optimizer_applications",0),
+        accounting="Completed native case receipts and logged optimization/short-window steps. An open episode counts when it commits. Render playback integrates zero steps. Recovery recomputation and performance checks are listed separately.",
         hardware_motion_commands=0)
 
 
@@ -312,7 +324,7 @@ def snapshot(root,repo,milestone):
                      "b_ordinary_overlap.json","b_ordinary_lease_test.json","b_ordinary_production_lease.json",
                      "full_h9_parity.json","partial_direct23_parity.json","live_native_overlap.json","cf_profile.json",
                      "native_wheel_results.json","ordinary_tail_trial.json","ordinary_capacity.json","native_loading.json",
-                     "r08_recovery.json","latency_forecast.py","README.md"):
+                     "r08_recovery.json","latency_forecast.py","prepare_latency_evidence.py","README.md"):
             slimcopy(latency/name,evidence/name)
         for test in sorted(latency.glob("r[0-9][0-9]-eight")):
             for name in ("registration.json","baseline.json","challenger.json","decision.json"):
