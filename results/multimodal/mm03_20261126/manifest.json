@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-26T20:38:45+08:00",
+  "as_of_beijing": "2026-11-27T00:00:14+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "r12 工作块",
+  "milestone": "2026-11-27 跨日运行记录",
   "runtime": {
     "supervisor": {
       "pid": 473818,
@@ -178,40 +178,40 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 1886,
+    "samples": 2487,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-26T20:38:28+08:00",
-      "time": 1795696708.429387,
-      "cpu_stat": "usage_usec 11423815869049\nuser_usec 11124494856635\nsystem_usec 299321012413\nnr_periods 21573252\nnr_throttled 150715\nthrottled_usec 82179194487",
+      "beijing": "2026-11-26T23:59:56+08:00",
+      "time": 1795708796.9625344,
+      "cpu_stat": "usage_usec 11532655795540\nuser_usec 11229970556686\nsystem_usec 302685238853\nnr_periods 21694137\nnr_throttled 150715\nthrottled_usec 82179194487",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "70617501696",
+      "ram_bytes": "118787235840",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 181733343232,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 3647, 97887, 0",
+      "disk_free_bytes": 95972392960,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 46103, 97887, 6",
       "inference": {
-        "calls": 2149288,
-        "forwards": 1474760,
+        "calls": 3610224,
+        "forwards": 2511051,
         "max_batch": 12,
-        "mean_batch": 1.4573815400471941,
-        "queue_wait_mean_ms": 1.2897713270779538,
+        "mean_batch": 1.4377342395674162,
+        "queue_wait_mean_ms": 1.2982251017713342,
         "device": "cuda",
         "queued": 1,
         "models": 32,
-        "graph_calls": 1474760,
+        "graph_calls": 2511051,
         "cached_graphs": 48,
         "coalesce_ms": 0.7,
         "peak_torch_allocated_bytes": 1131502080,
         "pid": 473823
       },
       "memory_components_bytes": {
-        "anon": 6850482176,
-        "file": 61947289600,
-        "shmem": 87318528
+        "anon": 54264889344,
+        "file": 63242620928,
+        "shmem": 174678016
       },
       "lane_pids": {
         "inference": 473823,
@@ -229,19 +229,19 @@
     {
       "method": "D23",
       "seed": 1701,
-      "round": 12,
-      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r12/D23/seed1701/paired/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r12/D23/seed1701/paired/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r12/D23/seed1701/paired/receipt.json",
-      "full_sha256": "38eff7e8249697a1b22c222c54694ff9c5b81a7fa2651899142f97f10dea4e59",
-      "deploy_sha256": "d08b56e63bdecbb5f44037e67196d4c3ce5261cc5140fd18d869ecda55530ed7",
+      "round": 15,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r15/D23/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r15/D23/seed1701/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r15/D23/seed1701/paired/receipt.json",
+      "full_sha256": "766a7d19da666336fef184a530f083c34621b310b3bde559a6f7567f7d87e00c",
+      "deploy_sha256": "271df1f5c95d8edaf23b9efebd96f370ecd2592d098b7d1a0718fc53e6556465",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
       "rank": [
         0,
         0,
-        1,
-        -8,
-        -12
+        4,
+        -7,
+        -15
       ],
       "development": [
         {
@@ -256,21 +256,21 @@
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "tr_nominal",
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "tr_nominal",
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "va_pose",
@@ -309,17 +309,19 @@
     {
       "method": "D23",
       "seed": 1702,
-      "round": 0,
-      "full": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1702/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1702/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1702/receipt.json",
+      "round": 14,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r14/D23/seed1702/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r14/D23/seed1702/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r14/D23/seed1702/paired/receipt.json",
+      "full_sha256": "d08fee092c36f36606782764d746e0ee97925408f49a377a37a247e1d94b2a94",
+      "deploy_sha256": "3e469020378a7ca6a374e347c42e3f25ad9ad523a247f85715046dff869b32ac",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt",
       "rank": [
         0,
         0,
-        1,
-        -8,
-        0
+        4,
+        -6,
+        -14
       ],
       "development": [
         {
@@ -327,7 +329,7 @@
           "side": "pull",
           "goal": 15,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "tr_nominal",
@@ -341,25 +343,25 @@
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "tr_nominal",
           "side": "push",
           "goal": 25,
-          "success": false,
-          "events": 0
-        },
-        {
-          "scene": "va_pose",
-          "side": "pull",
-          "goal": 15,
           "success": false,
           "events": 1
         },
         {
           "scene": "va_pose",
           "side": "pull",
+          "goal": 15,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "pull",
           "goal": 25,
           "success": false,
           "events": 0
@@ -376,30 +378,30 @@
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         }
       ],
       "physical_cases": 8,
       "paired_model_updates_at_checkpoint": 0,
-      "initialization_only": true,
+      "initialization_only": false,
       "common_H9_parent": false
     },
     {
       "method": "D23",
       "seed": 1703,
-      "round": 11,
-      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r11/D23/seed1703/paired/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r11/D23/seed1703/paired/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r11/D23/seed1703/paired/receipt.json",
-      "full_sha256": "a237427a39c1493c6cacb234535fdb5e8e4e1864567a725167a5179b9bb883d7",
-      "deploy_sha256": "78dae80b55c184e7c07b5ba0bb126141fb7991190d6708bdc0bc1ea102ace882",
+      "round": 13,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r13/D23/seed1703/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r13/D23/seed1703/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r13/D23/seed1703/paired/receipt.json",
+      "full_sha256": "0d185ad0d400a075b401c1abeefbef9cedaabdbe3d2cb51d6365fa49558cbd46",
+      "deploy_sha256": "c9fd144a7aa0f7f2f13c4de5b215361965f41932af5dd95222ef57f01c262b65",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/deploy.pt",
       "rank": [
         0,
         0,
-        2,
+        4,
         -7,
-        -11
+        -13
       ],
       "development": [
         {
@@ -428,7 +430,7 @@
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "va_pose",
@@ -456,7 +458,7 @@
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         }
       ],
       "physical_cases": 8,
@@ -961,30 +963,22 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r13/collect",
-    "cases_done": 5,
-    "planned": 216,
-    "workers": 12,
+    "partition": "rounds/r16/regression",
+    "cases_done": 20,
+    "planned": 20,
+    "workers": 4,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 16.052868934348226,
-    "completed_here": 5,
-    "steps_here": 27982,
-    "steps_s": 1743.1152097758106,
+    "wall_s": 106.58426853455603,
+    "completed_here": 20,
+    "steps_here": 301079,
+    "steps_s": 2824.7977317814607,
     "resumed_cases": 0,
     "processes": [
-      529605,
-      529608,
-      529609,
-      529610,
-      529611,
-      529612,
-      529613,
-      529614,
-      529615,
-      529616,
-      529617,
-      529618
+      547904,
+      547907,
+      547908,
+      547909
     ]
   },
   "A_current": {
