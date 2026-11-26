@@ -293,12 +293,28 @@ def fill_round(root, r, workers, include_model, selected):
     with ThreadPoolExecutor(max_workers=1) as gpu:
         jobs = [(m,seed,gpu.submit(fit_round,root,r,m,seed,workers,
                 selected if m=="H9-WM" else "C0")) for m,seed in product(METHODS if include_model else BASE, SEEDS)]
+        failed = []
         for method, seed, job in jobs:
-            ck = job.result()
+            try:
+                ck = job.result()
+            except subprocess.CalledProcessError as exc:
+                if exc.returncode==75:
+                    raise
+                # Keep scoring completed independent forks and collecting from them.
+                # Their native workers need not idle while a failed bridge is repaired.
+                failed.append((method,seed))
+                emit(directory / method / f"seed{seed}" / "optimization_error.json",
+                     dict(stage_command=exc.cmd,returncode=exc.returncode,independent_forks_continue=True))
+                continue
             score_round(root,r,method,seed,workers,ck)
             if r<8 or r%4:
-                # The next round is already inside the authorized active work block.
-                # Never start a ninth or later work block before its progress decision.
+                batch(root,collect_jobs(method,seed,r+1,ck / "deploy.pt"),workers)
+        for method, seed in failed:
+            # Perform one receipt-based retry after independent work completed.
+            # Repeated errors return control to the unified launcher and its logs.
+            ck = fit_round(root,r,method,seed,workers,selected if method=="H9-WM" else "C0")
+            score_round(root,r,method,seed,workers,ck)
+            if r<8 or r%4:
                 batch(root,collect_jobs(method,seed,r+1,ck / "deploy.pt"),workers)
 
 

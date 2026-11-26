@@ -383,8 +383,18 @@ def main():
         if s["stage"]!="bridge" or b_root is None:
             raise ValueError(f"Cannot identify the MM03 run for {stage_path}")
         s["root"] = str(b_root.parent)
+    run_root = Path(s["root"])
+    status_file = run_root / "status" / "B.json"
+    if status_file.is_file():
+        unit = read(status_file)
+        ack = run_root / "B" / f'coordinator_refresh_attempt{unit["attempt"]}_ack.json'
+        if unit.get("pid")==os.getppid() and ack.is_file():
+            identity = read(ack)
+            if str(identity["parent_stamp"])==str(unit["pid_stamp"]):
+                print("Prior stage completed the requested coordinator refresh; new stage deferred",flush=True)
+                raise SystemExit(75)
     from scripts.multimodal.mm03_b_rounds import index_warm_candidates
-    index_warm_candidates(Path(s["root"]))
+    index_warm_candidates(run_root)
     torch.set_num_threads(1)
     torch.set_float32_matmul_precision("high")
     torch.cuda.set_device(DEVICE)

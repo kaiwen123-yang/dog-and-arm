@@ -145,7 +145,7 @@ def mirror_records(root,out):
            "B/completion.json","C/parent.json","C/calibration.json","C/directional_response.json",
            "C/directional_local_fp64.json","C/development_anchors.json","C/selection.json","C/bridge/bridge.json",
            "service/upgrade1.json","A/low/summary.json","A/low/development_results.json",
-           "A/cpu_parity/comparison.json","resources/worker_targets.json","B/prefix_p6_parity_pull.json",
+           "A/cpu_parity/comparison.json","A/low/block2_design.json","parent_receipt.json","resources/worker_targets.json","B/low_abi_readback.json","B/prefix_p6_parity_pull.json",
            "B/prefix_p6_parity_push.json","C/native_pool_changes.jsonl")
     for name in small:
         slimcopy(root/name, out/"receipts"/name)

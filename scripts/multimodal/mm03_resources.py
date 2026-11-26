@@ -20,6 +20,8 @@ def update(root, b=None, c=None, reason=None):
         a_done=(root/"A/completion.json").is_file()
         c_done=(root/"C/selection.json").is_file()
         if b is None and c is None:
+            if old and old.get("A_finished")==a_done and old.get("C_finished")==c_done:
+                return old
             if c_done and a_done:
                 target.update(B=15)
                 reason="A and the C native fork matrix have returned their physics slots"

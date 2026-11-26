@@ -197,6 +197,10 @@ def supervise(args):
     cfg_data = read(cfg)
     if cfg_data["root"] != str(root) or cfg_data["repo"]!=str(REPO):
         raise ValueError("Existing run configuration refers to another root or code checkout")
+    if (all(read(state_file(root,n)).get("state")=="complete" for n in LANES)
+            and all((root/name).is_file() for name in ("A/completion.json","B/completion.json","C/selection.json"))):
+        print("Completed MM03 case and training receipts are present. No new workers were started.",flush=True)
+        return 0
     start = dict(pid=os.getpid(),pid_stamp=pid_stamp(os.getpid()),started_beijing=now(),state="running")
     write(state_file(root,"supervisor"),start)
     children, requested = {}, set(UNITS)
