@@ -34,6 +34,8 @@ def module(name, source):
 def implementations(directory, revision):
     if directory is not None and (directory/"mm03_plant.py").is_file():
         module("scripts.multimodal.mm03_plant",(directory/"mm03_plant.py").read_text())
+    if directory is not None and (directory/"mm03_wheel_contacts.py").is_file():
+        module("scripts.multimodal.mm03_wheel_contacts",(directory/"mm03_wheel_contacts.py").read_text())
     paths=("scripts/p6_contacts.py","learning/multimodal/judge.py","scripts/multimodal/mm03_c_native.py")
     impl=[]
     for which in ("old","new"):
@@ -56,7 +58,7 @@ def compare_result(old,new):
 
 def full_case(args):
     root,directory,revision,side,goal,mode=args
-    (old,_),(new,_)=implementations(directory,revision)
+    (old,_),(new,new_branch)=implementations(directory,revision)
     scene=dict(id="tr_nominal",perturbation={})
     cfg=teacher_config(side,goal,scene)
     model=build(cfg)
@@ -66,6 +68,8 @@ def full_case(args):
     source=None if teacher else np.load(action_source,mmap_mode="r")
     judges=[old(model,cfg,side,goal),new(model,cfg,side,goal),new(model,cfg,side,goal)]
     ref,full,short=judges
+    if hasattr(new_branch,"cf_meter"):
+        short.meter=new_branch.cf_meter(short.meter)
     m=ActionMap(model)
     for k in range(len(d.warning.number)):
         d.warning.number[k]=1
@@ -99,7 +103,8 @@ def full_case(args):
     if not (ref.result()==full.result()==short.result()):
         raise AssertionError("Final judge results differ")
     return dict(side=side,goal=goal,mode=mode,physics_steps=ref.steps,events=ref.events,first_failure=ref.failure,
-                success=ref.passed,judges_compared_on_each_substep=3,warning_flags_tested=len(d.warning.number))
+                success=ref.passed,judges_compared_on_each_substep=3,warning_flags_tested=len(d.warning.number),
+                native_wheel_only_hits=getattr(short.meter,"hits",0),original_meter_calls=getattr(short.meter,"fallbacks",0))
 
 
 def cf_windows(root,directory,revision):
@@ -131,6 +136,8 @@ def cf_windows(root,directory,revision):
             with anchor.open("rb") as f:
                 job=pickle.load(f)["parent"]
             new_judge=judge(br.model,br.judge.cfg,job["side"],job["goal"])
+            if hasattr(branch_impl,"cf_meter"):
+                new_judge.meter=branch_impl.cf_meter(new_judge.meter)
             new_judge.__dict__.update(deepcopy({k:getattr(br.judge,k) for k in JUDGE_DYNAMIC}))
             br.judge=new_judge
             br.sensors.image(br.data.qpos,br.data.qvel)

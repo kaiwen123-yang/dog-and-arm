@@ -8,6 +8,11 @@ cd "$repo"
 mkdir -p "$run/logs"
 export PYTHONPATH="$repo:$repo/scripts"
 unset PYTHONHOME
+if [[ -s "$run/performance/20261126-cf-latency/native_wheel_results.json" && -x .venv/bin/python ]]; then
+    if ! .venv/bin/python -m scripts.multimodal.mm03_wheel_contacts --root "$run" >>"$run/logs/native-wheel-reader.log" 2>&1; then
+        printf 'Native wheel reader is optional; load details are in %s.\n' "$run/logs/native-wheel-reader.log"
+    fi
+fi
 publish_repo=${MM03_PUBLISH_REPO:-"$(dirname "$repo")/dog-and-arm-mm03-publish"}
 if [[ -d "$publish_repo" ]] && ! tmux has-session -t "=${session}-publish" 2>/dev/null; then
     printf -v publisher 'cd %q && export MUJOCO_GL=egl OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=%q MM03_INFERENCE_SOCKET=%q && exec %q -u -m scripts.multimodal.mm03_publish watch --root %q --repo %q >>%q 2>&1' \

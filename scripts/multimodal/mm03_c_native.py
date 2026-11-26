@@ -203,6 +203,11 @@ def environment(scene_name, side, goal):
 
 
 class StudentBranch:
+    @staticmethod
+    def cf_meter(original):
+        from scripts.multimodal.mm03_wheel_contacts import wrap
+        return wrap(original)
+
     def __init__(self, path):
         from scripts.multimodal.correction_teacher import restore_physics
         from learning.multimodal.judge import DoorTaskJudge
@@ -212,6 +217,7 @@ class StudentBranch:
         self.model, cfg, self.sensors = environment(job["scene"], job["side"], job["goal"])
         self.data = restore_physics(self.model, anchor["physics"])
         self.judge = DoorTaskJudge(self.model, cfg, job["side"], job["goal"])
+        self.judge.meter = self.cf_meter(self.judge.meter)
         self.judge.__dict__.update(deepcopy(anchor["judge"]))
         self.start_events = len(self.judge.events)
         self.exposure = float(anchor["image_t"])
