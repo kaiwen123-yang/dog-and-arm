@@ -1,5 +1,5 @@
 {
-  "as_of_beijing": "2026-11-26T11:54:17+08:00",
+  "as_of_beijing": "2026-11-26T12:29:35+08:00",
   "observed_cohort": {
     "baseline_round": 2,
     "optimized_round": 4,
@@ -189,6 +189,8 @@
         },
         "last_run_wall_s": 12.557963836938143,
         "previous_same_seed_wall_s": 73.70898330025375,
+        "full_stage_wall_s": 29.757049798965454,
+        "previous_full_stage_wall_s": 83.62106466293335,
         "extra_gradient_evaluations": 1,
         "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r05/wm/seed1701/receipt.json"
       },
@@ -204,6 +206,8 @@
         },
         "last_run_wall_s": 12.569242276251316,
         "previous_same_seed_wall_s": 74.71908607892692,
+        "full_stage_wall_s": 29.873209953308105,
+        "previous_full_stage_wall_s": 84.69466185569763,
         "extra_gradient_evaluations": 1,
         "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r05/wm/seed1702/receipt.json"
       },
@@ -219,6 +223,8 @@
         },
         "last_run_wall_s": 8.16805593110621,
         "previous_same_seed_wall_s": 76.06159785762429,
+        "full_stage_wall_s": 19.07423686981201,
+        "previous_full_stage_wall_s": 85.93895483016968,
         "extra_gradient_evaluations": 1,
         "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r05/wm/seed1703/receipt.json"
       }
@@ -226,13 +232,162 @@
     "validation": "Two actual eager warmup updates and a matching loss/all-gradient check at the first replay of each WM process. Sampling, clipping and the AdamW step retain their registered order."
   },
   "native_dispatch": {
-    "measured_completed_reordered_batches": 8,
-    "counted_new_native_cases": 192,
+    "measured_completed_reordered_batches": 13,
+    "counted_new_native_cases": 312,
     "worker_counts": [
+      9,
       12
     ],
     "source": "/root/autodl-tmp/mm03-20261126/B/native_batch_timings",
     "timing_replay": "dispatch_replay.json"
+  },
+  "native_short_forward": {
+    "warm_worker_speedup": 1.3680154986282307,
+    "matched_original_cases": [
+      {
+        "mode": "teacher",
+        "side": "pull",
+        "goal": 15,
+        "events": 12,
+        "native_substeps": 25092
+      },
+      {
+        "mode": "teacher",
+        "side": "push",
+        "goal": 25,
+        "events": 12,
+        "native_substeps": 27608
+      },
+      {
+        "mode": "D23",
+        "side": "pull",
+        "goal": 15,
+        "events": 0,
+        "native_substeps": 2953
+      },
+      {
+        "mode": "H9",
+        "side": "pull",
+        "goal": 15,
+        "events": 1,
+        "native_substeps": 5661
+      }
+    ],
+    "cached_replay_steps": 7680,
+    "compiled_geometries": 4,
+    "compiled_bytes": 1090488508,
+    "case_configurations": 12
+  },
+  "native_cf_resources": {
+    "B": 6,
+    "C": 8,
+    "B_CF": 8,
+    "B_GPU": 3,
+    "B_CF_slots": 2,
+    "changed_beijing": "2026-11-26T12:16:52+08:00",
+    "reason": "CF32 won. Two independent, single-writer seed pools of eight plus six ordinary workers share 22 native slots. The old single-CF period used 5.5–6.3 of 25 CPU cores, 57.5 GiB anon; new verified compact native models cover all 12 train configurations. The second native pool checks live RAM and GPU headroom before admission.",
+    "A_finished": true,
+    "C_finished": true,
+    "candidates_frozen": false,
+    "previous": {
+      "B": 9,
+      "C": 8,
+      "B_CF": 8,
+      "B_GPU": 3,
+      "B_CF_slots": 1
+    },
+    "B_throughput_before": {
+      "partition": "rounds/r06/collect",
+      "cases_done": 24,
+      "planned": 24,
+      "workers": 9,
+      "launch_workers": 7,
+      "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
+      "wall_s": 72.54846444353461,
+      "completed_here": 24,
+      "steps_here": 325648,
+      "steps_s": 4488.695970311763,
+      "resumed_cases": 0,
+      "processes": [
+        426798,
+        426801,
+        426802,
+        426803,
+        426804,
+        426805,
+        426806,
+        426807,
+        426808
+      ]
+    },
+    "A_last_batch": {
+      "phase": "low_true_velocity_oracle",
+      "complete": 24,
+      "scheduled": 24,
+      "resumed": 0,
+      "case": "006_tr_nominal_forward_right_stop_2",
+      "last_success": false,
+      "last_steps": 15000,
+      "completed_physics_steps": 360000,
+      "active": [],
+      "newly_completed_episodes_s": 0.21457898049087223,
+      "measured_physics_steps_s": 3218.6847073630834,
+      "timestamp": "2026-11-26T02:55:24.053452+00:00"
+    },
+    "central_inference": {
+      "calls": 688494,
+      "forwards": 375505,
+      "max_batch": 12,
+      "mean_batch": 1.8335148666462497,
+      "queue_wait_mean_ms": 1.531096553031506,
+      "device": "cuda",
+      "queued": 2,
+      "models": 20,
+      "graph_calls": 364891,
+      "cached_graphs": 48,
+      "coalesce_ms": 0.7,
+      "peak_torch_allocated_bytes": 1123682304,
+      "pid": 421100
+    }
+  },
+  "paired_native_throughput": {
+    "observed_beijing": "2026-11-26T12:29:19+08:00",
+    "windows": {
+      "single_CF": {
+        "start_epoch": 1795666489.0,
+        "duration_s": 120.0,
+        "actual": {
+          "1701": {
+            "updates": 47,
+            "native_substeps": 481280
+          }
+        },
+        "total_updates": 47,
+        "native_substeps": 481280,
+        "native_substeps_per_s": 4010.6666666666665
+      },
+      "two_CF": {
+        "start_epoch": 1795666656.004716,
+        "duration_s": 120.0,
+        "actual": {
+          "1701": {
+            "updates": 47,
+            "native_substeps": 481280
+          },
+          "1703": {
+            "updates": 51,
+            "native_substeps": 522240
+          }
+        },
+        "total_updates": 98,
+        "native_substeps": 1003520,
+        "native_substeps_per_s": 8362.666666666666
+      }
+    },
+    "native_throughput_ratio": 2.0851063829787235,
+    "scope": "Time of atomic replay delivery for paid, independent H9-WM training updates. Same native 3.3 plant and 32 by 32 paired budget. Counts actual executed substeps.",
+    "extra_native_steps": 0,
+    "extra_optimizer_updates": 0
   },
   "formal_results_source": "physical_cases.jsonl",
   "hardware_motion_commands": 0
