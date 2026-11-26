@@ -14,6 +14,9 @@ class LowPolicy(nn.Module):
         self.register_buffer("feature_std", torch.ones(150))
         self.register_buffer("leg_increment_scale", torch.full((12,), .004))
         self.register_buffer("leg_scale", torch.full((12,), .05))
+        self.register_buffer("stationary_mode", torch.tensor(0, dtype=torch.uint8))
+        self.register_buffer("stationary_bound", torch.ones(12))
+        self.bounded_stationary = False
         self.register_buffer("wheel_loss_scale", torch.full((4,), .1))
         self.register_buffer("velocity_units", torch.tensor([.07, .10]))
         self.estimator = nn.Sequential(nn.Linear(150, 64), nn.SiLU(), nn.Linear(64, 32), nn.SiLU(), nn.Linear(32, 2))
@@ -54,22 +57,52 @@ class LowPolicy(nn.Module):
         # The homogeneous wheel output encodes the registered zero-speed convention.
         prior = x[..., 104:120]
         gate = (rates.abs().sum(-1, keepdim=True) + 8*prior[..., 12:16].abs().mean(-1, keepdim=True)).clamp(max=1.)
-        # This learned residual remains active at zero command and zero wheel
-        # speed. Its final layer starts at exactly zero at the block0 transfer.
-        leg = prior[..., :12] + gate*coefficients[..., :12]*self.leg_increment_scale
-        leg = leg + .04*self.leg_scale*self.stationary(inputs)
+        moving = gate*coefficients[..., :12]*self.leg_increment_scale
+        feedback = self.stationary(inputs)
+        if self.bounded_stationary:
+            # At rest, successive outputs are convex combinations of the last
+            # actual target and a learned absolute position in the training range.
+            absolute = self.stationary_bound*torch.tanh(feedback)
+            leg = .96*prior[..., :12] + .04*absolute + moving
+        else:
+            # Block0 and block1 keep their exact original arithmetic.
+            leg = prior[..., :12] + moving
+            leg = leg + .04*self.leg_scale*feedback
         wheels = rates[..., :1]*coefficients[..., 12:16] + rates[..., 1:]*coefficients[..., 16:20]
         return torch.cat((leg, wheels), -1).clamp(-1., 1.), estimate
 
     def forward(self, history, previous, request, velocity_override=None):
         return self.from_features(self.features(history, previous), request, velocity_override)[0]
 
+    @torch.no_grad()
+    def enable_bounded_stationary(self, teacher_targets):
+        self.stationary_bound.copy_(teacher_targets[:, :12].abs().amax(0).clamp_max(1.))
+        self.stationary_mode.fill_(1)
+        self.bounded_stationary = True
+        # The former final layer represented per-step increments. A zero
+        # absolute head starts at the canonical neutral pose in normalized units.
+        self.stationary[-1].weight.zero_()
+        self.stationary[-1].bias.zero_()
+
+    def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict,
+                              missing_keys, unexpected_keys, error_msgs):
+        # Older standalone and embedded H9 packages predate these two buffers.
+        # Restore their residual mode, and keep strict checks on all other fields.
+        mode_key, bound_key = prefix+"stationary_mode", prefix+"stationary_bound"
+        if mode_key not in state_dict and bound_key not in state_dict:
+            state_dict[mode_key] = torch.zeros_like(self.stationary_mode)
+            state_dict[bound_key] = torch.ones_like(self.stationary_bound)
+        super()._load_from_state_dict(state_dict, prefix, local_metadata, strict,
+                                      missing_keys, unexpected_keys, error_msgs)
+        self.bounded_stationary = bool(self.stationary_mode.item())
+
     def inherit(self, state):
         """Lift the original 20-output L16 into its zero-initialized correction."""
         if "stationary.0.weight" in state:
             self.load_state_dict(state, strict=True)
             return False
-        expected = {k for k in self.state_dict() if k != "leg_scale" and not k.startswith("stationary.")}
+        new_buffers = {"leg_scale", "stationary_mode", "stationary_bound"}
+        expected = {k for k in self.state_dict() if k not in new_buffers and not k.startswith("stationary.")}
         if set(state) != expected or state["control.4.weight"].shape != (20, 64):
             raise ValueError("Unrecognized L16 parent architecture")
         self.load_state_dict(state, strict=False)

@@ -284,6 +284,9 @@ def fill_round(root, r, workers, include_model, selected):
          frame0=sum(x["mode"]=="pure" for x in col), prefixes=sum(x["mode"]=="prefix" for x in col),
          prefix_reached=sum(x["prefix_reached"] is True for x in col),
          substeps=sum(x["physics_steps"] for x in col), episodes=[x["raw_episode"] for x in col]))
+    if r==1:
+        from scripts.multimodal.mm03_b_physics import verify_handoffs
+        verify_handoffs(root)
     membership(root,r)
     with ThreadPoolExecutor(max_workers=1) as gpu:
         jobs = [(m,seed,gpu.submit(fit_round,root,r,m,seed,workers,

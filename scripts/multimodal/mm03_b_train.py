@@ -136,6 +136,25 @@ def bridge(s):
          binding=report["encoder_id"], bundle=str(bundle), wall_s_last_run=report["last_run_wall_s"]))
 
 
+def measure_low_derivatives(actor,batch):
+    """Check the frozen physical action path on the actual paired BC sensors."""
+    h = batch["proprio_history"].detach().requires_grad_()
+    prev = batch["previous_history"].detach().requires_grad_()
+    visual = actor.encode_visual(batch["rgb"], batch["depth"], batch["depth_valid"])
+    text = actor.encode_text(batch["tokens"])
+    high,_ = actor.high_features(visual,text,h,prev,batch["sensor"])
+    command = high[:,:2]
+    low = actor.low(h,prev,command)
+    direction = torch.linspace(-.7,1.,low.shape[-1],device=low.device)
+    sensitivity = (low*direction).sum()
+    derivatives = torch.autograd.grad(sensitivity,(command,h,prev))
+    return dict(policy="same frozen learned L16",rows=len(h), state_history=10,
+        frozen_parameter_count=sum(p.numel() for p in actor.low.parameters() if not p.requires_grad),
+        trainable_low_parameters=sum(p.numel() for p in actor.low.parameters() if p.requires_grad),
+        command_gradient_l2=float(derivatives[0].norm()),proprio_history_gradient_l2=float(derivatives[1].norm()),
+        previous_actual_history_gradient_l2=float(derivatives[2].norm()), diagnostic_only=True)
+
+
 def check_first_h9_fork(s, parent_path):
     if s["method"]!="H9-WM" or s["round"]!=1 or s["stage"]!="paired":
         return
@@ -224,6 +243,9 @@ def train(s):
     if variant != "C0":
         if s["stage"] != "paired" or s["method"] != "H9-WM":
             raise ValueError("Model objective requested for an unpaired experiment")
+        measure_file = out / "frozen_low_input_derivatives.json"
+        if not measure_file.is_file():
+            emit(measure_file,measure_low_derivatives(actor,pool.batch(part[0,:32])))
         obj = MM03Objective(s["bundle"], DEVICE, vocab, seed+937*s["round"])
         obj.verify_actor(actor)
         cap_file = out / "fixed_cap.json"

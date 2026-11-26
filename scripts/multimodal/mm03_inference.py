@@ -265,10 +265,11 @@ class ModelBatcher:
                                  mean_batch=self.calls/self.batches, queue_wait_mean_ms=1000*self.wait_sum/self.calls,
                                  device=self.device, queued=self.pending.qsize(), models=len(self.models),
                                  peak_torch_allocated_bytes=torch.cuda.max_memory_allocated())
-                    dest = self.root/"service"/"inference_stats.json"
-                    tmp = dest.with_suffix(".part")
-                    tmp.write_text(json.dumps(stats)+"\n")
-                    tmp.replace(dest)
+                    from scripts.multimodal.mm03_launch import read,write
+                    stats["pid"]=os.getpid()
+                    write(self.root/f"service/stats/{os.getpid()}.json",stats)
+                    if read(self.root/"service/serving.json").get("pid")==os.getpid():
+                        write(self.root/"service/inference_stats.json",stats)
                     self.last_stats = ready
 
 
@@ -278,12 +279,16 @@ def serve(root, max_batch, window_ms):
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     if not torch.cuda.is_available():
         raise RuntimeError("MM03 central inference requires the allocated GPU")
-    # The launcher owns the exclusive service lock. Its predecessor may have left a socket inode.
-    path.unlink(missing_ok=True)
+    from scripts.multimodal.mm03_launch import pid_stamp,write,now
+    from uuid import uuid4
+    bound=path.with_name(f"policy.{os.getpid()}.{uuid4().hex[:6]}.sock")
     service = ModelBatcher(root, "cuda", max_batch, window_ms)
-    with Listener(str(path), family="AF_UNIX", backlog=64) as listener:
-        path.chmod(0o600)
+    with Listener(str(bound), family="AF_UNIX", backlog=64) as listener:
+        bound.chmod(0o600)
         threading.Thread(target=service.serve_batches, daemon=True).start()
+        bound.replace(path)
+        write(root/"service/serving.json",dict(pid=os.getpid(),pid_stamp=pid_stamp(os.getpid()),
+              socket=str(path),bound_name=str(bound),ready_beijing=now()))
         print(f"CUDA inference ready at {path} (batch <= {max_batch}, coalescing {window_ms} ms)",flush=True)
         while True:
             threading.Thread(target=service.client_loop, args=(listener.accept(),), daemon=True).start()

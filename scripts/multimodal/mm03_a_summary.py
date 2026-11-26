@@ -20,7 +20,8 @@ def summary(root):
         logfile = path.parent/"physics_2ms"/"wheel_normal_n.npy"
         normal = np.load(logfile, mmap_mode="r")
         rescue.append({k:r[k] for k in ("id", "side", "goal", "source", "variant", "branch", "success",
-            "events", "first_failure", "physics_steps", "decisions", "checkpoint_sha256", "wheel_order",
+            "events", "first_failure", "teacher_failure", "teacher_query_steps", "executor_source_mask",
+            "physics_steps", "decisions", "checkpoint_sha256", "wheel_order",
             "unsupported_samples", "max_incomplete_support_s", "self_collision_points")} |
             dict(last_50_steps_below_1N=(normal[-50:]<1.).sum(0).tolist(),
                  last_wheel_normal_n=normal[-1].tolist(), physics_log=str(logfile.parent),
@@ -175,10 +176,52 @@ def low_scores(root):
          physical_steps=0, offline_estimator_evaluations=sum(g["estimator_error"]["all"]["rows"] for g in packages)))
 
 
+def budget(root):
+    base = root/"A"
+    groups = {}
+    def count(name, items):
+        rows = [json.loads(p.read_text()) for p in sorted(items) if not p.parent.name.startswith(".")]
+        groups[name] = dict(cases=len(rows), successes=sum(r["success"] for r in rows),
+                            decisions=sum(r["decisions"] for r in rows), physics_steps=sum(r["physics_steps"] for r in rows))
+    count("rescue44", (base/"rescue").glob("*/result.json"))
+    count("command_reference96", (base/"command_teacher").glob("*/result.json"))
+    count("independent_cpu_repeat", (base/"cpu_parity").glob("*/result.json"))
+    for seed_root in sorted((base/"low").glob("seed*")):
+        for block in sorted(seed_root.glob("block*")):
+            for stage in ("development","correction","oracle"):
+                path = block/stage
+                if path.exists():
+                    count(f"{seed_root.name}/{block.name}/{stage}", path.glob("*/result.json"))
+    training = [json.loads(f.read_text()) for f in sorted((base/"low").glob("seed*/block*/train_result.json"))]
+    failed = []
+    for f in sorted(base.rglob("exception.json")):
+        x = json.loads(f.read_text())
+        steps = x.get("completed_physics_steps")
+        reason = x["traceback"].strip().splitlines()[-1]
+        # The old 20-output model could never be bound by the briefly deployed
+        # 32-output loader, so those native workers failed at their first request.
+        first_query = (steps is None and "size mismatch for control.4.bias" in x["traceback"]
+                       and "in run_command" in x["traceback"])
+        failed.append(dict(source=str(f), steps=0 if first_query else steps,
+                           reason=reason, proof="initial inference could not load model" if first_query else "saved attempt counter"))
+    off = base/"low"/"development_results.json"
+    scores = json.loads(off.read_text()) if off.exists() else {}
+    known_extra = sum(x["steps"] for x in failed if x["steps"] is not None)
+    unknown = sum(x["steps"] is None for x in failed)
+    emit(base/"budget.json", dict(groups=groups, training_blocks=training, failed_native_attempts=failed,
+         completed_scored_cases=sum(g["cases"] for g in groups.values()),
+         completed_physics_steps=sum(g["physics_steps"] for g in groups.values()),
+         failed_attempt_physics_steps_known=known_extra, failed_attempts_without_substep_counter=unknown,
+         bc_updates=sum(x["updates"] for x in training), bc_samples=sum(x["bc_rows"] for x in training),
+         offline_estimator_evaluations=scores.get("offline_estimator_evaluations",0),
+         additional_shared_B_adapter_episodes_charged_to_A=0, hardware_motion_commands=0))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--transfer", action="store_true")
     parser.add_argument("--low-scores", action="store_true")
+    parser.add_argument("--budget", action="store_true")
     args = parser.parse_args()
-    (transfer if args.transfer else low_scores if args.low_scores else summary)(args.root)
+    (transfer if args.transfer else low_scores if args.low_scores else budget if args.budget else summary)(args.root)

@@ -203,6 +203,12 @@ def fit(root, seed, block):
         del old
     else:
         model.calibrate(data["features"], data["teacher"])
+    if block==2 and loaded==parent and not model.bounded_stationary:
+        model.enable_bounded_stationary(data["teacher"])
+        # Retain Adam for all compatible parameters, including the first
+        # stationary layer. Reset only the repurposed final weight and bias.
+        for param in model.stationary[-1].parameters():
+            opt.state.pop(param, None)
     pool_ids = [(data["pool"]==i).nonzero().squeeze(-1) for i in range(4)]
     names = ("teacher", "corrected", "contact_teacher", "contact_prefix")
     available = [(name, ids) for name, ids in zip(names, pool_ids) if len(ids)]
@@ -226,7 +232,10 @@ def fit(root, seed, block):
     def checkpoint(i):
         return dict(schema=model.schema, seed=seed, block=block, update=i, model=model.state_dict(),
                     stationary_feedback_introduced_here=lifted,
-                    code_commit=code_commit, architecture="low_v1_with_learnable_stationary_residual",
+                    code_commit=code_commit, architecture=("low_v2_bounded_absolute" if model.bounded_stationary
+                                                           else "low_v1_with_learnable_stationary_residual"),
+                    stationary_bounds=model.stationary_bound.tolist() if model.bounded_stationary else None,
+                    stationary_final_Adam_reset_at_block_start=bool(block==2 and model.bounded_stationary),
                     optimizer=opt.state_dict(), cpu_rng=torch.get_rng_state(), cuda_rng=torch.cuda.get_rng_state(),
                     draw=draw.get_state(), membership=str(folder/"members.json"),
                     wall_s=accumulated+time.monotonic()-tick, parent_full=str(parent) if parent else None,
@@ -255,6 +264,8 @@ def fit(root, seed, block):
                            draws_per_batch_by_pool=draws_per_pool,
                            extra_trained_parameters=sum(p.numel() for p in model.parameters()),
                            stationary_feedback_introduced_here=lifted,
+                           stationary_mode="bounded_absolute" if model.bounded_stationary else "additive_increment",
+                           stationary_final_Adam_reset_at_block_start=bool(block==2 and model.bounded_stationary),
                            wall_s=accumulated+time.monotonic()-tick, gpu_peak_bytes=torch.cuda.max_memory_allocated())
             save(latest, {**checkpoint(i), "last_metrics": receipt})
             write_json(folder/"progress.json", receipt)

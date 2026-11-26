@@ -16,7 +16,7 @@ from learning.multimodal.judge import DoorTaskJudge, PHASES
 from scripts.b0.eval_contact_segments import continuous_initial
 from scripts.multimodal.collect import EpisodeWriter, instruction
 from scripts.multimodal.collect_feasibility import teacher_config
-from scripts.multimodal.correction_teacher import P6CorrectionTeacher, capture_physics
+from scripts.multimodal.correction_teacher import P6CorrectionTeacher, capture_physics, restore_physics
 from scripts.multimodal.mm02_physics import JUDGE_DYNAMIC, digest, emit, scenes
 from scripts.multimodal.mm03_adapter import CommandTeacher
 
@@ -77,6 +77,73 @@ def save_handoff(case, model, data, command, original, judge, writer, previous, 
                 image=tuple(x.copy() for x in image), full_raw_prefix="episode rows [0,tick)"),f,protocol=5)
         os.replace(tmp,path)
     return str(path)
+
+
+def verify_handoffs(root):
+    """One original held action on each saved D/H solver, using the issued student request."""
+    dest = Path(root) / "B" / "handoff_restore.json"
+    if dest.exists():
+        return json.loads(dest.read_text())
+    results = []
+    for method in ("D23","H9"):
+        options = sorted((Path(root)/"B"/"rounds"/"r01"/"collect").glob(f"*_{method}_*_prefix_*/result.json"))
+        rows = [json.loads(p.read_text()) for p in options]
+        usable = [x for x in rows if x.get("real_solver_handoff")]
+        if not usable:
+            return None
+        row = next((x for x in usable if x["prefix_switch_tick"]%5),usable[0])
+        with open(row["real_solver_handoff"],"rb") as f:
+            saved = pickle.load(f)
+        case = Path(row["raw_episode"])
+        def arr(key):
+            return np.load(case / (key+".npy"),mmap_mode="r")
+        job = saved["source"]
+        cfg = teacher_config(job["side"],job["goal"],scene_for(job))
+        model = build(cfg)
+        start,_,_ = continuous_initial(model,cfg,None)
+        teacher = CommandTeacher(model,start,cfg)
+        teacher.restore(saved["teacher"])
+        judge = DoorTaskJudge(model,cfg,job["side"],job["goal"])
+        judge.__dict__.update(saved["judge"])
+        d = restore_physics(model,saved["physics"])
+        tick = saved["tick"]
+        if arr("execution_source")[tick]!=0:
+            raise ValueError("Handoff restore must replay a student-issued action")
+        m = teacher.mapping
+        label = teacher.before(d)
+        cmd = (m.offset+m.scale*np.clip(arr("action_raw")[tick],-1.,1.))*m.finger_factor
+        n = int(arr("substeps")[tick])
+        ctrl = []
+        for sub in range(n):
+            if sub:
+                teacher.before(d)
+            q,v = d.qpos.copy(),d.qvel.copy()
+            d.ctrl[m.actuator_ids] = cmd+d.qfrc_bias[m.dof]*m.bias_gain
+            mj.mj_step(model,d)
+            contact=judge.observe(d,q,v)
+            teacher.after(d,contact)
+            ctrl.append(d.ctrl[m.actuator_ids].astype(np.float32))
+        ids = np.maximum(np.arange(tick-9,tick),0)
+        diff = lambda a,b: float(np.max(np.abs(a-b)))
+        image_id = arr("image_index")[tick]
+        image_errors = [diff(np.asarray(x,dtype=float),np.asarray(arr(k)[image_id],dtype=float))
+                        for k,x in zip(("rgb","depth","depth_valid"),saved["image"])]
+        errors = dict(teacher_target23=diff(label.target.astype(arr("expert_action_target").dtype),arr("expert_action_target")[tick]),
+             history_proprio=diff(saved["prefix"][0],arr("proprio")[ids]),
+             history_actual_actions=diff(saved["prefix"][1],arr("previous_action")[ids]),
+             image_max=max(image_errors), image_t=abs(float(saved["image_t"]-arr("image_t")[image_id])),
+             applied_ctrl=diff(np.stack(ctrl),arr("applied_ctrl")[tick,:n]),
+             successor_qpos=diff(d.qpos,arr("qpos")[tick+1]),
+             successor_qvel=diff(d.qvel,arr("qvel")[tick+1]))
+        results.append(dict(method=method,case=row["id"],tick=tick,physics_steps=n,
+            real_image_age_s=saved["time"]-saved["image_t"],solver_path=row["real_solver_handoff"],
+            errors=errors,exact=not any(errors.values())))
+    result = dict(cases=results,additional_physics_substeps=sum(r["physics_steps"] for r in results),
+                  actor_updates=0,counts_as_formal=False,
+                  target_comparison="recorded native dtype",
+                 scope="Replay of the saved student action at an actual cut; policy not queried or trained.")
+    emit(dest,result)
+    return result
 
 
 def episode(task):
@@ -215,6 +282,7 @@ def episode(task):
         writer.boundary(float(d.time), d.qpos, d.qvel)
         verdict = judge.result()
         result = {**job, **verdict, "episode_id": job["id"], "ordered_event_count": len(judge.events),
+            "pre_treatment_H9_clone":job["method"]=="H9-WM" and job["round"]==1 and job["use"]=="train",
             "source": ("original_P6_teacher_prefix_then_student" if mode == "prefix" else
                        "command_adapter_teacher" if mode == "teacher" else
                        "original_P6_held_reference" if mode == "p6_reference" else "pure_frame0"),

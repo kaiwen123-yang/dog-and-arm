@@ -4,6 +4,7 @@ from contextlib import contextmanager
 import fcntl
 import os
 from pathlib import Path
+import socket
 import subprocess
 import time
 import traceback
@@ -14,7 +15,19 @@ from scripts.multimodal.mm03_report import OUT, REPORT, SLUG, snapshot
 
 
 def command(*argv, repo, capture=True):
-    return subprocess.run(argv,cwd=repo,check=True,text=True,
+    env=os.environ.copy()
+    # An optional project-scoped loopback forward only carries publication traffic.
+    # Reconnecting the experiment on AutoDL also works when that desktop link is gone.
+    route=read(DEFAULT/"publication/git_route.json")
+    if route and route.get("url")=="socks5h://127.0.0.1:23768":
+        with socket.socket() as probe:
+            live=probe.connect_ex(("127.0.0.1",23768))==0
+        if live:
+            env.setdefault("HTTPS_PROXY",route["url"])
+            env.setdefault("ALL_PROXY",route["url"])
+        elif argv[0]=="git" and not env.get("HTTPS_PROXY"):
+            argv=("git","-c","http.proxy=",*argv[1:])
+    return subprocess.run(argv,cwd=repo,env=env,check=True,text=True,
                           stdout=subprocess.PIPE if capture else None).stdout
 
 

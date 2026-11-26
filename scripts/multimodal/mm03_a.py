@@ -133,6 +133,8 @@ def finalize(root):
              latest_block=latest["block"], latest_deploy=latest["deployment"], latest_full=latest["full"], blocks=blocks)
     emit(state/"completion.json", dict(status="completed_A", seeds=summaries,
          selection="40 local successes, mean four-wheel-supported fraction, smaller mean stopping drift, earlier block"))
+    from scripts.multimodal.mm03_a_summary import budget
+    budget(Path(root))
     return summaries
 
 

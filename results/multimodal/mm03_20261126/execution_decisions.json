@@ -1,0 +1,73 @@
+{
+  "schema": "mm03-execution-decisions-v1",
+  "registration": "results/planning/multimodal_mm03_20261126/registration.json",
+  "training_only_perturbations": {
+    "reason": "The registration specified eight perturbation seeds without numeric values.",
+    "seeds": [
+      26112600,
+      26112601,
+      26112602,
+      26112603,
+      26112604,
+      26112605,
+      26112606,
+      26112607
+    ],
+    "first": "unchanged base scene",
+    "additional_half_width": {
+      "dx_m": 0.004,
+      "dy_m": 0.003,
+      "yaw_deg": 0.25
+    },
+    "roster": "/root/autodl-tmp/mm03-20261126/B/teacher_registration.json",
+    "fixed_before_collecting": true
+  },
+  "low_level_development": {
+    "fixed_before_low_optimization": true,
+    "roster": "/root/autodl-tmp/mm03-20261126/A/design.json",
+    "engineering_pass": "30 s without the registered physical faults, terminal 1 s continuous four-wheel support and parking, maximum post-stop drift 20 mm, median motion response at least half the nonzero requested axis speed.",
+    "task_judge": "original 12 events, unchanged"
+  },
+  "allocation": {
+    "cpu_quota": 25,
+    "initial": {
+      "A": 7,
+      "B": 7,
+      "C": 4
+    },
+    "existing_w58_validation_jobs_at_start": 2,
+    "history": "/root/autodl-tmp/mm03-20261126/resources/allocation_changes.jsonl"
+  },
+  "adapter": {
+    "identity": "MM03-local-vx-wz-v1",
+    "velocity_units": [
+      "body forward m/s",
+      "yaw rad/s"
+    ],
+    "lineage": "Original P6 navigation and arm with a uniform independent local command-conditioned leg/wheel teacher. Raw targets are pre-bias."
+  },
+  "low_transfer": {
+    "initial_training": {
+      "updates_per_seed": 12000,
+      "parameters": 34198
+    },
+    "first_correction": {
+      "updates_per_seed": 4000,
+      "parameters": 39554
+    },
+    "reason": "The initial gate could not adjust leg targets at zero speed and zero wheel request. The first corrective block added a trainable stationary leg residual. All seeds retained their earlier weights and Adam moments, with zero-initialized final weights for the new branch.",
+    "evidence": "receipts/A/low/compatibility.json",
+    "sampling": "Low-level corrective-source quotas proportional to square root of eligible source sizes, batch 512. High-level BC uses its registered 50/50 pools."
+  },
+  "navigation_evidence": {
+    "previous_policy": "R6 CPU implementation",
+    "new_policy": "CUDA batched inference",
+    "episode": "supervised_aggregate/tr_nominal/pull15",
+    "old_reproduction_substeps": 7455,
+    "new_GPU_substeps": 6533,
+    "comparison": "The original CPU replay reproduced the historical measurements and requests. The GPU run started with identical sensors and a small different first command, then diverged in contact dynamics. All 40 interventions use the new batch service. The archived films use their original MM02 trajectories.",
+    "source": "receipts/A/cpu_parity/comparison.json"
+  },
+  "recovery": "Raw episodes and optimizer checkpoints on AutoDL are authoritative. Attempts and cooperative upgrades preserve their codes and are recorded under execution/.",
+  "hardware_motion_commands": 0
+}

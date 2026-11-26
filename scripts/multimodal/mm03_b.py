@@ -62,6 +62,20 @@ def batch(root, jobs, workers):
     jobs = list(jobs)
     if not jobs:
         return []
+    partition = jobs[0]["partition"]
+    if partition.startswith("rounds/") and partition.endswith("/collect"):
+        by_model = {}
+        for item in jobs:
+            by_model.setdefault((item["method"],item["seed"]),[]).append(item)
+        for (method,seed), cases in by_model.items():
+            if len(cases)!=24:
+                continue  # A caller may resume or inspect a subset of an already queued matrix.
+            if sum(job["mode"]=="pure" for job in cases)!=12:
+                raise ValueError("The full registered matrix requires 12 frame-zero and 12 prefix jobs")
+            target = Path(root)/"B"/Path(partition).parent/"collection_plan"/f"{method}_seed{seed}.json"
+            freeze_file(target,dict(method=method,seed=seed,round=cases[0]["round"],cases=cases,
+                prefix_rule="two sides x six groups; rotate side/round/group for angle, scene and intra-group cut",
+                clone_before_WM=(method=="H9-WM" and cases[0]["round"]==1)))
     target_file = Path(root) / "resources" / "worker_targets.json"
     initial_workers = workers
     if target_file.is_file():
