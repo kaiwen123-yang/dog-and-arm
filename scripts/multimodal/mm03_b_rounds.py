@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import time
 
+from scripts.multimodal.mm03_b_parallel import SeedOptimizers, allocation
 from scripts.multimodal.mm03_b import (SEEDS, TASKS, TRAIN, REPO, REG, TORCH, batch, emit,
                                        freeze_file, read)
 
@@ -17,14 +18,23 @@ DISCLOSED = (*DEV, "te_combination", "te_mm02_combo_a", "te_mm02_combo_b")
 PARENT = read(REPO / "results/multimodal/mm02_20261125/manifest.json")["terminal_packages"]
 
 
+def stage_group(specs):
+    """One isolated Torch process per seed/method; completed phases recover independently."""
+    paths = []
+    for spec in specs:
+        out = Path(spec["output"])
+        path = out / "spec.json"
+        freeze_file(path,spec)
+        if not (out / "receipt.json").exists():
+            paths.append(str(path))
+    if paths:
+        print("B optimization",",".join(Path(p).parent.name for p in paths),paths[0],flush=True)
+        subprocess.run([str(TORCH),"-u","-m","scripts.multimodal.mm03_b_train",*paths],check=True)
+
+
 def stage(spec):
-    out = Path(spec["output"])
-    path = out / "spec.json"
-    freeze_file(path, spec)
-    if not (out / "receipt.json").exists():
-        print("B optimization", spec["stage"], str(out), flush=True)
-        subprocess.run([str(TORCH), "-u", "-m", "scripts.multimodal.mm03_b_train", str(path)], check=True)
-    return read(out / "receipt.json")
+    stage_group([spec])
+    return read(Path(spec["output"])/"receipt.json")
 
 
 def round_dir(root, r):
@@ -309,8 +319,7 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
     ws = read(wspec) if wspec.exists() else dict(stage="wm", root=str(root), output=str(wm),
         parent=str(wm_parent), members=str(member), seed=seed, round=r,
         data_seed=seed+7212*r, use_selected_C_replay=fwd_replay)
-    stage(ws)
-    stage(train_spec(root,method,seed,r,"bc",parent / "full.pt",low,member,out / "bc",2048))
+    bc_spec = train_spec(root,method,seed,r,"bc",parent / "full.pt",low,member,out / "bc",2048)
     # In the first paired segment both H9 arms must have exactly the same full BC parent.
     # Each actually performs the prescribed BC updates. The already verified common parent
     # is then explicitly used by both 512-step forks (including optimizer moments).
@@ -323,7 +332,7 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
                  seed=seed, round=r, members=str(member), wm=str(wm / "wm.pt"))
     # Reuse an already issued bridge specification byte-for-byte on recovery.
     bridge_spec = out / "bridge" / "spec.json"
-    stage(read(bridge_spec) if bridge_spec.exists() else dict(**bspec,root=str(root)))
+    bridge_config = read(bridge_spec) if bridge_spec.exists() else dict(**bspec,root=str(root))
     paired = out / "paired"
     paired_spec = paired / "spec.json"
     if paired_spec.is_file():
@@ -343,7 +352,7 @@ def fit_round(root, r, method, seed, workers, variant="C0"):
                               worker_target_file=str(targets_file))
         spec = train_spec(root,method,seed,r,"paired",paired_parent,low,member,paired,512,offset=2048,
                           variant=variant,bundle=str(out / "bridge" / "trajectory_bundle.pt"),**allocation)
-    stage(spec)
+    stage_group([ws,bc_spec,bridge_config,spec])
     return paired
 
 
@@ -379,8 +388,9 @@ def fill_round(root, r, workers, include_model, selected):
         verify_handoffs(root)
     membership(root,r)
     collection_ledgers(root)
-    with ThreadPoolExecutor(max_workers=1) as gpu:
-        jobs = [(m,seed,gpu.submit(fit_round,root,r,m,seed,workers,
+    slots = allocation(root,membership(root,r),f"r{r:02d}")
+    with SeedOptimizers(slots) as gpu:
+        jobs = [(m,seed,gpu.submit(seed,fit_round,root,r,m,seed,workers,
                 selected if m=="H9-WM" else "C0")) for m,seed in product(METHODS if include_model else BASE, SEEDS)]
         failed = []
         for method, seed, job in jobs:
@@ -409,15 +419,23 @@ def fill_round(root, r, workers, include_model, selected):
 
 def catch_up(root, r, workers, variant):
     for index in range(1,r+1):
+        pending = []
         for seed in SEEDS:
             out = train_dir(root,index,"H9-WM",seed)
-            if (out / "development.json").exists() and (index%4 or (out / "regression.json").exists()):
-                continue
-            ck = previous(root,index,"H9-WM",seed) / "deploy.pt"
-            batch(root,collect_jobs("H9-WM",seed,index,ck),workers)
-            collection_ledgers(root)
-            paired = fit_round(root,index,"H9-WM",seed,workers,variant)
-            score_round(root,index,"H9-WM",seed,workers,paired)
+            if not (out/"development.json").is_file() or (index%4==0 and not (out/"regression.json").is_file()):
+                pending.append(seed)
+        if not pending:
+            continue
+        slots = allocation(root,membership(root,index),f"catchup{index:02d}")
+        with SeedOptimizers(slots) as gpu:
+            fits = []
+            for seed in pending:
+                ck = previous(root,index,"H9-WM",seed) / "deploy.pt"
+                batch(root,collect_jobs("H9-WM",seed,index,ck),workers)
+                collection_ledgers(root)
+                fits.append((seed,gpu.submit(seed,fit_round,root,index,"H9-WM",seed,workers,variant)))
+            for seed,future in fits:
+                score_round(root,index,"H9-WM",seed,workers,future.result())
 
 
 def matched_progress(root, r, methods):
@@ -455,17 +473,23 @@ def close(root, r, methods, workers, selection):
     collection_ledgers(root,terminal=True)
     a = read(root / "A" / "completion.json")
     # Finish cost sensitivity on disclosed scenes before the new combinations are opened.
-    for seed in SEEDS:
-        chosen = read(root / "B" / "models" / "D23" / f"seed{seed}" / "best.json")
-        out = root / "B" / "cost" / f"seed{seed}"
-        low_updates = a["seeds"][str(seed)]
-        count = low_updates["paid_updates"]
-        if count < 12000 or count != sum(b["updates"] for b in low_updates["blocks"]):
-            raise ValueError(f"Unexpected retained L16-Budget for seed {seed}: {count}")
-        stage(train_spec(root,"D23-cost",seed,r,"cost",chosen["full"],chosen["low"],
-                         membership(root,r),out / "train",count))
-        jobs = eval_jobs("cost/disclosed","evaluation","D23-cost",seed,r,out / "train" / "deploy.pt",DISCLOSED)
-        emit(out / "regression.json",batch(root,jobs,workers))
+    slots = allocation(root,membership(root,r),"d23cost")
+    with SeedOptimizers(slots) as gpu:
+        cost_jobs = []
+        for seed in SEEDS:
+            chosen = read(root / "B" / "models" / "D23" / f"seed{seed}" / "best.json")
+            out = root / "B" / "cost" / f"seed{seed}"
+            low_updates = a["seeds"][str(seed)]
+            count = low_updates["paid_updates"]
+            if count < 12000 or count != sum(b["updates"] for b in low_updates["blocks"]):
+                raise ValueError(f"Unexpected retained L16-Budget for seed {seed}: {count}")
+            spec = train_spec(root,"D23-cost",seed,r,"cost",chosen["full"],chosen["low"],
+                              membership(root,r),out / "train",count)
+            cost_jobs.append((seed,out,gpu.submit(seed,stage,spec)))
+        for seed,out,future in cost_jobs:
+            future.result()
+            jobs = eval_jobs("cost/disclosed","evaluation","D23-cost",seed,r,out/"train"/"deploy.pt",DISCLOSED)
+            emit(out/"regression.json",batch(root,jobs,workers))
     records = [read(root / "B" / "models" / method / f"seed{seed}" / "best.json") for method,seed in product(methods,SEEDS)]
     import hashlib
     for record in records:

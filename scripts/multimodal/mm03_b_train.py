@@ -183,7 +183,7 @@ def check_first_h9_fork(s, parent_path):
          paired_starts_exactly_same_file=True, row_order=ref["row_order"], frozen_low=ref["low_sha256"]))
 
 
-def train(s):
+def train(s, data_cache=None):
     from learning.multimodal.mm03_model import MM03Objective, gradient_step
     out = Path(s["output"])
     out.mkdir(parents=True, exist_ok=True)
@@ -219,8 +219,18 @@ def train(s):
             actor.bind_frozen_low(LowPolicy.load(s["low"], DEVICE).state_dict())
     actor.set_encoder_grad(s["stage"] != "paired")
     actor.low.requires_grad_(False).eval()
+    data_start = time.perf_counter()
     member = read(s["members"])
-    pool = SharedRows(member, vocab, DEVICE)
+    key = (s["members"],sha(s["members"]),tuple(vocab.tokens))
+    reused = data_cache is not None and data_cache.get("key")==key
+    if reused:
+        pool = data_cache["pool"]
+    else:
+        pool = SharedRows(member,vocab,DEVICE)
+        if data_cache is not None:
+            data_cache.clear()
+            data_cache.update(key=key,pool=pool)
+    data_setup_s = time.perf_counter()-data_start
     schedule_path = Path(s["schedule"])
     schedule_meta = schedule_path.with_suffix(".json")
     if schedule_meta.exists():
@@ -408,6 +418,7 @@ def train(s):
              common_eligible_only=True)
     emit(out / "receipt.json", dict(stage=s["stage"], method=s["method"], round=s["round"], seed=seed,
          cost_sensitivity=comparison_cost,retained=steps, paid=attempts+steps-step0, rollback=attempts-step0, paid_model_cost=paid_totals,
+         shared_row_cache_reused=reused,shared_row_setup_s=data_setup_s,
          retained_cost=payload["totals"], native_pool_allocation=native_allocation,
          trajectory_anchor_coverage=anchor_coverage if obj is not None else None,
          full=str(final), deploy=str(deploy), parent=str(parent_path),
@@ -417,10 +428,9 @@ def train(s):
          high_parameters=sum(p.numel() for n,p in actor.named_parameters() if not n.startswith("low.")), **peak(DEVICE)))
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("spec", type=Path)
-    s = read(parser.parse_args().spec)
+def run_spec(path,data_cache):
+    from scripts.multimodal.mm03_b_parallel import native_pair_slot
+    s = read(path)
     if "root" not in s:
         # The first frozen bridge specifications locate their run by their
         # absolute B output directory. They remain valid on a normal resume.
@@ -451,27 +461,57 @@ def main():
     torch.set_float32_matmul_precision("high")
     torch.cuda.set_device(DEVICE)
     torch.cuda.reset_peak_memory_stats(DEVICE)
-    if not (Path(s["output"]) / "receipt.json").is_file():
-        if s["stage"] == "wm":
-            refresh_wm(s)
-        elif s["stage"] == "bridge":
-            bridge(s)
-        else:
-            train(s)
-    request = Path(s["root"]) / "B" / "coordinator_refresh.json"
+    out = Path(s["output"])
+    if not (out/"receipt.json").is_file():
+        with native_pair_slot(s), (out/"executions.jsonl").open("a",buffering=1) as log:
+            started = time.time()
+            print(json.dumps(dict(event="started",time=started,pid=os.getpid(),seed=s["seed"],stage=s["stage"])),file=log)
+            try:
+                if s["stage"] == "wm":
+                    refresh_wm(s)
+                elif s["stage"] == "bridge":
+                    bridge(s)
+                else:
+                    train(s,data_cache)
+            finally:
+                import resource
+                print(json.dumps(dict(event="ended",time=time.time(),started=started,pid=os.getpid(),
+                    seed=s["seed"],stage=s["stage"],completed=(out/"receipt.json").is_file(),
+                    rss_peak_kib=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,**peak(DEVICE))),file=log)
+    # Competing seed workers can reach the same refresh request together. Only the
+    # first committed phase acknowledges it; other active phases finish intact.
+    request = run_root/"B"/"coordinator_refresh.json"
     if request.is_file():
-        req = read(request)
-        stamp = Path(f"/proc/{os.getppid()}/stat").read_text().split(") ",1)[1].split()[19]
-        if req["parent_pid"] == os.getppid() and str(req["parent_stamp"]) == stamp:
-            path = Path(s["output"]) / "receipt.json"
-            if not path.is_file():
-                raise ValueError("Refresh requires a completed and committed stage receipt")
-            emit(request.with_name(f'coordinator_refresh_attempt{req["attempt"]}_ack.json'),
-                 dict(**req, finished_receipt=str(path), retained=read(path)["retained"],
-                      paid=read(path)["paid"], command="mm03_launch retry --unit B"))
-            request.rename(request.with_name(f'coordinator_refresh_attempt{req["attempt"]}.consumed'))
-            print("B coordinator reached the requested code refresh boundary; committed",path,flush=True)
-            raise SystemExit(75)
+        import fcntl
+        with (run_root/"B"/"coordinator_refresh.lock").open("a") as guard:
+            fcntl.flock(guard,fcntl.LOCK_EX)
+            if not request.exists():
+                return
+            req = read(request)
+            stamp = Path(f"/proc/{os.getppid()}/stat").read_text().split(") ",1)[1].split()[19]
+            if req["parent_pid"] == os.getppid() and str(req["parent_stamp"]) == stamp:
+                receipt = out/"receipt.json"
+                if not receipt.is_file():
+                    raise ValueError("Refresh requires a completed and committed stage receipt")
+                emit(request.with_name(f'coordinator_refresh_attempt{req["attempt"]}_ack.json'),
+                     dict(**req,finished_receipt=str(receipt),retained=read(receipt)["retained"],
+                          paid=read(receipt)["paid"],command="mm03_launch retry --unit B"))
+                request.rename(request.with_name(f'coordinator_refresh_attempt{req["attempt"]}.consumed'))
+                print("B coordinator reached the requested code refresh boundary; committed",receipt,flush=True)
+                raise SystemExit(75)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("specs",type=Path,nargs="+")
+    args = parser.parse_args()
+    specs = [read(p) for p in args.specs]
+    if len(set(s["seed"] for s in specs))!=1:
+        raise ValueError("A grouped optimizer process must have one fine-tuning seed")
+    cache = {}
+    for path in args.specs:
+        run_spec(path,cache)
+        torch.cuda.empty_cache()
 
 
 if __name__ == "__main__":
