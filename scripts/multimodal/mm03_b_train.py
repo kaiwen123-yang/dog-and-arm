@@ -172,7 +172,21 @@ def train(s):
     actor.low.requires_grad_(False).eval()
     member = read(s["members"])
     pool = SharedRows(member, vocab, DEVICE)
-    schedule, order = pool.schedule(Path(s["schedule"]), s["data_seed"], s["schedule_steps"])
+    schedule_path = Path(s["schedule"])
+    schedule_meta = schedule_path.with_suffix(".json")
+    if schedule_meta.exists():
+        prior_order = read(schedule_meta)
+        if (prior_order["steps"], prior_order["seed"]) == (s["data_seed"], s["schedule_steps"]) and (
+                s["data_seed"] != s["schedule_steps"]):
+            # Attempt 002 rejected the reversed arguments before the first optimizer step.
+            # Preserve both original files and refuse an in-place rewrite of a consumed order.
+            for cfg in schedule_path.parent.parent.glob("**/spec.json"):
+                if read(cfg).get("schedule") == str(schedule_path) and (cfg.parent / "applied.jsonl").exists():
+                    raise ValueError(f"Previously applied order needs a separately documented fork: {cfg}")
+            for original in (schedule_path, schedule_meta):
+                if original.exists():
+                    original.rename(original.with_name(original.name + ".unused-attempt002"))
+    schedule, order = pool.schedule(schedule_path, updates=s["schedule_steps"], seed=s["data_seed"])
     offset, steps = s["offset"], s["steps"]
     part = schedule[offset:offset+steps]
     if len(part) != steps:
