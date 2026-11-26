@@ -1,0 +1,129 @@
+"""Run and resume MM03 task collection, training, candidate freeze and original scoring."""
+import argparse
+from concurrent.futures import ProcessPoolExecutor, wait, FIRST_COMPLETED
+from itertools import product
+import json
+import os
+from pathlib import Path
+import sys
+import time
+
+import numpy as np
+
+REPO = Path(__file__).resolve().parents[2]
+REG = REPO / "results/planning/multimodal_mm03_20261126/registration.json"
+NATIVE = REPO / ".venv/bin/python"
+TORCH = REPO / ".conda/envs/arm-and-dog/bin/python"
+SEEDS = (1701, 1702, 1703)
+TRAIN = ("tr_nominal", "tr_offset", "tr_load")
+TASKS = tuple(product(("pull", "push"), (15, 25)))
+PERTURBATION_SEEDS = tuple(range(26112600, 26112608))
+
+
+def read(path):
+    return json.loads(Path(path).read_text())
+
+
+def emit(path, value):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.part")
+    tmp.write_text(json.dumps(value, indent=2, ensure_ascii=False, allow_nan=False) + "\n")
+    os.replace(tmp, path)
+
+
+def freeze_file(path, value):
+    if path.exists():
+        if read(path) != value:
+            raise ValueError(f"Frozen membership or specification changed: {path}")
+    else:
+        emit(path, value)
+
+
+def teacher_jobs():
+    scenes = {scene["id"]: scene["perturbation"] for scene in
+              read(REPO / "config/multimodal/scenes.json")["scenes"]}
+    jobs = []
+    for seed, scene, (side, goal) in product(PERTURBATION_SEEDS, TRAIN, TASKS):
+        perturb = dict(scenes[scene])
+        if seed != PERTURBATION_SEEDS[0]:
+            rng = np.random.default_rng(seed)
+            for dimension, amplitude in (("dx", .004), ("dy", .003), ("yaw", .25)):
+                perturb[dimension] = round(perturb.get(dimension, 0.) + rng.uniform(-amplitude, amplitude), 9)
+        jobs.append(dict(id=f"teacher_{seed}_{scene}_{side}{goal}", partition="teachers", scene=scene,
+                         side=side, goal=goal, method="command_teacher_v1", mode="teacher", use="train",
+                         round=0, seed=seed, train_perturbation=perturb, checkpoint=None))
+    return jobs
+
+
+def batch(root, jobs, workers):
+    from scripts.multimodal.mm03_b_physics import episode
+    jobs = list(jobs)
+    if not jobs:
+        return []
+    seq = iter(jobs)
+    done = set()
+    results = {}
+    for job in jobs:
+        path = root / "B" / job["partition"] / job["id"] / "result.json"
+        if path.is_file():
+            results[job["id"]] = read(path)
+            done.add(job["id"])
+    seq = iter(j for j in jobs if j["id"] not in done)
+    start = time.monotonic()
+    steps = 0
+    fresh = 0
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        pending = {}
+        def refill():
+            for job in seq:
+                fut = pool.submit(episode, (str(root), job))
+                pending[fut] = job
+                if len(pending) >= 2 * workers:
+                    break
+        refill()
+        while pending:
+            finished, _ = wait(pending, return_when=FIRST_COMPLETED)
+            for fut in finished:
+                job = pending.pop(fut)
+                row = fut.result()
+                results[job["id"]] = row
+                fresh += 1
+                steps += row["physics_steps"]
+            elapsed = time.monotonic() - start
+            emit(root / "B" / "physical_progress.json", dict(partition=jobs[0]["partition"],
+                 cases_done=len(results), planned=len(jobs), workers=workers,
+                 wall_s=elapsed, completed_here=fresh, steps_here=steps, steps_s=steps/max(elapsed, 1e-6),
+                 resumed_cases=len(done), processes=list(pool._processes)))
+            refill()
+    return [results[j["id"]] for j in jobs]
+
+
+def run(args):
+    root = args.root.resolve()
+    out = root / "B"
+    jobs = teacher_jobs()
+    freeze_file(out / "teacher_registration.json", dict(
+        base="2026-11-26 registered 3 train scenes × 4 tasks × 8 perturbation seeds",
+        execution_choices="Original plan gave the number of seeds only. These explicit IDs and jitter "
+                          "were fixed before collection. First seed uses the exact training scene. "
+                          "Other seeds add common side/goal-paired uniform dx ±4 mm, dy ±3 mm, yaw ±0.25 deg.",
+        seeds=list(PERTURBATION_SEEDS), physics="native MuJoCo 3.3.0; 10 × .002 s; original twelve events",
+        train=jobs))
+    rows = batch(root, jobs, args.workers)
+    emit(out / "teacher_cases.json", rows)
+    from scripts.multimodal.mm03_b_rounds import longitudinal
+    longitudinal(root, args.workers)
+
+
+if __name__ == "__main__":
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--root", required=True, type=Path)
+    p.add_argument("--workers", type=int, default=8)
+    args = p.parse_args()
+    if args.workers < 1:
+        p.error("workers must be positive")
+    if Path(sys.prefix) != (REPO / ".venv") and os.getenv("MM03_B_NATIVE_BOOT") != "1":
+        os.environ["MM03_B_NATIVE_BOOT"] = "1"
+        os.execv(str(NATIVE), [str(NATIVE), "-u", "-m", "scripts.multimodal.mm03_b", *sys.argv[1:]])
+    run(args)

@@ -1,5 +1,10 @@
 # 项目状态：完整多模态腿臂算法主线
 
+## 2026-11-26 10:05 北京时间 · MM03 启动准备
+
+已从 e3e47e88 建立独立开发与 AutoDL 工作树，核实两份 R6 完整训练包、冻结 WM、bridge 和原始失败回合。D57 同时运行两条 W58 验证，MM03 初始分配 A/B/C 物理进程 7/7/4。统一启动与恢复入口为 `bash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126`。首批目标是 44 案干预、96 个轮腿命令回合、96 条完整教师回合与监督编码器共享 bridge 重绑。[运行清单](results/multimodal/mm03_20261126/manifest.json)
+
+
 <!-- mm03-plan-20261126-start -->
 ## 2026-11-26 · MM02 已审查，下一执行轮为 MM03 三路并行
 

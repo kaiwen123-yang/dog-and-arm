@@ -69,6 +69,7 @@ class BaseDrive:
         self.yaw_integral = 0.
         self.last_speed = 0.
         self.last_turn = 0.
+        self.effective_yaw_request = 0.
 
     def state(self, data):
         q = self.root_q
@@ -167,6 +168,7 @@ class BaseDrive:
                 self.leg_yaw = np.clip(self.leg_yaw + requested_rate*self.model.opt.timestep,
                                        -trim_limit, trim_limit)
             turn = np.clip(turn, -turn_limit, turn_limit)
+        self.effective_yaw_request = float(requested_rate) if self.correct_heading else 0.
         self.last_speed, self.last_turn = float(speed), float(turn)
         sign, lateral = wheel_geometry(data, self.body, self.wheel_joints)
         return wheel_rates(sign, lateral, self.radius, speed, turn)
