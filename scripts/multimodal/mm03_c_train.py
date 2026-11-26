@@ -66,6 +66,14 @@ def record_replay(folder,attempt,step,keys,rows,stats,objective):
         for key in ("slot","action","p","o","vision","contact","fresh","clock"):
             arrays[key]=np.concatenate([x[key] for x in seq])
         arrays["tick"]=np.concatenate([np.full(len(x["slot"]),x["tick"],np.int16) for x in seq])
+        fresh=[x for x in seq if len(x["exposure_slots"])]
+        if fresh:
+            arrays["exposure_slot"]=np.concatenate([x["exposure_slots"] for x in fresh])
+            arrays["exposure_t"]=np.concatenate([x["exposure_times"] for x in fresh])
+            arrays["exposure_tick"]=np.concatenate([np.full(len(x["exposure_slots"]),x["tick"]+1,np.int16) for x in fresh])
+            arrays["exposure_actor_features"]=np.concatenate([x["measured_features"] for x in fresh])
+            for index,column in enumerate(("exposure_rgb","exposure_depth","exposure_depth_valid")):
+                arrays[column]=np.stack([image[index] for x in fresh for image in x["exposures"]])
     with name.with_suffix(".tmp").open("wb") as f:
         np.savez(f,**arrays)
     name.with_suffix(".tmp").replace(name)

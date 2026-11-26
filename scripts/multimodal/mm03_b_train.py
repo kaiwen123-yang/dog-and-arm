@@ -227,11 +227,17 @@ def train(s):
         obj = MM03Objective(s["bundle"], DEVICE, vocab, seed+937*s["round"])
         obj.verify_actor(actor)
         cap_file = out / "fixed_cap.json"
-        if cap_file.exists():
-            cap = read(cap_file)["cap"]
+        shared_cap = Path(s["root"]) / "B" / "models" / "H9-WM" / f'seed{seed}' / "trajectory_cap.json"
+        if shared_cap.exists():
+            calibration = read(shared_cap)
         else:
+            if s["round"] != 1:
+                raise ValueError("Missing the original matched H9-parent trajectory calibration")
             cap, evidence = obj.calibrate(actor)
-            emit(cap_file, dict(cap=cap, actor_before_updates=str(parent_path), **evidence))
+            calibration = dict(cap=cap, actor_before_updates=str(parent_path),seed=seed,**evidence)
+            emit(shared_cap, calibration)
+        cap = calibration["cap"]
+        emit(cap_file,dict(**calibration,retained_across_rounds=True))
         if variant == "CF32":
             from scripts.multimodal.mm03_c_native import NativePool
             native = NativePool(s["native_workers"])
@@ -258,7 +264,7 @@ def train(s):
         with journal.open("a", buffering=1) as log:
             for step in range(step0+1, steps+1):
                 batch = pool.batch(part[step-1])
-                bc = actor.bc_loss(batch)
+                bc = actor.bc_loss(batch,common_only=s["method"]=="D23-cost")
                 traj, stats = None, None
                 if obj is not None:
                     indices = obj.sample()

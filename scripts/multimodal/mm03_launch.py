@@ -106,7 +106,7 @@ def worker(root, name):
     proc = None
     try:
         with logpath.open("ab",buffering=0) as log:
-            proc = subprocess.Popen(argv,cwd=REPO,env=runtime_environment(root),stdout=log,stderr=subprocess.STDOUT,
+            proc = subprocess.Popen(argv,cwd=REPO,env={**runtime_environment(root),"MM03_UNIT":name},stdout=log,stderr=subprocess.STDOUT,
                                     pass_fds=(lock.fileno(),))
             record.update(state="running",pid=proc.pid,pid_stamp=pid_stamp(proc.pid))
             write(hist,record)

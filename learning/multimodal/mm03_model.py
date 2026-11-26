@@ -209,7 +209,13 @@ class MM03Objective:
                 estimated = z0+self.bridge(self.model.v_units(nxt.vision))-zbridge0
                 visual = torch.where(fresh_mask,native_value(estimated,current_z),visual)
                 if collect:
+                    # Keep each actual new exposure once. Held images are recoverable from
+                    # this sequence or the original anchor snapshot on the source disk.
+                    fresh_images=[output[j]["image"] for j in inserted]
                     sequences.append(dict(slot=ids.detach().cpu().numpy(),tick=tick,
+                        exposure_slots=ids[photos].detach().cpu().numpy(),exposures=fresh_images,
+                        exposure_times=np.asarray([output[j]["image_t"] for j in inserted],dtype=np.float64),
+                        measured_features=current_z[photos].detach().cpu().numpy(),
                         action=action.detach().cpu().numpy(),p=p.cpu().numpy(),o=nxt.obj.detach().cpu().numpy(),
                         vision=hold.detach().cpu().numpy(),contact=np.stack([r["contact"] for r in output]),
                         fresh=fresh_mask.cpu().numpy()[:,0],clock=clock.cpu().numpy()[:,0]))

@@ -62,6 +62,14 @@ def batch(root, jobs, workers):
     jobs = list(jobs)
     if not jobs:
         return []
+    target_file = Path(root) / "resources" / "worker_targets.json"
+    initial_workers = workers
+    if target_file.is_file():
+        target = read(target_file)
+        workers = int(target.get("B", target.get("workers",{}).get("B",workers)))
+    if not 1 <= workers <= 25:
+        raise ValueError(f"Invalid native B worker target: {workers}")
+    workers = min(workers,len(jobs))
     seq = iter(jobs)
     done = set()
     results = {}
@@ -93,7 +101,8 @@ def batch(root, jobs, workers):
                 steps += row["physics_steps"]
             elapsed = time.monotonic() - start
             emit(root / "B" / "physical_progress.json", dict(partition=jobs[0]["partition"],
-                 cases_done=len(results), planned=len(jobs), workers=workers,
+                 cases_done=len(results), planned=len(jobs), workers=workers, launch_workers=initial_workers,
+                 worker_target_source=str(target_file) if target_file.exists() else "launch configuration",
                  wall_s=elapsed, completed_here=fresh, steps_here=steps, steps_s=steps/max(elapsed, 1e-6),
                  resumed_cases=len(done), processes=list(pool._processes)))
             refill()

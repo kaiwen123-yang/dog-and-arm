@@ -1,12 +1,15 @@
 """Persistent native MuJoCo 3.3 lanes controlled by one differentiable, batched Torch policy."""
 from copy import deepcopy
+from datetime import datetime, timezone
 from functools import lru_cache
+import json
 import os
 from pathlib import Path
 import pickle
 import struct
 import subprocess
 import sys
+import time
 import traceback
 
 import numpy as np
@@ -32,15 +35,59 @@ def receive(stream):
 
 class NativePool:
     def __init__(self, workers):
-        repo = Path(__file__).resolve().parents[2]
         self.workers = []
+        self.owner = {}
+        socket = os.environ.get("MM03_INFERENCE_SOCKET")
+        self.run_root = (Path(socket).parent.parent if os.environ.get("MM03_UNIT") == "C" and socket else None)
+        self.clear_timing()
+        self.spawn(workers)
+        self.log_change("start",[],[w.pid for w in self.workers])
+
+    def clear_timing(self):
+        self.since = time.monotonic()
+        self.native_steps = self.windows = 0
+        self.reset_wall = self.advance_wall = 0.
+
+    def spawn(self, workers):
+        repo = Path(__file__).resolve().parents[2]
         for _ in range(workers):
             proc = subprocess.Popen([str(repo / ".venv/bin/python"), "-u", "-m", __name__ if
                  __name__ != "__main__" else "scripts.multimodal.mm03_c_native", "--worker"],
                  cwd=repo, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                  env={**os.environ, "MKL_NUM_THREADS":"1", "OMP_NUM_THREADS":"1", "OPENBLAS_NUM_THREADS":"1"})
             self.workers.append(proc)
-        self.owner = {}
+
+    def log_change(self, reason, old, new):
+        if self.run_root is None:
+            return
+        wall = time.monotonic()-self.since
+        record = dict(utc=datetime.now(timezone.utc).isoformat(), reason=reason, pid=os.getpid(),
+                      before=len(old), after=len(new), previous_native_pids=old, native_pids=new,
+                      previous_windows=self.windows, previous_native_substeps=self.native_steps,
+                      previous_reset_wall_s=self.reset_wall, previous_native_advance_wall_s=self.advance_wall,
+                      previous_wall_s=wall, before_substeps_per_wall_s=self.native_steps/wall if wall else None,
+                      before_substeps_per_advance_s=self.native_steps/self.advance_wall if self.advance_wall else None)
+        path=self.run_root/"C"/"native_pool_changes.jsonl"
+        path.parent.mkdir(parents=True,exist_ok=True)
+        with path.open("a") as stream:
+            stream.write(json.dumps(record, allow_nan=False)+"\n")
+
+    def sync_target(self):
+        if self.run_root is None:
+            return
+        path = self.run_root/"resources"/"worker_targets.json"
+        if not path.is_file():
+            return
+        target = json.loads(path.read_text())
+        n = target.get("workers",target).get("C",len(self.workers))
+        if type(n) is not int or not 1 <= n <= 25:
+            raise ValueError(f"Invalid MM03 C native-worker target: {n!r}")
+        if n != len(self.workers):
+            old = [w.pid for w in self.workers]
+            self.drain()
+            self.spawn(n)
+            self.log_change("resize_before_independent_batch",old,[w.pid for w in self.workers])
+            self.clear_timing()
 
     def exchange(self, op, payloads):
         pending = []
@@ -57,22 +104,40 @@ class NativePool:
         return result
 
     def reset(self, paths):
+        self.sync_target()
+        begin = time.monotonic()
         n = len(self.workers)
         self.owner = {i: i % n for i in range(len(paths))}
         payloads = [{} for _ in self.workers]
         for i, path in enumerate(paths):
             payloads[self.owner[i]][i] = str(path)
-        return self.exchange("reset", payloads)
+        records=self.exchange("reset", payloads)
+        self.windows += len(paths)
+        self.reset_wall += time.monotonic()-begin
+        return records
 
     def advance(self, slots, actions):
         payloads = [{} for _ in self.workers]
         for i, action in zip(slots, actions, strict=True):
             payloads[self.owner[i]][i] = np.asarray(action, dtype=np.float32)
-        return self.exchange("step", payloads)
+        begin=time.monotonic()
+        records=self.exchange("step", payloads)
+        self.advance_wall += time.monotonic()-begin
+        self.native_steps += sum(r["substeps"] for r in records.values())
+        return records
 
     def close(self):
+        old=[w.pid for w in self.workers]
+        if old:
+            self.drain()
+            self.log_change("close",old,[])
+
+    def drain(self):
         for worker in self.workers:
-            worker.stdin.close()
+            try:
+                worker.stdin.close()
+            except BrokenPipeError:
+                pass
         for worker in self.workers:
             worker.wait()
         self.workers.clear()

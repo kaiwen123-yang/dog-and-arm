@@ -5,12 +5,11 @@ import json
 import os
 import shutil
 
-from scripts.multimodal.mm03_launch import LANES, REPO, UNITS, alive, now, read, state_file, write
+from scripts.multimodal.mm03_launch import UNITS, alive, now, read, state_file, write
 
 OUT = Path("results/multimodal/mm03_20261126")
 REPORT = Path("reports/MULTIMODAL_MM03_RESULTS.md")
 SLUG = "kaiwen123-yang/dog-and-arm"
-PAIRS = ("pull15", "pull25", "push15", "push25")
 
 
 def lines(path):
@@ -145,7 +144,9 @@ def mirror_records(root,out):
            "A/completion.json","A/complete.json","B/teacher_registration.json","B/candidate_freeze.json",
            "B/completion.json","C/parent.json","C/calibration.json","C/directional_response.json",
            "C/directional_local_fp64.json","C/development_anchors.json","C/selection.json","C/bridge/bridge.json",
-           "service/upgrade1.json","A/low/summary.json")
+           "service/upgrade1.json","A/low/summary.json","A/low/development_results.json",
+           "A/cpu_parity/comparison.json","resources/worker_targets.json","B/prefix_p6_parity_pull.json",
+           "B/prefix_p6_parity_push.json","C/native_pool_changes.jsonl")
     for name in small:
         slimcopy(root/name, out/"receipts"/name)
     for lane,globs in (("A",("low/seed*/block*/train_result.json","parity/*.json")),
@@ -159,6 +160,9 @@ def mirror_records(root,out):
             slimcopy(src,out/"videos"/src.relative_to(root/"videos"))
     for src in (root/"attempts").glob("*/*.json"):
         slimcopy(src,out/"execution"/src.relative_to(root))
+    for pattern in ("C/handoffs/*.json","B/coordinator_refresh*ack.json","resources/allocation_changes.jsonl"):
+        for src in root.glob(pattern):
+            slimcopy(src,out/"execution"/src.relative_to(root))
     # A selected learned deployment is small. Full optimizer/replay assets retain their cloud paths.
     for selected in (root/"B/models").glob("*/seed*/best.json"):
         info=read(selected)
@@ -168,6 +172,56 @@ def mirror_records(root,out):
         for seed,s in read(root/"A/completion.json").get("seeds",{}).items():
             if s.get("best_deploy"):
                 slimcopy(Path(s["best_deploy"]),out/"models/L16"/f"seed{seed}"/"deploy.pt")
+
+
+def scored(n,total):
+    return f"{n}/{total}" if total else "待评测"
+
+
+def task_tables(root, rows, formal):
+    table=[]
+    local=[r for r in rows if r["lane"]=="A" and r["group"]=="development"]
+    if local:
+        table+=["## L16 独立工程评测","| 低层种子 | 工作块 | 同时满足全部工程判据 | 计划案数 |",
+                "|---:|---:|---:|---:|"]
+        for seed,block in sorted({(r["seed"],r["block"]) for r in local}):
+            subset=[r for r in local if (r["seed"],r["block"])==(seed,block)]
+            table.append(f"| {seed} | {block} | {scored(sum(r['success'] for r in subset),len(subset))} | 40 |")
+        table+=["工程通过同时要求支撑、停车、漂移、运动方向响应及安全条件。单轮载荷和停车段速度保存在各案原始路径。"]
+    b=[r for r in rows if r["lane"]=="B"]
+    prefixes=[r for r in b if r.get("mode")=="prefix"]
+    if prefixes:
+        table+=["## 真实教师前缀后的学生续演",f"已结束 {len(prefixes)} 案，{sum(r.get('prefix_reached') is True for r in prefixes)} 案实际切换到学生，"
+                f"{sum(r['success'] and r.get('prefix_reached') is True for r in prefixes)} 案继续完成全部事件。"]
+    table+=["## 正式纯学生评测"]
+    if formal:
+        table+=["| 方法 | 微调种子 | 已公开 20 案 | 新组合 16 案 | 已停稳 | 已触门 |",
+                "|---|---:|---:|---:|---:|---:|"]
+        for method,seed in sorted({(r["method"],r["seed"]) for r in formal}):
+            subset=[r for r in formal if (r["method"],r["seed"])==(method,seed)]
+            blind=[r for r in subset if r["scene"].startswith("te_mm03")]
+            public=[r for r in subset if not r["scene"].startswith("te_mm03")]
+            table.append(f"| {method} | {seed} | {scored(sum(r['success'] for r in public),len(public))} | "
+                         f"{scored(sum(r['success'] for r in blind),len(blind))} | {sum(r['ordered_events']>=2 for r in subset)} | "
+                         f"{sum(r.get('robot_door_contact_steps',0)>0 for r in subset)} |")
+    else:
+        table.append("主评测计划为三个方法、三个微调种子，每包 20 已公开回归案和 16 新组合案。目前无已完成的正式成绩。")
+    dev=[r for r in b if r.get("mode")=="pure" and r["group"].endswith("development")]
+    if dev:
+        table+=["## 最近完成的完整开发矩阵","| 方法 | 微调种子 | 轮次 | 全程成功 | 驶近 | 停稳 | 首败最多的原因 |",
+                "|---|---:|---:|---:|---:|---:|---|"]
+        for method,seed in sorted({(r["method"],r["seed"]) for r in dev}):
+            pack=defaultdict(list)
+            for r in dev:
+                if (r["method"],r["seed"])==(method,seed):pack[r["round"]].append(r)
+            rounds=[k for k,v in pack.items() if len(v)==8]
+            if not rounds:continue
+            rr=max(rounds); subset=pack[rr]
+            reasons=Counter((r.get("first_failure") or {}).get("reason","") for r in subset if not r["success"])
+            reason="、".join(f"{k} ({n})" for k,n in reasons.most_common(2)) or "—"
+            table.append(f"| {method} | {seed} | {rr} | {sum(r['success'] for r in subset)}/8 | "
+                         f"{sum(r['ordered_events']>=1 for r in subset)}/8 | {sum(r['ordered_events']>=2 for r in subset)}/8 | {reason} |")
+    return table
 
 
 def snapshot(root,repo,milestone):
@@ -218,7 +272,11 @@ def snapshot(root,repo,milestone):
         gd=[r for r in rows if r["lane"]=="C" and r["group"]=="development" and r.get("training_seed")==f["seed"] and r.get("branch")==f["variant"]]
         short=next((s for s in cost["C_short"] if (s["variant"],s["seed"])==(f["variant"],f["seed"])),{})
         report.append(f"| {f['variant']} | {f['seed']} | {f['paid']}/{f['retained']} | {sum(r['success'] for r in gd)}/{len(gd)} | {short.get('survived',0)}/{short.get('cases',0)} | {f['native_substeps']:,} |")
+    report+=task_tables(root,rows,formal)
     report+=["","## 视频与恢复",f"MM02 的四条原轨迹共 {len(videos)} 个全程或局部视频。[同回合视频索引](../{OUT.as_posix()}/videos/mm02/index.json)"]
+    for example in read(root/"videos/mm03/examples.json").get("videos",[]):
+        label="完整教师" if example["teacher_decisions"] else "全程学生"
+        report.append(f"[{label} · {example['episode']} · {example['ordered_events']}/12 事件](../{OUT.as_posix()}/videos/mm03/{example['file']})")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",

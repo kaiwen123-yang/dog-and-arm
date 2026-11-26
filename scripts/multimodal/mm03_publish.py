@@ -109,6 +109,8 @@ def main():
     p.add_argument("--milestone")
     a=p.parse_args()
     if a.action=="once":
+        from scripts.multimodal.mm03_resources import update
+        update(a.root)
         deliver(a.root)
         publish(a.root,a.repo,a.milestone)
         return
@@ -121,6 +123,8 @@ def main():
         last_attempt=0.
         while True:
             try:
+                from scripts.multimodal.mm03_resources import update
+                update(a.root)
                 success = deliver(a.root,video_only=True)
                 if time.monotonic()-last_attempt>35:
                     last_attempt=time.monotonic()

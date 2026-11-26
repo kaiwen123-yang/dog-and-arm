@@ -22,6 +22,7 @@ class SharedRows:
         self.strata = defaultdict(lambda: defaultdict(list))
         self.source_rows = Counter()
         self.available_by_episode = {}
+        self.contiguous_lengths = defaultdict(Counter)
         self.paths = list(dict.fromkeys(membership["teachers"] + membership["corrections"]))
         teacher_set = set(membership["teachers"])
         episodes = [(Path(p), json.loads((Path(p) / "metadata.json").read_text())) for p in self.paths]
@@ -67,6 +68,10 @@ class SharedRows:
                 ids = start + np.flatnonzero(valid & (groups == group))
                 counts.append(len(ids))
                 if len(ids):
+                    cuts = np.r_[0, np.flatnonzero(np.diff(ids) != 1)+1, len(ids)]
+                    lengths, occurrences = np.unique(np.diff(cuts),return_counts=True)
+                    self.contiguous_lengths[source,group].update({
+                        int(length):int(count) for length,count in zip(lengths,occurrences,strict=True)})
                     self.strata[source, group][(m["side"], m["target_deg"], m["scene_id"])].append(ids)
                     self.source_rows[source] += len(ids)
             self.available_by_episode[m["episode_id"]] = counts
@@ -99,6 +104,17 @@ class SharedRows:
         path.parent.mkdir(parents=True, exist_ok=True)
         member_sig = hashlib.sha256(json.dumps([self.paths, self.available_by_episode], sort_keys=True).encode()).hexdigest()
         meta_path = path.with_suffix(".json")
+        coverage_path = path.with_suffix(".coverage.json")
+        if not coverage_path.is_file():
+            groups = {}
+            for source in ("teacher","correction"):
+                for group in range(6):
+                    lengths = self.contiguous_lengths[source,group]
+                    groups[f"{source}/{group}"] = dict(contiguous_runs=sum(lengths.values()),
+                        eligible_rows=sum(k*v for k,v in lengths.items()), max_length=max(lengths,default=0),
+                        length_histogram=dict(sorted(lengths.items())))
+            emit(coverage_path,dict(membership=member_sig,time_per_row_s=.020,groups=groups,
+                 definition="Contiguous complete 20ms intervals within a single physical episode and phase group; corrections require actual student execution."))
         header = dict(steps=updates, seed=seed, batch=256, members=member_sig, paths=self.paths)
         if path.exists() and meta_path.exists():
             m = json.loads(meta_path.read_text())

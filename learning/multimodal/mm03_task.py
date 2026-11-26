@@ -59,11 +59,20 @@ class TaskActor(MultimodalActor):
                                   self.encode_text(batch["tokens"]), batch["proprio_history"],
                                   batch["previous_history"], batch["sensor"])[0]
 
-    def bc_loss(self, batch):
+    def bc_loss(self, batch, common_only=False):
         from scripts.multimodal.train_actor import bc_objective
         high = self.high_batch(batch)
         if self.mode == "D23":
-            return bc_objective(self, high.clamp(-1, 1), batch["action"])
+            if not common_only:
+                return bc_objective(self, high.clamp(-1, 1), batch["action"])
+            residual = (high.clamp(-1,1)-batch["action"])/self.residual_std
+            errs = F.smooth_l1_loss(residual,torch.zeros_like(residual),reduction="none",beta=.5)
+            mask = batch["command_valid"].to(errs.dtype)
+            compatible = errs[:, :12].mean(1)+errs[:,12:16].mean(1)
+            # Cost sensitivity gives both approaches only supervision which their
+            # own interface can use. Legacy records still teach the shared arm/jaw.
+            return (errs[:,16:22].mean()+errs[:,22].mean()+
+                    (compatible*mask).sum()/mask.sum().clamp_min(1))/(2+2*(mask.sum()>0))
         residual = (high[:, 2:].clamp(-1, 1) - batch["action"][:, 16:]) / self.residual_std[16:]
         arm_error = F.smooth_l1_loss(residual, torch.zeros_like(residual), reduction="none", beta=.5)
         cmd_res = (high[:, :2] - batch["command"]) / self.request_scale
