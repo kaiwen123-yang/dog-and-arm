@@ -297,6 +297,22 @@ def snapshot(root,repo,milestone):
         manifest["performance_evidence"]="performance/summary.json"
         for name in (*FILES,"summary.json"):
             slimcopy(root/SUBDIR/name,out/"performance"/name)
+    trial_dir=root/"performance/cf32-three-seeds-20261126"
+    comparison=read(trial_dir/"decision.json")
+    compare_text=""
+    if comparison:
+        dest=out/"performance/cf32_concurrency"
+        for name in ("README.md","registration.json","two.json","three.json","decision.json","forecast.json",
+                     "measure.py","control.py","forecast.py"):
+            slimcopy(trial_dir/name,dest/name)
+        old,new=(read(trial_dir/f"{key}.json") for key in ("two","three"))
+        chosen_name={"two":"两路","three":"三路"}[comparison["winner"]]
+        compare_text=(f"在同一轮 H9-WM 真物理配对中，两路每分钟实付 {old['updates_min']:.1f} 次更新，"
+                      f"三路实付 {new['updates_min']:.1f} 次，已采用{chosen_name}。"
+                      f"两种配置分别测量 {old['elapsed_s']:.0f} 和 {new['elapsed_s']:.0f} 秒。")
+        manifest["cf32_concurrency_comparison"]="performance/cf32_concurrency/decision.json"
+        if (trial_dir/"forecast.json").is_file():
+            manifest["cf32_concurrency_forecast"]="performance/cf32_concurrency/forecast.json"
     write(out/"manifest.json",manifest)
     write(out/"budget.json",cost)
     (out/"physical_cases.jsonl").write_text("".join(json.dumps(r,ensure_ascii=False,separators=(",",":"))+"\n" for r in rows))
@@ -331,6 +347,8 @@ def snapshot(root,repo,milestone):
     if speed:
         report+=["## 训练吞吐",paragraph(speed),
                  f"[等预算阶段、实际GPU采样和数值对照](../{OUT.as_posix()}/performance/summary.json)"]
+    if compare_text:
+        report+=[compare_text+f" [逐分钟数据与完成时间估算](../{OUT.as_posix()}/performance/cf32_concurrency/README.md)"]
     report+=["","## 视频与恢复",f"MM02 的四条原轨迹共 {len(videos)} 个全程或局部视频。[同回合视频索引](../{OUT.as_posix()}/videos/mm02/index.json)"]
     for example in read(root/"videos/mm03/examples.json").get("videos",[]):
         label="完整教师" if example["teacher_decisions"] else "全程学生"
@@ -371,5 +389,7 @@ def snapshot(root,repo,milestone):
                 f"与[恢复清单]({OUT.as_posix()}/manifest.json)。发布时保留原始轨迹、完整包及各次退出日志。\n")
         if speed and "提速" in milestone:
             f.write("\n"+paragraph(speed)+f" [测量记录]({OUT.as_posix()}/performance/summary.json)\n")
+        if compare_text and "三种子并行" in milestone:
+            f.write("\n"+compare_text+f" [配置、原始更新计数与估时]({OUT.as_posix()}/performance/cf32_concurrency/)\n")
     return manifest
 

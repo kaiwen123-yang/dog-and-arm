@@ -33,6 +33,11 @@ def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=No
                 target.update(B=6 if reserve_cf else 15,B_CF=8 if reserve_cf else 0,
                               B_CF_slots=2 if reserve_cf else 1,B_GPU=3)
                 reason=f"A and C returned their slots; task collection and {winner} paired optimization share the native budget"
+                result=read(root/"performance/cf32-three-seeds-20261126/decision.json") if reserve_cf else {}
+                if result.get("winner") in ("two","three"):
+                    measured=result["retained_target"]
+                    target.update({key:measured[key] for key in ("B","B_CF","B_CF_slots","B_GPU")})
+                    reason="Restore the faster measured H9-WM seed configuration for this run"
             elif a_done:
                 target.update(B=9,C=8)
                 reason="A finished its last registered native batch; hand its slots to task collection and CF32"
