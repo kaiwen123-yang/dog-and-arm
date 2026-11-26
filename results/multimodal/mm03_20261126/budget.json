@@ -1,0 +1,443 @@
+{
+  "as_of_beijing": "2026-11-26T10:24:19+08:00",
+  "low_updates": 36000,
+  "B_high_updates": 8192,
+  "C_actor_updates": 4397,
+  "wm_updates": 0,
+  "bridge_updates": 600,
+  "critic_updates": 0,
+  "completed_episodes": 480,
+  "episode_substeps": 7171979,
+  "extra_substeps": {
+    "C/true_forward_optimization": 0,
+    "C/short_recovery_evaluation": 75060,
+    "C/directional_check": 5120,
+    "B/true_forward_optimization": 0
+  },
+  "accounted_native_substeps": 7252159,
+  "physical_by_group": {
+    "A/command_teacher": {
+      "cases": 96,
+      "success": 30,
+      "ordered_events": 0,
+      "native_substeps": 1440000
+    },
+    "A/cpu_parity": {
+      "cases": 1,
+      "success": 0,
+      "ordered_events": 1,
+      "native_substeps": 7455
+    },
+    "A/development": {
+      "cases": 120,
+      "success": 39,
+      "ordered_events": 0,
+      "native_substeps": 1800000
+    },
+    "A/rescue": {
+      "cases": 44,
+      "success": 4,
+      "ordered_events": 84,
+      "native_substeps": 424484
+    },
+    "B/rounds/r01/collect": {
+      "cases": 43,
+      "success": 0,
+      "ordered_events": 93,
+      "native_substeps": 370563
+    },
+    "B/teachers": {
+      "cases": 96,
+      "success": 96,
+      "ordered_events": 1152,
+      "native_substeps": 2529224
+    },
+    "B/warm/development": {
+      "cases": 16,
+      "success": 0,
+      "ordered_events": 4,
+      "native_substeps": 100414
+    },
+    "C/development": {
+      "cases": 64,
+      "success": 0,
+      "ordered_events": 20,
+      "native_substeps": 499839
+    }
+  },
+  "A_stages": [
+    {
+      "seed": 1701,
+      "block": 0,
+      "retained": 12000,
+      "paid": 12000,
+      "resume": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt"
+    },
+    {
+      "seed": 1702,
+      "block": 0,
+      "retained": 12000,
+      "paid": 12000,
+      "resume": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt"
+    },
+    {
+      "seed": 1703,
+      "block": 0,
+      "retained": 12000,
+      "paid": 12000,
+      "resume": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/latest.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/deploy.pt"
+    }
+  ],
+  "B_stages": [
+    {
+      "stage": "warm",
+      "method": "D23",
+      "seed": 1701,
+      "round": 0,
+      "retained": 4096,
+      "paid": 4096,
+      "path": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1701",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1701/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/D23/seed1701/deploy.pt"
+    },
+    {
+      "stage": "warm",
+      "method": "H9",
+      "seed": 1701,
+      "round": 0,
+      "retained": 4096,
+      "paid": 4096,
+      "path": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701",
+      "native_substeps": 0,
+      "model_queries": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/deploy.pt"
+    }
+  ],
+  "C_forks": [
+    {
+      "variant": "C0",
+      "seed": 1701,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 0,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C0/seed1701/final.pt"
+    },
+    {
+      "variant": "C0",
+      "seed": 1702,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 0,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C0/seed1702/final.pt"
+    },
+    {
+      "variant": "C0",
+      "seed": 1703,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 0,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C0/seed1703/final.pt"
+    },
+    {
+      "variant": "C32",
+      "seed": 1701,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 524288,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C32/seed1701/final.pt"
+    },
+    {
+      "variant": "C32",
+      "seed": 1702,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 524288,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C32/seed1702/final.pt"
+    },
+    {
+      "variant": "C32",
+      "seed": 1703,
+      "paid": 301,
+      "retained": 288,
+      "bc_rows_paid": 77056,
+      "model_queries": 308224,
+      "native_substeps": 0,
+      "full": null
+    },
+    {
+      "variant": "C8",
+      "seed": 1701,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 131072,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C8/seed1701/final.pt"
+    },
+    {
+      "variant": "C8",
+      "seed": 1702,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 131072,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C8/seed1702/final.pt"
+    },
+    {
+      "variant": "C8",
+      "seed": 1703,
+      "paid": 512,
+      "retained": 512,
+      "bc_rows_paid": 131072,
+      "model_queries": 131072,
+      "native_substeps": 0,
+      "full": "/root/autodl-tmp/mm03-20261126/C/C8/seed1703/final.pt"
+    }
+  ],
+  "C_short": [
+    {
+      "variant": "C0",
+      "seed": 1701,
+      "cases": 32,
+      "survived": 28,
+      "native_substeps": 9291
+    },
+    {
+      "variant": "C0",
+      "seed": 1702,
+      "cases": 32,
+      "survived": 28,
+      "native_substeps": 9410
+    },
+    {
+      "variant": "C0",
+      "seed": 1703,
+      "cases": 32,
+      "survived": 28,
+      "native_substeps": 9169
+    },
+    {
+      "variant": "C32",
+      "seed": 1701,
+      "cases": 32,
+      "survived": 29,
+      "native_substeps": 9439
+    },
+    {
+      "variant": "C32",
+      "seed": 1702,
+      "cases": 32,
+      "survived": 28,
+      "native_substeps": 9284
+    },
+    {
+      "variant": "C8",
+      "seed": 1701,
+      "cases": 32,
+      "survived": 29,
+      "native_substeps": 9438
+    },
+    {
+      "variant": "C8",
+      "seed": 1702,
+      "cases": 32,
+      "survived": 29,
+      "native_substeps": 9482
+    },
+    {
+      "variant": "C8",
+      "seed": 1703,
+      "cases": 32,
+      "survived": 29,
+      "native_substeps": 9547
+    }
+  ],
+  "C_comparison_bridge": {
+    "encoder_id": "3d5faae5f52ddee097b46bb0649d6777207cf7f7b473739b9a0a51ddfba4e914",
+    "binding": "/root/autodl-tmp/mm02-20261125/round6/supervised_aggregate/paired/final.pt",
+    "wm_path": "/root/autodl-tmp/mm02-20261125/round6/dynamics/wm.pt",
+    "retained": 600,
+    "paid": 600,
+    "exposures": 51313,
+    "batch": 256,
+    "train": {
+      "exposures": 51313,
+      "rmse": 0.14768029749393463,
+      "held_mean_rmse": 0.4159131646156311
+    },
+    "last_run_wall_s": 1.439532782882452,
+    "bundle": "/root/autodl-tmp/mm03-20261126/C/bridge/trajectory_bundle.pt"
+  },
+  "parity_receipt": {
+    "source": "/root/autodl-tmp/mm02-20261125/formal/formal_supervised_aggregate_tr_nominal_pull_15_pure/episode",
+    "checkpoint": "/root/autodl-tmp/mm02-20261125/round6/supervised_aggregate/paired/deploy.pt",
+    "original_steps": 7455,
+    "original_first_failure": "timeout:settle",
+    "same_inputs": {
+      "original_cpu": {
+        "first_max_abs_vs_old": 0.0,
+        "first_max_abs_vs_new": 8.624047040939331e-06,
+        "max_abs_vs_old_on_100_fixed_inputs": 0.0,
+        "cases": 100
+      },
+      "cuda_singleton": {
+        "first_max_abs_vs_old": 8.653849363327026e-06,
+        "first_max_abs_vs_new": 5.960464477539063e-08,
+        "max_abs_vs_old_on_100_fixed_inputs": 8.653849363327026e-06,
+        "cases": 100
+      },
+      "cuda_singleton_no_tf32": {
+        "first_max_abs_vs_old": 7.450580596923828e-08,
+        "first_max_abs_vs_new": 8.650124073028564e-06,
+        "max_abs_vs_old_on_100_fixed_inputs": 1.1920928955078125e-07,
+        "cases": 100
+      }
+    },
+    "native": {
+      "new_cuda_batched": {
+        "case": "/root/autodl-tmp/mm03-20261126/A/rescue/supervised_aggregate_pull15_student",
+        "steps": 6533,
+        "failure": "timeout:settle",
+        "differences_from_original": {
+          "qpos": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.4232593634461015,
+            "overlap": 655
+          },
+          "qvel": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 1.590925011933177,
+            "overlap": 655
+          },
+          "proprio": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 1.5909249726682901,
+            "overlap": 655
+          },
+          "previous_action": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.2663739323616028,
+            "overlap": 655
+          },
+          "rgb": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 93.0,
+            "overlap": 131
+          },
+          "depth": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 4.569901466369629,
+            "overlap": 131
+          },
+          "depth_valid": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 1.0,
+            "overlap": 131
+          },
+          "action_raw": {
+            "first_max_abs": 8.624047040939331e-06,
+            "overlap_max_abs": 0.2663739323616028,
+            "overlap": 654
+          },
+          "action_clipped": {
+            "first_max_abs": 8.624047040939331e-06,
+            "overlap_max_abs": 0.2663739323616028,
+            "overlap": 654
+          },
+          "physical_target": {
+            "first_max_abs": 3.2782554626464844e-05,
+            "overlap_max_abs": 1.481881320476532,
+            "overlap": 654
+          },
+          "applied_ctrl": {
+            "first_max_abs": 3.2782554626464844e-05,
+            "overlap_max_abs": 1.481881320476532,
+            "overlap": 654
+          }
+        }
+      },
+      "independent_original_cpu": {
+        "case": "/root/autodl-tmp/mm03-20261126/A/cpu_parity/supervised_aggregate_pull15_student",
+        "steps": 7455,
+        "failure": "timeout:settle",
+        "differences_from_original": {
+          "qpos": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 747
+          },
+          "qvel": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 747
+          },
+          "proprio": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 747
+          },
+          "previous_action": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 747
+          },
+          "rgb": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 150
+          },
+          "depth": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 150
+          },
+          "depth_valid": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 150
+          },
+          "action_raw": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 746
+          },
+          "action_clipped": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 746
+          },
+          "physical_target": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 746
+          },
+          "applied_ctrl": {
+            "first_max_abs": 0.0,
+            "overlap_max_abs": 0.0,
+            "overlap": 746
+          }
+        }
+      }
+    },
+    "extra_physics_steps": 7455
+  },
+  "accounting": "Completed native case receipts and logged optimization/short-window steps. An open episode counts when it commits. Render playback integrates zero steps. Extra diagnostics appear separately.",
+  "hardware_motion_commands": 0
+}
