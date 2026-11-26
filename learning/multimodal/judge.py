@@ -44,10 +44,18 @@ class DoorTaskJudge:
     def phase(self):
         return PHASES[self.i] if self.i < len(PHASES) else None
 
-    def observe(self, d, q, v, contact=None):
+    def observe(self, d, q, v, contact=None, *, return_wheel_slip=True):
         """q,v start this 2 ms interval. The solved contacts/Cartesian fields refer to it."""
-        c = self.meter.measure(d) if contact is None else contact
         cfg, phase = self.cfg, self.phase
+        checks_slip = phase in ("grasp", "open", "hold", "release")
+        if contact is not None:
+            c = contact
+        elif return_wheel_slip or checks_slip:
+            c = self.meter.measure(d)
+        else:
+            # Short native forward branches consume finger contact only. Support,
+            # collisions and all forces are still evaluated on every solved step.
+            c = self.meter.measure(d, wheel_slip=False)
         self.steps += 1
         mj.mju_quat2Mat(self.rotation, q[3:7])
         r = self.rotation.reshape(3, 3)
@@ -84,14 +92,14 @@ class DoorTaskJudge:
         self.saturated = np.where(abs(d.actuator_force) >= self.effort, self.saturated + 1, 0)
         gripping = phase in ("open", "hold")
         self.lost = self.lost + 1 if gripping and not c.both else 0
-        slip = np.max(np.hypot(np.nan_to_num(c.slip_long), np.nan_to_num(c.slip_lat)))
-        slipping = phase in ("grasp", "open", "hold", "release") and slip > cfg["park_slip_limit_m_s"]
+        slipping = checks_slip and np.max(np.hypot(np.nan_to_num(c.slip_long),
+                                                   np.nan_to_num(c.slip_lat))) > cfg["park_slip_limit_m_s"]
         self.sliding = self.sliding + 1 if slipping else 0
         qarm = d.qpos[self.arm_q]
         margin = np.minimum(qarm - self.ranges[:, 0], self.ranges[:, 1] - qarm)
 
         reason = None
-        if not np.isfinite(d.qpos).all() or not np.isfinite(d.qvel).all() or any(w.number for w in d.warning):
+        if not np.isfinite(d.qpos).all() or not np.isfinite(d.qvel).all() or d.warning.number.any():
             reason = "nonfinite_or_solver_warning"
         elif np.min(margin) < 0:
             reason = "arm_joint_limit:" + ARM[int(np.argmin(margin))]

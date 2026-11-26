@@ -159,7 +159,9 @@ def episode(task):
         return complete_result(case, root)
     scene = scene_for(job)
     cfg = teacher_config(job["side"], job["goal"], scene)
-    model = build(cfg)
+    from scripts.multimodal.mm03_plant import verified_file
+    compiled = verified_file(root,scene,job["side"],job["goal"],cfg)
+    model = mj.MjModel.from_binary_path(str(compiled)) if compiled else build(cfg)
     if mj.__version__ != "3.3.0" or abs(model.opt.timestep - .002) > 1e-12:
         raise ValueError("MM03 requires native MuJoCo 3.3.0 at 2 ms")
     d, _, _ = continuous_initial(model, cfg, None)

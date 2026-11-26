@@ -86,7 +86,7 @@ class ContactMeter:
             return 'other_robot_handle', None
         return ('robot_panel' if name.endswith('_panel') else 'robot_frame'), None
 
-    def measure(self, data, details=False):
+    def measure(self, data, details=False, *, wheel_slip=True):
         m = self.model
         normal = np.zeros(4)
         slip_long = np.full(4, np.nan)
@@ -117,7 +117,7 @@ class ContactMeter:
                     wi = self.wheels[body]
                     category = f'wheel_ground_{self.wheel_labels[wi]}'
                     normal[wi] += fn
-                    if fn > self.contact_threshold_n:
+                    if fn > self.contact_threshold_n and (wheel_slip or details):
                         # cvel and Cartesian positions come from the same solver step.
                         mj.mj_objectVelocity(m, data, mj.mjtObj.mjOBJ_XBODY,
                                              body, self.point_velocity, 0)

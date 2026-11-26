@@ -38,7 +38,8 @@ class NativePool:
         self.workers = []
         self.owner = {}
         socket = os.environ.get("MM03_INFERENCE_SOCKET")
-        self.run_root = (Path(socket).parent.parent if os.environ.get("MM03_UNIT") == "C" and socket else None)
+        self.unit = os.environ.get("MM03_UNIT")
+        self.run_root = (Path(socket).parent.parent if self.unit in ("B","C") and socket else None)
         self.clear_timing()
         self.spawn(workers)
         self.log_change("start",[],[w.pid for w in self.workers])
@@ -67,7 +68,7 @@ class NativePool:
                       previous_reset_wall_s=self.reset_wall, previous_native_advance_wall_s=self.advance_wall,
                       previous_wall_s=wall, before_substeps_per_wall_s=self.native_steps/wall if wall else None,
                       before_substeps_per_advance_s=self.native_steps/self.advance_wall if self.advance_wall else None)
-        path=self.run_root/"C"/"native_pool_changes.jsonl"
+        path=self.run_root/self.unit/"native_pool_changes.jsonl"
         path.parent.mkdir(parents=True,exist_ok=True)
         with path.open("a") as stream:
             stream.write(json.dumps(record, allow_nan=False)+"\n")
@@ -79,13 +80,18 @@ class NativePool:
         if not path.is_file():
             return
         target = json.loads(path.read_text())
-        n = target.get("workers",target).get("C",len(self.workers))
+        key="B_CF" if self.unit=="B" else "C"
+        n = target.get("workers",target).get(key,len(self.workers))
+        if self.unit=="B" and n==0:
+            return
         if type(n) is not int or not 1 <= n <= 25:
             raise ValueError(f"Invalid MM03 C native-worker target: {n!r}")
         if n != len(self.workers):
             old = [w.pid for w in self.workers]
-            self.drain()
-            self.spawn(n)
+            if n>len(old):
+                self.spawn(n-len(old))
+            else:
+                self.drain(keep=n)
             self.log_change("resize_before_independent_batch",old,[w.pid for w in self.workers])
             self.clear_timing()
 
@@ -132,21 +138,42 @@ class NativePool:
             self.drain()
             self.log_change("close",old,[])
 
-    def drain(self):
-        for worker in self.workers:
+    def drain(self, keep=0):
+        for worker in self.workers[keep:]:
             try:
                 worker.stdin.close()
             except BrokenPipeError:
                 pass
-        for worker in self.workers:
+        for worker in self.workers[keep:]:
             worker.wait()
-        self.workers.clear()
+        del self.workers[keep:]
+
+
+@lru_cache(maxsize=12)
+def binary_sensors(path, handle, panel_rgb):
+    import mujoco as mj
+    from learning.multimodal.sensors import RobotSensors
+    model=mj.MjModel.from_binary_path(str(path))
+    sensors=RobotSensors(model,handle,panel_rgb)
+    sensors.mm03_compiled_file=str(path)
+    return sensors
 
 
 @lru_cache(maxsize=12)
 def environment(scene_name, side, goal):
-    from scripts.multimodal.mm02_physics import init_resources
+    from scripts.multimodal.mm02_physics import init_resources, scenes
+    from scripts.multimodal.collect_feasibility import teacher_config
+    from scripts.multimodal.mm03_plant import verified_file
     from learning.multimodal.sensors import RobotSensors
+    socket=os.environ.get("MM03_INFERENCE_SOCKET")
+    if socket:
+        scene=scenes()[scene_name]
+        cfg=teacher_config(side,goal,scene)
+        path=verified_file(Path(socket).parent.parent,scene,side,goal,cfg)
+        if path:
+            color=tuple(scene["panel_rgb"]) if scene.get("panel_rgb") is not None else None
+            sensors=binary_sensors(path,cfg["handle_site"],color)
+            return sensors.model,cfg,sensors
     scene, cfg, model, _, _, _ = init_resources(dict(scene=scene_name, side=side, goal=goal))
     return model, cfg, RobotSensors(model, cfg["handle_site"], scene.get("panel_rgb"))
 
@@ -186,7 +213,7 @@ class StudentBranch:
             q, v = d.qpos.copy(), d.qvel.copy()
             d.ctrl[m.actuator_ids] = servo + d.qfrc_bias[m.dof]*m.bias_gain
             mj.mj_step(self.model, d)
-            c = judge.observe(d, q, v)
+            c = judge.observe(d, q, v, return_wheel_slip=False)
             peak = np.maximum(peak, c.finger_normal)
             bilateral += int((c.finger_normal > .01).all())
             if judge.passed or judge.failure:

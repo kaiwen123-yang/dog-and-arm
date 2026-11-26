@@ -476,6 +476,8 @@ def run_spec(path,data_cache):
     out = Path(s["output"])
     if not (out/"receipt.json").is_file():
         with native_pair_slot(s), (out/"executions.jsonl").open("a",buffering=1) as log:
+            if (out/"receipt.json").is_file():
+                return
             started = time.time()
             print(json.dumps(dict(event="started",time=started,pid=os.getpid(),seed=s["seed"],stage=s["stage"])),file=log)
             try:

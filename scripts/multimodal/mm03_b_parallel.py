@@ -157,14 +157,51 @@ class SeedOptimizers:
 
 @contextmanager
 def native_pair_slot(spec):
-    """B_CF is the total shared native population, even with multiple independent seeds."""
+    """Use one writer per frozen fork and a bounded number of independent native pools."""
     if spec.get("variant")!="CF32":
         yield
         return
     import fcntl
     folder = Path(spec["root"])/"B"/"locks"
     folder.mkdir(parents=True,exist_ok=True)
-    with (folder/"native_cf32.lock").open("a") as f:
-        fcntl.flock(f,fcntl.LOCK_EX)
-        yield
+    out = Path(spec["output"])
+    out.mkdir(parents=True,exist_ok=True)
+    with (out/"native_stage_owner.lock").open("a") as owner:
+        fcntl.flock(owner,fcntl.LOCK_EX)
+        if (out/"receipt.json").is_file():
+            yield
+            return
+        share=Path(spec["root"])/"resources/worker_targets.json"
+        handle=None
+        while handle is None:
+            cfg=read(share) if share.is_file() else {}
+            slots=int(cfg.get("B_CF_slots",1))
+            if not 1<=slots<=3:
+                raise ValueError(f"Invalid number of CF32 optimizer slots: {slots}")
+            workers=int(cfg.get("B_CF") or spec.get("native_workers",3))
+            for index in range(slots):
+                file=folder/("native_cf32.lock" if index==0 else f"native_cf32_{index}.lock")
+                candidate=file.open("a")
+                try:
+                    fcntl.flock(candidate,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                except BlockingIOError:
+                    candidate.close()
+                    continue
+                anon,available=host_memory()
+                free=int(subprocess.check_output(["nvidia-smi","-i","0","--query-gpu=memory.free",
+                         "--format=csv,noheader,nounits"],text=True).strip())*2**20
+                if index and (available < (8+4*workers)*GIB or free < (12+workers)*GIB):
+                    candidate.close()
+                    continue
+                handle=candidate
+                emit(out/f"native_slot_{os.getpid()}.json",dict(index=index,slots=slots,initial_workers=workers,
+                    pid=os.getpid(),acquired_epoch=time.time(),free_gpu_bytes=free,
+                    available_host_bytes=available,anon_bytes=anon,owner=str(owner.name)))
+                break
+            if handle is None:
+                time.sleep(1)
+        try:
+            yield
+        finally:
+            handle.close()
 

@@ -105,6 +105,11 @@ def budgets(root, rows):
                 "C/short_recovery_evaluation":sum(x["native_substeps"] for x in cs),
                 "C/directional_check":direction.get("native_substeps",0),
                 "B/true_forward_optimization":sum(x["native_substeps"] for x in b)}
+    perf=root/"performance/20261126-throughput"
+    additional["performance/native_replay_and_judge_checks"]=(
+        read(perf/"cf_native_profile.json").get("true_physics_substeps",0)
+        +read(perf/"native_scoring_comparison.json").get("diagnostic_native_substeps",0)
+        +read(perf/"cached_native_windows.json").get("diagnostic_native_substeps",0))
     high=sum(x["paid"] for x in b if x["stage"] not in ("wm","bridge"))
     high_by_stage=Counter()
     for x in b:
@@ -158,7 +163,7 @@ def mirror_records(root,out):
            "A/completion.json","A/complete.json","B/teacher_registration.json","B/candidate_freeze.json",
            "B/completion.json","C/parent.json","C/calibration.json","C/directional_response.json","C/contact_anchor_inventory.json",
            "C/directional_local_fp64.json","C/development_anchors.json","C/selection.json","C/bridge/bridge.json",
-           "service/upgrade1.json","A/low/summary.json","A/low/development_results.json",
+           "service/upgrade1.json","resources/native_models/index.json","A/low/summary.json","A/low/development_results.json",
            "A/cpu_parity/comparison.json","A/low/block2_design.json","parent_receipt.json","resources/worker_targets.json","B/low_abi_readback.json","B/prefix_p6_parity_pull.json",
            "B/prefix_p6_parity_push.json","C/native_pool_changes.jsonl")
     for name in small:
