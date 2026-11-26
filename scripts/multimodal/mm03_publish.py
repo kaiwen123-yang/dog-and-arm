@@ -11,7 +11,7 @@ import time
 import traceback
 
 from scripts.multimodal.mm03_first import deliver
-from scripts.multimodal.mm03_launch import DEFAULT, read, write, now
+from scripts.multimodal.mm03_launch import DEFAULT, alive, enqueue, read, write, now
 from scripts.multimodal.mm03_report import OUT, REPORT, SLUG, snapshot
 
 
@@ -44,6 +44,43 @@ def git(repo,*args):
     return command("git","-c","http.version=HTTP/1.1","-c","credential.helper=",
                    "-c","credential.helper=!gh auth git-credential","-c","user.name=kaiwen123-yang",
                    "-c","user.email=kaiwen123-yang@users.noreply.github.com",*args,repo=repo).strip()
+
+
+def recover_failed(root):
+    """Retry from durable checkpoints and retain a repeated fault for inspection."""
+    supervisor=read(root/"status/supervisor.json")
+    queued=False
+    for name in ("inference","B","C"):
+        rec=read(root/f"status/{name}.json")
+        if rec.get("state")!="failed" or alive(rec):
+            continue
+        if name=="inference":
+            if read(root/"service/rotation.json").get("stage") not in (None,"complete"):
+                continue
+            if all(read(root/f"status/{n}.json").get("state")=="complete" for n in ("A","B","C")):
+                continue
+        folder=root/"recovery"/name
+        receipt=folder/f"attempt{rec['attempt']:03d}.json"
+        if receipt.exists():
+            continue
+        if name=="C":
+            cur=read(root/"C/current.json")
+            stage=[cur.get(k) for k in ("stage","variant","seed")]
+        elif name=="B":
+            cur=read(root/"B/physical_progress.json")
+            stage=[cur.get("partition"),cur.get("cases_done"),len(list((root/"B").glob("rounds/*/*/seed*/*/receipt.json")))]
+        else:
+            stage=[]
+        key=[rec.get("git_commit"),stage]
+        earlier=[read(p) for p in folder.glob("attempt*.json")]
+        retry=sum(r.get("key")==key and r.get("queued") is True for r in earlier)<2
+        write(receipt,dict(unit=name,attempt=rec["attempt"],key=key,queued=retry,at=now(),
+                           log=rec["log"],source_exit=rec.get("exit_code")))
+        if retry:
+            enqueue(root,name)
+            queued=True
+    if queued and not alive(supervisor):
+        subprocess.Popen(["bash","scripts/multimodal/mm03_session.sh",str(root)],cwd=Path(__file__).resolve().parents[2])
 
 
 def reached(root):
@@ -154,6 +191,7 @@ def main():
                     os.execv(sys.executable,[sys.executable,"-u","-m","scripts.multimodal.mm03_publish",*sys.argv[1:]])
                 from scripts.multimodal.mm03_resources import update
                 update(a.root)
+                recover_failed(a.root)
                 success = deliver(a.root,video_only=True)
                 if (a.root/"B/formal_cases.json").is_file() and not read(a.root/"videos/mm03/examples.json").get("formal_cases_complete"):
                     from scripts.multimodal.mm03_videos import task_examples

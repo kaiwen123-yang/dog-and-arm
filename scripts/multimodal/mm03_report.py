@@ -207,7 +207,7 @@ def case_csv(path, rows):
     fields=["method","seed","partition","scene","side","goal","success","ordered_events","teacher_steps",
             "physics_steps","failure","failure_phase","max_door_deg","checkpoint","source_case"]
     with path.open("w",newline="",encoding="utf-8-sig") as f:
-        writer=csv.DictWriter(f,fieldnames=fields+[phase+"_s" for phase in PHASES])
+        writer=csv.DictWriter(f,fieldnames=fields+[phase+"_s" for phase in PHASES],lineterminator="\n")
         writer.writeheader()
         for row in rows:
             value={k:row.get(k) for k in fields}
