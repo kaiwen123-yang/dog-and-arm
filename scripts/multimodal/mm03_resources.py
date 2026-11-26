@@ -8,13 +8,16 @@ import time
 from scripts.multimodal.mm03_launch import DEFAULT, now, read, write
 
 
-def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=None):
+def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=None, elastic=None):
+    from scripts.multimodal.mm03_elastic import configure_locked,reconcile_locked
     directory=root/"resources"
     directory.mkdir(exist_ok=True)
     with (directory/"allocation.lock").open("a") as lock:
         fcntl.flock(lock.fileno(),fcntl.LOCK_EX)
         path=directory/"worker_targets.json"
         old=read(path)
+        if elastic is not None:
+            configure_locked(root,elastic,reason)
         cfg=read(root/"launch_config.json")["workers"]
         prior={k:old.get(k,cfg[k]) for k in ("B","C")}
         prior["B_CF"]=old.get("B_CF",0)
@@ -26,7 +29,7 @@ def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=No
         frozen=(root/"B/candidate_freeze.json").is_file()
         if b is None and c is None and b_gpu is None and b_cf is None and cf_slots is None:
             if old and old.get("A_finished")==a_done and old.get("C_finished")==c_done and old.get("candidates_frozen",False)==frozen:
-                return old
+                return reconcile_locked(root,old)
             if c_done and a_done:
                 winner=read(root/"C/selection.json").get("selected_model_variant")
                 reserve_cf=winner=="CF32" and not frozen
@@ -42,7 +45,7 @@ def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=No
                 target.update(B=9,C=8)
                 reason="A finished its last registered native batch; hand its slots to task collection and CF32"
             else:
-                return old
+                return reconcile_locked(root,old)
         else:
             if not reason:
                 raise ValueError("A manual allocation needs a measured reason")
@@ -65,7 +68,7 @@ def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=No
         if min(target["B"],target["C"])<1 or active_a+target["B"]+active_c+target["B_CF"]*target["B_CF_slots"]>22:
             raise ValueError("Native workers leave fewer than three of the 25 cores for shared work")
         if target==prior:
-            return old
+            return reconcile_locked(root,old)
         generation=dict(**target,changed_beijing=now(),reason=reason,
             A_finished=a_done,C_finished=c_done,candidates_frozen=frozen,previous=prior,
             B_throughput_before=read(root/"B/physical_progress.json"),
@@ -73,7 +76,7 @@ def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=No
         write(path,generation)
         with (directory/"allocation_changes.jsonl").open("a") as f:
             f.write(json.dumps(generation,separators=(",",":"))+"\n")
-        return generation
+        return reconcile_locked(root,generation)
 
 
 if __name__=="__main__":
@@ -84,7 +87,9 @@ if __name__=="__main__":
     p.add_argument("--b-gpu-slots",type=int,choices=(1,2,3))
     p.add_argument("--b-cf-workers",type=int)
     p.add_argument("--b-cf-slots",type=int,choices=(1,2,3))
+    p.add_argument("--elastic",choices=("on","off"))
     p.add_argument("--reason")
     args=p.parse_args()
-    print(json.dumps(update(args.root,args.b_workers,args.c_workers,args.reason,args.b_gpu_slots,args.b_cf_workers,args.b_cf_slots),ensure_ascii=False))
+    print(json.dumps(update(args.root,args.b_workers,args.c_workers,args.reason,args.b_gpu_slots,args.b_cf_workers,args.b_cf_slots,
+                            None if args.elastic is None else args.elastic=="on"),ensure_ascii=False))
 

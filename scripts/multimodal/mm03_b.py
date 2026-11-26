@@ -78,12 +78,6 @@ def batch(root, jobs, workers):
                 clone_before_WM=(method=="H9-WM" and cases[0]["round"]==1)))
     target_file = Path(root) / "resources" / "worker_targets.json"
     initial_workers = workers
-    if target_file.is_file():
-        target = read(target_file)
-        workers = int(target.get("B", target.get("workers",{}).get("B",workers)))
-    if not 1 <= workers <= 25:
-        raise ValueError(f"Invalid native B worker target: {workers}")
-    workers = min(workers,len(jobs))
     done = set()
     results = {}
     for job in jobs:
@@ -95,43 +89,45 @@ def batch(root, jobs, workers):
     queue, predicted = physical_queue(root,[j for j in jobs if j["id"] not in done])
     if not queue:
         return [results[j["id"]] for j in jobs]
-    workers = min(workers,len(queue))
-    seq = iter(queue)
-    start_epoch = time.time()
-    start = time.monotonic()
-    steps = 0
-    fresh = 0
-    with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("forkserver")) as pool:
-        pending = {}
-        def refill():
-            for job in seq:
-                fut = pool.submit(episode, (str(root), job))
-                pending[fut] = job
-                if len(pending) >= 2 * workers:
-                    break
-        refill()
-        while pending:
-            finished, _ = wait(pending, return_when=FIRST_COMPLETED)
-            for fut in finished:
-                job = pending.pop(fut)
-                row = fut.result()
-                results[job["id"]] = row
-                fresh += 1
-                steps += row["physics_steps"]
-            elapsed = time.monotonic() - start
-            emit(root / "B" / "physical_progress.json", dict(partition=jobs[0]["partition"],
-                 cases_done=len(results), planned=len(jobs), workers=workers, launch_workers=initial_workers,
-                 worker_target_source=str(target_file) if target_file.exists() else "launch configuration",
-                 wall_s=elapsed, completed_here=fresh, steps_here=steps, steps_s=steps/max(elapsed, 1e-6),
-                 resumed_cases=len(done), processes=list(pool._processes)))
+    from scripts.multimodal.mm03_elastic import ordinary_admission
+    with ordinary_admission(root,partition,len(queue),initial_workers) as workers:
+        workers = min(workers,len(queue))
+        seq = iter(queue)
+        start_epoch = time.time()
+        start = time.monotonic()
+        steps = 0
+        fresh = 0
+        with ProcessPoolExecutor(max_workers=workers, mp_context=multiprocessing.get_context("forkserver")) as pool:
+            pending = {}
+            def refill():
+                for job in seq:
+                    fut = pool.submit(episode, (str(root), job))
+                    pending[fut] = job
+                    if len(pending) >= 2 * workers:
+                        break
             refill()
-    duration = time.monotonic()-start
-    timing = dict(partition=partition, workers=workers, predicted_cases=predicted,
-                  start_epoch=start_epoch, elapsed_s=duration, physical_substeps=steps, cases=fresh,
-                  substeps_per_s=steps/duration, dispatch_order=[j["id"] for j in queue],
-                  worker_case_wall_s=sum(results[j["id"]]["wall_s"] for j in queue))
-    folder = root/"B"/"native_batch_timings"
-    emit(folder/f"{time.time_ns()}.json",timing)
+            while pending:
+                finished, _ = wait(pending, return_when=FIRST_COMPLETED)
+                for fut in finished:
+                    job = pending.pop(fut)
+                    row = fut.result()
+                    results[job["id"]] = row
+                    fresh += 1
+                    steps += row["physics_steps"]
+                elapsed = time.monotonic() - start
+                emit(root / "B" / "physical_progress.json", dict(partition=jobs[0]["partition"],
+                     cases_done=len(results), planned=len(jobs), workers=workers, launch_workers=initial_workers,
+                     worker_target_source=str(target_file) if target_file.exists() else "launch configuration",
+                     wall_s=elapsed, completed_here=fresh, steps_here=steps, steps_s=steps/max(elapsed, 1e-6),
+                     resumed_cases=len(done), processes=list(pool._processes)))
+                refill()
+        duration = time.monotonic()-start
+        timing = dict(partition=partition, workers=workers, predicted_cases=predicted,
+                      start_epoch=start_epoch, elapsed_s=duration, physical_substeps=steps, cases=fresh,
+                      substeps_per_s=steps/duration, dispatch_order=[j["id"] for j in queue],
+                      worker_case_wall_s=sum(results[j["id"]]["wall_s"] for j in queue))
+        folder = root/"B"/"native_batch_timings"
+        emit(folder/f"{time.time_ns()}.json",timing)
     return [results[j["id"]] for j in jobs]
 
 
@@ -153,6 +149,8 @@ def refresh_coordinator(root):
 
 def run(args):
     root = args.root.resolve()
+    from scripts.multimodal.mm03_elastic import announce
+    announce(root)
     out = root / "B"
     jobs = teacher_jobs()
     freeze_file(out / "teacher_registration.json", dict(
