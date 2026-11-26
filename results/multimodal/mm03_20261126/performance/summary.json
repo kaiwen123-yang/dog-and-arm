@@ -1,5 +1,5 @@
 {
-  "as_of_beijing": "2026-11-26T15:25:24+08:00",
+  "as_of_beijing": "2026-11-26T17:09:57+08:00",
   "observed_cohort": {
     "baseline_round": 2,
     "optimized_round": 4,
@@ -278,13 +278,115 @@
         "previous_full_stage_wall_s": 19.07423686981201,
         "extra_gradient_evaluations": 1,
         "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r06/wm/seed1703/receipt.json"
+      },
+      {
+        "round": "r07",
+        "seed": "seed1701",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 23.792880518361926,
+        "previous_same_seed_wall_s": 26.937700165435672,
+        "full_stage_wall_s": 44.03486442565918,
+        "previous_full_stage_wall_s": 53.73947024345398,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r07/wm/seed1701/receipt.json"
+      },
+      {
+        "round": "r07",
+        "seed": "seed1702",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 23.807751497253776,
+        "previous_same_seed_wall_s": 26.797569012269378,
+        "full_stage_wall_s": 44.1898512840271,
+        "previous_full_stage_wall_s": 53.65310740470886,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r07/wm/seed1702/receipt.json"
+      },
+      {
+        "round": "r07",
+        "seed": "seed1703",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 23.817810690030456,
+        "previous_same_seed_wall_s": 26.778096748515964,
+        "full_stage_wall_s": 44.087031841278076,
+        "previous_full_stage_wall_s": 53.72102880477905,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r07/wm/seed1703/receipt.json"
+      },
+      {
+        "round": "r08",
+        "seed": "seed1701",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 24.00951643101871,
+        "previous_same_seed_wall_s": 23.792880518361926,
+        "full_stage_wall_s": 47.53709840774536,
+        "previous_full_stage_wall_s": 44.03486442565918,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r08/wm/seed1701/receipt.json"
+      },
+      {
+        "round": "r08",
+        "seed": "seed1702",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 24.018650913611054,
+        "previous_same_seed_wall_s": 23.807751497253776,
+        "full_stage_wall_s": 47.816380739212036,
+        "previous_full_stage_wall_s": 44.1898512840271,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r08/wm/seed1702/receipt.json"
+      },
+      {
+        "round": "r08",
+        "seed": "seed1703",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 24.001483522355556,
+        "previous_same_seed_wall_s": 23.817810690030456,
+        "full_stage_wall_s": 47.65617775917053,
+        "previous_full_stage_wall_s": 44.087031841278076,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r08/wm/seed1703/receipt.json"
       }
     ],
     "validation": "Two actual eager warmup updates and a matching loss/all-gradient check at the first replay of each WM process. Sampling, clipping and the AdamW step retain their registered order."
   },
   "native_dispatch": {
-    "measured_completed_reordered_batches": 30,
-    "counted_new_native_cases": 720,
+    "measured_completed_reordered_batches": 46,
+    "counted_new_native_cases": 1104,
     "worker_counts": [
       4,
       6,
@@ -337,37 +439,35 @@
     "B_CF": 6,
     "B_GPU": 3,
     "B_CF_slots": 3,
-    "changed_beijing": "2026-11-26T13:06:46+08:00",
-    "reason": "Measure three independent H9-WM CF32 seeds on the same 25-core allocation: three native pools of six plus four ordinary workers.",
+    "changed_beijing": "2026-11-26T17:09:49+08:00",
+    "reason": "Restore the measured three-seed layout after the scoped single-seed tail",
     "A_finished": true,
     "C_finished": true,
     "candidates_frozen": false,
     "previous": {
       "B": 4,
       "C": 8,
-      "B_CF": 6,
+      "B_CF": 12,
       "B_GPU": 3,
-      "B_CF_slots": 2
+      "B_CF_slots": 1
     },
     "B_throughput_before": {
-      "partition": "rounds/r02/collect",
-      "cases_done": 24,
-      "planned": 24,
-      "workers": 6,
+      "partition": "rounds/r08/regression",
+      "cases_done": 20,
+      "planned": 20,
+      "workers": 4,
       "launch_workers": 7,
       "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-      "wall_s": 88.12000265531242,
-      "completed_here": 24,
-      "steps_here": 348282,
-      "steps_s": 3952.360298516212,
+      "wall_s": 68.28012551926076,
+      "completed_here": 20,
+      "steps_here": 187455,
+      "steps_s": 2745.3815963932557,
       "resumed_cases": 0,
       "processes": [
-        431345,
-        431348,
-        431349,
-        431350,
-        431351,
-        431352
+        484863,
+        484866,
+        484867,
+        484868
       ]
     },
     "A_last_batch": {
@@ -385,19 +485,43 @@
       "timestamp": "2026-11-26T02:55:24.053452+00:00"
     },
     "central_inference": {
-      "calls": 110771,
-      "forwards": 74864,
-      "max_batch": 6,
-      "mean_batch": 1.4796297285744817,
-      "queue_wait_mean_ms": 1.2161821118900162,
+      "calls": 521115,
+      "forwards": 407230,
+      "max_batch": 10,
+      "mean_batch": 1.279657687302016,
+      "queue_wait_mean_ms": 1.1621994090975507,
       "device": "cuda",
-      "queued": 0,
-      "models": 3,
-      "graph_calls": 74864,
-      "cached_graphs": 18,
+      "queued": 1,
+      "models": 17,
+      "graph_calls": 407230,
+      "cached_graphs": 48,
       "coalesce_ms": 0.7,
-      "peak_torch_allocated_bytes": 644914176,
-      "pid": 430836
+      "peak_torch_allocated_bytes": 1131502080,
+      "pid": 473823
+    },
+    "workers": {
+      "B": 4,
+      "C": 8,
+      "B_CF": 6,
+      "B_GPU": 3,
+      "B_CF_slots": 3
+    },
+    "elastic_cf": {
+      "protocol": "mm03-ordinary-native-lease-v1",
+      "mode": "ordinary_reserved",
+      "changed_beijing": "2026-11-26T17:09:49+08:00",
+      "reserved_ordinary": 4,
+      "effective_ordinary_capacity": 4,
+      "effective_workers_per_cf": 6,
+      "borrowed_ordinary_cores": 0,
+      "additional_shared_cpu_slots": 0,
+      "measured_cgroup_cpu_cores": null,
+      "measured_gpu_free_GiB": null,
+      "host_available_bytes": null,
+      "estimated_incremental_host_bytes": 0,
+      "live_pool_sizes": {
+        "485323": 12
+      }
     }
   },
   "paired_native_throughput": {

@@ -1,8 +1,8 @@
 # MM03 多模态腿臂仿真实验
 
-2026-11-26T15:25:24+08:00（北京时间），第5轮三方法开发评测完成与第6轮三路运行。
+2026-11-26T17:09:57+08:00（北京时间），CF32计算重叠与空闲算力提速。
 
-A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、151,488、7,680、18,000、30,600 次。
+A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、208,479、7,680、24,000、43,800 次。
 
 原生 MuJoCo 3.3.0，2 ms 伺服、20 ms 学习控制、100 ms 腕部 RGB-D。按原 12 事件判分。真实硬件运动命令 0。
 
@@ -66,7 +66,7 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 ## 真实教师前缀后的学生续演
 
-已结束 672 案，672 案实际切换到学生，2 案继续完成全部事件。
+已结束 864 案，864 案实际切换到学生，9 案继续完成全部事件。
 
 ## 正式纯学生评测
 
@@ -76,15 +76,15 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 | 方法 | 微调种子 | 轮次 | 全程成功 | 驶近 | 停稳 | 首败最多的原因 |
 |---|---:|---:|---:|---:|---:|---|
-| D23 | 1701 | 5 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
-| D23 | 1702 | 5 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
-| D23 | 1703 | 6 | 0/8 | 1/8 | 0/8 | wheel_support_or_tilt (8) |
-| H9 | 1701 | 5 | 0/8 | 1/8 | 0/8 | timeout:approach_base (4)、unexpected_contact:robot_self (4) |
-| H9 | 1702 | 5 | 0/8 | 5/8 | 0/8 | unexpected_contact:robot_self (4)、timeout:settle (2) |
-| H9 | 1703 | 6 | 0/8 | 2/8 | 1/8 | door_contact_outside_manipulation (3)、timeout:approach_base (3) |
-| H9-WM | 1701 | 5 | 0/8 | 3/8 | 0/8 | timeout:approach_base (4)、timeout:settle (3) |
-| H9-WM | 1702 | 5 | 0/8 | 2/8 | 0/8 | timeout:approach_base (6)、timeout:settle (2) |
-| H9-WM | 1703 | 5 | 0/8 | 3/8 | 0/8 | timeout:approach_base (3)、unexpected_contact:robot_self (3) |
+| D23 | 1701 | 8 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
+| D23 | 1702 | 8 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
+| D23 | 1703 | 8 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
+| H9 | 1701 | 8 | 0/8 | 2/8 | 0/8 | unexpected_contact:robot_self (4)、door_contact_outside_manipulation (2) |
+| H9 | 1702 | 8 | 0/8 | 3/8 | 0/8 | door_contact_outside_manipulation (3)、unexpected_contact:robot_self (3) |
+| H9 | 1703 | 8 | 0/8 | 0/8 | 0/8 | unexpected_contact:robot_self (3)、timeout:approach_base (3) |
+| H9-WM | 1701 | 8 | 0/8 | 2/8 | 0/8 | timeout:approach_base (6)、timeout:settle (2) |
+| H9-WM | 1702 | 7 | 0/8 | 4/8 | 0/8 | timeout:settle (4)、timeout:approach_base (4) |
+| H9-WM | 1703 | 8 | 0/8 | 2/8 | 0/8 | timeout:approach_base (6)、timeout:settle (1) |
 
 ## 训练吞吐
 
@@ -93,6 +93,8 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 [等预算阶段、实际GPU采样和数值对照](../results/multimodal/mm03_20261126/performance/summary.json)
 
 在同一轮 H9-WM 真物理配对中，两路每分钟实付 51.3 次更新，三路实付 72.0 次，已采用三路。两种配置分别测量 180 和 180 秒。 [逐分钟数据与完成时间估算](../results/multimodal/mm03_20261126/performance/cf32_concurrency/README.md)
+
+第六轮三个种子每个从 6 增至 7 个物理进程，实付更新由 65.3 增至 70.0 次/分。同锚点 H32 真前向及完整反传从 4.10 秒缩至 3.57 秒，单个原生进程的轮地接触读取对照达到原吞吐的 1.49 倍。第八轮 H9 采集的两个 24 案批次，以 4 和 12 个进程分别完成 2,884 和 6,433 个物理子步/秒。仅余种子 1702 时，6/12 进程同种子生产对照分别实付 28.7/28.7 次/分，剩余更新采用 6 进程。 [同批次计时、生产吞吐与最新估时](../results/multimodal/mm03_20261126/performance/cf32_latency/README.md)
 
 
 

@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-26T15:25:24+08:00",
+  "as_of_beijing": "2026-11-26T17:09:57+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,22 +25,22 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "第5轮三方法开发评测完成与第6轮三路运行",
+  "milestone": "CF32计算重叠与空闲算力提速",
   "runtime": {
     "supervisor": {
-      "pid": 430830,
-      "pid_stamp": "1172575995",
-      "started_beijing": "2026-11-26T12:46:32+08:00",
+      "pid": 473818,
+      "pid_stamp": "1173722100",
+      "started_beijing": "2026-11-26T15:57:33+08:00",
       "state": "running",
       "live": true
     },
     "inference": {
       "unit": "inference",
-      "attempt": 5,
-      "started_beijing": "2026-11-26T12:46:32+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt005.log",
-      "wrapper": 430832,
-      "wrapper_stamp": "1172576001",
+      "attempt": 6,
+      "started_beijing": "2026-11-26T15:57:33+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt006.log",
+      "wrapper": 473820,
+      "wrapper_stamp": "1173722106",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.conda/envs/arm-and-dog/bin/python",
         "-u",
@@ -49,10 +49,10 @@
         "--root",
         "/root/autodl-tmp/mm03-20261126"
       ],
-      "git_commit": "62b6beff3e79fe9c1806f468db92d66f9e40ced8",
+      "git_commit": "2ab13040f0db14538268c724ae8f4f96d12b500e",
       "state": "running",
-      "pid": 430836,
-      "pid_stamp": "1172576006",
+      "pid": 473823,
+      "pid_stamp": "1173722111",
       "live": true
     },
     "A": {
@@ -82,11 +82,11 @@
     },
     "B": {
       "unit": "B",
-      "attempt": 8,
-      "started_beijing": "2026-11-26T12:46:34+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt008.log",
-      "wrapper": 430841,
-      "wrapper_stamp": "1172576207",
+      "attempt": 10,
+      "started_beijing": "2026-11-26T16:58:39+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt010.log",
+      "wrapper": 483620,
+      "wrapper_stamp": "1174088659",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.venv/bin/python",
         "-u",
@@ -97,10 +97,10 @@
         "--workers",
         "7"
       ],
-      "git_commit": "62b6beff3e79fe9c1806f468db92d66f9e40ced8",
+      "git_commit": "f3d12a53757d8fcd84b8cb07e1b64e3110f26368",
       "state": "running",
-      "pid": 430843,
-      "pid_stamp": "1172576213",
+      "pid": 483623,
+      "pid_stamp": "1174088665",
       "live": true
     },
     "C": {
@@ -178,50 +178,50 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 951,
+    "samples": 1263,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-26T15:25:07+08:00",
-      "time": 1795677907.7076168,
-      "cpu_stat": "usage_usec 11211771473421\nuser_usec 10918849395633\nsystem_usec 292922077787\nnr_periods 21385245\nnr_throttled 150683\nthrottled_usec 82078243367",
+      "beijing": "2026-11-26T17:09:38+08:00",
+      "time": 1795684178.4110425,
+      "cpu_stat": "usage_usec 11297121412457\nuser_usec 11002004230895\nsystem_usec 295117181561\nnr_periods 21447952\nnr_throttled 150703\nthrottled_usec 82140433245",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "126700990464",
+      "ram_bytes": "94945873920",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 303085232128,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 69849, 97887, 80",
+      "disk_free_bytes": 248235950080,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 38920, 97887, 22",
       "inference": {
-        "calls": 806612,
-        "forwards": 634947,
-        "max_batch": 6,
-        "mean_batch": 1.2703611482533188,
-        "queue_wait_mean_ms": 1.195310905311411,
+        "calls": 521115,
+        "forwards": 407230,
+        "max_batch": 10,
+        "mean_batch": 1.279657687302016,
+        "queue_wait_mean_ms": 1.1621994090975507,
         "device": "cuda",
-        "queued": 0,
+        "queued": 1,
         "models": 17,
-        "graph_calls": 634947,
+        "graph_calls": 407230,
         "cached_graphs": 48,
         "coalesce_ms": 0.7,
-        "peak_torch_allocated_bytes": 1131416064,
-        "pid": 430836
+        "peak_torch_allocated_bytes": 1131502080,
+        "pid": 473823
       },
       "memory_components_bytes": {
-        "anon": 92908187648,
-        "file": 32667213824,
-        "shmem": 216334336
+        "anon": 49306959872,
+        "file": 44862267392,
+        "shmem": 183123968
       },
       "lane_pids": {
-        "inference": 430836,
+        "inference": 473823,
         "A": 404015,
-        "B": 430843,
+        "B": 483623,
         "C": 411312,
         "video": 399173
       }
     },
-    "peak_sampled_gpu_used_MiB": 70691,
+    "peak_sampled_gpu_used_MiB": 74045,
     "peak_sampled_gpu_util_percent": 100,
     "scope": "sampled whole allocated GPU incl. unrelated users; service Torch peak and queue waits are separate"
   },
@@ -463,17 +463,19 @@
     {
       "method": "H9",
       "seed": 1701,
-      "round": 0,
-      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/receipt.json",
+      "round": 7,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r07/H9/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r07/H9/seed1701/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r07/H9/seed1701/paired/receipt.json",
+      "full_sha256": "285cdb2e72fd336c8672b8eb792c6c4bcd4ef8cd4c65c6fd175fc3a45e56e6f7",
+      "deploy_sha256": "d4d3f93a557e3b0b350da4882c85cbd82f7e2cda80c8e43225b2a6c9b641b01c",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
       "rank": [
         0,
         0,
-        4,
-        0,
-        0
+        5,
+        -1,
+        -7
       ],
       "development": [
         {
@@ -481,28 +483,28 @@
           "side": "pull",
           "goal": 15,
           "success": false,
-          "events": 1
+          "events": 3
         },
         {
           "scene": "tr_nominal",
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 0
         },
         {
           "scene": "tr_nominal",
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 1
+          "events": 0
         },
         {
           "scene": "tr_nominal",
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 2
         },
         {
           "scene": "va_pose",
@@ -535,7 +537,7 @@
       ],
       "physical_cases": 8,
       "paired_model_updates_at_checkpoint": 0,
-      "initialization_only": true,
+      "initialization_only": false,
       "common_H9_parent": false
     },
     {
@@ -955,22 +957,22 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r07/collect",
-    "cases_done": 24,
-    "planned": 24,
+    "partition": "rounds/r08/regression",
+    "cases_done": 20,
+    "planned": 20,
     "workers": 4,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 167.4871784746647,
-    "completed_here": 24,
-    "steps_here": 332137,
-    "steps_s": 1983.0592587733001,
+    "wall_s": 68.28012551926076,
+    "completed_here": 20,
+    "steps_here": 187455,
+    "steps_s": 2745.3815963932557,
     "resumed_cases": 0,
     "processes": [
-      466665,
-      466668,
-      466669,
-      466670
+      484863,
+      484866,
+      484867,
+      484868
     ]
   },
   "A_current": {
@@ -993,5 +995,7 @@
   },
   "performance_evidence": "performance/summary.json",
   "cf32_concurrency_comparison": "performance/cf32_concurrency/decision.json",
-  "cf32_concurrency_forecast": "performance/cf32_concurrency/forecast.json"
+  "cf32_concurrency_forecast": "performance/cf32_concurrency/forecast.json",
+  "cf32_latency_evidence": "performance/cf32_latency/summary.json",
+  "current_forecast": "performance/cf32_latency/forecast.json"
 }

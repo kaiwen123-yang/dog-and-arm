@@ -1,0 +1,124 @@
+{
+  "as_of_beijing": "2026-11-26T16:30:35.209109+08:00",
+  "protocol": "real production admission/independent CF32-window resets",
+  "source_events": "resources/ordinary_elastic_events.jsonl",
+  "source_pools": "B/native_pool_changes.jsonl",
+  "incumbent_seed_batch_parameters_unchanged": true,
+  "current_live_cf_sizes": {},
+  "ordinary_running": true,
+  "observed_loans": [
+    {
+      "begin": "2026-11-26T16:04:23+08:00",
+      "end": "2026-11-26T16:20:45+08:00",
+      "owner_count": 3,
+      "promotion_acks": [
+        {
+          "utc": "2026-11-26T08:04:24.029669+00:00",
+          "pid": 473872,
+          "before": 6,
+          "after": 7,
+          "native_pids": [
+            474006,
+            474007,
+            474008,
+            474009,
+            474010,
+            474011,
+            474570
+          ]
+        },
+        {
+          "utc": "2026-11-26T08:04:25.395246+00:00",
+          "pid": 473873,
+          "before": 6,
+          "after": 7,
+          "native_pids": [
+            473996,
+            473997,
+            473998,
+            473999,
+            474000,
+            474001,
+            474573
+          ]
+        },
+        {
+          "utc": "2026-11-26T08:04:25.719466+00:00",
+          "pid": 474211,
+          "before": 6,
+          "after": 7,
+          "native_pids": [
+            474396,
+            474397,
+            474398,
+            474399,
+            474400,
+            474401,
+            474574
+          ]
+        }
+      ],
+      "returned_pool_acks": [
+        {
+          "utc": "2026-11-26T08:20:44.507222+00:00",
+          "pid": 473873,
+          "before": 7,
+          "after": 0
+        },
+        {
+          "utc": "2026-11-26T08:20:46.474196+00:00",
+          "pid": 474211,
+          "before": 7,
+          "after": 6
+        },
+        {
+          "utc": "2026-11-26T08:20:47.927029+00:00",
+          "pid": 473872,
+          "before": 7,
+          "after": 6
+        }
+      ],
+      "first_next_ordinary": {
+        "at": "2026-11-26T16:20:47+08:00",
+        "epoch": 1795681247.942127,
+        "event": "ordinary_admitted",
+        "partition": "rounds/r07/development",
+        "cases": 8,
+        "ordinary_workers": 4,
+        "wait_s": 1.7196506261825562,
+        "was_lent": false,
+        "confirmed_cf_sizes": {
+          "473872": 6,
+          "474211": 6
+        }
+      },
+      "active_seconds": 981.9112727642059,
+      "all_three_confirmed": true,
+      "return_confirmed": true,
+      "production_rate_window": {
+        "round": 7,
+        "start_epoch": 1795680295.719466,
+        "end_epoch": 1795680385.719466,
+        "seconds": 90.0,
+        "paid_seed_updates": {
+          "seed1701": 36,
+          "seed1702": 35,
+          "seed1703": 34
+        },
+        "native_by_seed": {
+          "seed1701": 368640,
+          "seed1702": 358400,
+          "seed1703": 348160
+        },
+        "updates_per_minute": 70.0,
+        "physical_substeps_per_s": 11946.666666666666,
+        "definition": "First complete 90 seconds beginning 30 seconds after the last of the three hot acknowledgements. Application ledger membership uses the modification time of the corresponding completed native replay file."
+      }
+    }
+  ],
+  "ordinary_admission_worker_counts_since_enabled": {
+    "4": 14
+  },
+  "extra_updates": 0,
+  "extra_physical_substeps": 0
+}
