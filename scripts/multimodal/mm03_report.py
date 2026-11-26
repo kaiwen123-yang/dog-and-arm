@@ -266,6 +266,7 @@ def task_tables(root, rows, formal):
 
 
 def snapshot(root,repo,milestone):
+    from scripts.multimodal.mm03_speed_receipt import FILES, SUBDIR, summarize, paragraph
     out=repo/OUT
     out.mkdir(parents=True, exist_ok=True)
     rows=case_rows(root)
@@ -286,6 +287,11 @@ def snapshot(root,repo,milestone):
               "new_blind_opened":any(r["scene"].startswith("te_mm03_") for r in rows if r.get("scene")),
               "B_current":read(root/"B/physical_progress.json"),"A_current":read(root/"A/progress.json"),
               "C_current":read(root/"C/current.json"),"hardware_motion_commands":0}
+    speed = summarize(root)
+    if speed:
+        manifest["performance_evidence"]="performance/summary.json"
+        for name in (*FILES,"summary.json"):
+            slimcopy(root/SUBDIR/name,out/"performance"/name)
     write(out/"manifest.json",manifest)
     write(out/"budget.json",cost)
     (out/"physical_cases.jsonl").write_text("".join(json.dumps(r,ensure_ascii=False,separators=(",",":"))+"\n" for r in rows))
@@ -317,6 +323,9 @@ def snapshot(root,repo,milestone):
         short=next((s for s in cost["C_short"] if (s["variant"],s["seed"])==(f["variant"],f["seed"])),{})
         report.append(f"| {f['variant']} | {f['seed']} | {f['paid']}/{f['retained']} | {sum(r['success'] for r in gd)}/{len(gd)} | {short.get('survived',0)}/{short.get('cases',0)} | {f['native_substeps']:,} |")
     report+=task_tables(root,rows,formal)
+    if speed:
+        report+=["## 训练吞吐",paragraph(speed),
+                 f"[等预算阶段、实际GPU采样和数值对照](../{OUT.as_posix()}/performance/summary.json)"]
     report+=["","## 视频与恢复",f"MM02 的四条原轨迹共 {len(videos)} 个全程或局部视频。[同回合视频索引](../{OUT.as_posix()}/videos/mm02/index.json)"]
     for example in read(root/"videos/mm03/examples.json").get("videos",[]):
         label="完整教师" if example["teacher_decisions"] else "全程学生"
@@ -355,5 +364,7 @@ def snapshot(root,repo,milestone):
                 f"已结束且有回执的物理回合 {len(rows):,} 个，累计 {cost['episode_substeps']:,} 子步。"
                 f"额外真前向、恢复短窗、方向检查及在跑进程分别见[账本]({OUT.as_posix()}/budget.json)"
                 f"与[恢复清单]({OUT.as_posix()}/manifest.json)。发布时保留原始轨迹、完整包及各次退出日志。\n")
+        if speed and "提速" in milestone:
+            f.write("\n"+paragraph(speed)+f" [测量记录]({OUT.as_posix()}/performance/summary.json)\n")
     return manifest
 
