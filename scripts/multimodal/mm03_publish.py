@@ -29,6 +29,8 @@ def reached(root):
     complete_episodes=(root/"A/channel_results.json").is_file() and (root/"B/teacher_cases.json").is_file()
     if complete_episodes and (root/"videos/mm02/index.json").is_file():
         milestones.append("44 案干预与 96 条完整教师")
+    if len(read(root/"videos/mm03/examples.json").get("videos",[]))>=3:
+        milestones.append("完整教师与同条件高层学生录像")
     for block in range(3):
         if all((root/f"A/low/seed{seed}/block{block}/train_result.json").is_file() for seed in (1701,1702,1703)):
             milestones.append(f"L16 第 {block} 个训练块")

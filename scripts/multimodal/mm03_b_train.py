@@ -58,7 +58,7 @@ def refresh_wm(s):
     forward_rng = np.random.default_rng(s["data_seed"] + 13517)
     if s.get("use_selected_C_replay"):
         from learning.multimodal.mm03_model_replay import SharedForwardReplay
-        forward = SharedForwardReplay(s["root"], DEVICE)
+        forward = SharedForwardReplay(s["root"], DEVICE,extra_ledgers=mp.get("previous_cf_ledgers", []))
     forward_per_batch = 32 if forward is not None and forward.count else 0
     ck = out / "wm.pt"
     step0 = 0
@@ -261,7 +261,13 @@ def train(s):
                 bc = actor.bc_loss(batch)
                 traj, stats = None, None
                 if obj is not None:
-                    traj, stats = obj.loss_for(actor, obj.sample(), variant, cap, native=native)
+                    indices = obj.sample()
+                    traj, stats = obj.loss_for(actor,indices,variant,cap,native=native,collect=variant=="CF32")
+                    if variant=="CF32":
+                        from scripts.multimodal.mm03_c_train import record_replay
+                        keys = [obj.keys[j] for j in indices.cpu().tolist()]
+                        saved_native = record_replay(out / "shared_replay",attempts+step-step0,
+                                                     step,keys,indices,stats,obj)
                     if not torch.isfinite(traj):
                         raise FloatingPointError("Nonfinite trajectory objective")
                 if not torch.isfinite(bc):
@@ -284,6 +290,9 @@ def train(s):
                 totals["bc_rows"] += len(batch["action"])
                 totals["command_label_draws"] += int(batch["command_valid"].sum())
                 print(json.dumps(dict(update=step, native_substeps=n_real, model_queries=n_query, legal=legal,
+                                      capped=0 if stats is None else int(stats["capped"]),
+                                      terminal_cases=0 if stats is None else len(stats["terminals"]),
+                                      shared_native_replay=saved_native if variant=="CF32" else None,
                                       command_draws=int(batch["command_valid"].sum()), **g), allow_nan=False), file=log)
                 if step == 1 or step % 64 == 0 or step == steps:
                     elapsed = prior_wall + time.monotonic() - started
@@ -306,10 +315,20 @@ def train(s):
     atomic_save(deploy, {k: payload[k] for k in ("schema", "architecture", "affine_mode", "actor",
                                                 "vocabulary", "low_path", "low_sha256", "method")})
     paid_totals = dict(model_queries=0, native_substeps=0, legal=0)
+    indexed_native = set()
     for line in journal.read_text().splitlines():
         rec = json.loads(line)
         for k in paid_totals:
             paid_totals[k] += rec[k]
+        if rec.get("shared_native_replay"):
+            indexed_native.add(Path(rec["shared_native_replay"]))
+    uncommitted = set((out / "shared_replay").glob("*.npz"))-indexed_native
+    extra_physics = 0
+    for path in uncommitted:
+        with np.load(path, allow_pickle=False) as data:
+            extra_physics += int(data["native_substeps"])
+    paid_totals["uncommitted_physics_substeps"] = extra_physics
+    paid_totals["uncommitted_physical_batches"] = len(uncommitted)
     emit(out / "receipt.json", dict(stage=s["stage"], method=s["method"], round=s["round"], seed=seed,
          retained=steps, paid=attempts+steps-step0, rollback=attempts-step0, paid_model_cost=paid_totals,
          retained_cost=payload["totals"], full=str(final), deploy=str(deploy), parent=str(parent_path),

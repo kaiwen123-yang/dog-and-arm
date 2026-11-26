@@ -5,6 +5,7 @@ import fcntl
 import json
 import os
 from pathlib import Path
+import subprocess
 import tempfile
 import time
 
@@ -154,6 +155,8 @@ def assemble(members, device):
 
 def fit(root, seed, block):
     torch.set_num_threads(1)
+    code_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).resolve().parents[2],
+                                          text=True).strip()
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA unavailable for the MM03 low-level training job")
     device = torch.device("cuda")
@@ -201,18 +204,29 @@ def fit(root, seed, block):
     else:
         model.calibrate(data["features"], data["teacher"])
     pool_ids = [(data["pool"]==i).nonzero().squeeze(-1) for i in range(4)]
-    active = [ids for ids in pool_ids if len(ids)]
+    names = ("teacher", "corrected", "contact_teacher", "contact_prefix")
+    available = [(name, ids) for name, ids in zip(names, pool_ids) if len(ids)]
+    active = [ids for _, ids in available]
     if not active:
         raise RuntimeError("No eligible low-level training rows")
-    # Equal draws across available original/corrected/contact-teacher/contact-continuation
-    # pools. Missing contact pools stay visible in members.json and train_result.json.
-    quotas = [512//len(active)+(i<512%len(active)) for i in range(len(active))]
+    # Genuine prefix-contact rows can number in tens while full teacher rows
+    # number in tens of thousands. Square-root allocation keeps each source in
+    # every batch without giving a few repeated examples a fixed quarter.
+    weights = np.sqrt([len(ids) for ids in active])
+    exact = (512-len(active))*weights/weights.sum()
+    quotas = np.floor(exact).astype(int)+1
+    remainder = 512-int(quotas.sum())
+    for i in np.argsort(-(exact-np.floor(exact)), kind="stable")[:remainder]:
+        quotas[i] += 1
+    quotas = quotas.tolist()
+    draws_per_pool = dict(zip((name for name,_ in available), quotas))
     tick = time.monotonic()
     loss_log = []
     model.train()
     def checkpoint(i):
         return dict(schema=model.schema, seed=seed, block=block, update=i, model=model.state_dict(),
                     stationary_feedback_introduced_here=lifted,
+                    code_commit=code_commit, architecture="low_v1_with_learnable_stationary_residual",
                     optimizer=opt.state_dict(), cpu_rng=torch.get_rng_state(), cuda_rng=torch.cuda.get_rng_state(),
                     draw=draw.get_state(), membership=str(folder/"members.json"),
                     wall_s=accumulated+time.monotonic()-tick, parent_full=str(parent) if parent else None,
@@ -237,7 +251,8 @@ def fit(root, seed, block):
         if i%128==0 or i==target:
             losses = torch.stack(loss_log).mean(0).tolist()
             loss_log.clear()
-            receipt = dict(seed=seed, block=block, update=i, rows=counts, batch=512, losses=losses,
+            receipt = dict(seed=seed, block=block, update=i, rows=counts, batch=512, losses=losses, code_commit=code_commit,
+                           draws_per_batch_by_pool=draws_per_pool,
                            extra_trained_parameters=sum(p.numel() for p in model.parameters()),
                            stationary_feedback_introduced_here=lifted,
                            wall_s=accumulated+time.monotonic()-tick, gpu_peak_bytes=torch.cuda.max_memory_allocated())
@@ -245,7 +260,7 @@ def fit(root, seed, block):
             write_json(folder/"progress.json", receipt)
             print(json.dumps(receipt), flush=True)
     # The latest snapshot is atomic before the deploy path becomes visible to B.
-    save(folder/"deploy.pt", dict(schema=model.schema, model=model.state_dict(), seed=seed, block=block,
+    save(folder/"deploy.pt", dict(schema=model.schema, model=model.state_dict(), seed=seed, block=block, code_commit=code_commit,
          updates_this_block=target, full_checkpoint=str(latest)))
     receipt = torch.load(latest, map_location="cpu", weights_only=False)["last_metrics"]
     write_json(folder/"progress.json", receipt)

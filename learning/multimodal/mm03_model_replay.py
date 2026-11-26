@@ -8,14 +8,20 @@ import torch
 
 
 class SharedForwardReplay:
-    def __init__(self, run_root, device):
+    def __init__(self, run_root, device, *, extra_ledgers=()):
         self.device=torch.device(device)
         root=Path(run_root)/"C"
         if not (root/"selection.json").is_file():
             raise ValueError("Freeze C method comparison before training on its added native transitions")
         self.files=[]
         self.weights=[]
-        for ledger in sorted((root/"CF32").glob("seed*/applications.jsonl")):
+        original=sorted((root/"CF32").glob("seed*/applications.jsonl"))
+        extra=list(dict.fromkeys(Path(p) for p in extra_ledgers))
+        for ledger in extra:
+            if not (ledger.parent/"receipt.json").is_file():
+                raise ValueError(f"{ledger}: only completed earlier optimization blocks supply shared replay")
+        self.ledgers=list(dict.fromkeys([*original,*extra]))
+        for ledger in self.ledgers:
             # Repeated optimizer draws after recovery are additional actual physics and are identified separately.
             for line in ledger.read_text().splitlines():
                 record=json.loads(line)
@@ -35,7 +41,7 @@ class SharedForwardReplay:
     @lru_cache(maxsize=4)
     def load(self, file_id):
         with np.load(self.files[file_id],allow_pickle=False) as source:
-            d={key:source[key] for key in source.files}
+            d={key:source[key] for key in source.files if not key.startswith("exposure_")}
         windows=[]
         by_slot={}
         for slot,mask in enumerate(d["valid"]):

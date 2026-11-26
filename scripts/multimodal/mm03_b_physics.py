@@ -1,7 +1,10 @@
 """Frame-zero native MM03 B episodes, continuous P6 prefixes and true successors."""
 from collections import Counter
+from copy import deepcopy
 from datetime import datetime, timezone
 import json
+import os
+import pickle
 from pathlib import Path
 import time
 
@@ -13,8 +16,8 @@ from learning.multimodal.judge import DoorTaskJudge, PHASES
 from scripts.b0.eval_contact_segments import continuous_initial
 from scripts.multimodal.collect import EpisodeWriter, instruction
 from scripts.multimodal.collect_feasibility import teacher_config
-from scripts.multimodal.correction_teacher import P6CorrectionTeacher
-from scripts.multimodal.mm02_physics import digest, emit, scenes
+from scripts.multimodal.correction_teacher import P6CorrectionTeacher, capture_physics
+from scripts.multimodal.mm02_physics import JUDGE_DYNAMIC, digest, emit, scenes
 from scripts.multimodal.mm03_adapter import CommandTeacher
 
 REG = Path(__file__).resolve().parents[2] / "results/planning/multimodal_mm03_20261126/registration.json"
@@ -54,6 +57,28 @@ def scene_for(job):
     return scene
 
 
+def save_handoff(case, model, data, command, original, judge, writer, previous, tick, image, job):
+    """Exact pre-action solver, both teacher histories and actual finite-window policy context."""
+    case.mkdir(parents=True,exist_ok=True)
+    arrays = writer.arrays
+    indices = np.maximum(np.arange(tick-9,tick),0)
+    history = np.stack([arrays["proprio"][k] for k in indices])
+    past = np.stack([arrays["action_clipped"][k-1] if k else np.zeros_like(previous) for k in indices])
+    physics = capture_physics(model,data)
+    identity = digest(np.ascontiguousarray(physics["integration"]).tobytes())
+    path = case / ("handoff_" + identity + ".pkl")
+    if not path.exists():
+        tmp = case / (path.name + ".part")
+        with tmp.open("wb") as f:
+            pickle.dump(dict(schema="mm03_actual_prefix_handoff_v1",source=job,physics=physics,
+                teacher=command.snapshot(),independent_p6=original.snapshot() if original is not None else None,
+                judge=deepcopy({k:getattr(judge,k) for k in JUDGE_DYNAMIC}),previous=previous.copy(),
+                prefix=(history,past),tick=tick,time=float(data.time),image_t=arrays["image_t"][-1],
+                image=tuple(x.copy() for x in image), full_raw_prefix="episode rows [0,tick)"),f,protocol=5)
+        os.replace(tmp,path)
+    return str(path)
+
+
 def episode(task):
     root, job = task
     root = Path(root)
@@ -83,8 +108,15 @@ def episode(task):
         student.reset(instruction(job["side"], job["goal"]))
     if not evaluate_only or mode == "teacher":
         command = CommandTeacher(model, d, cfg)
-    if mode in ("prefix", "p6_reference"):
+    parity_path = root / "B" / f'prefix_p6_parity_{job["side"]}.json'
+    has_original_output = command is not None and hasattr(command,"original_boundary_label")
+    shared_p6 = mode == "prefix" and has_original_output and parity_path.is_file()
+    if mode == "p6_reference" or (mode == "prefix" and not shared_p6):
         original = P6CorrectionTeacher(model, d, cfg)
+    parity_ticks = 0
+    parity_max = 0.
+    parity_phase_mismatch = False
+    parity_phases = set()
     writer = BWriter(model, cfg, scene, job["side"], job["goal"], job["id"], mode)
     writer.meta.update(schema="mm03_causal_task_v1", source=mode, source_policy=job["method"],
         seed=job["seed"], round=job["round"], partition=job["partition"], checkpoint=job.get("checkpoint"),
@@ -97,6 +129,7 @@ def episode(task):
     m = writer.mapping
     prev = np.zeros(23, dtype=np.float32)
     tick, switched = 0, None
+    handoff = None
     teacher_decisions = label_counts = 0
     begun = time.monotonic()
     groups = Counter()
@@ -116,12 +149,22 @@ def episode(task):
                 writer.arrays["student_estimated_vx_wz"].append(proposal["estimate"].copy())
             if mode == "prefix" and switched is None and tick >= 1 and judge.i >= job["switch_phase"] and d.time >= .30:
                 switched = tick
+                handoff = save_handoff(case,model,d,command,original,judge,writer,prev,tick,image,job)
             use_teacher = mode in ("teacher", "p6_reference") or (mode == "prefix" and switched is None)
             label = command.before(d) if command is not None else None
-            if original is not None:
+            if original is not None and use_teacher:
                 p6_label = original.before(d)
+                if mode=="prefix" and has_original_output:
+                    base_label = command.original_boundary_label
+                    parity_ticks += 1
+                    parity_phases.add(p6_label.phase)
+                    parity_phase_mismatch |= p6_label.phase != base_label.phase
+                    parity_max = max(parity_max, float(np.max(np.abs(p6_label.raw-base_label.raw))))
             if use_teacher:
-                executed = p6_label.raw if original is not None else label.raw
+                if shared_p6:
+                    executed = command.original_boundary_label.raw
+                else:
+                    executed = p6_label.raw if original is not None else label.raw
             else:
                 executed = pred
             if not np.isfinite(executed).all():
@@ -150,7 +193,7 @@ def episode(task):
                 if substep:
                     if command is not None:
                         command.before(d)
-                    if original is not None:
+                    if original is not None and use_teacher:
                         original.before(d)
                 q, v = d.qpos.copy(), d.qvel.copy()
                 d.ctrl[m.actuator_ids] = servo + d.qfrc_bias[m.dof] * m.bias_gain
@@ -158,7 +201,7 @@ def episode(task):
                 contact = judge.observe(d, q, v)
                 if command is not None:
                     command.after(d, contact)
-                if original is not None:
+                if original is not None and use_teacher:
                     original.after(d, contact)
                 writer.substep(d.ctrl[m.actuator_ids], contact.finger_normal)
                 min_height = min(min_height, float(d.qpos[2]))
@@ -178,7 +221,10 @@ def episode(task):
             "teacher_steps": teacher_decisions, "teacher_substeps": 10 * teacher_decisions -
             (10 - writer.arrays["substeps"][-1] if use_teacher else 0),
             "student_steps": tick - teacher_decisions, "prefix_switch_tick": switched,
+            "real_solver_handoff":handoff,
             "prefix_reached": switched is not None if mode == "prefix" else None,
+            "same_p6_query_reused": shared_p6, "p6_query_comparison_ticks":parity_ticks,
+            "p6_query_max_abs":parity_max if parity_ticks else None,
             "eligible_by_group_before_partial_filter": dict(groups), "initial_state_sha256": initial_digest,
             "min_arm_margins_rad": min_margin.tolist(), "min_root_height_m": min_height,
             "max_nonfull_support_s": max_support_gap, "decisions": tick, "wall_s": time.monotonic() - begun,
@@ -189,6 +235,13 @@ def episode(task):
                            "teacher_failure": command.failure if command else None,
                            "real_prefix_teacher_failure": original.failure if original else None})
         result = complete_result(case, root)
+        if (mode=="prefix" and job["group"]==5 and switched is not None and parity_ticks==switched and
+                parity_ticks>0 and parity_max==0 and not parity_phase_mismatch):
+            from scripts.multimodal.mm03_b import emit as unique_emit
+            unique_emit(parity_path, dict(case=str(case/"result.json"), reset=initial_digest,
+                checked_continuous_20ms_commands=parity_ticks, all_23_max_abs=parity_max,
+                phases=sorted(parity_phases), side=job["side"], method="P6 query cached before local adaptation",
+                additional_physics_steps=0))
         print(f"B {job['id']} events={len(judge.events)} result={judge.passed} steps={judge.steps}", flush=True)
         return result
     finally:

@@ -92,7 +92,14 @@ def membership(root, r):
                and read(Path(p) / "metadata.json")["round"] == 6]
     old_wm = prior["old_train"] + prior["train_recovery"]
     all_new_teacher = [row["raw_episode"] for row in all_teachers]
-    mp = dict(teachers=old_demo + successful, corrections=new,
+    prior_cf = []
+    if r:
+        for receipt in sorted((root / "B" / "rounds").glob("r*/H9-WM/seed*/paired/receipt.json")):
+            round_name = receipt.parents[3].name
+            spec = read(receipt.parent / "spec.json")
+            if int(round_name[1:]) < r and spec["variant"] == "CF32":
+                prior_cf.append(str(receipt.parent / "applied.jsonl"))
+    mp = dict(teachers=old_demo + successful, corrections=new, previous_cf_ledgers=prior_cf,
               wm=list(dict.fromkeys(old_wm + all_new_teacher + new)), recovery=prior["train_recovery"],
               warm_correction_source="MM02 R6 actual student steps; old rows have no new velocity targets"
               if not r else None, original_legacy_ids=prior["old_train"],

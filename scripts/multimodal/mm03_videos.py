@@ -46,8 +46,13 @@ def render(case, episode, dest, name, closeup):
     index = np.searchsorted(ticks,wanted)
     if not np.array_equal(ticks[index], wanted):
         raise ValueError(f"Missing real-time frame in {episode}")
-    if not (meta["source"]=="pure" and result["teacher_steps"]==0):
-        raise ValueError("Expected a zero-teacher frame0 episode")
+    source = np.load(episode/"execution_source.npy",mmap_mode="r")
+    if meta["source"]=="pure" and result["teacher_steps"]==0 and not source.any():
+        executor="frame 0 student"
+    elif meta["source"]=="teacher" and (source==1).all() and result["teacher_steps"]==len(source):
+        executor="command teacher throughout"
+    else:
+        raise ValueError("Video executor identity disagrees with the recorded action sources")
     jaw = model.joint("door_single_hinge").qposadr.item()
     base = model.body("m1_base_link").id
     cam = mj.MjvCamera()
@@ -78,7 +83,7 @@ def render(case, episode, dest, name, closeup):
                 frame = Image.fromarray(renderer.render())
                 pen = ImageDraw.Draw(frame)
                 pen.rectangle((0,0,WIDTH,83),fill=(22,24,28))
-                pen.text((18,3), f"{name}   |   {meta['source_policy']}   |   {meta['scene_id']}   |   frame 0 student",font=font)
+                pen.text((18,3), f"{name}   |   {meta['source_policy']}   |   {meta['scene_id']}   |   {executor}",font=font)
                 pen.text((18,43),f"{meta['side']} {meta['target_deg']} deg   |   t = {times[k]:.2f} s   |   door = {np.rad2deg(data.qpos[jaw]):.2f} deg   |   {outcome}",font=font)
                 enc.stdin.write(frame.tobytes())
         finally:
@@ -89,7 +94,7 @@ def render(case, episode, dest, name, closeup):
     stream = verify_video(tmp,len(index))
     tmp.replace(dest)
     record = dict(file=dest.name, case=str(case), raw_episode=str(episode), episode=meta["episode_id"],
-                  source="original_recorded_trajectory", actual_new_integration_steps=0,
+                  source="original_recorded_trajectory", executor=executor, actual_new_integration_steps=0,
                   checkpoint=result.get("checkpoint"), source_sha=result.get("sha") or meta.get("source_checkpoint_sha256"),
                   success=result["success"], ordered_events=result["ordered_event_count"],
                   first_failure=failure or None, teacher_decisions=result["teacher_steps"],
@@ -124,13 +129,42 @@ def original_videos(root):
     return records
 
 
+def task_examples(root):
+    dst=root/"videos/mm03"
+    dst.mkdir(parents=True,exist_ok=True)
+    roster=[("teacher_pull15","MM03 teacher",root/"B/teachers/teacher_26112600_tr_nominal_pull15/result.json")]
+    for method in ("D23","H9"):
+        name=f"warm_development_{method}_1701_tr_nominal_pull15_pure"
+        roster.append((f"warm_{method.lower()}_pull15", "MM03 warm seed 1701",
+                       root/"B/warm/development"/name/"result.json"))
+    formal=read(root/"B/formal_cases.json")
+    if formal:
+        for method in sorted({r["method"] for r in formal}):
+            failures=[r for r in formal if r["method"]==method and not r["success"] and not r["scene"].startswith("te_mm03")]
+            if failures:
+                row=sorted(failures,key=lambda r:(-r["ordered_event_count"],r["id"]))[0]
+                roster.append((f"formal_{method.lower()}_failure",f"MM03 final seed {row['seed']}",
+                               Path(row["raw_episode"]).parent/"result.json"))
+    records=[]
+    for stem,title,path in roster:
+        if path.is_file():
+            row=read(path)
+            records.append(render(path,Path(row["raw_episode"]),dst/(stem+"_1080p.mp4"),title,False))
+    if records:
+        write(dst/"examples.json",dict(videos=records,formal_cases_complete=bool(formal),
+            selection="One native complete teacher, same reset D23/H9 warm seed 1701. After final freeze, deepest failed disclosed episode per method, ID as tie break."))
+
+
 if __name__=="__main__":
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("--root", type=Path, required=True)
     p.add_argument("--first-success", action="store_true")
+    p.add_argument("--examples", action="store_true")
     opt=p.parse_args()
     if opt.first_success:
         from scripts.multimodal.mm03_first import deliver
         deliver(opt.root)
+    elif opt.examples:
+        task_examples(opt.root)
     else:
         original_videos(opt.root)
