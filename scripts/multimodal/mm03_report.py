@@ -359,6 +359,15 @@ def snapshot(root,repo,milestone):
         manifest["phase_capacity_comparison"]="performance/phase_capacity/decision.json"
         if (phase_dir/"forecast.json").is_file():
             manifest["current_forecast"]="performance/phase_capacity/forecast.json"
+    ordinary_dir=root/"performance/20261127-ordinary-queue"
+    ordinary_run=read(ordinary_dir/"summary.json")
+    if ordinary_run:
+        dest=out/"performance/ordinary_queue"
+        for name in ("summary.json","registration.json","width.json","queue_test.json","dispatch_gaps.json",
+                     "wm_comparison.json","wm_reference.json","wm_direct.json","adoption.json","forecast.json",
+                     "width.py","queue_test.py","wm_probe.py","adopt.py","r28_dispatch.json","r29_live_wm.json"):
+            slimcopy(ordinary_dir/name,dest/name)
+        manifest["ordinary_queue_evidence"]="performance/ordinary_queue/summary.json"
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -478,6 +487,13 @@ def snapshot(root,repo,milestone):
                       f"同轮从两路到三路，实付更新由 {phase_result['two_updates_min']:.1f} 变为 "
                       f"{phase_result['three_updates_min']:.1f} 次/分。"
                       f" [生产窗口与显存预留](../{OUT.as_posix()}/performance/phase_capacity/decision.json)")
+    if ordinary_run:
+        report.append(f"第 28 轮每组 24 案的注册采集，12 与 18 个进程各完成 "
+                      f"{ordinary_run['ordinary_steps_s']['12']:,.0f} 和 {ordinary_run['ordinary_steps_s']['18']:,.0f} 个物理子步/秒。"
+                      f"三种方法按微调种子分组，回合终止时间各异。"
+                      f"在同一份第 28 轮世界模型数据上，直接填表使实测显存峰值由 "
+                      f"{ordinary_run['wm_peak_GiB'][0]:.2f} 降至 {ordinary_run['wm_peak_GiB'][1]:.2f} GiB。"
+                      f" [逐批回执、调度与全表核验](../{OUT.as_posix()}/performance/ordinary_queue/summary.json)")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",

@@ -123,6 +123,8 @@ def reached(root):
         milestones.append("CF32 传输与 H7 预取实测")
     if (root/"performance/20261127-phase-slots/forecast.json").is_file():
         milestones.append("第27轮分阶段显存预留与三种子实测")
+    if (root/"performance/20261127-ordinary-queue/summary.json").is_file():
+        milestones.append("第28轮普通采集并发与物理回放显存实测")
     return milestones
 
 
