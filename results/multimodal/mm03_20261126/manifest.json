@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-27T18:30:21+08:00",
+  "as_of_beijing": "2026-11-27T19:08:53+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "共享相机数据与种子并发实测",
+  "milestone": "CF32 传输与 H7 预取实测",
   "runtime": {
     "supervisor": {
       "pid": 77248,
@@ -178,40 +178,40 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 3791,
+    "samples": 3906,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-27T18:30:06+08:00",
-      "time": 1795775406.4528496,
-      "cpu_stat": "usage_usec 60135011029\nuser_usec 55427934625\nsystem_usec 4707076403\nnr_periods 85199\nnr_throttled 11\nthrottled_usec 26817359",
+      "beijing": "2026-11-27T19:08:40+08:00",
+      "time": 1795777720.9331346,
+      "cpu_stat": "usage_usec 88021032540\nuser_usec 82357319583\nsystem_usec 5663712956\nnr_periods 108344\nnr_throttled 19\nthrottled_usec 56194960",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "126514499584",
+      "ram_bytes": "126459555840",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 749530636288,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 41868, 97887, 57",
+      "disk_free_bytes": 741764472832,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 46710, 97887, 69",
       "inference": {
-        "calls": 47304,
-        "forwards": 23175,
+        "calls": 422560,
+        "forwards": 210493,
         "max_batch": 12,
-        "mean_batch": 2.0411650485436894,
-        "queue_wait_mean_ms": 1.4360693782116256,
+        "mean_batch": 2.007477683343389,
+        "queue_wait_mean_ms": 2.1375002304174213,
         "device": "cuda",
-        "queued": 0,
-        "models": 1,
-        "graph_calls": 23175,
-        "cached_graphs": 11,
+        "queued": 3,
+        "models": 10,
+        "graph_calls": 210493,
+        "cached_graphs": 48,
         "coalesce_ms": 0.7,
-        "peak_torch_allocated_bytes": 406422016,
+        "peak_torch_allocated_bytes": 1119931904,
         "pid": 77253
       },
       "memory_components_bytes": {
-        "anon": 76275400704,
-        "file": 48614236160,
-        "shmem": 152973312
+        "anon": 84310343680,
+        "file": 40404881408,
+        "shmem": 163483648
       },
       "lane_pids": {
         "inference": 77253,
@@ -963,30 +963,30 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r22/collect",
+    "partition": "rounds/r23/collect",
     "cases_done": 24,
     "planned": 24,
     "workers": 12,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 59.14049064554274,
+    "wall_s": 87.50886204838753,
     "completed_here": 24,
-    "steps_here": 384080,
-    "steps_s": 6494.36614082178,
+    "steps_here": 372966,
+    "steps_s": 4262.036909973422,
     "resumed_cases": 0,
     "processes": [
-      77511,
-      77514,
-      77515,
-      77516,
-      77517,
-      77518,
-      77519,
-      77520,
-      77521,
-      77522,
-      77523,
-      77524
+      90513,
+      90516,
+      90517,
+      90518,
+      90519,
+      90520,
+      90521,
+      90522,
+      90523,
+      90524,
+      90525,
+      90526
     ]
   },
   "A_current": {
@@ -1014,5 +1014,7 @@
   "current_forecast": "performance/cf32_latency/forecast.json",
   "cold_archive": "execution/storage/cold_archive.json",
   "shared_camera_evidence": "performance/shared_camera/full_membership.json",
-  "shared_camera_concurrency": "performance/shared_camera/decision.json"
+  "shared_camera_concurrency": "performance/shared_camera/decision.json",
+  "h7_sampling_evidence": "performance/native_transfer/h7_comparison.json",
+  "native_transfer_comparison": "performance/native_transfer/decision.json"
 }

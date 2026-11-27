@@ -1,8 +1,8 @@
 # MM03 多模态腿臂仿真实验
 
-2026-11-27T18:30:21+08:00（北京时间），共享相机数据与种子并发实测。
+2026-11-27T19:08:53+08:00（北京时间），CF32 传输与 H7 预取实测。
 
-A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、514,861、7,680、66,000、115,800 次。
+A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、538,072、7,680、69,000、121,200 次。
 
 原生 MuJoCo 3.3.0，2 ms 伺服、20 ms 学习控制、100 ms 腕部 RGB-D。按原 12 事件判分。真实硬件运动命令 0。
 
@@ -66,7 +66,7 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 ## 真实教师前缀后的学生续演
 
-已结束 2376 案，2376 案实际切换到学生，119 案继续完成全部事件。
+已结束 2484 案，2484 案实际切换到学生，127 案继续完成全部事件。
 
 ## 正式纯学生评测
 
@@ -76,15 +76,15 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 | 方法 | 微调种子 | 轮次 | 全程成功 | 驶近 | 停稳 | 首败最多的原因 |
 |---|---:|---:|---:|---:|---:|---|
-| D23 | 1701 | 21 | 0/8 | 5/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
-| D23 | 1702 | 21 | 0/8 | 3/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
-| D23 | 1703 | 21 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
-| H9 | 1701 | 21 | 0/8 | 1/8 | 1/8 | timeout:approach_base (4)、unexpected_contact:finger_non_grasp_handle (2) |
-| H9 | 1702 | 21 | 0/8 | 2/8 | 1/8 | timeout:approach_base (2)、operation_station_drift (1) |
-| H9 | 1703 | 21 | 0/8 | 3/8 | 2/8 | unexpected_contact:finger_non_grasp_handle (2)、timeout:approach_base (2) |
-| H9-WM | 1701 | 21 | 0/8 | 0/8 | 0/8 | timeout:approach_base (6)、unexpected_contact:robot_panel (1) |
-| H9-WM | 1702 | 21 | 0/8 | 2/8 | 0/8 | timeout:approach_base (5)、timeout:settle (2) |
-| H9-WM | 1703 | 21 | 0/8 | 6/8 | 0/8 | timeout:settle (6)、timeout:approach_base (2) |
+| D23 | 1701 | 22 | 0/8 | 4/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
+| D23 | 1702 | 22 | 0/8 | 3/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
+| D23 | 1703 | 22 | 0/8 | 1/8 | 0/8 | wheel_support_or_tilt (7)、timeout:settle (1) |
+| H9 | 1701 | 22 | 0/8 | 2/8 | 1/8 | timeout:approach_base (6)、timeout:settle (1) |
+| H9 | 1702 | 22 | 0/8 | 1/8 | 0/8 | door_contact_outside_manipulation (4)、timeout:approach_base (2) |
+| H9 | 1703 | 22 | 0/8 | 2/8 | 1/8 | unexpected_contact:robot_self (3)、timeout:approach_base (2) |
+| H9-WM | 1701 | 22 | 0/8 | 0/8 | 0/8 | timeout:approach_base (7)、unexpected_contact:robot_panel (1) |
+| H9-WM | 1702 | 22 | 0/8 | 0/8 | 0/8 | timeout:approach_base (7)、door_contact_outside_manipulation (1) |
+| H9-WM | 1703 | 22 | 0/8 | 2/8 | 0/8 | timeout:approach_base (6)、timeout:settle (2) |
 
 ## 训练吞吐
 
@@ -113,6 +113,14 @@ MM02 的四条原轨迹共 8 个全程或局部视频。[同回合视频索引](
 在第 21 轮同一份冻结成员上，4,644 条轨迹共享原始相机文件。完整读取测试的显存峰值为 6.31 GiB。 [图像与批次核验](../results/multimodal/mm03_20261126/performance/shared_camera/parity.json)
 
 第 22 轮同轮配对每分钟实付更新为 1 个种子 28.0、2 个种子 57.3、3 个种子 87.2。后续优先允许 3 个种子并发，每轮再按实际可用内存和显存分配。 [配对实测](../results/multimodal/mm03_20261126/performance/shared_camera/decision.json)
+
+H7 对 33,792 份旧回放建立索引，已验证的索引重读用时 0.68 秒。相同行序与 RNG 状态下，物理窗口准备吞吐为原来的 1.29 倍。 [H7 抽样与恢复核验](../results/multimodal/mm03_20261126/performance/native_transfer/h7_comparison.json)
+
+CF32 单项传输与合并传输的同轮实付吞吐分别为 81.1 和 83.1 次/分。 [四个生产窗口与所选配置](../results/multimodal/mm03_20261126/performance/native_transfer/decision.json)
+
+教师、纯学生及教师前缀后的学生续演使用相同命令对照，普通回合总用时由 102.1 秒降至 86.6 秒。 [每案判分与逐帧数组校验](../results/multimodal/mm03_20261126/performance/native_transfer/ordinary_comparison.json)
+
+第 22 轮三个 CF32 种子在采集队列空闲时，每种子 7 和 8 个物理进程分别完成 92.0 和 93.3 次更新/分。 [生产对照](../results/multimodal/mm03_20261126/performance/cf32_latency/r22-eight/decision.json)
 
 进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。
 

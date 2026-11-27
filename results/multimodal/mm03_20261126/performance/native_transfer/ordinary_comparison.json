@@ -1,0 +1,108 @@
+{
+  "at": "2026-11-27T18:58:00+08:00",
+  "cases": [
+    {
+      "case": "teacher_26112600_tr_nominal_pull15",
+      "events": 12,
+      "success": true,
+      "mode": "teacher",
+      "arrays": 30,
+      "all_npy_sha256_equal": true,
+      "identical_events_and_failure": true,
+      "runs": [
+        {
+          "accelerated": false,
+          "wall_s": 25.70187451131642,
+          "substeps": 25092
+        },
+        {
+          "accelerated": true,
+          "wall_s": 22.956253185868263,
+          "substeps": 25092
+        }
+      ]
+    },
+    {
+      "case": "teacher_26112600_tr_nominal_push25",
+      "events": 12,
+      "success": true,
+      "mode": "teacher",
+      "arrays": 30,
+      "all_npy_sha256_equal": true,
+      "identical_events_and_failure": true,
+      "runs": [
+        {
+          "accelerated": false,
+          "wall_s": 28.50746632553637,
+          "substeps": 27608
+        },
+        {
+          "accelerated": true,
+          "wall_s": 25.11584602110088,
+          "substeps": 27608
+        }
+      ]
+    },
+    {
+      "case": "rounds_r21_development_H9_1701_tr_nominal_pull15_pure",
+      "events": 0,
+      "success": false,
+      "mode": "pure",
+      "arrays": 27,
+      "all_npy_sha256_equal": true,
+      "identical_events_and_failure": true,
+      "runs": [
+        {
+          "accelerated": false,
+          "wall_s": 9.593872297555208,
+          "substeps": 16000
+        },
+        {
+          "accelerated": true,
+          "wall_s": 6.246944800019264,
+          "substeps": 16000
+        },
+        {
+          "accelerated": true,
+          "wall_s": 6.094952879473567,
+          "substeps": 16000
+        },
+        {
+          "accelerated": false,
+          "wall_s": 9.629061819985509,
+          "substeps": 16000
+        }
+      ]
+    },
+    {
+      "case": "r21_H9-WM_1701_tr_offset_pull25_prefix_g5",
+      "events": 12,
+      "success": true,
+      "mode": "prefix",
+      "arrays": 32,
+      "all_npy_sha256_equal": true,
+      "identical_events_and_failure": true,
+      "runs": [
+        {
+          "accelerated": false,
+          "wall_s": 28.70493490807712,
+          "substeps": 28159
+        },
+        {
+          "accelerated": true,
+          "wall_s": 26.182907493785024,
+          "substeps": 28159
+        }
+      ]
+    }
+  ],
+  "reference_s": 102.13720986247063,
+  "candidate_s": 86.596904380247,
+  "speedup": 1.179455669846882,
+  "diagnostic_native_substeps": 225718,
+  "optimizer_updates": 0,
+  "scope": "normal B episode entry; same recorded student commands and live teacher labels, independent integrations, all recorded arrays including RGB-D, original events and terminal/failure identity",
+  "baseline_code_commit": "c9e29b4dbe73ad585adfa8ca519c2c815e5cc586",
+  "deployed_code_commit": "8a95e36142b2ff06654f10b3632bdf03bb4b9618",
+  "clock_scope": "Real integration and rollout writing with recorded student requests and live teacher; same teacher derivation on both paths. Student inference service load is excluded."
+}
