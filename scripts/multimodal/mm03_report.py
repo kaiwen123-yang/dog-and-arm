@@ -326,7 +326,8 @@ def snapshot(root,repo,milestone):
         for name in ("parity.json","full_membership.json","gradient_repeat.json",
                      "production_registration.json","production_allocation.json",
                      "window_1.json","window_2.json","window_3.json","decision.json",
-                     "windows.py","check.py","forecast.json"):
+                     "windows.py","check.py","forecast.json","forecast_mapped.py",
+                     "production_prepare_stages.json","prep_observer.py"):
             slimcopy(mapped_dir/name,dest/name)
         manifest["shared_camera_evidence"]="performance/shared_camera/full_membership.json"
         if mapped_decision:
