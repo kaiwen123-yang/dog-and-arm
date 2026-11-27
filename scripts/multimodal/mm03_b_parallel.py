@@ -58,6 +58,18 @@ def phase_capacity(max_slots, host_free, gpu_free, host_per_fit, wm_gpu, other_g
     return 1,1
 
 
+def wm_replay_budget(root, membership, record):
+    marker=Path(root)/"resources/direct_wm_storage.json"
+    policy=read(marker) if marker.is_file() else {}
+    name=Path(membership).parent.name
+    if policy.get("enabled") and name.startswith("r") and name[1:].isdigit() and int(name[1:])>=policy["from_round"]:
+        private_rows=estimated_row_bytes(0,record["source_decision_rows"])
+        # Direct fill keeps one durable copy of each field. Allow 2,000 B/WM row
+        # plus a separate model/workspace reserve; native contexts have their own bound.
+        return max(2*private_rows,2000*record["wm_rows"])+GPU_WORK_PER_OPTIMIZER,True
+    return record["gpu_estimate_per_fit"],False
+
+
 def allocation(root, membership, scope):
     """Choose the concurrent population before any optimizer starts loading the shared rows."""
     mp = read(membership)
@@ -107,10 +119,12 @@ def allocation(root, membership, scope):
                 # Reserve CUDA/EGL space for the largest admitted idle native pool.
                 other_gpu=max(2*private_rows+GPU_WORK_PER_OPTIMIZER,
                               private_rows+3*GIB+max(8,native_width)*(3*GIB//2))
+                wm_gpu,direct=wm_replay_budget(root,membership,record)
                 slots,wm_slots=phase_capacity(min(requested,policy["max_slots"],phase["max_slots"]),
-                                               available,free,host_per_fit,gpu_per_fit,other_gpu)
+                                               available,free,host_per_fit,wm_gpu,other_gpu)
                 record.update(previous_uniform_slots=record["slots"],slots=slots,wm_slots=wm_slots,
-                              gpu_estimate_other_fit=other_gpu)
+                              gpu_estimate_other_fit=other_gpu,wm_admission_gpu_bytes=wm_gpu,
+                              planned_direct_wm_storage=direct)
                 emit(folder/"phase_capacity.json",record)
         emit(evidence,record)
         return slots
@@ -298,18 +312,29 @@ def ordinary_capacity(root, base, cases, cf_free_phase, *, partition=""):
 def wm_phase_slot(spec):
     """Limit simultaneous high-memory WM builders separately from the native seed pools."""
     if spec.get("stage")!="wm":
-        yield
+        yield False
         return
     membership=Path(spec["members"])
     path=membership.parent/"phase_capacity.json"
     if not path.is_file():
-        yield
+        yield False
         return
     import fcntl
     cap=read(path)
     lanes=cap["wm_slots"]
     if cap["membership"]!=str(membership) or not 1<=lanes<=cap["slots"]<=len(SEEDS):
         raise ValueError(f"Invalid WM phase allocation: {path}")
+    wm_gpu,direct=wm_replay_budget(spec["root"],membership,cap)
+    if direct:
+        # An existing coordinator may have captured its cohort with the old, larger
+        # WM peak estimate. Keep its seed limit and re-evaluate only the WM gate.
+        slots,lanes=phase_capacity(cap["slots"],cap["host_available_bytes"],cap["gpu_free_bytes"],
+                                  cap["private_host_estimate_per_fit"],wm_gpu,cap["gpu_estimate_other_fit"])
+        if slots!=cap["slots"]:
+            raise ValueError(f"Direct fill cannot satisfy the existing seed allocation: {path}")
+        emit(Path(spec["output"])/"wm_storage_admission.json",dict(membership=str(membership),
+             direct_storage=True,seed_slots=slots,wm_slots=lanes,wm_gpu_estimate=wm_gpu,
+             host_available_bytes=cap["host_available_bytes"],gpu_free_bytes=cap["gpu_free_bytes"]))
     folder=Path(spec["root"])/"B/locks"
     folder.mkdir(parents=True,exist_ok=True)
     while True:
@@ -321,9 +346,9 @@ def wm_phase_slot(spec):
                     continue
                 free=int(subprocess.check_output(["nvidia-smi","-i","0","--query-gpu=memory.free",
                         "--format=csv,noheader,nounits"],text=True).strip())*2**20
-                if cap["slots"]>1 and free<GPU_HEADROOM+cap["gpu_estimate_per_fit"]:
+                if cap["slots"]>1 and free<GPU_HEADROOM+wm_gpu:
                     break
-                yield
+                yield direct
                 return
         time.sleep(1)
 

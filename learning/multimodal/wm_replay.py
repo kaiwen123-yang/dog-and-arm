@@ -10,7 +10,7 @@ from .world_model import FINGER_THRESHOLD_N, VISION_DIM, camera_features
 
 
 class PhysicalReplay:
-    def __init__(self, root, split, device, *, only=None, episode_dirs=None):
+    def __init__(self, root, split, device, *, only=None, episode_dirs=None, direct_storage=False):
         self.device, self.split = torch.device(device), split
         self.episodes, self.windows = [], {}
         blocks = {k: [] for k in ('p', 'prev', 'vision', 'o', 'a', 'contact', 'prev_contact', 'fresh')}
@@ -21,6 +21,7 @@ class PhysicalReplay:
                  else [Path(directory) / 'metadata.json' for directory in episode_dirs])
         if isinstance(only, str):
             only = {only}
+        episodes = []
         for path in paths:
             if not (path.parent / 'object_state.npy').is_file():
                 continue
@@ -29,7 +30,15 @@ class PhysicalReplay:
                 raise ValueError(f'{path}: expected {split} replay, received {meta["split"]}')
             if meta['split'] != split or (only and meta['episode_id'] not in only):
                 continue
+            episodes.append((path,meta))
 
+        if direct_storage:
+            # Count from the recorded mask, including each nonempty episode's final boundary.
+            sizes=(len(np.load(path.parent/'valid_transition.npy',allow_pickle=False,mmap_mode='r'))
+                   for path,_ in episodes)
+            capacity=sum(n+1 for n in sizes if n)
+            self.parts={}
+        for path,meta in episodes:
             def arr(name):
                 return np.load(path.parent / (name + '.npy'), allow_pickle=False, mmap_mode='r')
 
@@ -80,8 +89,9 @@ class PhysicalReplay:
             else:
                 prefix_p, prefix_prev = p[:1].expand(9, -1), prev[:1].expand(9, -1)
                 prev_contact = p.new_zeros(1, 3)
-            self.prefix_p.append(prefix_p)
-            self.prefix_prev.append(prefix_prev)
+            # An expanded slice otherwise keeps the entire source episode alive until the final stack.
+            self.prefix_p.append(prefix_p.clone() if direct_storage else prefix_p)
+            self.prefix_prev.append(prefix_prev.clone() if direct_storage else prefix_prev)
             self.episodes.append(dict(id=meta['episode_id'], scene=meta['scene_id'], source=meta['source'],
                                       start=start, valid=valid, count=n, path=path.parent, meta=meta))
             dual = as_tensor(arr('both_contact_fraction')).float().reshape(n, 1)
@@ -94,13 +104,24 @@ class PhysicalReplay:
                                                            atol=1e-6, rtol=0)) if len(image_t)
                               else as_tensor(np.zeros(n+1, dtype=bool)))
             for key, value in vals.items():
-                blocks[key].append(value)
+                if direct_storage:
+                    if key not in self.parts:
+                        self.parts[key]=value.new_empty((capacity,*value.shape[1:]))
+                    if value.dtype!=self.parts[key].dtype or value.shape[0]!=offset-start:
+                        raise ValueError(f'{path}: inconsistent replay field {key}')
+                    self.parts[key][start:offset].copy_(value)
+                else:
+                    blocks[key].append(value)
         if not self.episodes:
             raise ValueError(f'No completed {split} physical episodes available under {root}')
         identities = [ep['id'] for ep in self.episodes]
         if len(set(identities)) != len(identities) or (only and set(identities) != set(only)):
             raise ValueError(f'Duplicate or missing {split} episode identities')
-        self.parts = {k: torch.cat(v) for k, v in blocks.items()}
+        if direct_storage:
+            if offset!=capacity:
+                raise ValueError('Replay membership changed while loading decision boundaries')
+        else:
+            self.parts = {k: torch.cat(v) for k, v in blocks.items()}
         self.base = torch.tensor(self.base, device=self.device)
         self.end = torch.tensor(self.end, device=self.device)
         self.prefix_p = torch.stack(self.prefix_p)
