@@ -38,7 +38,7 @@ def training_vocabulary(root, episode_ids=None):
 
 class EpisodeDataset:
     """Contiguous device-side tensors; states and camera frames retain independent clocks."""
-    def __init__(self, root, split, vocab, device, episode_ids=None, *, episodes=None):
+    def __init__(self, root, split, vocab, device, episode_ids=None, *, episodes=None, map_images=False):
         self.device = torch.device(device)
         self.episodes = discover(root, split, episode_ids) if episodes is None else list(episodes)
         self.episode_ids = [m["episode_id"] for _, m in self.episodes]
@@ -47,6 +47,10 @@ class EpisodeDataset:
             raise ValueError(f"Duplicate episode or incorrect split in {split} data")
         arrays = {key: [] for key in ("proprio", "previous", "sensor", "action", "image", "episode")}
         images = {"rgb": [], "depth": [], "depth_valid": []}
+        self.mapped_images = {}
+        if map_images:
+            from .mm03_image_rows import MappedFrames
+            self.mapped_images = {k: MappedFrames() for k in images}
         self.starts, self.history_starts, self.lengths = [], [], []
         expert_rows, contact_rows, transition_rows = [], [], []
         tasks, angles = [], []
@@ -117,6 +121,9 @@ class EpisodeDataset:
             arrays["image"].extend((np.zeros(prefix, np.int64), np.where(valid_image, frame + idx, 0)))
             arrays["episode"].append(np.full(prefix+n+1, i, np.int64))
             for k in images:
+                if map_images:
+                    self.mapped_images[k].append(directory / (k + ".npy"), len(image_t))
+                    continue
                 value = load(k)
                 if len(value) != len(image_t):
                     raise ValueError(f"Image/time count differs in {directory}/{k}")
@@ -141,7 +148,8 @@ class EpisodeDataset:
         self.tasks = torch.tensor(tasks, dtype=torch.long, device=self.device)
         self.angles = torch.tensor(angles, dtype=torch.float32, device=self.device)
         self.states = {k: torch.from_numpy(np.concatenate(rows, axis=0)).to(device) for k, rows in arrays.items()}
-        self.images = {k: torch.from_numpy(np.concatenate(rows, axis=0)).to(device) for k, rows in images.items()}
+        self.images = {k: torch.from_numpy(np.concatenate(rows, axis=0)).to(device)
+                       for k, rows in images.items() if rows}
         self.valid_rows = np.asarray(transition_rows, dtype=np.int64)
         self.expert_rows = np.asarray(expert_rows, dtype=np.int64)
         self.contact_rows = np.asarray(contact_rows, dtype=np.int64)
@@ -177,7 +185,12 @@ class EpisodeDataset:
         episode = self.states["episode"][rows]
         history = torch.maximum(rows[:,None] + self.backward_offsets, self.history_start_tensor[episode, None])
         image_id = self.states["image"][rows]
-        return {**{k: v[image_id] for k, v in self.images.items()}, "image_id": image_id,
+        if self.mapped_images:
+            indices = image_id.detach().cpu().numpy()
+            frames = {k: v.gather(indices).to(self.device) for k,v in self.mapped_images.items()}
+        else:
+            frames = {k: v[image_id] for k, v in self.images.items()}
+        return {**frames, "image_id": image_id,
                 "tokens": self.tasks[episode], "command_angle_rad": self.angles[episode],
                 "proprio_history": self.states["proprio"][history], "previous_history": self.states["previous"][history],
                 "sensor": self.states["sensor"][rows], "action": self.states["action"][rows]}

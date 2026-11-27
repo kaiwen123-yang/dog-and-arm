@@ -32,7 +32,9 @@ class SharedRows:
         resident = self.device
         reservation = None
         self.residency = dict(device=str(resident),source_image_file_bytes=image_bytes)
-        if self.device.type=="cuda":
+        from scripts.multimodal.mm03_b_parallel import mapped_image_policy
+        mapped = bool(mapped_image_policy(run_root,member_file))
+        if self.device.type=="cuda" and not mapped:
             from scripts.multimodal.mm03_b_parallel import (GPU_HEADROOM,GPU_WORK_PER_OPTIMIZER,
                                                             estimated_row_bytes,choose_row_device)
             if run_root is not None:
@@ -44,7 +46,7 @@ class SharedRows:
                 self.residency["device"]="cpu"
         retry_on_host = False
         try:
-            self.data = EpisodeDataset(None,"train",vocab,resident,episodes=episodes)
+            self.data = EpisodeDataset(None,"train",vocab,resident,episodes=episodes,map_images=mapped)
         except torch.OutOfMemoryError:
             if resident.type!="cuda":
                 raise
@@ -57,7 +59,7 @@ class SharedRows:
             torch.cuda.empty_cache()
             resident=torch.device("cpu")
             self.residency.update(device="cpu",fallback="CUDA allocation unavailable during dataset construction")
-            self.data=EpisodeDataset(None,"train",vocab,resident,episodes=episodes)
+            self.data=EpisodeDataset(None,"train",vocab,resident,episodes=episodes,map_images=mapped)
         commands = torch.zeros((len(self.data.states["episode"]), 2), device=resident)
         command_valid = torch.zeros(len(commands), device=resident, dtype=torch.bool)
         for i, (p, m) in enumerate(episodes):
@@ -109,6 +111,9 @@ class SharedRows:
         all_tensors = image_tensors + sum(t.numel()*t.element_size() for t in (*self.data.states.values(),*auxiliary))
         self.residency.update(status="ready",device=resident.type,actual_image_tensor_bytes=image_tensors,
                               actual_row_tensor_bytes=all_tensors,actual_aux_and_state_tensor_bytes=all_tensors-image_tensors)
+        if mapped:
+            self.residency.update(image_storage="shared_original_npy",
+                                  mapped_image_bytes=sum(v.nbytes for v in self.data.mapped_images.values()))
         if reservation is not None:
             from scripts.multimodal.mm03_b import emit
             emit(reservation,self.residency)

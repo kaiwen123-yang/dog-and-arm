@@ -31,6 +31,19 @@ def estimated_row_bytes(image_files,rows):
     return image_files+rows*521+2**20
 
 
+def mapped_image_policy(root, membership):
+    if root is None or membership is None:
+        return {}
+    round_name = Path(membership).parent.name
+    policy = Path(root)/"resources/mapped_image_policy.json"
+    if not (round_name.startswith("r") and round_name[1:].isdigit() and policy.is_file()):
+        return {}
+    settings = read(policy)
+    if settings.get("enabled") and int(round_name[1:]) >= settings["from_round"]:
+        return settings
+    return {}
+
+
 def allocation(root, membership, scope):
     """Choose the concurrent population before any optimizer starts loading the shared rows."""
     mp = read(membership)
@@ -54,6 +67,25 @@ def allocation(root, membership, scope):
     requested = targets.get("B_GPU",targets.get("workers",{}).get("B_GPU",2))
     if type(requested) is not int or not 1<=requested<=len(SEEDS):
         raise ValueError(f"Invalid B_GPU optimizer concurrency: {requested}")
+    policy = mapped_image_policy(root, membership)
+    if policy:
+        # The camera pixels live in the original files and share physical pages.
+        # Budget private states, model/Adam temporaries and each native pool;
+        # the WM builder also holds both the episode blocks and their concatenation.
+        private_rows = estimated_row_bytes(0, rows)
+        wm_rows = sum(read(Path(p)/"metadata.json")["transitions"]+1 for p in set(mp["wm"]))
+        native_width = int(targets.get("B_CF") or 1)
+        host_per_fit = 3*private_rows + 4*GIB + native_width*(5*GIB//2)
+        gpu_per_fit = max(2*private_rows, 3000*wm_rows) + GPU_WORK_PER_OPTIMIZER
+        slots = max(1,min(requested,policy["max_slots"],
+                          (available-HOST_HEADROOM)//host_per_fit,(free-GPU_HEADROOM)//gpu_per_fit))
+        emit(evidence,dict(requested=requested,slots=slots,scope=scope,membership=str(membership),
+             image_storage="shared_original_npy",source_image_file_bytes=images,
+             source_decision_rows=rows,wm_rows=wm_rows,native_workers_per_seed=native_width,
+             private_host_estimate_per_fit=host_per_fit,gpu_estimate_per_fit=gpu_per_fit,
+             host_available_bytes=available,gpu_free_bytes=free,planned_gpu_row_tables=0,
+             measured_epoch_s=stamp/1e9))
+        return slots
     for slots in range(requested,0,-1):
         gpu_rows = min(slots,max(0,(free-GPU_HEADROOM-slots*GPU_WORK_PER_OPTIMIZER)//estimated))
         # Loading a GPU table still concatenates the original host arrays once.
