@@ -318,6 +318,19 @@ def snapshot(root,repo,milestone):
     if archive:
         manifest["cold_archive"] = "execution/storage/cold_archive.json"
         write(out/manifest["cold_archive"], archive)
+    mapped_dir=root/"performance/20261127-mapped-seeds"
+    mapped_check=read(mapped_dir/"full_membership.json")
+    mapped_decision=read(mapped_dir/"decision.json")
+    if mapped_check:
+        dest=out/"performance/shared_camera"
+        for name in ("parity.json","full_membership.json","gradient_repeat.json",
+                     "production_registration.json","production_allocation.json",
+                     "window_1.json","window_2.json","window_3.json","decision.json",
+                     "windows.py","check.py","forecast.json"):
+            slimcopy(mapped_dir/name,dest/name)
+        manifest["shared_camera_evidence"]="performance/shared_camera/full_membership.json"
+        if mapped_decision:
+            manifest["shared_camera_concurrency"]="performance/shared_camera/decision.json"
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -406,6 +419,14 @@ def snapshot(root,repo,milestone):
                       f"训练使用的回放字段、回合判分和学生视频渲染输入保留在 AutoDL。"
                       f"当前有 {archive['released_groups']}/{archive['planned_groups']} 个批次已通过 H 盘回读并在云端完成释放。"
                       f" [恢复位置与逐项查找方法](../{OUT.as_posix()}/{manifest['cold_archive']})")
+    if mapped_check:
+        report.append(f"在第 21 轮同一份冻结成员上，{mapped_check['episodes']:,} 条轨迹共享原始相机文件。"
+                      f"完整读取测试的显存峰值为 {mapped_check['peak_cuda_GiB']:.2f} GiB。"
+                      f" [图像与批次核验](../{OUT.as_posix()}/performance/shared_camera/parity.json)")
+    if mapped_decision.get("complete"):
+        rates="、".join(f"{k} 个种子 {v:.1f}" for k,v in mapped_decision["rates"].items())
+        report.append(f"第 22 轮同轮配对每分钟实付更新为 {rates}。后续优先允许 {mapped_decision['winner']} 个种子并发，"
+                      f"每轮再按实际可用内存和显存分配。 [配对实测](../{OUT.as_posix()}/performance/shared_camera/decision.json)")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",

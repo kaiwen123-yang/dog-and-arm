@@ -117,6 +117,8 @@ def reached(root):
         milestones.append("正式评测结案")
     if read(root/"storage/cold_archive.json").get("complete"):
         milestones.append("已完成阶段的历史原件归档与训练回放复核")
+    if (root/"performance/20261127-mapped-seeds/decision.json").is_file():
+        milestones.append("共享相机数据与种子并发实测")
     return milestones
 
 
