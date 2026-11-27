@@ -314,6 +314,10 @@ def snapshot(root,repo,milestone):
               "new_blind_opened":any(r["scene"].startswith("te_mm03_") for r in rows if r.get("scene")),
               "B_current":read(root/"B/physical_progress.json"),"A_current":read(root/"A/progress.json"),
               "C_current":read(root/"C/current.json"),"hardware_motion_commands":0}
+    archive = read(root/"storage/cold_archive.json")
+    if archive:
+        manifest["cold_archive"] = "execution/storage/cold_archive.json"
+        write(out/manifest["cold_archive"], archive)
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -397,6 +401,11 @@ def snapshot(root,repo,milestone):
     for example in read(root/"videos/mm03/examples.json").get("videos",[]):
         label="完整教师" if example["teacher_decisions"] else "全程学生"
         report.append(f"[{label} · {example['episode']} · {example['ordered_events']}/12 事件](../{OUT.as_posix()}/videos/mm03/{example['file']})")
+    if archive:
+        report.append(f"已完成阶段的旧评测数组和完整 CF32 曝光原件按云端原路径在 H 盘建索引。"
+                      f"训练使用的回放字段、回合判分和学生视频渲染输入保留在 AutoDL。"
+                      f"当前有 {archive['released_groups']}/{archive['planned_groups']} 个批次已通过 H 盘回读并在云端完成释放。"
+                      f" [恢复位置与逐项查找方法](../{OUT.as_posix()}/{manifest['cold_archive']})")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",
