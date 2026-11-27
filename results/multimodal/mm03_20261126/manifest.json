@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-27T23:08:40+08:00",
+  "as_of_beijing": "2026-11-27T23:18:04+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "第28轮独立训练任务连续派发回读",
+  "milestone": "r28 工作块",
   "runtime": {
     "supervisor": {
       "pid": 129940,
@@ -178,40 +178,40 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 4622,
+    "samples": 4650,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-27T23:08:30+08:00",
-      "time": 1795792110.704671,
-      "cpu_stat": "usage_usec 233523987639\nuser_usec 223037574880\nsystem_usec 10486412758\nnr_periods 252242\nnr_throttled 54\nthrottled_usec 101239896",
+      "beijing": "2026-11-27T23:17:53+08:00",
+      "time": 1795792673.9479895,
+      "cpu_stat": "usage_usec 240983565251\nuser_usec 230105026116\nsystem_usec 10878539135\nnr_periods 257874\nnr_throttled 54\nthrottled_usec 101239896",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "57109049344",
+      "ram_bytes": "64019988480",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 690557685760,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 12854, 97887, 7",
+      "disk_free_bytes": 686799441920,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 6166, 97887, 7",
       "inference": {
-        "calls": 392356,
-        "forwards": 180229,
+        "calls": 640151,
+        "forwards": 315327,
         "max_batch": 18,
-        "mean_batch": 2.176985945658024,
-        "queue_wait_mean_ms": 1.60580783114849,
+        "mean_batch": 2.0301179410580126,
+        "queue_wait_mean_ms": 1.562278790036043,
         "device": "cuda",
-        "queued": 3,
-        "models": 10,
-        "graph_calls": 180229,
+        "queued": 0,
+        "models": 18,
+        "graph_calls": 315327,
         "cached_graphs": 48,
         "coalesce_ms": 0.7,
         "peak_torch_allocated_bytes": 1120060928,
         "pid": 129945
       },
       "memory_components_bytes": {
-        "anon": 23600873472,
-        "file": 32325918720,
-        "shmem": 195637248
+        "anon": 25217384448,
+        "file": 37624475648,
+        "shmem": 152838144
       },
       "lane_pids": {
         "inference": 129945,
@@ -309,19 +309,19 @@
     {
       "method": "D23",
       "seed": 1702,
-      "round": 16,
-      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r16/D23/seed1702/paired/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r16/D23/seed1702/paired/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r16/D23/seed1702/paired/receipt.json",
-      "full_sha256": "7bc1fd743e2e126fa13c35eaa8018c6e41e8ca6c40c8c31ad021f2768b2a83ec",
-      "deploy_sha256": "d9ba997902a8f8e8820476b1d6c26c280f7d14753f62df2b8b39d07f3e43d87c",
+      "round": 28,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/D23/seed1702/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/D23/seed1702/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/D23/seed1702/paired/receipt.json",
+      "full_sha256": "6c6f1be9d4cf95460a575e1aa2b3cc4d9231080c879bf94f7996809d5f009415",
+      "deploy_sha256": "64a08aa07492d377df65c39595ff7d3ff9adf46d6075894d194bf9825cc5b8a3",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt",
       "rank": [
         0,
         0,
         6,
-        -6,
-        -16
+        -3,
+        -28
       ],
       "development": [
         {
@@ -350,21 +350,21 @@
           "side": "push",
           "goal": 25,
           "success": false,
+          "events": 3
+        },
+        {
+          "scene": "va_pose",
+          "side": "pull",
+          "goal": 15,
+          "success": false,
           "events": 0
         },
         {
           "scene": "va_pose",
           "side": "pull",
-          "goal": 15,
-          "success": false,
-          "events": 1
-        },
-        {
-          "scene": "va_pose",
-          "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 0
         },
         {
           "scene": "va_pose",
@@ -378,7 +378,7 @@
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 0
         }
       ],
       "physical_cases": 8,
@@ -629,97 +629,19 @@
     {
       "method": "H9",
       "seed": 1703,
-      "round": 0,
-      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1703/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1703/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1703/receipt.json",
+      "round": 28,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9/seed1703/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9/seed1703/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9/seed1703/paired/receipt.json",
+      "full_sha256": "a7fc40d3131bfca61e4184334140d1c2ce752974705d3764a4010cf2db3c4b05",
+      "deploy_sha256": "b443b74bbebbb38317830936e41ec4c2f0f8c679b71a7185ecab7742d0dd68b3",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/deploy.pt",
       "rank": [
         0,
         0,
-        6,
-        0,
-        0
-      ],
-      "development": [
-        {
-          "scene": "tr_nominal",
-          "side": "pull",
-          "goal": 15,
-          "success": false,
-          "events": 1
-        },
-        {
-          "scene": "tr_nominal",
-          "side": "pull",
-          "goal": 25,
-          "success": false,
-          "events": 1
-        },
-        {
-          "scene": "tr_nominal",
-          "side": "push",
-          "goal": 15,
-          "success": false,
-          "events": 1
-        },
-        {
-          "scene": "tr_nominal",
-          "side": "push",
-          "goal": 25,
-          "success": false,
-          "events": 1
-        },
-        {
-          "scene": "va_pose",
-          "side": "pull",
-          "goal": 15,
-          "success": false,
-          "events": 1
-        },
-        {
-          "scene": "va_pose",
-          "side": "pull",
-          "goal": 25,
-          "success": false,
-          "events": 1
-        },
-        {
-          "scene": "va_pose",
-          "side": "push",
-          "goal": 15,
-          "success": false,
-          "events": 0
-        },
-        {
-          "scene": "va_pose",
-          "side": "push",
-          "goal": 25,
-          "success": false,
-          "events": 0
-        }
-      ],
-      "physical_cases": 8,
-      "paired_model_updates_at_checkpoint": 0,
-      "initialization_only": true,
-      "common_H9_parent": false
-    },
-    {
-      "method": "H9-WM",
-      "seed": 1701,
-      "round": 27,
-      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1701/paired/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1701/paired/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1701/paired/receipt.json",
-      "full_sha256": "80137bd9075600fa052dc47247a8f6fad6feb2991737c4cb8daa15a70b629f12",
-      "deploy_sha256": "9e2766e48202cb266d3eb535af30f46cc007bae699da4ce4178c45caa3f04145",
-      "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
-      "rank": [
-        0,
-        0,
-        5,
-        -3,
-        -27
+        9,
+        -1,
+        -28
       ],
       "development": [
         {
@@ -741,7 +663,87 @@
           "side": "push",
           "goal": 15,
           "success": false,
+          "events": 2
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "push",
+          "goal": 25,
+          "success": false,
+          "events": 4
+        },
+        {
+          "scene": "va_pose",
+          "side": "pull",
+          "goal": 15,
+          "success": false,
           "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "pull",
+          "goal": 25,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "push",
+          "goal": 15,
+          "success": false,
+          "events": 0
+        },
+        {
+          "scene": "va_pose",
+          "side": "push",
+          "goal": 25,
+          "success": false,
+          "events": 0
+        }
+      ],
+      "physical_cases": 8,
+      "paired_model_updates_at_checkpoint": 0,
+      "initialization_only": false,
+      "common_H9_parent": false
+    },
+    {
+      "method": "H9-WM",
+      "seed": 1701,
+      "round": 28,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9-WM/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9-WM/seed1701/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9-WM/seed1701/paired/receipt.json",
+      "full_sha256": "bdcc9bf2af32a298bd50b4bb428780940140bbb39736f65a16006f68e7bebf2b",
+      "deploy_sha256": "99476808de8921cb55979c783d2b6995e0843589d83893d3d0c874a144cd1a6f",
+      "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
+      "rank": [
+        0,
+        0,
+        5,
+        0,
+        -28
+      ],
+      "development": [
+        {
+          "scene": "tr_nominal",
+          "side": "pull",
+          "goal": 15,
+          "success": false,
+          "events": 1
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "pull",
+          "goal": 25,
+          "success": false,
+          "events": 1
+        },
+        {
+          "scene": "tr_nominal",
+          "side": "push",
+          "goal": 15,
+          "success": false,
+          "events": 2
         },
         {
           "scene": "tr_nominal",
@@ -762,7 +764,7 @@
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 0
         },
         {
           "scene": "va_pose",
@@ -963,22 +965,36 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r28/development",
-    "cases_done": 3,
-    "planned": 8,
-    "workers": 4,
+    "partition": "rounds/r29/collect",
+    "cases_done": 2,
+    "planned": 216,
+    "workers": 18,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 8.406362744048238,
-    "completed_here": 3,
-    "steps_here": 20654,
-    "steps_s": 2456.9484602152306,
+    "wall_s": 7.766394771635532,
+    "completed_here": 2,
+    "steps_here": 5826,
+    "steps_s": 750.1550167495667,
     "resumed_cases": 0,
     "processes": [
-      136806,
-      136809,
-      136810,
-      136811
+      138192,
+      138195,
+      138196,
+      138197,
+      138198,
+      138199,
+      138200,
+      138201,
+      138202,
+      138203,
+      138204,
+      138205,
+      138206,
+      138207,
+      138208,
+      138209,
+      138210,
+      138211
     ]
   },
   "A_current": {
