@@ -167,6 +167,10 @@ def episode(task):
     d, _, _ = continuous_initial(model, cfg, None)
     initial_digest = digest(np.r_[d.qpos, d.qvel].astype("<f8").tobytes())
     judge = DoorTaskJudge(model, cfg, job["side"], job["goal"])
+    short_contacts = (root/"resources"/"ordinary_contact_reader.json").is_file()
+    if short_contacts:
+        from scripts.multimodal.mm03_wheel_contacts import wrap
+        judge.meter = wrap(judge.meter)
     evaluate_only = job["use"] == "evaluation"
     student = None
     command = None
@@ -267,7 +271,10 @@ def episode(task):
                 q, v = d.qpos.copy(), d.qvel.copy()
                 d.ctrl[m.actuator_ids] = servo + d.qfrc_bias[m.dof] * m.bias_gain
                 mj.mj_step(model, d)
-                contact = judge.observe(d, q, v)
+                # observe() independently requests slip whenever the original judge needs it.
+                need_slip = (not short_contacts or (command is not None and command.needs_wheel_slip)
+                             or (original is not None and use_teacher and original.needs_wheel_slip))
+                contact = judge.observe(d, q, v, return_wheel_slip=need_slip)
                 if command is not None:
                     command.after(d, contact)
                 if original is not None and use_teacher:
@@ -284,6 +291,8 @@ def episode(task):
         writer.boundary(float(d.time), d.qpos, d.qvel)
         verdict = judge.result()
         result = {**job, **verdict, "episode_id": job["id"], "ordered_event_count": len(judge.events),
+            "wheel_only_reader_hits": getattr(judge.meter,"hits",0),
+            "wheel_reader_fallbacks": getattr(judge.meter,"fallbacks",0),
             "pre_treatment_H9_clone":job["method"]=="H9-WM" and job["round"]==1 and job["use"]=="train",
             "source": ("original_P6_teacher_prefix_then_student" if mode == "prefix" else
                        "command_adapter_teacher" if mode == "teacher" else

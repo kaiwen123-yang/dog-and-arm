@@ -161,6 +161,11 @@ class P6CorrectionTeacher:
             reason = "ik_residual_out_of_tolerance"
         return ExpertLabel(raw, target, a.offset + a.scale*target, reason == "valid", reason, phase)
 
+    @property
+    def needs_wheel_slip(self):
+        """Whether the pending solved interval contributes to the sliding failure counter."""
+        return self._pending and self.index < len(CONTROL_PHASES) and self._context[2] == "grip"
+
     def after(self, data, contact):
         if not self._pending:
             raise RuntimeError("A teacher pre-step observation is required")
@@ -177,13 +182,14 @@ class P6CorrectionTeacher:
         tracking = np.linalg.norm(xyz - arm.position)
         no_contact = c.force_norm_sum <= cfg["contact_threshold_n"]
         supported = bool(c.supported.all())
-        slip = np.max(np.hypot(np.nan_to_num(c.slip_long), np.nan_to_num(c.slip_lat)))
         self.sat_time = np.where(abs(data.actuator_force) >= self.force_limit*cfg["sat_fraction"],
                                  self.sat_time + dt, 0.)
         self.unloaded = 0. if supported else self.unloaded + dt
         gripping = phase in ("open", "hold")
         self.lost = self.lost + dt if gripping and not c.both else 0.
-        self.sliding = self.sliding + dt if base_mode == "grip" and slip > cfg["park_slip_limit_m_s"] else 0.
+        slipping = base_mode == "grip" and np.max(np.hypot(np.nan_to_num(c.slip_long),
+                                                       np.nan_to_num(c.slip_lat))) > cfg["park_slip_limit_m_s"]
+        self.sliding = self.sliding + dt if slipping else 0.
         if self.failure:
             return
         arm_pos = data.qpos[arm.ik.q]

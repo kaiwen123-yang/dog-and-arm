@@ -122,6 +122,8 @@ def budgets(root, rows):
     latency=root/CF_LATENCY
     transfer=root/"performance/20261127-cf-transfer"
     additional["performance/native_transfer_comparison"]=read(transfer/"live_native_overlap.json").get("actual_diagnostic_substeps",0)
+    ordinary_check=read(transfer/"ordinary_comparison.json") or read(transfer/"ordinary_partial.json")
+    additional["performance/ordinary_contact_comparison"]=ordinary_check.get("diagnostic_native_substeps",0)
     storage_incidents = list((root/"B/rounds").glob("r*/H9-WM/seed*/paired/recovery_disk_full/receipt.json"))
     if storage_incidents:
         additional["B/interrupted_native_writes"] = sum(read(p)["uncommitted_native_substeps"] for p in storage_incidents)
@@ -340,7 +342,8 @@ def snapshot(root,repo,milestone):
     if h7:
         dest=out/"performance/native_transfer"
         for name in ("h7_comparison.json","h7_check.py","h7_baseline.json","full_h9_parity.json","partial_direct23_parity.json",
-                     "live_native_overlap.json","registration.json","decision.json","production.json","compare.py","forecast.json"):
+                     "live_native_overlap.json","registration.json","decision.json","production.json","compare.py","forecast.json",
+                     "forecast_new.py","ordinary_comparison.json","ordinary_check.py","r23_stage_readback.json"):
             slimcopy(transfer/name,dest/name)
         manifest["h7_sampling_evidence"]="performance/native_transfer/h7_comparison.json"
         if transfer_result:
