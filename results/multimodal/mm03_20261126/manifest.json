@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-27T00:37:28+08:00",
+  "as_of_beijing": "2026-11-27T16:15:59+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,22 +25,22 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "r16 工作块",
+  "milestone": "第20轮扩容后断点恢复",
   "runtime": {
     "supervisor": {
-      "pid": 473818,
-      "pid_stamp": "1173722100",
-      "started_beijing": "2026-11-26T15:57:33+08:00",
+      "pid": 1582,
+      "pid_stamp": "1182429297",
+      "started_beijing": "2026-11-27T16:08:45+08:00",
       "state": "running",
       "live": true
     },
     "inference": {
       "unit": "inference",
-      "attempt": 6,
-      "started_beijing": "2026-11-26T15:57:33+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt006.log",
-      "wrapper": 473820,
-      "wrapper_stamp": "1173722106",
+      "attempt": 7,
+      "started_beijing": "2026-11-27T16:08:45+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt007.log",
+      "wrapper": 1589,
+      "wrapper_stamp": "1182429301",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.conda/envs/arm-and-dog/bin/python",
         "-u",
@@ -49,10 +49,10 @@
         "--root",
         "/root/autodl-tmp/mm03-20261126"
       ],
-      "git_commit": "2ab13040f0db14538268c724ae8f4f96d12b500e",
+      "git_commit": "1f322e9a2fde03cbe187ecfe60df95bb6266e098",
       "state": "running",
-      "pid": 473823,
-      "pid_stamp": "1173722111",
+      "pid": 1593,
+      "pid_stamp": "1182429304",
       "live": true
     },
     "A": {
@@ -82,11 +82,11 @@
     },
     "B": {
       "unit": "B",
-      "attempt": 10,
-      "started_beijing": "2026-11-26T16:58:39+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt010.log",
-      "wrapper": 483620,
-      "wrapper_stamp": "1174088659",
+      "attempt": 12,
+      "started_beijing": "2026-11-27T16:08:47+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt012.log",
+      "wrapper": 1605,
+      "wrapper_stamp": "1182429512",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.venv/bin/python",
         "-u",
@@ -97,10 +97,10 @@
         "--workers",
         "7"
       ],
-      "git_commit": "f3d12a53757d8fcd84b8cb07e1b64e3110f26368",
+      "git_commit": "1f322e9a2fde03cbe187ecfe60df95bb6266e098",
       "state": "running",
-      "pid": 483623,
-      "pid_stamp": "1174088665",
+      "pid": 1607,
+      "pid_stamp": "1182429518",
       "live": true
     },
     "C": {
@@ -178,45 +178,45 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 2598,
+    "samples": 3390,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-27T00:37:08+08:00",
-      "time": 1795711028.145543,
-      "cpu_stat": "usage_usec 11550032915599\nuser_usec 11246703285195\nsystem_usec 303329630404\nnr_periods 21716449\nnr_throttled 150715\nthrottled_usec 82179194487",
+      "beijing": "2026-11-27T16:15:47+08:00",
+      "time": 1795767347.9067323,
+      "cpu_stat": "usage_usec 1290260994\nuser_usec 1185162321\nsystem_usec 105098672\nnr_periods 4614\nnr_throttled 3\nthrottled_usec 4927169",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "84059680768",
+      "ram_bytes": "53867782144",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 83723849728,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 6370, 97887, 13",
+      "disk_free_bytes": 438389280768,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 51439, 97887, 6",
       "inference": {
-        "calls": 3891720,
-        "forwards": 2707277,
+        "calls": 5289606,
+        "forwards": 3709165,
         "max_batch": 12,
-        "mean_batch": 1.4375034398031676,
-        "queue_wait_mean_ms": 1.2926601122978376,
+        "mean_batch": 1.4260907778435308,
+        "queue_wait_mean_ms": 1.2770954409245436,
         "device": "cuda",
-        "queued": 0,
+        "queued": 1,
         "models": 32,
-        "graph_calls": 2707277,
+        "graph_calls": 3709165,
         "cached_graphs": 48,
         "coalesce_ms": 0.7,
         "peak_torch_allocated_bytes": 1131502080,
         "pid": 473823
       },
       "memory_components_bytes": {
-        "anon": 15763394560,
-        "file": 67457708032,
-        "shmem": 109248512
+        "anon": 44067172352,
+        "file": 8806641664,
+        "shmem": 21884928
       },
       "lane_pids": {
-        "inference": 473823,
+        "inference": 1593,
         "A": 404015,
-        "B": 483623,
+        "B": 1607,
         "C": 411312,
         "video": 399173
       }
@@ -389,19 +389,19 @@
     {
       "method": "D23",
       "seed": 1703,
-      "round": 16,
-      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r16/D23/seed1703/paired/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r16/D23/seed1703/paired/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r16/D23/seed1703/paired/receipt.json",
-      "full_sha256": "8b5af89fa62776434b707894c0972e5edce0293e39047987d5519625e03221b2",
-      "deploy_sha256": "21e158d1c4fa98aa102941a599edd3e00a15785e286f9cc90b54cbddd6a8abed",
+      "round": 17,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r17/D23/seed1703/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r17/D23/seed1703/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r17/D23/seed1703/paired/receipt.json",
+      "full_sha256": "a79a8c03b8cbd21b06d032e7ed28fa2f768a6c4dadc8b525b78017e0ff6a6237",
+      "deploy_sha256": "c07d75de8f635a877861e85d101be5e3f3613d568156b284622019a483d5866a",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1703/block0/deploy.pt",
       "rank": [
         0,
         0,
-        4,
+        6,
         -5,
-        -16
+        -17
       ],
       "development": [
         {
@@ -430,7 +430,7 @@
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "va_pose",
@@ -451,7 +451,7 @@
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "va_pose",
@@ -963,30 +963,22 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r17/collect",
-    "cases_done": 71,
-    "planned": 216,
-    "workers": 12,
+    "partition": "rounds/r20/regression",
+    "cases_done": 20,
+    "planned": 20,
+    "workers": 4,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 110.74729511328042,
-    "completed_here": 71,
-    "steps_here": 715105,
-    "steps_s": 6457.08772632811,
+    "wall_s": 99.05432699806988,
+    "completed_here": 20,
+    "steps_here": 314648,
+    "steps_s": 3176.519487191418,
     "resumed_cases": 0,
     "processes": [
-      552401,
-      552404,
-      552405,
-      552406,
-      552407,
-      552408,
-      552409,
-      552410,
-      552411,
-      552412,
-      552413,
-      552414
+      572212,
+      572215,
+      572216,
+      572217
     ]
   },
   "A_current": {
