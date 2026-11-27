@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-28T01:52:44+08:00",
+  "as_of_beijing": "2026-11-28T05:15:02+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "r32 工作块",
+  "milestone": "r36 工作块",
   "runtime": {
     "supervisor": {
       "pid": 138767,
@@ -178,40 +178,40 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 5112,
+    "samples": 5715,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-28T01:52:35+08:00",
-      "time": 1795801955.7079892,
-      "cpu_stat": "usage_usec 373024679695\nuser_usec 357978611386\nsystem_usec 15046068308\nnr_periods 350692\nnr_throttled 120\nthrottled_usec 111206505",
+      "beijing": "2026-11-28T05:14:48+08:00",
+      "time": 1795814088.7589455,
+      "cpu_stat": "usage_usec 504513743383\nuser_usec 485637247501\nsystem_usec 18876495881\nnr_periods 472022\nnr_throttled 124\nthrottled_usec 111231487",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "93766987776",
+      "ram_bytes": "98687504384",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 637190197248,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 9474, 97887, 12",
+      "disk_free_bytes": 583821684736,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 4060, 97887, 12",
       "inference": {
-        "calls": 1518768,
-        "forwards": 794939,
+        "calls": 3196074,
+        "forwards": 1949790,
         "max_batch": 18,
-        "mean_batch": 1.9105465953991438,
-        "queue_wait_mean_ms": 1.539604762515127,
+        "mean_batch": 1.63918883572077,
+        "queue_wait_mean_ms": 1.4703855100113923,
         "device": "cuda",
-        "queued": 0,
+        "queued": 3,
         "models": 32,
-        "graph_calls": 794939,
+        "graph_calls": 1949790,
         "cached_graphs": 48,
         "coalesce_ms": 0.7,
         "peak_torch_allocated_bytes": 1120289280,
         "pid": 138772
       },
       "memory_components_bytes": {
-        "anon": 22396764160,
-        "file": 70187753472,
-        "shmem": 152969216
+        "anon": 21256286208,
+        "file": 76080615424,
+        "shmem": 87355392
       },
       "lane_pids": {
         "inference": 138772,
@@ -709,19 +709,19 @@
     {
       "method": "H9-WM",
       "seed": 1701,
-      "round": 28,
-      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9-WM/seed1701/paired/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9-WM/seed1701/paired/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/H9-WM/seed1701/paired/receipt.json",
-      "full_sha256": "bdcc9bf2af32a298bd50b4bb428780940140bbb39736f65a16006f68e7bebf2b",
-      "deploy_sha256": "99476808de8921cb55979c783d2b6995e0843589d83893d3d0c874a144cd1a6f",
+      "round": 34,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r34/H9-WM/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r34/H9-WM/seed1701/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r34/H9-WM/seed1701/paired/receipt.json",
+      "full_sha256": "4a8c0ecfbf3f5fdf35c501fe9241e19651ee47917c52f34cb46ba4454425e043",
+      "deploy_sha256": "842daef78363091326a3ae41afb9f77e926647ce3362d8482c2eb4880329acae",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
       "rank": [
         0,
         0,
-        5,
-        0,
-        -28
+        6,
+        -2,
+        -34
       ],
       "development": [
         {
@@ -736,7 +736,7 @@
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 2
         },
         {
           "scene": "tr_nominal",
@@ -965,36 +965,36 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r33/collect",
-    "cases_done": 18,
+    "partition": "rounds/r37/collect",
+    "cases_done": 7,
     "planned": 216,
     "workers": 18,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 24.163155004382133,
-    "completed_here": 18,
-    "steps_here": 83576,
-    "steps_s": 3458.8198430562147,
+    "wall_s": 10.204370986670256,
+    "completed_here": 7,
+    "steps_here": 38631,
+    "steps_s": 3785.7306491956065,
     "resumed_cases": 0,
     "processes": [
-      154644,
-      154647,
-      154648,
-      154649,
-      154650,
-      154651,
-      154652,
-      154653,
-      154654,
-      154655,
-      154656,
-      154657,
-      154658,
-      154659,
-      154660,
-      154661,
-      154662,
-      154663
+      172084,
+      172087,
+      172088,
+      172089,
+      172090,
+      172091,
+      172092,
+      172093,
+      172094,
+      172095,
+      172096,
+      172097,
+      172098,
+      172099,
+      172100,
+      172101,
+      172102,
+      172103
     ]
   },
   "A_current": {
