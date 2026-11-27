@@ -121,6 +121,8 @@ def reached(root):
         milestones.append("共享相机数据与种子并发实测")
     if (root/"performance/20261127-cf-transfer/decision.json").is_file():
         milestones.append("CF32 传输与 H7 预取实测")
+    if (root/"performance/20261127-phase-slots/forecast.json").is_file():
+        milestones.append("第27轮分阶段显存预留与三种子实测")
     return milestones
 
 

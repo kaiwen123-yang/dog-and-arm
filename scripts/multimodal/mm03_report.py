@@ -348,6 +348,17 @@ def snapshot(root,repo,milestone):
         manifest["h7_sampling_evidence"]="performance/native_transfer/h7_comparison.json"
         if transfer_result:
             manifest["native_transfer_comparison"]="performance/native_transfer/decision.json"
+    phase_dir=root/"performance/20261127-phase-slots"
+    phase_result=read(phase_dir/"decision.json")
+    if phase_result:
+        dest=out/"performance/phase_capacity"
+        for name in ("registration.json","gate_check.json","promotion.json","window_2.json","window_3.json",
+                     "decision.json","retained_policy.json","forecast.json","measure.py","early_start.py",
+                     "check_gates.py","retain.py","forecast.py"):
+            slimcopy(phase_dir/name,dest/name)
+        manifest["phase_capacity_comparison"]="performance/phase_capacity/decision.json"
+        if (phase_dir/"forecast.json").is_file():
+            manifest["current_forecast"]="performance/phase_capacity/forecast.json"
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -462,6 +473,11 @@ def snapshot(root,repo,milestone):
         report.append(f"第 22 轮三个 CF32 种子在采集队列空闲时，每种子 7 和 8 个物理进程分别完成 "
                       f"{width_check['baseline_updates_min']:.1f} 和 {width_check['challenger_updates_min']:.1f} 次更新/分。"
                       f" [生产对照](../{OUT.as_posix()}/performance/cf32_latency/r22-eight/decision.json)")
+    if phase_result.get("valid"):
+        report.append(f"第 27 轮按世界模型与物理配对各自的资源需求安排三个种子。"
+                      f"同轮从两路到三路，实付更新由 {phase_result['two_updates_min']:.1f} 变为 "
+                      f"{phase_result['three_updates_min']:.1f} 次/分。"
+                      f" [生产窗口与显存预留](../{OUT.as_posix()}/performance/phase_capacity/decision.json)")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",
