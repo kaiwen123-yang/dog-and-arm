@@ -113,7 +113,7 @@ class MM03Objective:
     def sample(self):
         return torch.randint(len(self.keys),(32,),generator=self.rng,device=self.device)
 
-    def loss_for(self, actor, rows, variant, cap, native=None, *, collect=False):
+    def loss_for(self, actor, rows, variant, cap, native=None, *, collect=False, packed_native=False):
         """Return the unweighted trajectory loss (apply the coefficient once in gradient_step)."""
         if self.obs is None:
             self.verify_actor(actor)
@@ -157,6 +157,7 @@ class MM03Objective:
         sequences = []
         active_slots = list(range(len(rows)))
         full_order = True
+        projection_ok = None
         for tick in range(h):
             if not len(ids):
                 break
@@ -165,6 +166,10 @@ class MM03Objective:
             if real:
                 ids_list = active_slots
                 action_np = action.detach().cpu().numpy()
+                # Downloading the next action already waits for the previous tick.
+                # Check its projection before issuing any further physical command.
+                if projection_ok is not None and not bool(projection_ok):
+                    raise ValueError("Real successor projection did not reproduce the actual 52 sensors")
                 if hasattr(native,"start_step"):
                     ticket = native.start_step(ids_list,action_np)
                     # Both successors depend on the same current action. Drain every
@@ -211,15 +216,25 @@ class MM03Objective:
                     with torch.no_grad():
                         hold = hold.index_copy(0,photos,camera_features(*image_args))
                         current_z = current_z.index_copy(0,photos,actor.encode_visual(*image_args))
-                p = as_float([r["p"] for r in output])
-                nxt = project_native(nxt,p,as_float([r["o"] for r in output]),as_float([r["contact"] for r in output]),
-                                     hold,as_float([r["quat"] for r in output]),frame)
-                if not torch.equal(self.model.sensor(nxt).detach(),p):
-                    raise ValueError("Real successor projection did not reproduce the actual 52 sensors")
-                age = as_float([r["time"]-r["image_t"] for r in output])[:,None]
-                clock = as_float([r["time"] for r in output])[:,None]
+                if packed_native:
+                    clocks = np.asarray([(r["time"]-r["image_t"], r["time"]) for r in output],dtype=np.float32)
+                    if np.flatnonzero(np.abs(clocks[:,0]) < np.float32(1e-5)).tolist() != inserted:
+                        raise ValueError("Native exposure timestamps and frame delivery disagree")
+                    observations = [np.stack([r[key] for r in output]) for key in ("p","o","contact","quat")]
+                    packed = as_float(np.concatenate([*observations,clocks],axis=1))
+                    p, obj, contact, quat, age, clock = packed.split((52,5,3,4,1,1),dim=1)
+                    nxt = project_native(nxt,p,obj,contact,hold,quat,frame)
+                    projection_ok = (self.model.sensor(nxt).detach() == p).all()
+                else:
+                    p = as_float([r["p"] for r in output])
+                    nxt = project_native(nxt,p,as_float([r["o"] for r in output]),as_float([r["contact"] for r in output]),
+                                         hold,as_float([r["quat"] for r in output]),frame)
+                    if not torch.equal(self.model.sensor(nxt).detach(),p):
+                        raise ValueError("Real successor projection did not reproduce the actual 52 sensors")
+                    age = as_float([r["time"]-r["image_t"] for r in output])[:,None]
+                    clock = as_float([r["time"] for r in output])[:,None]
                 fresh_mask = age.abs() < 1e-5
-                if int(fresh_mask.sum()) != len(inserted):
+                if not packed_native and int(fresh_mask.sum()) != len(inserted):
                     raise ValueError("Native exposure timestamps and frame delivery disagree")
                 estimated = z0+self.bridge(self.model.v_units(nxt.vision))-zbridge0
                 visual = torch.where(fresh_mask,native_value(estimated,current_z),visual)
@@ -233,7 +248,7 @@ class MM03Objective:
                         exposure_times=np.asarray([output[j]["image_t"] for j in inserted],dtype=np.float64),
                         measured_features=current_z[photos].detach(),
                         action=action_np,p=p.detach(),o=nxt.obj.detach(),
-                        vision=hold.detach(),contact=np.stack([r["contact"] for r in output]),
+                        vision=hold.detach(),contact=observations[2] if packed_native else np.stack([r["contact"] for r in output]),
                         fresh=fresh_mask[:,0].detach(),clock=clock[:,0].detach()))
                 survivors = [j for j,r in enumerate(output) if not r["done"]]
             else:
@@ -263,6 +278,8 @@ class MM03Objective:
                 ids,hist,prev,sensor,hold,frame,visual,text,z0,zbridge0 = (
                     x[keep] for x in (ids,hist,prev,sensor,hold,frame,visual,text,z0,zbridge0))
                 state = Belief(*(x[keep] for x in state))
+        if projection_ok is not None and not bool(projection_ok):
+            raise ValueError("Real successor projection did not reproduce the actual 52 sensors")
         loss = (costs*weights).sum(-1).div(weights.sum()).mean()
         if sequences:
             # Replay storage is outside the gradient graph. Consolidate many small

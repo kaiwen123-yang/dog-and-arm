@@ -1,14 +1,22 @@
 """Common native-forward H7 replay, opened only after C method selection."""
 from functools import lru_cache
 from pathlib import Path
+from collections import deque
+from contextlib import suppress
+from concurrent.futures import ThreadPoolExecutor
+from copy import deepcopy
+import hashlib
 import json
+import os
+import struct
+import tempfile
 
 import numpy as np
 import torch
 
 
 class SharedForwardReplay:
-    def __init__(self, run_root, device, *, extra_ledgers=()):
+    def __init__(self, run_root, device, *, extra_ledgers=(), cache_index=False):
         self.device=torch.device(device)
         root=Path(run_root)/"C"
         if not (root/"selection.json").is_file():
@@ -23,20 +31,57 @@ class SharedForwardReplay:
         self.ledgers=list(dict.fromkeys([*original,*extra]))
         for ledger in self.ledgers:
             # Repeated optimizer draws after recovery are additional actual physics and are identified separately.
-            for line in ledger.read_text().splitlines():
-                record=json.loads(line)
-                path=Path(record["shared_native_replay"])
-                with np.load(path,allow_pickle=False) as data:
-                    mask=data["valid"]
-                    if np.any(np.diff(mask.astype(np.int8),axis=1)>0):
-                        raise ValueError(f"{path}: H7 windows may not cross a terminal")
-                    length=mask.sum(1)
-                count=int(np.maximum(length-6,0).sum())
+            raw=ledger.read_bytes()
+            paths=[Path(json.loads(line)["shared_native_replay"]) for line in raw.splitlines()]
+            cache=Path(run_root)/"resources/h7_window_counts" if cache_index else None
+            counts=self.window_counts(ledger,raw,paths,cache)
+            for path,count in zip(paths,counts,strict=True):
                 if count:
                     self.files.append(path)
                     self.weights.append(count)
         self.count=int(np.sum(self.weights))
         self.probabilities=np.asarray(self.weights,dtype=float)/self.count if self.count else None
+
+    @staticmethod
+    def window_counts(ledger, raw, paths, cache):
+        if cache is not None:
+            signature=hashlib.sha256(raw)
+            for path in paths:
+                st=path.stat()
+                signature.update(struct.pack("<5Q",st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns,st.st_ctime_ns))
+            key=signature.hexdigest()
+            cached=cache/(hashlib.sha256(os.fsencode(ledger)).hexdigest()+".json")
+            if cached.is_file():
+                try:
+                    record=json.loads(cached.read_text())
+                    counts=record["counts"]
+                    if (record["signature"]==key and len(counts)==len(paths)
+                            and record["sha256"]==hashlib.sha256(json.dumps(counts).encode()).hexdigest()):
+                        return counts
+                except (KeyError,ValueError,TypeError,OSError):
+                    pass
+        counts=[]
+        for path in paths:
+            with np.load(path,allow_pickle=False) as data:
+                mask=data["valid"]
+                if np.any(np.diff(mask.astype(np.int8),axis=1)>0):
+                    raise ValueError(f"{path}: H7 windows may not cross a terminal")
+                counts.append(int(np.maximum(mask.sum(1)-6,0).sum()))
+        if cache is not None:
+            # The cache is optional when reading a completed experiment on a read-only volume.
+            temp=None
+            try:
+                cache.mkdir(parents=True,exist_ok=True)
+                with tempfile.NamedTemporaryFile(dir=cache,mode="w",delete=False) as stream:
+                    temp=Path(stream.name)
+                    json.dump(dict(signature=key,counts=counts,
+                        sha256=hashlib.sha256(json.dumps(counts).encode()).hexdigest()),stream)
+                os.replace(temp,cached)
+            except OSError:
+                if temp is not None:
+                    with suppress(OSError):
+                        temp.unlink(missing_ok=True)
+        return counts
 
     @lru_cache(maxsize=4)
     def load(self, file_id):
@@ -52,15 +97,22 @@ class SharedForwardReplay:
             windows.extend((slot,tick) for tick in range(max(0,len(indices)-6)))
         return d,windows,by_slot
 
-    def sample(self, batch_size, rng):
-        """Each H7 start has equal marginal probability. Up to four file draws amortize I/O."""
+    def draw(self, batch_size, rng):
         if not self.count or batch_size<1:
             raise ValueError("No positive H7 replay batch available")
-        batch={k:[] for k in ("p","o","a","prev","prev_contact","contact","vision","fresh","history","previous_history")}
+        choices=[]
         for group in np.array_split(np.arange(batch_size),min(4,batch_size)):
             file_id=int(rng.choice(len(self.files),p=self.probabilities))
+            choices.append((file_id,rng.integers(0,self.weights[file_id],size=len(group))))
+        return choices
+
+    def assemble(self, choices):
+        batch={k:[] for k in ("p","o","a","prev","prev_contact","contact","vision","fresh","history","previous_history")}
+        for file_id,indices in choices:
             d,windows,by_slot=self.load(file_id)
-            for idx in rng.integers(0,len(windows),size=len(group)):
+            if len(windows)!=self.weights[file_id]:
+                raise ValueError(f"Changed valid H7 windows in {self.files[file_id]}")
+            for idx in indices:
                 slot,tick=windows[int(idx)]
                 seq=by_slot[slot]
                 prior=np.concatenate((d["previous_history"][slot],d["action"][seq]),axis=0)
@@ -87,4 +139,24 @@ class SharedForwardReplay:
                     anchor_tick=round(float(d["clock"][seq[0]])/.02)-1
                     fresh0=anchor_tick%5==0
                 batch["fresh"].append(np.r_[fresh0,d["fresh"][ix]].astype(bool))
-        return {k:torch.as_tensor(np.stack(values),device=self.device) for k,values in batch.items()}
+        return {k:np.stack(values) for k,values in batch.items()}
+
+    def tensors(self, arrays):
+        return {k:torch.as_tensor(v,device=self.device) for k,v in arrays.items()}
+
+    def sample(self, batch_size, rng):
+        return self.tensors(self.assemble(self.draw(batch_size,rng)))
+
+    def prefetched(self, batch_size, rng, batches, workers=2):
+        """Only consumed draws advance the generator saved with the optimizer."""
+        ahead=deepcopy(rng)
+        pending=deque()
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            for step in range(batches):
+                while len(pending)<min(workers+1,batches-step):
+                    choices=self.draw(batch_size,ahead)
+                    pending.append((pool.submit(self.assemble,choices),deepcopy(ahead.bit_generator.state)))
+                future,state=pending.popleft()
+                batch=self.tensors(future.result())
+                rng.bit_generator.state=state
+                yield batch

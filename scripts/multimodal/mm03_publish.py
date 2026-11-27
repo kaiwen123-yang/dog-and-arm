@@ -119,6 +119,8 @@ def reached(root):
         milestones.append("已完成阶段的历史原件归档与训练回放复核")
     if (root/"performance/20261127-mapped-seeds/decision.json").is_file():
         milestones.append("共享相机数据与种子并发实测")
+    if (root/"performance/20261127-cf-transfer/decision.json").is_file():
+        milestones.append("CF32 传输与 H7 预取实测")
     return milestones
 
 

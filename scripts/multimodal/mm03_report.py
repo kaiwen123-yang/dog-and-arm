@@ -120,6 +120,8 @@ def budgets(root, rows):
         +read(perf/"native_scoring_comparison.json").get("diagnostic_native_substeps",0)
         +read(perf/"cached_native_windows.json").get("diagnostic_native_substeps",0))
     latency=root/CF_LATENCY
+    transfer=root/"performance/20261127-cf-transfer"
+    additional["performance/native_transfer_comparison"]=read(transfer/"live_native_overlap.json").get("actual_diagnostic_substeps",0)
     storage_incidents = list((root/"B/rounds").glob("r*/H9-WM/seed*/paired/recovery_disk_full/receipt.json"))
     if storage_incidents:
         additional["B/interrupted_native_writes"] = sum(read(p)["uncommitted_native_substeps"] for p in storage_incidents)
@@ -332,6 +334,17 @@ def snapshot(root,repo,milestone):
         manifest["shared_camera_evidence"]="performance/shared_camera/full_membership.json"
         if mapped_decision:
             manifest["shared_camera_concurrency"]="performance/shared_camera/decision.json"
+    transfer=root/"performance/20261127-cf-transfer"
+    transfer_result=read(transfer/"decision.json")
+    h7=read(transfer/"h7_comparison.json")
+    if h7:
+        dest=out/"performance/native_transfer"
+        for name in ("h7_comparison.json","h7_check.py","h7_baseline.json","full_h9_parity.json","partial_direct23_parity.json",
+                     "live_native_overlap.json","registration.json","decision.json","production.json","compare.py","forecast.json"):
+            slimcopy(transfer/name,dest/name)
+        manifest["h7_sampling_evidence"]="performance/native_transfer/h7_comparison.json"
+        if transfer_result:
+            manifest["native_transfer_comparison"]="performance/native_transfer/decision.json"
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -428,6 +441,14 @@ def snapshot(root,repo,milestone):
         rates="、".join(f"{k} 个种子 {v:.1f}" for k,v in mapped_decision["rates"].items())
         report.append(f"第 22 轮同轮配对每分钟实付更新为 {rates}。后续优先允许 {mapped_decision['winner']} 个种子并发，"
                       f"每轮再按实际可用内存和显存分配。 [配对实测](../{OUT.as_posix()}/performance/shared_camera/decision.json)")
+    if h7:
+        report.append(f"H7 对 {h7['files']:,} 份旧回放建立索引，已验证的索引重读用时 {h7['index_seconds'][-1]:.2f} 秒。"
+                      f"相同行序与 RNG 状态下，物理窗口准备吞吐为原来的 {h7['loader_throughput_ratio']:.2f} 倍。"
+                      f" [H7 抽样与恢复核验](../{OUT.as_posix()}/performance/native_transfer/h7_comparison.json)")
+    if transfer_result and transfer_result.get("valid"):
+        report.append(f"CF32 单项传输与合并传输的同轮实付吞吐分别为 {transfer_result['reference_updates_min']:.1f} "
+                      f"和 {transfer_result['candidate_updates_min']:.1f} 次/分。"
+                      f" [四个生产窗口与所选配置](../{OUT.as_posix()}/performance/native_transfer/decision.json)")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",

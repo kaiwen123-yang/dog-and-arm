@@ -1,6 +1,7 @@
 """Execute one reproducible MM03 high-level optimization, WM refresh or bridge binding."""
 import argparse
 from collections import Counter
+from contextlib import closing, nullcontext
 import hashlib
 import json
 import os
@@ -36,6 +37,19 @@ def restore_rng(state):
     torch.cuda.set_rng_state(state["cuda"].cpu(), DEVICE)
 
 
+def use_packed_native(path, round_id):
+    if not path.is_file():
+        return False
+    cfg=read(path)
+    if not cfg["packed"] or round_id<cfg["from_round"]:
+        return False
+    if cfg.get("status")=="selected":
+        return True
+    from scripts.multimodal.mm03_launch import pid_stamp
+    return (cfg.get("status")=="trial" and round_id==cfg["from_round"] and
+            bool(cfg.get("pid_stamp")) and pid_stamp(cfg["pid"])==cfg["pid_stamp"])
+
+
 def refresh_wm(s):
     from learning.multimodal.world_model import PerceptualDynamics
     from learning.multimodal.wm_replay import PhysicalReplay
@@ -60,7 +74,7 @@ def refresh_wm(s):
     forward_rng = np.random.default_rng(s["data_seed"] + 13517)
     if s.get("use_selected_C_replay"):
         from learning.multimodal.mm03_model_replay import SharedForwardReplay
-        forward = SharedForwardReplay(s["root"], DEVICE,extra_ledgers=mp.get("previous_cf_ledgers", []))
+        forward = SharedForwardReplay(s["root"], DEVICE,extra_ledgers=mp.get("previous_cf_ledgers", []),cache_index=True)
     forward_per_batch = 32 if forward is not None and forward.count else 0
     ck = out / "wm.pt"
     step0 = 0
@@ -96,11 +110,12 @@ def refresh_wm(s):
             raise ValueError("A resumed WM stage is missing its parent validation score")
         emit(prior_value, dict(h7_loss=validation_loss(), physical_windows=len(hold_ids), sources=validation))
     backward = H7Backward(model)
-    with journal.open("a", buffering=1) as f:
+    stream = closing(forward.prefetched(forward_per_batch,forward_rng,1000-step0)) if forward_per_batch else nullcontext()
+    with stream as native_batches, journal.open("a", buffering=1) as f:
         for step in range(step0 + 1, 1001):
             win = replay.window(replay.draw_starts(7, 128-forward_per_batch, rng, True), 7)
             if forward_per_batch:
-                cf = forward.sample(forward_per_batch, forward_rng)
+                cf = next(native_batches)
                 win = {key: torch.cat((win[key], val), 0) for key,val in cf.items()}
             loss = backward.backward(win)
             if step==step0+3:
@@ -384,7 +399,12 @@ def train(s, data_cache=None):
                 traj, stats = None, None
                 if obj is not None:
                     indices = obj.sample()
-                    traj, stats = obj.loss_for(actor,indices,variant,cap,native=native,collect=variant=="CF32")
+                    packed = False
+                    if variant=="CF32":
+                        transport_policy=Path(s["root"])/"resources/native_transfer_policy.json"
+                        packed=use_packed_native(transport_policy,s["round"])
+                    traj, stats = obj.loss_for(actor,indices,variant,cap,native=native,
+                                               collect=variant=="CF32",packed_native=packed)
                     if variant=="CF32":
                         from scripts.multimodal.mm03_c_train import record_replay
                         keys = [obj.keys[j] for j in indices.cpu().tolist()]
@@ -416,6 +436,8 @@ def train(s, data_cache=None):
                                       terminal_cases=0 if stats is None else len(stats["terminals"]),
                                       shared_native_replay=saved_native if variant=="CF32" else None,
                                       command_draws=int(batch["command_valid"].sum()), **g)
+                if variant=="CF32":
+                    entry["packed_native_transfer"]=packed
                 encoded = json.dumps(entry,allow_nan=False)
                 if variant!="CF32":
                     print(encoded,file=log)
