@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-27T22:17:10+08:00",
+  "as_of_beijing": "2026-11-27T23:01:13+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,22 +25,22 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "第27轮分阶段显存预留与三种子实测",
+  "milestone": "第28轮普通采集并发与物理回放显存实测",
   "runtime": {
     "supervisor": {
-      "pid": 77248,
-      "pid_stamp": "1183217005",
-      "started_beijing": "2026-11-27T18:20:02+08:00",
+      "pid": 129940,
+      "pid_stamp": "1184728436",
+      "started_beijing": "2026-11-27T22:31:57+08:00",
       "state": "running",
       "live": true
     },
     "inference": {
       "unit": "inference",
-      "attempt": 8,
-      "started_beijing": "2026-11-27T18:20:03+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt008.log",
-      "wrapper": 77250,
-      "wrapper_stamp": "1183217024",
+      "attempt": 9,
+      "started_beijing": "2026-11-27T22:31:57+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt009.log",
+      "wrapper": 129942,
+      "wrapper_stamp": "1184728441",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.conda/envs/arm-and-dog/bin/python",
         "-u",
@@ -49,10 +49,10 @@
         "--root",
         "/root/autodl-tmp/mm03-20261126"
       ],
-      "git_commit": "3920260c45be9f5dfecb955fc6b898467b83489b",
+      "git_commit": "42a758c63a30467a3958076a9d2a940689bc402a",
       "state": "running",
-      "pid": 77253,
-      "pid_stamp": "1183217029",
+      "pid": 129945,
+      "pid_stamp": "1184728447",
       "live": true
     },
     "A": {
@@ -82,11 +82,11 @@
     },
     "B": {
       "unit": "B",
-      "attempt": 13,
-      "started_beijing": "2026-11-27T18:20:05+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt013.log",
-      "wrapper": 77260,
-      "wrapper_stamp": "1183217235",
+      "attempt": 15,
+      "started_beijing": "2026-11-27T22:49:23+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt015.log",
+      "wrapper": 134401,
+      "wrapper_stamp": "1184833048",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.venv/bin/python",
         "-u",
@@ -97,10 +97,10 @@
         "--workers",
         "7"
       ],
-      "git_commit": "3920260c45be9f5dfecb955fc6b898467b83489b",
+      "git_commit": "40357dd04bacdd85e69ff6240e29660b6c3225e9",
       "state": "running",
-      "pid": 77263,
-      "pid_stamp": "1183217241",
+      "pid": 134406,
+      "pid_stamp": "1184833054",
       "live": true
     },
     "C": {
@@ -178,45 +178,45 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 4468,
+    "samples": 4600,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-27T22:17:06+08:00",
-      "time": 1795789026.4384708,
-      "cpu_stat": "usage_usec 191194151457\nuser_usec 181929730546\nsystem_usec 9264420911\nnr_periods 221399\nnr_throttled 23\nthrottled_usec 71447822",
+      "beijing": "2026-11-27T23:01:07+08:00",
+      "time": 1795791667.6115274,
+      "cpu_stat": "usage_usec 225798406468\nuser_usec 215460091826\nsystem_usec 10338314642\nnr_periods 247811\nnr_throttled 54\nthrottled_usec 101239896",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "126691491840",
+      "ram_bytes": "126649847808",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 704382537728,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 50367, 97887, 57",
+      "disk_free_bytes": 692148928512,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 50556, 97887, 61",
       "inference": {
-        "calls": 2167586,
-        "forwards": 1251681,
-        "max_batch": 12,
-        "mean_batch": 1.7317399561070272,
-        "queue_wait_mean_ms": 1.6040906935908859,
+        "calls": 391620,
+        "forwards": 179495,
+        "max_batch": 18,
+        "mean_batch": 2.181787793531853,
+        "queue_wait_mean_ms": 1.6072378967045418,
         "device": "cuda",
-        "queued": 2,
-        "models": 32,
-        "graph_calls": 1251681,
+        "queued": 0,
+        "models": 9,
+        "graph_calls": 179495,
         "cached_graphs": 48,
         "coalesce_ms": 0.7,
-        "peak_torch_allocated_bytes": 1119931904,
-        "pid": 77253
+        "peak_torch_allocated_bytes": 1120060928,
+        "pid": 129945
       },
       "memory_components_bytes": {
-        "anon": 92009762816,
-        "file": 32724537344,
-        "shmem": 818257920
+        "anon": 92437864448,
+        "file": 32598609920,
+        "shmem": 218480640
       },
       "lane_pids": {
-        "inference": 77253,
+        "inference": 129945,
         "A": 404015,
-        "B": 77263,
+        "B": 134406,
         "C": 411312,
         "video": 399173
       }
@@ -469,19 +469,19 @@
     {
       "method": "H9",
       "seed": 1701,
-      "round": 11,
-      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r11/H9/seed1701/paired/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r11/H9/seed1701/paired/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r11/H9/seed1701/paired/receipt.json",
-      "full_sha256": "24322b29adc0b025b078b289567d893f4c26ac31268d38c3992f15d5eb1cd40e",
-      "deploy_sha256": "843a90749e2532e64f4b931f3db58b6a6308582272c46f30aadd6682bee3897c",
+      "round": 27,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9/seed1701/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9/seed1701/paired/receipt.json",
+      "full_sha256": "b45802c363daa5f34157f94ef4e19e1e47825beea391ddc0308ffa9302f7655f",
+      "deploy_sha256": "7305963d474c5f7cb78e135e0f861924f4cd6448b9ad3d7a8f811fd535fff852",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
       "rank": [
         0,
         0,
-        7,
+        8,
         -2,
-        -11
+        -27
       ],
       "development": [
         {
@@ -503,14 +503,14 @@
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 1
+          "events": 0
         },
         {
           "scene": "tr_nominal",
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 4
         },
         {
           "scene": "va_pose",
@@ -524,7 +524,7 @@
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 0
         },
         {
           "scene": "va_pose",
@@ -707,19 +707,19 @@
     {
       "method": "H9-WM",
       "seed": 1701,
-      "round": 0,
-      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1701/receipt.json",
-      "full_sha256": "92d6b63171898ee380b85298cba66742a605e4f4b2bb25a6af9c115e9128e46a",
-      "deploy_sha256": "2c7d9be0172c7489ec0615d79f245cfddf6aa4b051617486212b7a64335f982f",
+      "round": 27,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1701/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1701/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1701/paired/receipt.json",
+      "full_sha256": "80137bd9075600fa052dc47247a8f6fad6feb2991737c4cb8daa15a70b629f12",
+      "deploy_sha256": "9e2766e48202cb266d3eb535af30f46cc007bae699da4ce4178c45caa3f04145",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1701/block0/deploy.pt",
       "rank": [
         0,
         0,
-        4,
-        0,
-        0
+        5,
+        -3,
+        -27
       ],
       "development": [
         {
@@ -727,7 +727,7 @@
           "side": "pull",
           "goal": 15,
           "success": false,
-          "events": 1
+          "events": 2
         },
         {
           "scene": "tr_nominal",
@@ -741,7 +741,7 @@
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 1
+          "events": 0
         },
         {
           "scene": "tr_nominal",
@@ -762,7 +762,7 @@
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "va_pose",
@@ -780,26 +780,26 @@
         }
       ],
       "physical_cases": 8,
-      "paired_model_updates_at_checkpoint": 0,
-      "initialization_only": true,
-      "common_H9_parent": true
+      "paired_model_updates_at_checkpoint": 512,
+      "initialization_only": false,
+      "common_H9_parent": false
     },
     {
       "method": "H9-WM",
       "seed": 1702,
-      "round": 0,
-      "full": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/warm/H9/seed1702/receipt.json",
-      "full_sha256": "ae37f2bd2d4e8186d47ce83dd5a47a8116c187a49374f377098fe13932300b81",
-      "deploy_sha256": "938b3f27d2d232c2c936d37d450fe38cb063635369e241746becbff7e04f55f0",
+      "round": 27,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1702/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1702/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/H9-WM/seed1702/paired/receipt.json",
+      "full_sha256": "055b44b52e4b79e96226a8ef2560afbf9dba2fc68bb0d7319dee02b17733032c",
+      "deploy_sha256": "3bb2ebf1c468b055b453d8ae9eda6d892730751c875cf76cae177c53bf332649",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt",
       "rank": [
         0,
         0,
-        4,
+        5,
         0,
-        0
+        -27
       ],
       "development": [
         {
@@ -807,21 +807,21 @@
           "side": "pull",
           "goal": 15,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "tr_nominal",
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "tr_nominal",
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 1
+          "events": 2
         },
         {
           "scene": "tr_nominal",
@@ -849,20 +849,20 @@
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 1
+          "events": 0
         },
         {
           "scene": "va_pose",
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 1
+          "events": 0
         }
       ],
       "physical_cases": 8,
-      "paired_model_updates_at_checkpoint": 0,
-      "initialization_only": true,
-      "common_H9_parent": true
+      "paired_model_updates_at_checkpoint": 512,
+      "initialization_only": false,
+      "common_H9_parent": false
     },
     {
       "method": "H9-WM",
@@ -963,30 +963,36 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r27/collect",
+    "partition": "rounds/r28/collect",
     "cases_done": 24,
     "planned": 24,
-    "workers": 12,
+    "workers": 18,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 59.09188091568649,
+    "wall_s": 70.33832089416683,
     "completed_here": 24,
-    "steps_here": 366289,
-    "steps_s": 6198.634978680551,
+    "steps_here": 413444,
+    "steps_s": 5877.933887874298,
     "resumed_cases": 0,
     "processes": [
-      122572,
-      122575,
-      122576,
-      122577,
-      122578,
-      122579,
-      122580,
-      122581,
-      122582,
-      122583,
-      122584,
-      122585
+      133328,
+      133331,
+      133332,
+      133333,
+      133334,
+      133335,
+      133336,
+      133337,
+      133338,
+      133339,
+      133340,
+      133341,
+      133342,
+      133343,
+      133344,
+      133345,
+      133346,
+      133347
     ]
   },
   "A_current": {
@@ -1017,5 +1023,6 @@
   "shared_camera_concurrency": "performance/shared_camera/decision.json",
   "h7_sampling_evidence": "performance/native_transfer/h7_comparison.json",
   "native_transfer_comparison": "performance/native_transfer/decision.json",
-  "phase_capacity_comparison": "performance/phase_capacity/decision.json"
+  "phase_capacity_comparison": "performance/phase_capacity/decision.json",
+  "ordinary_queue_evidence": "performance/ordinary_queue/summary.json"
 }

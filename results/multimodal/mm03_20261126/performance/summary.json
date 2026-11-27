@@ -1,5 +1,5 @@
 {
-  "as_of_beijing": "2026-11-27T22:17:10+08:00",
+  "as_of_beijing": "2026-11-27T23:01:13+08:00",
   "observed_cohort": {
     "baseline_round": 2,
     "optimized_round": 4,
@@ -1349,18 +1349,70 @@
         "previous_full_stage_wall_s": 83.23423385620117,
         "extra_gradient_evaluations": 1,
         "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r27/wm/seed1703/receipt.json"
+      },
+      {
+        "round": "r28",
+        "seed": "seed1701",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 33.335234683007,
+        "previous_same_seed_wall_s": 31.387695932760835,
+        "full_stage_wall_s": 81.33335399627686,
+        "previous_full_stage_wall_s": 82.62449407577515,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/wm/seed1701/receipt.json"
+      },
+      {
+        "round": "r28",
+        "seed": "seed1702",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 33.080500300973654,
+        "previous_same_seed_wall_s": 29.283261312171817,
+        "full_stage_wall_s": 81.6031928062439,
+        "previous_full_stage_wall_s": 80.78548693656921,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/wm/seed1702/receipt.json"
+      },
+      {
+        "round": "r28",
+        "seed": "seed1703",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 31.035544531419873,
+        "previous_same_seed_wall_s": 37.600668197497725,
+        "full_stage_wall_s": 80.252605676651,
+        "previous_full_stage_wall_s": 94.18798470497131,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r28/wm/seed1703/receipt.json"
       }
     ],
     "validation": "Two actual eager warmup updates and a matching loss/all-gradient check at the first replay of each WM process. Sampling, clipping and the AdamW step retain their registered order."
   },
   "native_dispatch": {
-    "measured_completed_reordered_batches": 177,
-    "counted_new_native_cases": 5208,
+    "measured_completed_reordered_batches": 186,
+    "counted_new_native_cases": 5424,
     "worker_counts": [
       4,
       6,
       9,
-      12
+      12,
+      18
     ],
     "source": "/root/autodl-tmp/mm03-20261126/B/native_batch_timings",
     "timing_replay": "dispatch_replay.json"
@@ -1408,35 +1460,49 @@
     "B_CF": 6,
     "B_GPU": 3,
     "B_CF_slots": 3,
-    "changed_beijing": "2026-11-26T17:09:49+08:00",
-    "reason": "Restore the measured three-seed layout after the scoped single-seed tail",
+    "changed_beijing": "2026-11-27T22:45:14+08:00",
+    "reason": "Restore the measured three-seed allocation after the round 28 collection trial",
     "A_finished": true,
     "C_finished": true,
     "candidates_frozen": false,
     "previous": {
-      "B": 4,
+      "B": 18,
       "C": 8,
-      "B_CF": 12,
+      "B_CF": 4,
       "B_GPU": 3,
       "B_CF_slots": 1
     },
     "B_throughput_before": {
-      "partition": "rounds/r08/regression",
-      "cases_done": 20,
-      "planned": 20,
-      "workers": 4,
+      "partition": "rounds/r28/collect",
+      "cases_done": 24,
+      "planned": 24,
+      "workers": 18,
       "launch_workers": 7,
       "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-      "wall_s": 68.28012551926076,
-      "completed_here": 20,
-      "steps_here": 187455,
-      "steps_s": 2745.3815963932557,
+      "wall_s": 70.33832089416683,
+      "completed_here": 24,
+      "steps_here": 413444,
+      "steps_s": 5877.933887874298,
       "resumed_cases": 0,
       "processes": [
-        484863,
-        484866,
-        484867,
-        484868
+        133328,
+        133331,
+        133332,
+        133333,
+        133334,
+        133335,
+        133336,
+        133337,
+        133338,
+        133339,
+        133340,
+        133341,
+        133342,
+        133343,
+        133344,
+        133345,
+        133346,
+        133347
       ]
     },
     "A_last_batch": {
@@ -1454,19 +1520,19 @@
       "timestamp": "2026-11-26T02:55:24.053452+00:00"
     },
     "central_inference": {
-      "calls": 521115,
-      "forwards": 407230,
-      "max_batch": 10,
-      "mean_batch": 1.279657687302016,
-      "queue_wait_mean_ms": 1.1621994090975507,
+      "calls": 391620,
+      "forwards": 179495,
+      "max_batch": 18,
+      "mean_batch": 2.181787793531853,
+      "queue_wait_mean_ms": 1.6072378967045418,
       "device": "cuda",
-      "queued": 1,
-      "models": 17,
-      "graph_calls": 407230,
+      "queued": 0,
+      "models": 9,
+      "graph_calls": 179495,
       "cached_graphs": 48,
       "coalesce_ms": 0.7,
-      "peak_torch_allocated_bytes": 1131502080,
-      "pid": 473823
+      "peak_torch_allocated_bytes": 1120060928,
+      "pid": 129945
     },
     "workers": {
       "B": 0,
@@ -1478,20 +1544,20 @@
     "elastic_cf": {
       "protocol": "mm03-ordinary-native-lease-v1",
       "mode": "idle_loan",
-      "changed_beijing": "2026-11-27T22:15:13+08:00",
+      "changed_beijing": "2026-11-27T22:52:08+08:00",
       "reserved_ordinary": 4,
       "effective_ordinary_capacity": 0,
       "effective_workers_per_cf": 8,
       "borrowed_ordinary_cores": 4,
       "additional_shared_cpu_slots": 2,
-      "measured_cgroup_cpu_cores": 15.056711024713087,
-      "measured_gpu_free_GiB": 59.4560546875,
-      "host_available_bytes": 58308318128,
-      "estimated_incremental_host_bytes": 15174156288,
+      "measured_cgroup_cpu_cores": 10.336985125810694,
+      "measured_gpu_free_GiB": 72.97265625,
+      "host_available_bytes": 90110420160,
+      "estimated_incremental_host_bytes": 3628548096,
       "live_pool_sizes": {
-        "122863": 6,
-        "122862": 6,
-        "125302": 6
+        "134631": 6,
+        "134630": 6,
+        "134632": 6
       }
     }
   },
