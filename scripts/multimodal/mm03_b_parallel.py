@@ -1,7 +1,9 @@
 """Bound concurrent task optimizers by seed, RAM and the shared GPU allocation."""
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from contextlib import ExitStack, contextmanager
 from pathlib import Path
+from queue import SimpleQueue
+from threading import Event
 import os
 import subprocess
 import time
@@ -207,6 +209,41 @@ class SeedOptimizers:
     def __enter__(self):
         return self
 
+    @contextmanager
+    def completed_fits(self, schedules, fit):
+        """Advance each seed as its fit ends, even while the caller scores another policy."""
+        ready=SimpleQueue()
+        stopping=Event()
+
+        def dispatch():
+            futures={}
+            def next_for(seed):
+                method=next(schedules[seed],None)
+                if method is not None and not stopping.is_set():
+                    futures[self.submit(seed,fit,method,seed)]=(method,seed)
+            try:
+                for seed in schedules:
+                    next_for(seed)
+                while futures and not stopping.is_set():
+                    completed,_=wait(futures,return_when=FIRST_COMPLETED)
+                    for job in completed:
+                        method,seed=futures.pop(job)
+                        if getattr(job.exception(),"returncode",None)==75:
+                            stopping.set()
+                        else:
+                            next_for(seed)
+                        ready.put((method,seed,job))
+            finally:
+                ready.put(None)
+
+        with ThreadPoolExecutor(max_workers=1) as dispatcher:
+            task=dispatcher.submit(dispatch)
+            try:
+                yield iter(ready.get,None)
+            finally:
+                stopping.set()
+                task.result()
+
     def __exit__(self, typ, value, trace):
         # Already running jobs finish their atomic stage. Untouched submissions
         # need not start if the coordinator is explicitly reloaded.
@@ -218,7 +255,7 @@ def native_slot_path(folder, index):
 
 
 @contextmanager
-def ordinary_capacity(root, base, cases, cf_free_phase):
+def ordinary_capacity(root, base, cases, cf_free_phase, *, partition=""):
     """Borrow idle CF slots during the collecting barrier or after all paired receipts."""
     if not cf_free_phase or base!=4 or cases<=base:
         yield min(base,cases)
@@ -244,7 +281,12 @@ def ordinary_capacity(root, base, cases, cf_free_phase):
             gpu_free=int(subprocess.check_output(["nvidia-smi","-i","0","--query-gpu=memory.free",
                 "--format=csv,noheader,nounits"],text=True).strip())*2**20
             if gpu_free>=GPU_HEADROOM:
-                width=max(base,min(12,cases,cores//2,(headroom-HOST_HEADROOM)//(3*GIB//2)))
+                ceiling=min(12,cores//2)
+                if partition.endswith("/collect") and cases>=24 and cores>=25 and gpu_free>=18*GIB:
+                    trial=root/"performance/20261127-ordinary-queue/width.json"
+                    if trial.is_file() and read(trial).get("winner")==18:
+                        ceiling=min(18,cores-7)
+                width=max(base,min(ceiling,cases,(headroom-HOST_HEADROOM)//(3*GIB//2)))
         except (OSError,ValueError,subprocess.CalledProcessError):
             pass
         if width==base:

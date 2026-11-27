@@ -389,39 +389,23 @@ def fill_round(root, r, workers, include_model, selected):
     membership(root,r)
     collection_ledgers(root)
     slots = allocation(root,membership(root,r),f"r{r:02d}")
-    with SeedOptimizers(slots) as gpu:
-        methods=METHODS if include_model else BASE
-        def paired_finished():
-            return all((train_dir(root,r,"H9-WM",s)/"paired/receipt.json").is_file() for s in SEEDS)
-        schedules={seed:iter(methods) for seed in SEEDS}
-        if include_model and selected=="CF32" and r>1:
-            # Give the measured three-seed layout a common start after the eight-round block.
-            target=root/"resources/worker_targets.json"
-            comparison=root/"performance/cf32-three-seeds-20261126/decision.json"
-            three_first=(r>8 and slots==3 and target.is_file() and read(target).get("B_CF_slots")==3
-                         and comparison.is_file() and read(comparison).get("winner")=="three")
-            for early in (SEEDS if three_first else SEEDS[:2]):
-                schedules[early]=iter(("H9-WM","D23","H9"))
-        def independent_fits():
-            futures={}
-            def next_for(seed):
-                method=next(schedules[seed],None)
-                if method is not None:
-                    job=gpu.submit(seed,fit_round,root,r,method,seed,workers,
-                                   selected if method=="H9-WM" else "C0")
-                    futures[job]=(method,seed)
-            for seed in SEEDS:
-                next_for(seed)
-            while futures:
-                completed,_=wait(futures,return_when=FIRST_COMPLETED)
-                for job in completed:
-                    method,seed=futures.pop(job)
-                    exc=job.exception()
-                    if getattr(exc,"returncode",None)!=75:
-                        next_for(seed)
-                    yield method,seed,job
+    methods=METHODS if include_model else BASE
+    def paired_finished():
+        return all((train_dir(root,r,"H9-WM",s)/"paired/receipt.json").is_file() for s in SEEDS)
+    schedules={seed:iter(methods) for seed in SEEDS}
+    if include_model and selected=="CF32" and r>1:
+        # Give the measured three-seed layout a common start after the eight-round block.
+        target=root/"resources/worker_targets.json"
+        comparison=root/"performance/cf32-three-seeds-20261126/decision.json"
+        three_first=(r>8 and slots==3 and target.is_file() and read(target).get("B_CF_slots")==3
+                     and comparison.is_file() and read(comparison).get("winner")=="three")
+        for early in (SEEDS if three_first else SEEDS[:2]):
+            schedules[early]=iter(("H9-WM","D23","H9"))
+    def fit(method,seed):
+        return fit_round(root,r,method,seed,workers,selected if method=="H9-WM" else "C0")
+    with SeedOptimizers(slots) as gpu, gpu.completed_fits(schedules,fit) as ready:
         failed = []
-        for method, seed, job in independent_fits():
+        for method, seed, job in ready:
             try:
                 ck = job.result()
             except subprocess.CalledProcessError as exc:

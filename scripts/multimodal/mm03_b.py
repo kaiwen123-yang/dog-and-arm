@@ -92,7 +92,7 @@ def batch(root, jobs, workers, *, cf_free_phase=False):
     from scripts.multimodal.mm03_elastic import ordinary_admission
     from scripts.multimodal.mm03_b_parallel import ordinary_capacity
     with (ordinary_admission(root,partition,len(queue),initial_workers) as base_workers,
-          ordinary_capacity(root,base_workers,len(queue),cf_free_phase) as workers):
+          ordinary_capacity(root,base_workers,len(queue),cf_free_phase,partition=partition) as workers):
         seq = iter(queue)
         start_epoch = time.time()
         start = time.monotonic()
