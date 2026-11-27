@@ -1,5 +1,5 @@
 {
-  "as_of_beijing": "2026-11-27T17:32:29+08:00",
+  "as_of_beijing": "2026-11-27T18:30:21+08:00",
   "observed_cohort": {
     "baseline_round": 2,
     "optimized_round": 4,
@@ -1026,13 +1026,81 @@
         "previous_full_stage_wall_s": 72.76028108596802,
         "extra_gradient_evaluations": 1,
         "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r21/wm/seed1702/receipt.json"
+      },
+      {
+        "round": "r21",
+        "seed": "seed1703",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 35.459212167188525,
+        "previous_same_seed_wall_s": 25.5682914275676,
+        "full_stage_wall_s": 81.17081618309021,
+        "previous_full_stage_wall_s": 69.65002083778381,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r21/wm/seed1703/receipt.json"
+      },
+      {
+        "round": "r22",
+        "seed": "seed1701",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 35.45760102942586,
+        "previous_same_seed_wall_s": 28.86912316083908,
+        "full_stage_wall_s": 83.03683876991272,
+        "previous_full_stage_wall_s": 80.7639319896698,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r22/wm/seed1701/receipt.json"
+      },
+      {
+        "round": "r22",
+        "seed": "seed1702",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 35.672601440921426,
+        "previous_same_seed_wall_s": 34.33844228461385,
+        "full_stage_wall_s": 83.82343316078186,
+        "previous_full_stage_wall_s": 83.36494302749634,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r22/wm/seed1702/receipt.json"
+      },
+      {
+        "round": "r22",
+        "seed": "seed1703",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 35.55821244418621,
+        "previous_same_seed_wall_s": 35.459212167188525,
+        "full_stage_wall_s": 83.63428974151611,
+        "previous_full_stage_wall_s": 81.17081618309021,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r22/wm/seed1703/receipt.json"
       }
     ],
     "validation": "Two actual eager warmup updates and a matching loss/all-gradient check at the first replay of each WM process. Sampling, clipping and the AdamW step retain their registered order."
   },
   "native_dispatch": {
-    "measured_completed_reordered_batches": 132,
-    "counted_new_native_cases": 3936,
+    "measured_completed_reordered_batches": 140,
+    "counted_new_native_cases": 4128,
     "worker_counts": [
       4,
       6,
@@ -1146,26 +1214,30 @@
       "pid": 473823
     },
     "workers": {
-      "B": 4,
+      "B": 1,
       "C": 8,
-      "B_CF": 6,
+      "B_CF": 7,
       "B_GPU": 3,
       "B_CF_slots": 3
     },
     "elastic_cf": {
       "protocol": "mm03-ordinary-native-lease-v1",
-      "mode": "ordinary_reserved",
-      "changed_beijing": "2026-11-27T16:08:51+08:00",
+      "mode": "idle_loan",
+      "changed_beijing": "2026-11-27T18:28:23+08:00",
       "reserved_ordinary": 4,
-      "effective_ordinary_capacity": 4,
-      "effective_workers_per_cf": 6,
-      "borrowed_ordinary_cores": 0,
+      "effective_ordinary_capacity": 1,
+      "effective_workers_per_cf": 7,
+      "borrowed_ordinary_cores": 3,
       "additional_shared_cpu_slots": 0,
       "measured_cgroup_cpu_cores": null,
       "measured_gpu_free_GiB": null,
-      "host_available_bytes": null,
-      "estimated_incremental_host_bytes": 0,
-      "live_pool_sizes": {}
+      "host_available_bytes": 67708332928,
+      "estimated_incremental_host_bytes": 7400030208,
+      "live_pool_sizes": {
+        "77794": 6,
+        "77792": 6,
+        "77793": 6
+      }
     }
   },
   "paired_native_throughput": {
