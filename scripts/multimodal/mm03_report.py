@@ -120,6 +120,9 @@ def budgets(root, rows):
         +read(perf/"native_scoring_comparison.json").get("diagnostic_native_substeps",0)
         +read(perf/"cached_native_windows.json").get("diagnostic_native_substeps",0))
     latency=root/CF_LATENCY
+    storage_incidents = list((root/"B/rounds").glob("r*/H9-WM/seed*/paired/recovery_disk_full/receipt.json"))
+    if storage_incidents:
+        additional["B/interrupted_native_writes"] = sum(read(p)["uncommitted_native_substeps"] for p in storage_incidents)
     additional["performance/cf32_latency_diagnostics"]=sum(read(latency/file).get(field,0) for file,field in (
         ("full_h9_parity.json","captured_native_substeps"),("partial_direct23_parity.json","captured_native_substeps"),
         ("live_native_overlap.json","actual_diagnostic_substeps"),("cf_profile.json","native_substeps"),
@@ -199,7 +202,8 @@ def mirror_records(root,out):
             slimcopy(src,out/"videos"/src.relative_to(root/"videos"))
     for src in (root/"attempts").glob("*/*.json"):
         slimcopy(src,out/"execution"/src.relative_to(root))
-    for pattern in ("C/handoffs/*.json","B/coordinator_refresh*ack.json","resources/allocation_changes.jsonl"):
+    for pattern in ("C/handoffs/*.json","B/coordinator_refresh*ack.json","resources/allocation_changes.jsonl",
+                    "B/rounds/r*/H9-WM/seed*/paired/recovery_disk_full/receipt.json"):
         for src in root.glob(pattern):
             slimcopy(src,out/"execution"/src.relative_to(root))
     # A selected learned deployment is small. Full optimizer/replay assets retain their cloud paths.

@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import time
 import uuid
+import zipfile
 
 import numpy as np
 import torch
@@ -42,6 +43,14 @@ def digest_values(rows):
     return hashlib.sha256(np.ascontiguousarray(rows).tobytes()).hexdigest()
 
 
+def write_native_replay(path, arrays):
+    """Write a lossless NPZ that remains directly readable by the existing WM sampler."""
+    with zipfile.ZipFile(path, "x", compression=zipfile.ZIP_DEFLATED, compresslevel=1) as archive:
+        for field, value in arrays.items():
+            with archive.open(field + ".npy", "w", force_zip64=True) as member:
+                np.lib.format.write_array(member, np.asanyarray(value), allow_pickle=False)
+
+
 def record_replay(folder,attempt,step,keys,rows,stats,objective):
     """Store compact, episode-local physical observations for common WM replay after comparison."""
     folder.mkdir(parents=True,exist_ok=True)
@@ -74,9 +83,9 @@ def record_replay(folder,attempt,step,keys,rows,stats,objective):
             arrays["exposure_actor_features"]=np.concatenate([x["measured_features"] for x in fresh])
             for index,column in enumerate(("exposure_rgb","exposure_depth","exposure_depth_valid")):
                 arrays[column]=np.stack([image[index] for x in fresh for image in x["exposures"]])
-    with name.with_suffix(".tmp").open("wb") as f:
-        np.savez(f,**arrays)
-    name.with_suffix(".tmp").replace(name)
+    temp = name.with_name(f"{name.stem}.{uuid.uuid4().hex}.tmp")
+    write_native_replay(temp, arrays)
+    temp.replace(name)
     return str(name)
 
 
