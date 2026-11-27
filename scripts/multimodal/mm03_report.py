@@ -452,6 +452,16 @@ def snapshot(root,repo,milestone):
         report.append(f"CF32 单项传输与合并传输的同轮实付吞吐分别为 {transfer_result['reference_updates_min']:.1f} "
                       f"和 {transfer_result['candidate_updates_min']:.1f} 次/分。"
                       f" [四个生产窗口与所选配置](../{OUT.as_posix()}/performance/native_transfer/decision.json)")
+    ordinary_check=read(transfer/"ordinary_comparison.json")
+    if ordinary_check:
+        report.append(f"教师、纯学生及教师前缀后的学生续演使用相同命令对照，"
+                      f"普通回合总用时由 {ordinary_check['reference_s']:.1f} 秒降至 {ordinary_check['candidate_s']:.1f} 秒。"
+                      f" [每案判分与逐帧数组校验](../{OUT.as_posix()}/performance/native_transfer/ordinary_comparison.json)")
+    width_check=read(root/CF_LATENCY/"r22-eight/decision.json")
+    if width_check.get("valid"):
+        report.append(f"第 22 轮三个 CF32 种子在采集队列空闲时，每种子 7 和 8 个物理进程分别完成 "
+                      f"{width_check['baseline_updates_min']:.1f} 和 {width_check['challenger_updates_min']:.1f} 次更新/分。"
+                      f" [生产对照](../{OUT.as_posix()}/performance/cf32_latency/r22-eight/decision.json)")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",
