@@ -44,6 +44,18 @@ def mapped_image_policy(root, membership):
     return {}
 
 
+def phase_capacity(max_slots, host_free, gpu_free, host_per_fit, wm_gpu, other_gpu):
+    """Fit simultaneous phases, reserving memory for the GPU and the host as usual."""
+    for slots in range(max_slots,0,-1):
+        if slots*host_per_fit+HOST_HEADROOM>host_free:
+            continue
+        for heavy in range(slots,0,-1):
+            budget=heavy*max(wm_gpu,other_gpu)+(slots-heavy)*other_gpu
+            if budget+GPU_HEADROOM<=gpu_free:
+                return slots,heavy
+    return 1,1
+
+
 def allocation(root, membership, scope):
     """Choose the concurrent population before any optimizer starts loading the shared rows."""
     mp = read(membership)
@@ -79,12 +91,26 @@ def allocation(root, membership, scope):
         gpu_per_fit = max(2*private_rows, 3000*wm_rows) + GPU_WORK_PER_OPTIMIZER
         slots = max(1,min(requested,policy["max_slots"],
                           (available-HOST_HEADROOM)//host_per_fit,(free-GPU_HEADROOM)//gpu_per_fit))
-        emit(evidence,dict(requested=requested,slots=slots,scope=scope,membership=str(membership),
+        record=dict(requested=requested,slots=slots,scope=scope,membership=str(membership),
              image_storage="shared_original_npy",source_image_file_bytes=images,
              source_decision_rows=rows,wm_rows=wm_rows,native_workers_per_seed=native_width,
              private_host_estimate_per_fit=host_per_fit,gpu_estimate_per_fit=gpu_per_fit,
              host_available_bytes=available,gpu_free_bytes=free,planned_gpu_row_tables=0,
-             measured_epoch_s=stamp/1e9))
+             measured_epoch_s=stamp/1e9)
+        phase_policy=root/"resources/phase_capacity_policy.json"
+        folder=Path(membership).parent
+        if scope==folder.name and phase_policy.is_file():
+            phase=read(phase_policy)
+            if phase.get("enabled") and int(scope[1:])>=phase["from_round"]:
+                # Reserve CUDA/EGL space for the largest admitted idle native pool.
+                other_gpu=max(2*private_rows+GPU_WORK_PER_OPTIMIZER,
+                              private_rows+3*GIB+max(8,native_width)*(3*GIB//2))
+                slots,wm_slots=phase_capacity(min(requested,policy["max_slots"],phase["max_slots"]),
+                                               available,free,host_per_fit,gpu_per_fit,other_gpu)
+                record.update(previous_uniform_slots=record["slots"],slots=slots,wm_slots=wm_slots,
+                              gpu_estimate_other_fit=other_gpu)
+                emit(folder/"phase_capacity.json",record)
+        emit(evidence,record)
         return slots
     for slots in range(requested,0,-1):
         gpu_rows = min(slots,max(0,(free-GPU_HEADROOM-slots*GPU_WORK_PER_OPTIMIZER)//estimated))
@@ -224,6 +250,40 @@ def ordinary_capacity(root, base, cases, cf_free_phase):
         if width==base:
             reservations.close()
         yield width
+
+
+@contextmanager
+def wm_phase_slot(spec):
+    """Limit simultaneous high-memory WM builders separately from the native seed pools."""
+    if spec.get("stage")!="wm":
+        yield
+        return
+    membership=Path(spec["members"])
+    path=membership.parent/"phase_capacity.json"
+    if not path.is_file():
+        yield
+        return
+    import fcntl
+    cap=read(path)
+    lanes=cap["wm_slots"]
+    if cap["membership"]!=str(membership) or not 1<=lanes<=cap["slots"]<=len(SEEDS):
+        raise ValueError(f"Invalid WM phase allocation: {path}")
+    folder=Path(spec["root"])/"B/locks"
+    folder.mkdir(parents=True,exist_ok=True)
+    while True:
+        for i in range(lanes):
+            with (folder/f"wm_phase_{i}.lock").open("a") as handle:
+                try:
+                    fcntl.flock(handle,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                except BlockingIOError:
+                    continue
+                free=int(subprocess.check_output(["nvidia-smi","-i","0","--query-gpu=memory.free",
+                        "--format=csv,noheader,nounits"],text=True).strip())*2**20
+                if cap["slots"]>1 and free<GPU_HEADROOM+cap["gpu_estimate_per_fit"]:
+                    break
+                yield
+                return
+        time.sleep(1)
 
 
 @contextmanager

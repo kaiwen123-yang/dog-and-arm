@@ -510,8 +510,7 @@ def train(s, data_cache=None):
          high_parameters=sum(p.numel() for n,p in actor.named_parameters() if not n.startswith("low.")), **peak(DEVICE)))
 
 
-def run_spec(path,data_cache):
-    from scripts.multimodal.mm03_b_parallel import native_pair_slot
+def read_spec(path):
     s = read(path)
     if "root" not in s:
         # The first frozen bridge specifications locate their run by their
@@ -522,6 +521,12 @@ def run_spec(path,data_cache):
         if s["stage"]!="bridge" or b_root is None:
             raise ValueError(f"Cannot identify the MM03 run for {stage_path}")
         s["root"] = str(b_root.parent)
+    return s
+
+
+def run_spec(path,data_cache):
+    from scripts.multimodal.mm03_b_parallel import native_pair_slot,wm_phase_slot
+    s=read_spec(path)
     run_root = Path(s["root"])
     status_file = run_root / "status" / "B.json"
     if status_file.is_file():
@@ -545,7 +550,7 @@ def run_spec(path,data_cache):
     torch.cuda.reset_peak_memory_stats(DEVICE)
     out = Path(s["output"])
     if not (out/"receipt.json").is_file():
-        with native_pair_slot(s), (out/"executions.jsonl").open("a",buffering=1) as log:
+        with wm_phase_slot(s), native_pair_slot(s), (out/"executions.jsonl").open("a",buffering=1) as log:
             if (out/"receipt.json").is_file():
                 return
             started = time.time()
@@ -589,13 +594,20 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("specs",type=Path,nargs="+")
     args = parser.parse_args()
-    specs = [read(p) for p in args.specs]
-    if len(set(s["seed"] for s in specs))!=1:
+    specs = [read_spec(p) for p in args.specs]
+    if len({(s["root"],s["seed"]) for s in specs})!=1:
         raise ValueError("A grouped optimizer process must have one fine-tuning seed")
-    cache = {}
-    for path in args.specs:
-        run_spec(path,cache)
-        torch.cuda.empty_cache()
+    # A coordinator and an admitted early start may reach the same frozen group.
+    # Keep one owner per seed; run_spec rechecks every receipt under this lock.
+    import fcntl
+    folder=Path(specs[0]["root"])/"B/locks"
+    folder.mkdir(parents=True,exist_ok=True)
+    with (folder/f"seed_group_{specs[0]['seed']}.lock").open("a") as owner:
+        fcntl.flock(owner,fcntl.LOCK_EX)
+        cache = {}
+        for path in args.specs:
+            run_spec(path,cache)
+            torch.cuda.empty_cache()
 
 
 if __name__ == "__main__":
