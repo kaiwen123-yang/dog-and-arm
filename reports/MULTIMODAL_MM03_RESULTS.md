@@ -1,8 +1,8 @@
 # MM03 多模态腿臂仿真实验
 
-2026-11-27T16:15:59+08:00（北京时间），第20轮扩容后断点恢复。
+2026-11-27T16:53:42+08:00（北京时间），第20轮续训与H盘原始回放归档实测。
 
-A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、467,419、7,680、59,000、104,400 次。
+A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、485,376、7,680、60,000、108,600 次。
 
 原生 MuJoCo 3.3.0，2 ms 伺服、20 ms 学习控制、100 ms 腕部 RGB-D。按原 12 事件判分。真实硬件运动命令 0。
 
@@ -76,15 +76,15 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 | 方法 | 微调种子 | 轮次 | 全程成功 | 驶近 | 停稳 | 首败最多的原因 |
 |---|---:|---:|---:|---:|---:|---|
-| D23 | 1701 | 19 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
-| D23 | 1702 | 19 | 0/8 | 5/8 | 0/8 | timeout:settle (4)、wheel_support_or_tilt (4) |
-| D23 | 1703 | 19 | 0/8 | 3/8 | 0/8 | wheel_support_or_tilt (7)、timeout:settle (1) |
-| H9 | 1701 | 19 | 0/8 | 4/8 | 1/8 | timeout:settle (2)、door_contact_outside_manipulation (2) |
-| H9 | 1702 | 19 | 0/8 | 1/8 | 0/8 | timeout:approach_base (5)、unexpected_contact:finger_non_grasp_handle (2) |
-| H9 | 1703 | 19 | 0/8 | 1/8 | 1/8 | timeout:approach_base (3)、unexpected_contact:robot_self (3) |
+| D23 | 1701 | 20 | 0/8 | 2/8 | 0/8 | wheel_support_or_tilt (7)、timeout:settle (1) |
+| D23 | 1702 | 20 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
+| D23 | 1703 | 20 | 0/8 | 3/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
+| H9 | 1701 | 20 | 0/8 | 1/8 | 1/8 | timeout:approach_base (6)、unexpected_contact:robot_panel (1) |
+| H9 | 1702 | 20 | 0/8 | 1/8 | 0/8 | timeout:approach_base (7)、persistent_saturation:piper_joint1 (1) |
+| H9 | 1703 | 20 | 0/8 | 1/8 | 0/8 | unexpected_contact:robot_self (3)、timeout:approach_base (2) |
 | H9-WM | 1701 | 20 | 0/8 | 1/8 | 0/8 | timeout:approach_base (7)、timeout:settle (1) |
-| H9-WM | 1702 | 19 | 0/8 | 3/8 | 1/8 | timeout:approach_base (4)、timeout:settle (2) |
-| H9-WM | 1703 | 19 | 0/8 | 6/8 | 0/8 | timeout:settle (6)、timeout:approach_base (2) |
+| H9-WM | 1702 | 20 | 0/8 | 2/8 | 0/8 | timeout:approach_base (6)、timeout:settle (2) |
+| H9-WM | 1703 | 20 | 0/8 | 3/8 | 0/8 | timeout:approach_base (5)、timeout:settle (3) |
 
 ## 训练吞吐
 
@@ -107,6 +107,8 @@ MM02 的四条原轨迹共 8 个全程或局部视频。[同回合视频索引](
 [全程学生 · warm_development_D23_1701_tr_nominal_pull15_pure · 0/12 事件](../results/multimodal/mm03_20261126/videos/mm03/warm_d23_pull15_1080p.mp4)
 
 [全程学生 · warm_development_H9_1701_tr_nominal_pull15_pure · 1/12 事件](../results/multimodal/mm03_20261126/videos/mm03/warm_h9_pull15_1080p.mp4)
+
+已完成阶段的旧评测数组和完整 CF32 曝光原件按云端原路径在 H 盘建索引。训练使用的回放字段、回合判分和学生视频渲染输入保留在 AutoDL。当前有 16/281 个批次已通过 H 盘回读并在云端完成释放。 [恢复位置与逐项查找方法](../results/multimodal/mm03_20261126/execution/storage/cold_archive.json)
 
 进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。
 
