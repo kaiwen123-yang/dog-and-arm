@@ -164,5 +164,53 @@
     "isolated_teacher": 16,
     "cost_updates": 60000
   },
-  "assumptions": "Comparable completed rounds based on original case finish times; three-slot training in R28,29,30,31,40 and two-slot training in R32-39,41-43. Upper case allows 12% longer future rounds for data growth. Terminal overhead uses measured D23 BC seconds/update, disclosed physical duration, and 15 released final workers. No fixed wall deadline."
+  "assumptions": "Comparable completed rounds based on original case finish times; three-slot training in R28,29,30,31,40 and two-slot training in R32-39,41-43. Upper case allows 12% longer future rounds for data growth. Terminal overhead uses measured D23 BC seconds/update, disclosed physical duration, and 15 released final workers. No fixed wall deadline.",
+  "after_r45_measurement": {
+    "at": "2026-11-28T12:19:03+08:00",
+    "winner": 3,
+    "round45_paid_by_seed": {
+      "1701": 159,
+      "1702": 214,
+      "1703": 41
+    },
+    "round44_complete_epoch": 1795838438.4410987,
+    "measured_updates_min": 82.54225133819898,
+    "reference_updates_min": 93.90999125461782,
+    "measured_pair_minutes_delta_per_round": 2.252564494060586,
+    "target_if_r48_r52_both_plateau": 52,
+    "selected": {
+      "round52_formal_done": [
+        "2026-11-28T16:45+08:00",
+        "2026-11-28T19:00+08:00"
+      ],
+      "round56_formal_done": [
+        "2026-11-28T18:45+08:00",
+        "2026-11-28T22:00+08:00"
+      ],
+      "four_more_hours": [
+        2.1643869302007888,
+        3.0217453684228732
+      ]
+    },
+    "two_slot_fallback": {
+      "round52_formal_done": [
+        "2026-11-28T18:45+08:00",
+        "2026-11-28T21:45+08:00"
+      ],
+      "round56_formal_done": [
+        "2026-11-28T22:00+08:00",
+        "2026-11-29T02:15+08:00"
+      ],
+      "four_more_hours": [
+        3.2540656092431814,
+        4.366916397094727
+      ]
+    },
+    "terminal_tail_minutes": [
+      28.409593491717878,
+      53.436241487878235
+    ],
+    "formal_count": 324,
+    "method": "Anchor to the last completed round 44 regression episode. Use recent completed rounds with the same seed concurrency; adjust the paired portion for the actual round 45 paid-update rate. Upper estimate allows 12% for growing data. Includes 60000 D23-cost updates, 60 cost checks, 324 formal frame-zero cases and 16 separate teacher cases. Any new registered progress can extend the run."
+  }
 }

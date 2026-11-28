@@ -1,5 +1,5 @@
 {
-  "as_of_beijing": "2026-11-28T12:01:16+08:00",
+  "as_of_beijing": "2026-11-28T12:19:28+08:00",
   "observed_cohort": {
     "baseline_round": 2,
     "optimized_round": 4,
@@ -2216,13 +2216,64 @@
         "previous_full_stage_wall_s": 113.8602192401886,
         "extra_gradient_evaluations": 1,
         "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r44/wm/seed1703/receipt.json"
+      },
+      {
+        "round": "r45",
+        "seed": "seed1701",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 40.475502690300345,
+        "previous_same_seed_wall_s": 40.49819421209395,
+        "full_stage_wall_s": 117.08293056488037,
+        "previous_full_stage_wall_s": 116.53843665122986,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r45/wm/seed1701/receipt.json"
+      },
+      {
+        "round": "r45",
+        "seed": "seed1702",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 39.119334012269974,
+        "previous_same_seed_wall_s": 32.43291671946645,
+        "full_stage_wall_s": 115.76814723014832,
+        "previous_full_stage_wall_s": 109.34441494941711,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r45/wm/seed1702/receipt.json"
+      },
+      {
+        "round": "r45",
+        "seed": "seed1703",
+        "paid": 1000,
+        "retained": 1000,
+        "graph_updates": 998,
+        "check": {
+          "loss_max_abs": 0.0,
+          "gradient_max_abs": 0.0
+        },
+        "last_run_wall_s": 35.10781805962324,
+        "previous_same_seed_wall_s": 40.074461437761784,
+        "full_stage_wall_s": 114.75242900848389,
+        "previous_full_stage_wall_s": 117.9644935131073,
+        "extra_gradient_evaluations": 1,
+        "source": "/root/autodl-tmp/mm03-20261126/B/rounds/r45/wm/seed1703/receipt.json"
       }
     ],
     "validation": "Two actual eager warmup updates and a matching loss/all-gradient check at the first replay of each WM process. Sampling, clipping and the AdamW step retain their registered order."
   },
   "native_dispatch": {
-    "measured_completed_reordered_batches": 298,
-    "counted_new_native_cases": 8423,
+    "measured_completed_reordered_batches": 299,
+    "counted_new_native_cases": 8639,
     "worker_counts": [
       4,
       6,
@@ -2345,26 +2396,30 @@
       "pid": 187408
     },
     "workers": {
-      "B": 4,
+      "B": 0,
       "C": 8,
-      "B_CF": 6,
+      "B_CF": 8,
       "B_GPU": 3,
       "B_CF_slots": 3
     },
     "elastic_cf": {
       "protocol": "mm03-ordinary-native-lease-v1",
-      "mode": "ordinary_reserved",
-      "changed_beijing": "2026-11-28T11:57:45+08:00",
+      "mode": "idle_loan",
+      "changed_beijing": "2026-11-28T12:17:09+08:00",
       "reserved_ordinary": 4,
-      "effective_ordinary_capacity": 4,
-      "effective_workers_per_cf": 6,
-      "borrowed_ordinary_cores": 0,
-      "additional_shared_cpu_slots": 0,
-      "measured_cgroup_cpu_cores": null,
-      "measured_gpu_free_GiB": null,
-      "host_available_bytes": null,
-      "estimated_incremental_host_bytes": 0,
-      "live_pool_sizes": {}
+      "effective_ordinary_capacity": 0,
+      "effective_workers_per_cf": 8,
+      "borrowed_ordinary_cores": 4,
+      "additional_shared_cpu_slots": 2,
+      "measured_cgroup_cpu_cores": 6.889219698920989,
+      "measured_gpu_free_GiB": 56.978515625,
+      "host_available_bytes": 63754020656,
+      "estimated_incremental_host_bytes": 14935179264,
+      "live_pool_sizes": {
+        "207440": 6,
+        "207441": 6,
+        "207442": 6
+      }
     }
   },
   "paired_native_throughput": {
