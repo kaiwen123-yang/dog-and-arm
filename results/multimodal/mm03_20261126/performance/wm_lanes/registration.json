@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-28T14:11:15+08:00",
+  "round": 49,
+  "seeds": [
+    1701,
+    1702,
+    1703
+  ],
+  "one_then_two": true,
+  "planned_updates_per_seed": 1000,
+  "control": "Hold only the added lane until the first registered WM receipt. Release the second lane for the remaining two.",
+  "effective_throughput": "Paid 1000 or 2000 updates divided by physical table construction and training elapsed time.",
+  "select": "At least 5% more paid updates per minute, at least half of the shorter job overlapping, identical members, 3 unbroken 1000/1000 receipts, no new OOM and min 12 GiB GPU and 8 GiB host available.",
+  "extrapolation": "30% above the three preceding measured GPU peaks scaled to this membership, plus 3 GiB per CUDA process; recomputed per round capped at two. Revert to the preceding estimate on a >15% single-round row jump.",
+  "extras": {
+    "optimizer_updates": 0,
+    "native_substeps": 0
+  },
+  "code": "71cd24573e4c2df0658972ea8963be25521a85eb",
+  "controller_sha256": "ab595d2a20d007711158d901b3cd38451efe72159e123b8d67b8e323afb86c9a"
+}

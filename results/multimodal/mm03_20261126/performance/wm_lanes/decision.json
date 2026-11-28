@@ -1,0 +1,46 @@
+{
+  "at": "2026-11-28T14:48:25+08:00",
+  "round": 49,
+  "valid": false,
+  "selected_lanes": null,
+  "seed_slots": 2,
+  "original_wm_slots": 2,
+  "temporary_comparison_reservation_released": {
+    "at": "2026-11-28T14:42:00+08:00",
+    "round": 49,
+    "cohort_slots": 2,
+    "previous_wm_slots": 2,
+    "controller_pid": 254629,
+    "decision": "Release the extra test reservation immediately. Only two seed fits were admitted, already allowing two world models. Measure these first two together and the trailing registered seed alone."
+  },
+  "reason": "This cohort missed BOTH unchanged three-seed memory thresholds. Its original two-optimizer layout already permitted two WM loaders. Testing an additional WM lane in a three-optimizer layout was inapplicable. The temporary reservation was released during the first loader; the two observed loaders only overlapped partially.",
+  "first_two_actual": {
+    "seed1701": {
+      "start": 1795848121.4018075,
+      "end": 1795848245.6883595,
+      "retained": 1000,
+      "paid": 1000,
+      "row_source": "/root/autodl-tmp/mm03-20261126/B/rounds/r49/members.json",
+      "reserved_gpu_MiB": 17452.0,
+      "host_maxrss_GiB": 2.9693336486816406
+    },
+    "seed1702": {
+      "start": 1795848033.2420857,
+      "end": 1795848175.6063526,
+      "retained": 1000,
+      "paid": 1000,
+      "row_source": "/root/autodl-tmp/mm03-20261126/B/rounds/r49/members.json",
+      "reserved_gpu_MiB": 17452.0,
+      "host_maxrss_GiB": 2.969707489013672
+    }
+  },
+  "overlap_seconds": 54.20454502105713,
+  "initial_host_GiB": 108.45265274494886,
+  "host_required_three_GiB": 108.80037712305784,
+  "initial_gpu_GiB": 90.103515625,
+  "gpu_required_three_GiB": 90.64781401306391,
+  "actual_r49_idle_gpu_released_MiB": 1414,
+  "actual_r49_idle_host_anon_released_MiB": 779.08203125,
+  "extra_optimizer_updates": 0,
+  "extra_native_substeps": 0
+}

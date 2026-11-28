@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-28T14:36:47+08:00",
+  "as_of_beijing": "2026-11-28T14:49:25+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,7 +25,7 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "r48 工作块",
+  "milestone": "第48轮及历史资料H盘归档与续训输入复核",
   "runtime": {
     "supervisor": {
       "pid": 212397,
@@ -36,11 +36,11 @@
     },
     "inference": {
       "unit": "inference",
-      "attempt": 15,
-      "started_beijing": "2026-11-28T14:00:39+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt015.log",
-      "wrapper": 234411,
-      "wrapper_stamp": "1190300684",
+      "attempt": 16,
+      "started_beijing": "2026-11-28T14:46:24+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt016.log",
+      "wrapper": 305943,
+      "wrapper_stamp": "1190575216",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.conda/envs/arm-and-dog/bin/python",
         "-u",
@@ -49,10 +49,10 @@
         "--root",
         "/root/autodl-tmp/mm03-20261126"
       ],
-      "git_commit": "89c19fcedcea2033de58828f1b682912ccaa820a",
+      "git_commit": "71cd24573e4c2df0658972ea8963be25521a85eb",
       "state": "running",
-      "pid": 234413,
-      "pid_stamp": "1190300690",
+      "pid": 305945,
+      "pid_stamp": "1190575222",
       "live": true
     },
     "A": {
@@ -178,44 +178,44 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 7392,
+    "samples": 7429,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-28T14:36:46+08:00",
-      "time": 1795847806.4141314,
-      "cpu_stat": "usage_usec 759591361900\nuser_usec 727340961158\nsystem_usec 32250400742\nnr_periods 809198\nnr_throttled 364\nthrottled_usec 229467133",
+      "beijing": "2026-11-28T14:49:11+08:00",
+      "time": 1795848551.874202,
+      "cpu_stat": "usage_usec 769399952906\nuser_usec 736470562023\nsystem_usec 32929390882\nnr_periods 816652\nnr_throttled 375\nthrottled_usec 249043896",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "110353149952",
+      "ram_bytes": "126259167232",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 601793871872,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 7343, 97887, 28",
+      "disk_free_bytes": 612959580160,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 34479, 97887, 43",
       "inference": {
-        "calls": 340628,
-        "forwards": 174812,
-        "max_batch": 16,
-        "mean_batch": 1.948539001899183,
-        "queue_wait_mean_ms": 1.6630543927392523,
+        "calls": 545337,
+        "forwards": 253225,
+        "max_batch": 17,
+        "mean_batch": 2.1535669858821205,
+        "queue_wait_mean_ms": 1.837841127245572,
         "device": "cuda",
         "queued": 1,
         "models": 10,
-        "graph_calls": 174752,
+        "graph_calls": 253160,
         "cached_graphs": 48,
         "coalesce_ms": 0.7,
-        "eager_width_15_batches": 60,
+        "eager_width_15_batches": 65,
         "peak_torch_allocated_bytes": 1121945600,
         "pid": 234413
       },
       "memory_components_bytes": {
-        "anon": 20562599936,
-        "file": 88523694080,
-        "shmem": 87494656
+        "anon": 62136729600,
+        "file": 62607638528,
+        "shmem": 152899584
       },
       "lane_pids": {
-        "inference": 234413,
+        "inference": 305945,
         "A": 404015,
         "B": 212412,
         "C": 411312,
@@ -967,15 +967,15 @@
   "new_blind_opened": false,
   "B_current": {
     "partition": "rounds/r49/collect",
-    "cases_done": 82,
+    "cases_done": 216,
     "planned": 216,
     "workers": 18,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 103.13948873616755,
-    "completed_here": 82,
-    "steps_here": 856518,
-    "steps_s": 8304.462340229227,
+    "wall_s": 324.45453903637826,
+    "completed_here": 216,
+    "steps_here": 3009443,
+    "steps_s": 9275.391889840621,
     "resumed_cases": 0,
     "processes": [
       289100,
@@ -1032,5 +1032,6 @@
   "compact_row_evidence": "performance/host_rows/loader_decision.json",
   "paired_comparison_plan": "performance/host_rows/r45_registration.json",
   "round45_paired_measurement": "performance/host_rows/r45_decision.json",
-  "inference_batch_evidence": "performance/inference_batches/operation.json"
+  "inference_batch_evidence": "performance/inference_batches/operation.json",
+  "wm_stage_comparison": "performance/wm_lanes/decision.json"
 }
