@@ -1,4 +1,5 @@
 """Episode-local causal windows with image exposure/decision-time checks."""
+from functools import cached_property
 import json
 from pathlib import Path
 
@@ -36,9 +37,27 @@ def training_vocabulary(root, episode_ids=None):
     return Vocabulary.fit(m["task_text"] for _, m in discover(root, "train", episode_ids))
 
 
+def pack_state_rows(parts, device):
+    """Copy one column to its final storage in bounded chunks, preserving NumPy promotion."""
+    dtype = np.result_type(*{part.dtype for part in parts})
+    shape = parts[0].shape[1:]
+    total = sum(len(part) for part in parts)
+    tensor = torch.empty((total, *shape), device=device, dtype=torch.from_numpy(np.empty(0, dtype=dtype)).dtype)
+    block_rows = max(1, (32 << 20) // (dtype.itemsize * int(np.prod(shape))))
+    first_part = start = end = 0
+    for i, part in enumerate(parts, 1):
+        end += len(part)
+        if end - start >= block_rows or i == len(parts):
+            block = np.concatenate(parts[first_part:i], axis=0, dtype=dtype)
+            tensor[start:end].copy_(torch.from_numpy(block))
+            first_part, start = i, end
+    return tensor
+
+
 class EpisodeDataset:
     """Contiguous device-side tensors; states and camera frames retain independent clocks."""
-    def __init__(self, root, split, vocab, device, episode_ids=None, *, episodes=None, map_images=False):
+    def __init__(self, root, split, vocab, device, episode_ids=None, *, episodes=None, map_images=False,
+                 compact_rows=False):
         self.device = torch.device(device)
         self.episodes = discover(root, split, episode_ids) if episodes is None else list(episodes)
         self.episode_ids = [m["episode_id"] for _, m in self.episodes]
@@ -53,6 +72,8 @@ class EpisodeDataset:
             self.mapped_images = {k: MappedFrames() for k in images}
         self.starts, self.history_starts, self.lengths = [], [], []
         expert_rows, contact_rows, transition_rows = [], [], []
+        add_transitions, add_experts, add_contacts = (
+            rows.append if compact_rows else rows.extend for rows in (transition_rows, expert_rows, contact_rows))
         tasks, angles = [], []
         pos = 0
         frame = 1  # Row zero is an explicitly missing frame.
@@ -109,9 +130,9 @@ class EpisodeDataset:
                 raise ValueError(f"Transition mask/contact layout error in {directory}")
             prefix = len(past_p)
             first = pos + prefix
-            transition_rows.extend(first + np.flatnonzero(eligible))
-            expert_rows.extend(first + np.flatnonzero(labeled))
-            contact_rows.extend(first + np.flatnonzero(labeled & (contact.max(axis=1) > 0.05)))
+            add_transitions(first + np.flatnonzero(eligible))
+            add_experts(first + np.flatnonzero(labeled))
+            add_contacts(first + np.flatnonzero(labeled & (contact.max(axis=1) > 0.05)))
             arrays["proprio"].extend((past_p, s))
             arrays["previous"].extend((past_u, previous))
             clock = t if correction else t - t[0]
@@ -147,19 +168,31 @@ class EpisodeDataset:
         self.backward_offsets = torch.arange(1-HISTORY, 1, device=self.device)
         self.tasks = torch.tensor(tasks, dtype=torch.long, device=self.device)
         self.angles = torch.tensor(angles, dtype=torch.float32, device=self.device)
-        self.states = {k: torch.from_numpy(np.concatenate(rows, axis=0)).to(device) for k, rows in arrays.items()}
+        if compact_rows:
+            self.states = {k: pack_state_rows(arrays.pop(k), device) for k in tuple(arrays)}
+        else:
+            self.states = {k: torch.from_numpy(np.concatenate(rows, axis=0)).to(device) for k, rows in arrays.items()}
         self.images = {k: torch.from_numpy(np.concatenate(rows, axis=0)).to(device)
                        for k, rows in images.items() if rows}
-        self.valid_rows = np.asarray(transition_rows, dtype=np.int64)
-        self.expert_rows = np.asarray(expert_rows, dtype=np.int64)
-        self.contact_rows = np.asarray(contact_rows, dtype=np.int64)
-        self.moving_rows = self.expert_rows
-        if len(self.expert_rows):
-            rows = torch.as_tensor(self.expert_rows, device=self.device)
-            targets = self.states["action"][rows]
-            delta = ((targets - self.states["previous"][rows]) / targets.std(0, unbiased=False).clamp_min(.018))
-            motion = delta.square().mean(-1).sqrt().cpu().numpy()
-            self.moving_rows = self.expert_rows[motion >= np.quantile(motion, 0.75)]
+        if compact_rows:
+            self.valid_rows, self.expert_rows, self.contact_rows = (
+                np.concatenate(parts) for parts in (transition_rows, expert_rows, contact_rows))
+        else:
+            self.valid_rows = np.asarray(transition_rows, dtype=np.int64)
+            self.expert_rows = np.asarray(expert_rows, dtype=np.int64)
+            self.contact_rows = np.asarray(contact_rows, dtype=np.int64)
+            _ = self.moving_rows
+
+    @cached_property
+    def moving_rows(self):
+        # The generic sampler uses motion quartiles. MM03 supplies its own frozen row order.
+        if not len(self.expert_rows):
+            return self.expert_rows
+        rows = torch.as_tensor(self.expert_rows, device=self.device)
+        targets = self.states["action"][rows]
+        delta = ((targets - self.states["previous"][rows]) / targets.std(0, unbiased=False).clamp_min(.018))
+        motion = delta.square().mean(-1).sqrt().cpu().numpy()
+        return self.expert_rows[motion >= np.quantile(motion, 0.75)]
 
     def sample_indices(self, rng, size):
         if not len(self.expert_rows):

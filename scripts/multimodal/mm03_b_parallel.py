@@ -58,6 +58,17 @@ def phase_capacity(max_slots, host_free, gpu_free, host_per_fit, wm_gpu, other_g
     return 1,1
 
 
+def compact_row_policy(root, membership):
+    if root is None or membership is None:
+        return False
+    path = Path(root)/"resources/compact_state_rows.json"
+    name = Path(membership).parent.name
+    if not name.startswith("r") or not name[1:].isdigit() or not path.is_file():
+        return False
+    policy = read(path)
+    return policy.get("enabled") is True and int(name[1:]) >= policy["from_round"]
+
+
 def wm_replay_budget(root, membership, record):
     marker=Path(root)/"resources/direct_wm_storage.json"
     policy=read(marker) if marker.is_file() else {}
@@ -101,7 +112,10 @@ def allocation(root, membership, scope):
         private_rows = estimated_row_bytes(0, rows)
         wm_rows = sum(read(Path(p)/"metadata.json")["transitions"]+1 for p in set(mp["wm"]))
         native_width = int(targets.get("B_CF") or 1)
-        host_per_fit = 3*private_rows + 4*GIB + native_width*(5*GIB//2)
+        compact = compact_row_policy(root, membership)
+        # The compact loader holds one table of input chunks, a bounded transfer,
+        # and at most one final host table even on the CUDA-to-host fallback.
+        host_per_fit = (2 if compact else 3)*private_rows + 4*GIB + native_width*(5*GIB//2)
         gpu_per_fit = max(2*private_rows, 3000*wm_rows) + GPU_WORK_PER_OPTIMIZER
         slots = max(1,min(requested,policy["max_slots"],
                           (available-HOST_HEADROOM)//host_per_fit,(free-GPU_HEADROOM)//gpu_per_fit))
@@ -109,6 +123,7 @@ def allocation(root, membership, scope):
              image_storage="shared_original_npy",source_image_file_bytes=images,
              source_decision_rows=rows,wm_rows=wm_rows,native_workers_per_seed=native_width,
              private_host_estimate_per_fit=host_per_fit,gpu_estimate_per_fit=gpu_per_fit,
+             compact_state_rows=compact,
              host_available_bytes=available,gpu_free_bytes=free,planned_gpu_row_tables=0,
              measured_epoch_s=stamp/1e9)
         phase_policy=root/"resources/phase_capacity_policy.json"
