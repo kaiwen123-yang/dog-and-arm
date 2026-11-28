@@ -1,8 +1,8 @@
 # MM03 多模态腿臂仿真实验
 
-2026-11-28T14:09:12+08:00（北京时间），中央推理批次核验。
+2026-11-28T14:36:47+08:00（北京时间），r48 工作块。
 
-A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、1,112,950、7,680、144,000、255,600 次。
+A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、1,130,496、7,680、144,000、259,800 次。
 
 原生 MuJoCo 3.3.0，2 ms 伺服、20 ms 学习控制、100 ms 腕部 RGB-D。按原 12 事件判分。真实硬件运动命令 0。
 
@@ -66,7 +66,7 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 ## 真实教师前缀后的学生续演
 
-已结束 5184 案，5184 案实际切换到学生，371 案继续完成全部事件。
+已结束 5224 案，5224 案实际切换到学生，371 案继续完成全部事件。
 
 ## 正式纯学生评测
 
@@ -76,15 +76,15 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 | 方法 | 微调种子 | 轮次 | 全程成功 | 驶近 | 停稳 | 首败最多的原因 |
 |---|---:|---:|---:|---:|---:|---|
-| D23 | 1701 | 47 | 0/8 | 1/8 | 0/8 | wheel_support_or_tilt (8) |
-| D23 | 1702 | 47 | 0/8 | 0/8 | 0/8 | wheel_support_or_tilt (8) |
-| D23 | 1703 | 47 | 0/8 | 5/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
-| H9 | 1701 | 47 | 0/8 | 2/8 | 1/8 | timeout:approach_base (5)、unexpected_contact:finger_non_grasp_handle (1) |
-| H9 | 1702 | 47 | 0/8 | 4/8 | 1/8 | timeout:settle (2)、unexpected_contact:robot_self (2) |
-| H9 | 1703 | 47 | 0/8 | 4/8 | 3/8 | persistent_saturation:piper_joint2 (2)、unexpected_contact:finger_non_grasp_handle (2) |
-| H9-WM | 1701 | 47 | 0/8 | 3/8 | 0/8 | timeout:settle (3)、timeout:approach_base (3) |
-| H9-WM | 1702 | 47 | 0/8 | 1/8 | 0/8 | timeout:approach_base (6)、unexpected_contact:robot_self (2) |
-| H9-WM | 1703 | 47 | 0/8 | 5/8 | 2/8 | timeout:settle (3)、timeout:approach_base (2) |
+| D23 | 1701 | 48 | 0/8 | 4/8 | 0/8 | wheel_support_or_tilt (7)、timeout:settle (1) |
+| D23 | 1702 | 48 | 0/8 | 1/8 | 0/8 | wheel_support_or_tilt (7)、timeout:settle (1) |
+| D23 | 1703 | 48 | 0/8 | 4/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
+| H9 | 1701 | 48 | 0/8 | 3/8 | 2/8 | unexpected_contact:robot_self (2)、timeout:approach_base (1) |
+| H9 | 1702 | 48 | 0/8 | 6/8 | 2/8 | door_contact_outside_manipulation (2)、timeout:approach_base (2) |
+| H9 | 1703 | 48 | 0/8 | 4/8 | 0/8 | timeout:settle (4)、timeout:approach_base (3) |
+| H9-WM | 1701 | 48 | 0/8 | 3/8 | 0/8 | unexpected_contact:robot_self (3)、timeout:settle (2) |
+| H9-WM | 1702 | 48 | 0/8 | 0/8 | 0/8 | timeout:approach_base (7)、unexpected_contact:robot_self (1) |
+| H9-WM | 1703 | 48 | 0/8 | 4/8 | 1/8 | timeout:approach_base (3)、timeout:settle (2) |
 
 ## 训练吞吐
 
