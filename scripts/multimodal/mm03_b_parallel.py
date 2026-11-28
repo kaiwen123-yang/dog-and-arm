@@ -101,6 +101,24 @@ def wm_replay_budget(root, membership, record):
     return record["gpu_estimate_per_fit"],False
 
 
+def indexed_wm_lanes(spec, cap, conservative_bytes, current_lanes):
+    """Budget the indexed replay using its decision, exposure and episode columns."""
+    if (current_lanes!=1 or not cap.get("streamed_storage") or cap["slots"]<2
+            or not round_storage_policy(spec["root"],spec["members"],"paired_indexed_wm.json")):
+        return current_lanes, conservative_bytes
+    # 109 float32 state/action/contact values, one mask, four int64 indices
+    # and H7 start/contact temporaries fit in 768 bytes per decision. Two
+    # copies of the nine-step (52+23)-float prefixes fit in 8 KiB per episode.
+    episodes = len(set(read(spec["members"])["wm"]))
+    wm_bytes = (768*cap["wm_rows"] + 1536*(1+cap["wm_exposures"])
+                + 8192*episodes + GPU_WORK_PER_OPTIMIZER)
+    slots, lanes = phase_capacity(cap["slots"],cap["host_available_bytes"],cap["gpu_free_bytes"],
+                                  cap["private_host_estimate_per_fit"],wm_bytes,cap["gpu_estimate_other_fit"])
+    if slots==cap["slots"] and lanes>=2 and wm_bytes<=conservative_bytes:
+        return 2, wm_bytes
+    return current_lanes, conservative_bytes
+
+
 def allocation(root, membership, scope):
     """Choose the concurrent population before any optimizer starts loading the shared rows."""
     mp = read(membership)
@@ -372,6 +390,7 @@ def wm_phase_slot(spec):
     if cap["membership"]!=str(membership) or not 1<=lanes<=cap["slots"]<=len(SEEDS):
         raise ValueError(f"Invalid WM phase allocation: {path}")
     wm_gpu,direct=wm_replay_budget(spec["root"],membership,cap)
+    expanded = False
     if direct:
         # An existing coordinator may have captured its cohort with the old, larger
         # WM peak estimate. Keep its seed limit and re-evaluate only the WM gate.
@@ -379,8 +398,12 @@ def wm_phase_slot(spec):
                                   cap["private_host_estimate_per_fit"],wm_gpu,cap["gpu_estimate_other_fit"])
         if slots!=cap["slots"]:
             raise ValueError(f"Direct fill cannot satisfy the existing seed allocation: {path}")
+        original_lanes = lanes
+        lanes,wm_gpu = indexed_wm_lanes(spec,cap,wm_gpu,original_lanes)
+        expanded = lanes>original_lanes
         emit(Path(spec["output"])/"wm_storage_admission.json",dict(membership=str(membership),
              direct_storage=True,seed_slots=slots,wm_slots=lanes,wm_gpu_estimate=wm_gpu,
+             original_wm_slots=original_lanes,indexed_wm_expansion=expanded,
              host_available_bytes=cap["host_available_bytes"],gpu_free_bytes=cap["gpu_free_bytes"]))
     folder=Path(spec["root"])/"B/locks"
     folder.mkdir(parents=True,exist_ok=True)
@@ -394,6 +417,8 @@ def wm_phase_slot(spec):
                 free=int(subprocess.check_output(["nvidia-smi","-i","0","--query-gpu=memory.free",
                         "--format=csv,noheader,nounits"],text=True).strip())*2**20
                 if cap["slots"]>1 and free<GPU_HEADROOM+wm_gpu:
+                    break
+                if expanded and i and (free<GPU_HEADROOM+2*wm_gpu or host_memory()[1]<HOST_HEADROOM+16*GIB):
                     break
                 yield direct
                 return
