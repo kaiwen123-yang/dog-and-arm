@@ -368,6 +368,37 @@ def snapshot(root,repo,milestone):
                      "width.py","queue_test.py","wm_probe.py","adopt.py","r28_dispatch.json","r29_live_wm.json"):
             slimcopy(ordinary_dir/name,dest/name)
         manifest["ordinary_queue_evidence"]="performance/ordinary_queue/summary.json"
+    tail_dir=root/"performance/20261128-tail-scoring"
+    row_dir=root/"performance/20261128-host-rows"
+    tail=read(tail_dir/"decision.json")
+    loader=read(row_dir/"loader_decision.json")
+    comparison45=read(row_dir/"r45_decision.json")
+    resource_note=""
+    if tail and loader:
+        for directory,group,files in (
+                (tail_dir,"tail_scoring",("registration.json","decision.json","compare.py")),
+                (row_dir,"host_rows",("registration.json","row_check.py","check.sh","gradient_backend.json",
+                 "original.json","compact.json","loader_decision.json","r45_registration.json","windows.py",
+                 "r45_window_2.json","r45_window_3.json","r45_decision.json","r45_measurement_issue.json","forecast.json"))):
+            for name in files:
+                slimcopy(directory/name,out/"performance"/group/name)
+        for name in ("tail_scoring.json","compact_state_rows.json","phase_capacity_policy.json"):
+            slimcopy(root/"resources"/name,out/"execution/resources"/name)
+        slimcopy(root/"B/rounds/r45/phase_capacity.json",out/"execution/B/rounds/r45/phase_capacity.json")
+        manifest.update(tail_scoring_evidence="performance/tail_scoring/decision.json",
+                        compact_row_evidence="performance/host_rows/loader_decision.json",
+                        paired_comparison_plan="performance/host_rows/r45_registration.json")
+        rate=tail["matched"]["D23/regression"]
+        resource_note=(f"第 44 轮 D23 公开 20 案回归从 4 个物理进程增至 12 个，同一案例矩阵上不同种子的吞吐由 "
+                       f"{rate['old_steps_s']:,.0f} 增至 {rate['new_steps_s']:,.0f} 子步/秒。"
+                       f"对完整 {loader['rows']:,} 行训练表，装入时的进程匿名内存峰值由 "
+                       f"{loader['old_build_anon_GiB']:.2f} 降至 {loader['new_build_anon_GiB']:.2f} GiB，"
+                       f"CUDA 预留峰值由 {loader['old_cuda_reserved_GiB']:.2f} 降至 {loader['new_cuda_reserved_GiB']:.2f} GiB。"
+                       f"三个种子的 BC 行序一致。")
+        if comparison45.get("valid"):
+            manifest["round45_paired_measurement"]="performance/host_rows/r45_decision.json"
+            resource_note+=(f"第 45 轮同轮配对的两路与三路分别完成 {comparison45['two_updates_min']:.1f} 和 "
+                            f"{comparison45['three_updates_min']:.1f} 次更新/分，实测采用 {comparison45['winner']} 路。")
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -494,6 +525,9 @@ def snapshot(root,repo,milestone):
                       f"在同一份第 28 轮世界模型数据上，直接填表使实测显存峰值由 "
                       f"{ordinary_run['wm_peak_GiB'][0]:.2f} 降至 {ordinary_run['wm_peak_GiB'][1]:.2f} GiB。"
                       f" [逐批回执、调度与全表核验](../{OUT.as_posix()}/performance/ordinary_queue/summary.json)")
+    if resource_note:
+        report.append(resource_note+f" [装表与种子复测](../{OUT.as_posix()}/performance/host_rows/) ·"
+                      f" [同案例矩阵评测记录](../{OUT.as_posix()}/performance/tail_scoring/decision.json)")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",
@@ -509,7 +543,7 @@ def snapshot(root,repo,milestone):
     s=state.read_text()
     start,end="<!-- mm03-live -->","<!-- /mm03-live -->"
     i=s.find(start);j=s.find(end)
-    speed_note=(latency_text+" ") if latency_text else ""
+    speed_note=(resource_note+" ") if resource_note else (latency_text+" ") if latency_text else ""
     entry=(f"{start}\n## {stamp[:16].replace('T',' ')} 北京时间 · MM03 实际进度\n\n{summary} "
            f"云端 {status}。原始回合与完整包位于 {root}。"
            f"{speed_note}[实测报告]({REPORT.as_posix()}) · [恢复清单]({OUT.as_posix()}/manifest.json)\n{end}")
@@ -535,5 +569,7 @@ def snapshot(root,repo,milestone):
             f.write("\n"+compare_text+f" [配置、原始更新计数与估时]({OUT.as_posix()}/performance/cf32_concurrency/)\n")
         if latency_text and "空闲算力" in milestone:
             f.write("\n"+latency_text+f" [逐段计时与预算]({OUT.as_posix()}/performance/cf32_latency/README.md)\n")
+        if resource_note and ("完整训练表核验" in milestone or "真物理配对复测" in milestone):
+            f.write("\n"+resource_note+f" [实测记录]({OUT.as_posix()}/performance/host_rows/)\n")
     return manifest
 

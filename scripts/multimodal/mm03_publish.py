@@ -125,6 +125,10 @@ def reached(root):
         milestones.append("第27轮分阶段显存预留与三种子实测")
     if (root/"performance/20261127-ordinary-queue/summary.json").is_file():
         milestones.append("第28轮普通采集并发与物理回放显存实测")
+    if (root/"performance/20261128-tail-scoring/decision.json").is_file() and (root/"performance/20261128-host-rows/loader_decision.json").is_file():
+        milestones.append("第44轮物理评测提速与完整训练表核验")
+    if (root/"performance/20261128-host-rows/r45_decision.json").is_file():
+        milestones.append("第45轮双种子与三种子真物理配对复测")
     return milestones
 
 
