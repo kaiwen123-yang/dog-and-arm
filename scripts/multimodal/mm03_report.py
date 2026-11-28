@@ -399,6 +399,18 @@ def snapshot(root,repo,milestone):
             manifest["round45_paired_measurement"]="performance/host_rows/r45_decision.json"
             resource_note+=(f"第 45 轮同轮配对的两路与三路分别完成 {comparison45['two_updates_min']:.1f} 和 "
                             f"{comparison45['three_updates_min']:.1f} 次更新/分，实测采用 {comparison45['winner']} 路。")
+    batch_dir = root / "performance/20261128-inference-batches"
+    batch_record = read(batch_dir / "operation.json")
+    batch_note = ""
+    if batch_record:
+        dest = out / "performance/inference_batches"
+        for name in ("equivalence.json", "socket_check.json", "operation.json", "r48_paid_window.json"):
+            slimcopy(batch_dir / name, dest / name)
+        manifest["inference_batch_evidence"] = "performance/inference_batches/operation.json"
+        batch_note = ("中央推理的四次 CUDA 异常都在图前向输出回传时影响 15 个请求。"
+                      "批尺寸 15 已接入相同权重的普通 GPU 前向。第 47 轮三个方法合计 "
+                      f"{batch_record['equivalent_responses']:,} 个观测请求的输出逐字节一致，"
+                      f"服务切换后验证了 {batch_record['socket_responses']:,} 个请求。")
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -528,6 +540,8 @@ def snapshot(root,repo,milestone):
     if resource_note:
         report.append(resource_note+f" [装表与种子复测](../{OUT.as_posix()}/performance/host_rows/) ·"
                       f" [同案例矩阵评测记录](../{OUT.as_posix()}/performance/tail_scoring/decision.json)")
+    if batch_note:
+        report.append(batch_note + f" [推理核验](../{OUT.as_posix()}/{manifest['inference_batch_evidence']})")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",
@@ -571,5 +585,7 @@ def snapshot(root,repo,milestone):
             f.write("\n"+latency_text+f" [逐段计时与预算]({OUT.as_posix()}/performance/cf32_latency/README.md)\n")
         if resource_note and ("完整训练表核验" in milestone or "真物理配对复测" in milestone):
             f.write("\n"+resource_note+f" [实测记录]({OUT.as_posix()}/performance/host_rows/)\n")
+        if batch_note and "中央推理批次核验" in milestone:
+            f.write("\n" + batch_note + f" [推理核验]({OUT.as_posix()}/{manifest['inference_batch_evidence']})\n")
     return manifest
 

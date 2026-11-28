@@ -145,6 +145,7 @@ class ModelBatcher:
         self.use_task_graphs = task_graphs
         self.graphs = OrderedDict()
         self.graph_calls = 0
+        self.eager_width_15_batches = 0
         self.calls = self.batches = self.max_seen = 0
         self.wait_sum = 0.
         self.last_stats = time.monotonic()
@@ -257,7 +258,12 @@ class ModelBatcher:
                 texts.update({t: encoded[j].clone() for j,t in enumerate(missing)})
             args = (torch.stack([req.client.visual for req in group]), torch.stack([texts[t] for t in labels]),
                     p, a, torch.tensor(timing, dtype=torch.float32,device=self.device))
-            if kind == "task" and self.use_task_graphs:
+            if kind == "task" and self.use_task_graphs and len(group) == 15:
+                # This exact batch width repeatedly faulted in captured CUDA inference on D57.
+                # Keep every client in the same batch and run the identical frozen GPU forward.
+                raw, high, estimate = actor.infer_features(*args)
+                self.eager_width_15_batches += 1
+            elif kind == "task" and self.use_task_graphs:
                 key = (group[0].client.key, len(group))
                 if key not in self.graphs:
                     if len(self.graphs) >= 48:
@@ -309,6 +315,7 @@ class ModelBatcher:
                     try:
                         self.infer(group)
                     except Exception as exc:
+                        print(f"Policy inference failed for {group[0].client.kind} batch of {len(group)}", flush=True)
                         for req in group:
                             if not req.done.done():
                                 req.done.set_exception(exc)
@@ -320,6 +327,7 @@ class ModelBatcher:
                                  mean_batch=self.calls/self.batches, queue_wait_mean_ms=1000*self.wait_sum/self.calls,
                                  device=self.device, queued=self.pending.qsize(), models=len(self.models),
                                  graph_calls=self.graph_calls, cached_graphs=len(self.graphs), coalesce_ms=self.window*1000,
+                                 eager_width_15_batches=self.eager_width_15_batches,
                                  peak_torch_allocated_bytes=torch.cuda.max_memory_allocated())
                     from scripts.multimodal.mm03_launch import read,write
                     stats["pid"]=os.getpid()
