@@ -84,8 +84,18 @@ def stream_row_policy(root, membership):
     return round_storage_policy(root, membership, "streamed_replay_rows.json")
 
 
+def indexed_wm_bytes(record, episodes):
+    # 109 float32 state/action/contact values, one mask, four int64 indices
+    # and H7 start/contact temporaries fit in 768 bytes per decision. Two
+    # copies of the nine-step (52+23)-float prefixes fit in 8 KiB per episode.
+    return (768*record["wm_rows"] + 1536*(1+record["wm_exposures"])
+            + 8192*episodes + GPU_WORK_PER_OPTIMIZER)
+
+
 def wm_replay_budget(root, membership, record):
     if record.get("streamed_storage"):
+        if record.get("verified_indexed_wm_budget"):
+            return indexed_wm_bytes(record,record["wm_episode_count"]),True
         # Nonvisual states, indices and legal starts fit in 1 KiB per decision.
         # One 180-scalar visual feature per exposure fits in 1.5 KiB even in FP64.
         columns = 1024*record["wm_rows"] + 1536*(1+record["wm_exposures"])
@@ -106,12 +116,8 @@ def indexed_wm_lanes(spec, cap, conservative_bytes, current_lanes):
     if (current_lanes!=1 or not cap.get("streamed_storage") or cap["slots"]<2
             or not round_storage_policy(spec["root"],spec["members"],"paired_indexed_wm.json")):
         return current_lanes, conservative_bytes
-    # 109 float32 state/action/contact values, one mask, four int64 indices
-    # and H7 start/contact temporaries fit in 768 bytes per decision. Two
-    # copies of the nine-step (52+23)-float prefixes fit in 8 KiB per episode.
     episodes = len(set(read(spec["members"])["wm"]))
-    wm_bytes = (768*cap["wm_rows"] + 1536*(1+cap["wm_exposures"])
-                + 8192*episodes + GPU_WORK_PER_OPTIMIZER)
+    wm_bytes = indexed_wm_bytes(cap,episodes)
     slots, lanes = phase_capacity(cap["slots"],cap["host_available_bytes"],cap["gpu_free_bytes"],
                                   cap["private_host_estimate_per_fit"],wm_bytes,cap["gpu_estimate_other_fit"])
     if slots==cap["slots"] and lanes>=2 and wm_bytes<=conservative_bytes:
@@ -148,7 +154,24 @@ def allocation(root, membership, scope):
         # Budget private states, model/Adam temporaries and each native pool;
         # the WM builder also holds both the episode blocks and their concatenation.
         private_rows = estimated_row_bytes(0, rows)
-        wm_rows = sum(read(Path(p)/"metadata.json")["transitions"]+1 for p in set(mp["wm"]))
+        if scope=="d23cost" and compact_row_policy(root, membership):
+            # Each D23 sensitivity fit loads BC rows and an actor/Adam. The cost
+            # comparison and its disclosed physics evaluations are separate stages.
+            streamed_cost = stream_row_policy(root, membership)
+            table_bytes = private_rows if streamed_cost else 2*private_rows
+            host_per_fit = table_bytes + 4*GIB
+            gpu_per_fit = table_bytes + GPU_WORK_PER_OPTIMIZER
+            slots = max(1,min(requested,policy["max_slots"],(available-HOST_HEADROOM)//host_per_fit,
+                              (free-GPU_HEADROOM)//gpu_per_fit))
+            record = dict(scope=scope,membership=str(membership),slots=slots,requested=requested,
+                          source_decision_rows=rows,streamed_storage=streamed_cost,estimated_row_bytes=private_rows,
+                          host_available_bytes=available,gpu_free_bytes=free,private_host_estimate_per_fit=host_per_fit,
+                          gpu_estimate_per_fit=gpu_per_fit,measured_epoch_s=stamp/1e9)
+            emit(evidence,record)
+            emit(root/"B/cost/phase_capacity.json",record)
+            return slots
+        wm_members = set(mp["wm"])
+        wm_rows = sum(read(Path(p)/"metadata.json")["transitions"]+1 for p in wm_members)
         native_width = int(targets.get("B_CF") or 1)
         compact = compact_row_policy(root, membership)
         streamed = (compact and scope==Path(membership).parent.name
@@ -175,7 +198,10 @@ def allocation(root, membership, scope):
         if streamed:
             import numpy as np
             record["wm_exposures"] = sum(len(np.load(Path(p)/"image_t.npy",mmap_mode="r",allow_pickle=False))
-                                         for p in set(mp["wm"]))
+                                         for p in wm_members)
+            record["wm_episode_count"] = len(wm_members)
+            if round_storage_policy(root,membership,"paired_indexed_wm.json"):
+                record["verified_indexed_wm_budget"] = read(root/"resources/paired_indexed_wm.json").get("status")=="selected"
         phase_policy=root/"resources/phase_capacity_policy.json"
         folder=Path(membership).parent
         if scope==folder.name and phase_policy.is_file():
@@ -187,6 +213,8 @@ def allocation(root, membership, scope):
                 wm_gpu,direct=wm_replay_budget(root,membership,record)
                 slots,wm_slots=phase_capacity(min(requested,policy["max_slots"],phase["max_slots"]),
                                                available,free,host_per_fit,wm_gpu,other_gpu)
+                if record.get("verified_indexed_wm_budget"):
+                    wm_slots = min(wm_slots,2)
                 record.update(previous_uniform_slots=record["slots"],slots=slots,wm_slots=wm_slots,
                               gpu_estimate_other_fit=other_gpu,wm_admission_gpu_bytes=wm_gpu,
                               planned_direct_wm_storage=direct)
@@ -398,9 +426,11 @@ def wm_phase_slot(spec):
                                   cap["private_host_estimate_per_fit"],wm_gpu,cap["gpu_estimate_other_fit"])
         if slots!=cap["slots"]:
             raise ValueError(f"Direct fill cannot satisfy the existing seed allocation: {path}")
+        if cap.get("verified_indexed_wm_budget"):
+            lanes = min(lanes,2)
         original_lanes = lanes
         lanes,wm_gpu = indexed_wm_lanes(spec,cap,wm_gpu,original_lanes)
-        expanded = lanes>original_lanes
+        expanded = lanes>original_lanes or (lanes>1 and cap.get("verified_indexed_wm_budget") is True)
         emit(Path(spec["output"])/"wm_storage_admission.json",dict(membership=str(membership),
              direct_storage=True,seed_slots=slots,wm_slots=lanes,wm_gpu_estimate=wm_gpu,
              original_wm_slots=original_lanes,indexed_wm_expansion=expanded,

@@ -183,6 +183,55 @@ def slimcopy(src,dest):
             shutil.copy2(src,dest)
 
 
+def streamed_replay_note(root, out, manifest):
+    source = root/"performance/20261128-streamed-replay"
+    layout = read(source/"layout_decision.json")
+    if not layout:
+        return ""
+    group = Path("performance/streamed_replay")
+    for name in ("registration.json","layout_decision.json","cpu_check.json","wm_gate_check.json","future_admission_check.json",
+                 "row_check.py","wm_check.py","check_cpu.py","check_layouts.py","check_wm_lanes.py",
+                 "check_future_admission.py","windows.py","wm_window.py",
+                 "rows_reference.json","rows_stream.json","wm_reference.json","wm_stream.json",
+                 "activation.json","cutover.json","r58_allocation.json","r58_window_2.json","r58_window_3.json",
+                 "r58_decision.json","r58_measurement_issue.json","wm_registration.json","wm_first.json",
+                 "wm_decision.json","wm_measurement_issue.json","r58_round_result.json","r58_forecast.json"):
+        slimcopy(source/name,out/group/name)
+    manifest["streamed_replay_evidence"] = (group/"layout_decision.json").as_posix()
+    for name in ("streamed_replay_rows.json","paired_indexed_wm.json"):
+        slimcopy(root/"resources"/name,out/"execution/resources"/name)
+    slimcopy(root/"B/cost/phase_capacity.json",out/"execution/B/cost/phase_capacity.json")
+    host_before,host_after = layout["bc_anon_peak_GiB"]
+    gpu_before,gpu_after = layout["wm_max_gpu_reserved_GiB"]
+    note = (f"第 56 轮完整训练数据上，行为克隆分块装表使进程匿名内存峰值从 {host_before:.2f} 降至 "
+            f"{host_after:.2f} GiB。世界模型按相机曝光保存视觉特征，CUDA 预留峰值从 {gpu_before:.2f} "
+            f"降至 {gpu_after:.2f} GiB。三个种子的抽样行序、训练批次、损失和梯度均逐项一致。")
+    cf = read(source/"r58_decision.json")
+    if cf.get("valid"):
+        manifest["round58_seed_comparison"] = (group/"r58_decision.json").as_posix()
+        note += (f"第 58 轮物理配对的双种子和三种子分别完成 {cf['two_updates_min']:.1f} 和 "
+                 f"{cf['three_updates_min']:.1f} 次有效更新/分，本轮选择 {cf['winner']} 路。")
+    wm = read(source/"wm_decision.json")
+    if wm.get("valid"):
+        manifest["round58_wm_comparison"] = (group/"wm_decision.json").as_posix()
+        chosen = "两路并行" if wm["retained_two_loaders"] else "原有分配"
+        note += (f"世界模型从装表到完成更新，单路为 {wm['single_updates_min']:.0f} 次/分，"
+                 f"两路合计 {wm['dual_updates_min']:.0f} 次/分，后续采用{chosen}。")
+    result = read(source/"r58_round_result.json")
+    if result:
+        manifest["round58_complete_timing"] = (group/"r58_round_result.json").as_posix()
+        note += (f"第 58 轮从冻结训练成员到完成开发评测用时 {result['after_members_minutes']:.1f} 分钟，"
+                 f"之前同类双种子轮次的中位数为 {result['ordinary_two_seed_reference_median_min']:.1f} 分钟。")
+    cost_check = read(source/"future_admission_check.json")
+    if cost_check:
+        note += (f"以第 58 轮冻结成员和当时可用内存复算，D23 成本对照单独按监督训练装表后，"
+                 f"可并行的种子从 {cost_check['old_cost_slots']} 个增至 {cost_check['new_cost_slots']} 个。"
+                 "终末成本对照在候选判定后按实际余量调度。")
+    if (source/"r58_forecast.json").is_file():
+        manifest["current_forecast"] = (group/"r58_forecast.json").as_posix()
+    return note + f" [第 58 轮吞吐与完整回执](../{OUT.as_posix()}/{group.as_posix()}/)"
+
+
 def mirror_records(root,out):
     small=("background_handoff.json","A/design.json","A/channel_results.json","A/command_reference.json","A/budget.json","A/low/compatibility.json",
            "A/completion.json","A/complete.json","B/teacher_registration.json","B/candidate_freeze.json",
@@ -480,6 +529,7 @@ def snapshot(root,repo,milestone):
         manifest["cf32_concurrency_comparison"]="performance/cf32_concurrency/decision.json"
         if (trial_dir/"forecast.json").is_file():
             manifest["cf32_concurrency_forecast"]="performance/cf32_concurrency/forecast.json"
+    streamed_note = streamed_replay_note(root,out,manifest)
     write(out/"manifest.json",manifest)
     write(out/"budget.json",cost)
     (out/"physical_cases.jsonl").write_text("".join(json.dumps(r,ensure_ascii=False,separators=(",",":"))+"\n" for r in rows))
@@ -518,6 +568,8 @@ def snapshot(root,repo,milestone):
         report+=[compare_text+f" [逐分钟数据与完成时间估算](../{OUT.as_posix()}/performance/cf32_concurrency/README.md)"]
     if latency_text:
         report+=[latency_text+f" [同批次计时、生产吞吐与最新估时](../{OUT.as_posix()}/performance/cf32_latency/README.md)"]
+    if streamed_note:
+        report.append(streamed_note)
     report+=["","## 视频与恢复",f"MM02 的四条原轨迹共 {len(videos)} 个全程或局部视频。[同回合视频索引](../{OUT.as_posix()}/videos/mm02/index.json)"]
     for example in read(root/"videos/mm03/examples.json").get("videos",[]):
         label="完整教师" if example["teacher_decisions"] else "全程学生"

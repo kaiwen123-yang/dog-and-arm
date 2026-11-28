@@ -129,6 +129,8 @@ def reached(root):
         milestones.append("第44轮物理评测提速与完整训练表核验")
     if (root/"performance/20261128-host-rows/r45_decision.json").is_file():
         milestones.append("第45轮双种子与三种子真物理配对复测")
+    if (root/"performance/20261128-streamed-replay/r58_round_result.json").is_file():
+        milestones.append("第58轮训练吞吐与完整轮次核验")
     return milestones
 
 

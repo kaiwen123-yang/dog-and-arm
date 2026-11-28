@@ -1,5 +1,7 @@
 MM03 当前执行入口（AutoDL，2026-11-26）。代码 /root/autodl-tmp/dog-and-arm-mm03，数据 /root/autodl-tmp/mm03-20261126。进入代码树后运行 bash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126 启动或恢复。用 .venv/bin/python -m scripts.multimodal.mm03_launch status 查看三路实际 PID、日志和退出记录。单路修复后可运行 .venv/bin/python -m scripts.multimodal.mm03_launch retry --unit A（或 B、C、video、inference）。运行数据以 results/multimodal/mm03_20261126/manifest.json 及 AutoDL 的各路回执为准。
 
+2026-11-28，第 58 轮同轮实测后保留分块装入状态、按相机曝光索引视觉特征的布局。CF32 在两个与三个种子并行时分别完成 55.3 与 79.2 次有效更新/分。世界模型计入装表的单路与双路吞吐分别为 434.7 与 927.9 次更新/分。恢复时读取本轮 phase_capacity.json、各世界模型的 wm_storage_admission.json 和已完成的阶段回执。终末 D23 成本对照在原停训判定后独立按可用资源调度。测试记录见 results/multimodal/mm03_20261126/performance/streamed_replay/。
+
 接续 kaiwen123-yang/dog-and-arm，执行 MM03：稳定轮腿层、完整多模态任务与真实物理前向模型优化。用户已授权项目内实现、仿真实验、普通提交和推送；桌面 Piper 由用户择时，本轮真实 M1/Piper 运动命令为 0。
 
 先读 AGENTS.md、PROJECT_STATE.md 顶部、DAILY_WORK_LOG.md 最新北京时间记录，以及：
