@@ -4,6 +4,7 @@ from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from queue import SimpleQueue
 from threading import Event
+import json
 import os
 import subprocess
 import time
@@ -79,6 +80,38 @@ def wm_replay_budget(root, membership, record):
         # plus a separate model/workspace reserve; native contexts have their own bound.
         return max(2*private_rows,2000*record["wm_rows"])+GPU_WORK_PER_OPTIMIZER,True
     return record["gpu_estimate_per_fit"],False
+
+
+def measured_wm_lanes(spec, cap, estimated_gpu):
+    """Budget a second WM from all three completed direct-fill peaks in the preceding round."""
+    policy_path = Path(spec["root"]) / "resources/paired_wm_loaders.json"
+    if not policy_path.is_file():
+        return estimated_gpu, None
+    policy = read(policy_path)
+    number = spec["round"]
+    if not policy.get("enabled") or not policy["from_round"] <= number <= policy.get("through_round", number):
+        return estimated_gpu, None
+    prev = Path(spec["members"]).parent.parent / f"r{number-1:02d}"
+    try:
+        prior_rows = read(prev / "phase_capacity.json")["wm_rows"]
+        peak_bytes = []
+        for seed in SEEDS:
+            folder = prev / "wm" / f"seed{seed}"
+            receipt = read(folder / "receipt.json")
+            last = json.loads((folder / "executions.jsonl").read_text().splitlines()[-1])
+            peak = last["cuda_peak_reserved_MiB"] * 2**20
+            if not (receipt.get("direct_replay_storage") and receipt["retained"] == 1000
+                    and last.get("completed") and peak > 0):
+                return estimated_gpu, 1
+            peak_bytes.append(peak)
+        growth = max(1., cap["wm_rows"] / prior_rows)
+    except (IndexError, KeyError, OSError, ValueError, ZeroDivisionError):
+        return estimated_gpu, 1
+    # Keep a 30% allocator margin and 3 GiB per CUDA context beyond the measured table.
+    # A larger membership jump goes through the existing single-lane estimate.
+    if growth > 1.15:
+        return estimated_gpu, 1
+    return min(estimated_gpu, int(max(peak_bytes) * growth * 1.3) + 3 * GIB), 2
 
 
 def allocation(root, membership, scope):
@@ -343,10 +376,13 @@ def wm_phase_slot(spec):
     if direct:
         # An existing coordinator may have captured its cohort with the old, larger
         # WM peak estimate. Keep its seed limit and re-evaluate only the WM gate.
+        wm_gpu,wm_limit=measured_wm_lanes(spec,cap,wm_gpu)
         slots,lanes=phase_capacity(cap["slots"],cap["host_available_bytes"],cap["gpu_free_bytes"],
                                   cap["private_host_estimate_per_fit"],wm_gpu,cap["gpu_estimate_other_fit"])
         if slots!=cap["slots"]:
             raise ValueError(f"Direct fill cannot satisfy the existing seed allocation: {path}")
+        if wm_limit is not None:
+            lanes=min(lanes,wm_limit)
         emit(Path(spec["output"])/"wm_storage_admission.json",dict(membership=str(membership),
              direct_storage=True,seed_slots=slots,wm_slots=lanes,wm_gpu_estimate=wm_gpu,
              host_available_bytes=cap["host_available_bytes"],gpu_free_bytes=cap["gpu_free_bytes"]))
@@ -363,6 +399,12 @@ def wm_phase_slot(spec):
                         "--format=csv,noheader,nounits"],text=True).strip())*2**20
                 if cap["slots"]>1 and free<GPU_HEADROOM+wm_gpu:
                     break
+                if i and direct and wm_limit==2:
+                    # The first process may still be building its table on the host.
+                    # Reserve both possible allocations under live shared-machine pressure.
+                    _,available=host_memory()
+                    if free<GPU_HEADROOM+2*wm_gpu or available<HOST_HEADROOM+8*GIB:
+                        break
                 yield direct
                 return
         time.sleep(1)

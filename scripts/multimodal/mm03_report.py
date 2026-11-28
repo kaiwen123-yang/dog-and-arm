@@ -411,6 +411,21 @@ def snapshot(root,repo,milestone):
                       "批尺寸 15 已接入相同权重的普通 GPU 前向。第 47 轮三个方法合计 "
                       f"{batch_record['equivalent_responses']:,} 个观测请求的输出逐字节一致，"
                       f"服务切换后验证了 {batch_record['socket_responses']:,} 个请求。")
+    wm_dir = root / "performance/20261128-wm-lanes"
+    wm_result = read(wm_dir / "decision.json")
+    wm_note = ""
+    if wm_result:
+        dest = out / "performance/wm_lanes"
+        for name in ("registration.json", "admission_checks.json", "controller.py", "decision.json"):
+            slimcopy(wm_dir / name, dest / name)
+        manifest["wm_stage_comparison"] = "performance/wm_lanes/decision.json"
+        if wm_result.get("valid"):
+            wm_note = (f"第 49 轮三个种子各完成 1,000 次世界模型更新。含训练表装入，"
+                       f"单种子为 {wm_result['single_updates_min']:.0f} 次/分，"
+                       f"另两个种子并行合计 {wm_result['pair_updates_min']:.0f} 次/分。"
+                       f"后续世界模型刷新采用 {wm_result['selected_lanes']} 路上限。")
+        else:
+            wm_note = "第 49 轮世界模型并发未取得完整可比窗口，后续沿用原分配。"
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -542,6 +557,8 @@ def snapshot(root,repo,milestone):
                       f" [同案例矩阵评测记录](../{OUT.as_posix()}/performance/tail_scoring/decision.json)")
     if batch_note:
         report.append(batch_note + f" [推理核验](../{OUT.as_posix()}/{manifest['inference_batch_evidence']})")
+    if wm_note:
+        report.append(wm_note + f" [世界模型并发实测](../{OUT.as_posix()}/{manifest['wm_stage_comparison']})")
     if manifest["first_pure_success"]:
         report.append(f"[MM03 首次纯学生全程成功](../{OUT.as_posix()}/videos/mm03/first_student_full_1080p.mp4)")
     report+=["进入 AutoDL 的 /root/autodl-tmp/dog-and-arm-mm03 后执行下列命令。","\x60\x60\x60bash\nbash scripts/multimodal/mm03_session.sh /root/autodl-tmp/mm03-20261126\n.venv/bin/python -m scripts.multimodal.mm03_launch status\n\x60\x60\x60",
@@ -587,5 +604,7 @@ def snapshot(root,repo,milestone):
             f.write("\n"+resource_note+f" [实测记录]({OUT.as_posix()}/performance/host_rows/)\n")
         if batch_note and "中央推理批次核验" in milestone:
             f.write("\n" + batch_note + f" [推理核验]({OUT.as_posix()}/{manifest['inference_batch_evidence']})\n")
+        if wm_note and "世界模型并发实测" in milestone:
+            f.write("\n" + wm_note + f" [实付回执]({OUT.as_posix()}/{manifest['wm_stage_comparison']})\n")
     return manifest
 
