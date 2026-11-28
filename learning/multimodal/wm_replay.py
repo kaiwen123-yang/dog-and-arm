@@ -9,8 +9,34 @@ from learning.b0.contact_clock import ContactClock
 from .world_model import FINGER_THRESHOLD_N, VISION_DIM, camera_features
 
 
+class ExposureRows:
+    """A decision-time view of the original feature vectors, stored once per exposure."""
+    def __init__(self, example, decisions, frames):
+        self.features = example.new_empty((1 + frames, example.shape[1]))
+        self.features[0].zero_()
+        self.frame_ids = torch.empty(decisions, device=example.device, dtype=torch.long)
+        self.shape = torch.Size((decisions, example.shape[1]))
+        self.written = 0
+
+    def append(self, start, end, local_ids, features):
+        count = len(features) - 1
+        if features.dtype != self.features.dtype or features.shape[1:] != self.features.shape[1:]:
+            raise ValueError("Inconsistent camera feature layout across replay episodes")
+        first = 1 + self.written
+        self.features[first:first+count].copy_(features[1:])
+        ids = np.where(local_ids >= 0, first + local_ids, 0)
+        self.frame_ids[start:end].copy_(torch.from_numpy(ids))
+        self.written += count
+
+    def __getitem__(self, index):
+        return self.features[self.frame_ids[index]]
+
+
 class PhysicalReplay:
-    def __init__(self, root, split, device, *, only=None, episode_dirs=None, direct_storage=False):
+    def __init__(self, root, split, device, *, only=None, episode_dirs=None, direct_storage=False,
+                 indexed_exposures=False):
+        if indexed_exposures and not direct_storage:
+            raise ValueError("Indexed camera exposures require direct replay storage")
         self.device, self.split = torch.device(device), split
         self.episodes, self.windows = [], {}
         blocks = {k: [] for k in ('p', 'prev', 'vision', 'o', 'a', 'contact', 'prev_contact', 'fresh')}
@@ -34,9 +60,12 @@ class PhysicalReplay:
 
         if direct_storage:
             # Count from the recorded mask, including each nonempty episode's final boundary.
-            sizes=(len(np.load(path.parent/'valid_transition.npy',allow_pickle=False,mmap_mode='r'))
-                   for path,_ in episodes)
+            sizes=[len(np.load(path.parent/'valid_transition.npy',allow_pickle=False,mmap_mode='r'))
+                   for path,_ in episodes]
             capacity=sum(n+1 for n in sizes if n)
+            if indexed_exposures:
+                frames = sum(len(np.load(path.parent/'image_t.npy',allow_pickle=False,mmap_mode='r'))
+                             for (path,_), n in zip(episodes,sizes) if n)
             self.parts={}
         for path,meta in episodes:
             def arr(name):
@@ -75,9 +104,10 @@ class PhysicalReplay:
                 raise ValueError(f'{path}: incompatible physical observation or supervision shapes')
             start = offset
             offset += n+1
-            self.base.extend([start]*(n+1))
-            self.end.extend([offset-1]*(n+1))
-            self.episode_index.extend([len(self.episodes)]*(n+1))
+            if not indexed_exposures:
+                self.base.extend([start]*(n+1))
+                self.end.extend([offset-1]*(n+1))
+                self.episode_index.extend([len(self.episodes)]*(n+1))
             if not torch.allclose(prev[1:], a, atol=1e-6, rtol=0):
                 raise ValueError(f'{path}: observation history differs from executed commands')
             if meta.get('parent_episode') is not None and meta.get('anchor_tick') is not None:
@@ -96,7 +126,7 @@ class PhysicalReplay:
                                       start=start, valid=valid, count=n, path=path.parent, meta=meta))
             dual = as_tensor(arr('both_contact_fraction')).float().reshape(n, 1)
             contact = torch.cat(((contact > FINGER_THRESHOLD_N).float(), dual), -1)
-            vals = dict(p=p, prev=prev, vision=vision[as_tensor(idx+1)], o=o,
+            vals = dict(p=p, prev=prev, vision=vision if indexed_exposures else vision[as_tensor(idx+1)], o=o,
                         a=torch.cat((a, torch.zeros_like(a[:1]))),
                         contact=torch.cat((contact, torch.zeros_like(contact[:1]))),
                         prev_contact=torch.cat((prev_contact, contact)),
@@ -104,6 +134,11 @@ class PhysicalReplay:
                                                            atol=1e-6, rtol=0)) if len(image_t)
                               else as_tensor(np.zeros(n+1, dtype=bool)))
             for key, value in vals.items():
+                if indexed_exposures and key == 'vision':
+                    if key not in self.parts:
+                        self.parts[key] = ExposureRows(value, capacity, frames)
+                    self.parts[key].append(start, offset, idx, value)
+                    continue
                 if direct_storage:
                     if key not in self.parts:
                         self.parts[key]=value.new_empty((capacity,*value.shape[1:]))
@@ -122,11 +157,20 @@ class PhysicalReplay:
                 raise ValueError('Replay membership changed while loading decision boundaries')
         else:
             self.parts = {k: torch.cat(v) for k, v in blocks.items()}
-        self.base = torch.tensor(self.base, device=self.device)
-        self.end = torch.tensor(self.end, device=self.device)
+        if indexed_exposures:
+            if self.parts['vision'].written != frames:
+                raise ValueError("Camera exposures changed while loading the frozen replay")
+            lengths = torch.tensor([e['count']+1 for e in self.episodes], device=self.device)
+            ends = lengths.cumsum(0)
+            self.base = (ends-lengths).repeat_interleave(lengths, output_size=offset)
+            self.end = (ends-1).repeat_interleave(lengths, output_size=offset)
+            self.episode_index = torch.arange(len(lengths), device=self.device).repeat_interleave(lengths, output_size=offset)
+        else:
+            self.base = torch.tensor(self.base, device=self.device)
+            self.end = torch.tensor(self.end, device=self.device)
+            self.episode_index = torch.tensor(self.episode_index, device=self.device)
         self.prefix_p = torch.stack(self.prefix_p)
         self.prefix_prev = torch.stack(self.prefix_prev)
-        self.episode_index = torch.tensor(self.episode_index, device=self.device)
 
     def summary(self):
         return [dict(episode_id=e['id'], scene=e['scene'], source=e['source'],
@@ -138,10 +182,10 @@ class PhysicalReplay:
             for ep in self.episodes:
                 if len(ep['valid']) >= steps:
                     ok = np.lib.stride_tricks.sliding_window_view(ep['valid'], steps).all(axis=-1)
-                    valid.extend(ep['start'] + np.flatnonzero(ok))
-            ix = torch.tensor(valid, device=self.device, dtype=torch.long)
-            if not len(ix):
+                    valid.append(ep['start'] + np.flatnonzero(ok))
+            if not valid or not any(len(rows) for rows in valid):
                 raise ValueError(f'No {self.split} windows of {steps} physical transitions')
+            ix = torch.tensor(np.concatenate(valid), device=self.device, dtype=torch.long)
             contact = self.parts['contact'][ix, :2].bool().any(-1)
             self.windows[steps] = (ix, ix[contact])
         return self.windows[steps]

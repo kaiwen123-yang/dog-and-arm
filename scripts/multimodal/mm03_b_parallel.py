@@ -58,18 +58,38 @@ def phase_capacity(max_slots, host_free, gpu_free, host_per_fit, wm_gpu, other_g
     return 1,1
 
 
-def compact_row_policy(root, membership):
+def round_storage_policy(root, membership, filename):
     if root is None or membership is None:
         return False
-    path = Path(root)/"resources/compact_state_rows.json"
+    path = Path(root)/"resources"/filename
     name = Path(membership).parent.name
     if not name.startswith("r") or not name[1:].isdigit() or not path.is_file():
         return False
     policy = read(path)
-    return policy.get("enabled") is True and int(name[1:]) >= policy["from_round"]
+    round_id = int(name[1:])
+    return (policy.get("enabled") is True and round_id >= policy["from_round"]
+            and round_id <= policy.get("through_round", round_id))
+
+
+def compact_row_policy(root, membership):
+    return round_storage_policy(root, membership, "compact_state_rows.json")
+
+
+def stream_row_policy(root, membership):
+    if membership is not None:
+        capacity = Path(membership).parent/"phase_capacity.json"
+        if capacity.is_file():
+            cap = read(capacity)
+            return cap.get("membership")==str(membership) and cap.get("streamed_storage") is True
+    return round_storage_policy(root, membership, "streamed_replay_rows.json")
 
 
 def wm_replay_budget(root, membership, record):
+    if record.get("streamed_storage"):
+        # Nonvisual states, indices and legal starts fit in 1 KiB per decision.
+        # One 180-scalar visual feature per exposure fits in 1.5 KiB even in FP64.
+        columns = 1024*record["wm_rows"] + 1536*(1+record["wm_exposures"])
+        return columns+GPU_WORK_PER_OPTIMIZER,True
     marker=Path(root)/"resources/direct_wm_storage.json"
     policy=read(marker) if marker.is_file() else {}
     name=Path(membership).parent.name
@@ -113,9 +133,17 @@ def allocation(root, membership, scope):
         wm_rows = sum(read(Path(p)/"metadata.json")["transitions"]+1 for p in set(mp["wm"]))
         native_width = int(targets.get("B_CF") or 1)
         compact = compact_row_policy(root, membership)
+        streamed = (compact and scope==Path(membership).parent.name
+                    and round_storage_policy(root,membership,"phase_capacity_policy.json")
+                    and round_storage_policy(root,membership,"streamed_replay_rows.json")
+                    and round_storage_policy(root,membership,"direct_wm_storage.json"))
         # The compact loader holds one table of input chunks, a bounded transfer,
         # and at most one final host table even on the CUDA-to-host fallback.
         host_per_fit = (2 if compact else 3)*private_rows + 4*GIB + native_width*(5*GIB//2)
+        if streamed:
+            # Even on CPU fallback the streamed loader owns one row table plus a
+            # bounded input block. Reserve the full elastic native pool and its EGL contexts.
+            host_per_fit = private_rows + 4*GIB + max(8,native_width)*(5*GIB//2)
         gpu_per_fit = max(2*private_rows, 3000*wm_rows) + GPU_WORK_PER_OPTIMIZER
         slots = max(1,min(requested,policy["max_slots"],
                           (available-HOST_HEADROOM)//host_per_fit,(free-GPU_HEADROOM)//gpu_per_fit))
@@ -123,9 +151,13 @@ def allocation(root, membership, scope):
              image_storage="shared_original_npy",source_image_file_bytes=images,
              source_decision_rows=rows,wm_rows=wm_rows,native_workers_per_seed=native_width,
              private_host_estimate_per_fit=host_per_fit,gpu_estimate_per_fit=gpu_per_fit,
-             compact_state_rows=compact,
+             compact_state_rows=compact,streamed_storage=streamed,
              host_available_bytes=available,gpu_free_bytes=free,planned_gpu_row_tables=0,
              measured_epoch_s=stamp/1e9)
+        if streamed:
+            import numpy as np
+            record["wm_exposures"] = sum(len(np.load(Path(p)/"image_t.npy",mmap_mode="r",allow_pickle=False))
+                                         for p in set(mp["wm"]))
         phase_policy=root/"resources/phase_capacity_policy.json"
         folder=Path(membership).parent
         if scope==folder.name and phase_policy.is_file():

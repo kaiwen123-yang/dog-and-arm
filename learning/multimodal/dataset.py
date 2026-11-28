@@ -54,16 +54,57 @@ def pack_state_rows(parts, device):
     return tensor
 
 
+def allocate_streamed_states(episodes, device):
+    """Read only NPY headers to allocate the final state columns with their original promotion."""
+    types = {"proprio": set(), "previous": set(), "action": {np.dtype(np.float32)}}
+    rows = 0
+    for directory, _ in episodes:
+        def header(name):
+            return np.load(directory / (name + ".npy"), allow_pickle=False, mmap_mode="r")
+
+        proprio = header("proprio")
+        rows += len(proprio)
+        types["proprio"].add(proprio.dtype)
+        types["previous"].add(header("previous_action").dtype)
+        correction = (directory / "expert_action_target.npy").is_file()
+        types["action"].add(header("expert_action_target" if correction else "action_clipped").dtype)
+        if correction and (directory / "history_prefix_proprio.npy").is_file():
+            prefix = header("history_prefix_proprio")
+            rows += len(prefix)
+            types["proprio"].add(prefix.dtype)
+            types["previous"].add(header("history_prefix_previous_action").dtype)
+    dtypes = {k: np.result_type(*values) for k, values in types.items()}
+    dtypes.update(sensor=np.dtype(np.float32), image=np.dtype(np.int64), episode=np.dtype(np.int64))
+    shapes = {"proprio": (52,), "previous": (23,), "sensor": (3,), "action": (23,), "image": (), "episode": ()}
+    states = {k: torch.empty((rows, *shape), device=device, dtype=torch.from_numpy(np.empty(0, dtypes[k])).dtype)
+              for k, shape in shapes.items()}
+    return states, dtypes
+
+
+def write_state_block(states, dtypes, arrays, begin, end):
+    for key, parts in arrays.items():
+        block = np.concatenate(parts, axis=0, dtype=dtypes[key])
+        if len(block) != end-begin:
+            raise ValueError(f"State column {key} has a different number of decision boundaries")
+        states[key][begin:end].copy_(torch.from_numpy(block))
+        parts.clear()
+
+
 class EpisodeDataset:
     """Contiguous device-side tensors; states and camera frames retain independent clocks."""
     def __init__(self, root, split, vocab, device, episode_ids=None, *, episodes=None, map_images=False,
-                 compact_rows=False):
+                 compact_rows=False, stream_rows=False):
         self.device = torch.device(device)
         self.episodes = discover(root, split, episode_ids) if episodes is None else list(episodes)
         self.episode_ids = [m["episode_id"] for _, m in self.episodes]
         if len(self.episode_ids) != len(set(self.episode_ids)) or any(
                 m["split"] != split for _, m in self.episodes):
             raise ValueError(f"Duplicate episode or incorrect split in {split} data")
+        if stream_rows:
+            if not compact_rows or not map_images or not self.episodes:
+                raise ValueError("Streaming requires compact rows and mapped images from a nonempty membership")
+            self.states, dtypes = allocate_streamed_states(self.episodes, self.device)
+            block_start = 0
         arrays = {key: [] for key in ("proprio", "previous", "sensor", "action", "image", "episode")}
         images = {"rgb": [], "depth": [], "depth_valid": []}
         self.mapped_images = {}
@@ -155,6 +196,9 @@ class EpisodeDataset:
             self.history_starts.append(pos)
             self.lengths.append(n+1)
             pos = first+n+1
+            if stream_rows and (pos-block_start >= 32768 or i+1 == len(self.episodes)):
+                write_state_block(self.states, dtypes, arrays, block_start, pos)
+                block_start = pos
             frame += len(image_t)
             text = meta["task_text"]
             angle = command_angle_rad(text)
@@ -168,7 +212,10 @@ class EpisodeDataset:
         self.backward_offsets = torch.arange(1-HISTORY, 1, device=self.device)
         self.tasks = torch.tensor(tasks, dtype=torch.long, device=self.device)
         self.angles = torch.tensor(angles, dtype=torch.float32, device=self.device)
-        if compact_rows:
+        if stream_rows:
+            if pos != len(self.states["episode"]):
+                raise ValueError("Episode boundaries changed while loading the frozen state table")
+        elif compact_rows:
             self.states = {k: pack_state_rows(arrays.pop(k), device) for k in tuple(arrays)}
         else:
             self.states = {k: torch.from_numpy(np.concatenate(rows, axis=0)).to(device) for k, rows in arrays.items()}

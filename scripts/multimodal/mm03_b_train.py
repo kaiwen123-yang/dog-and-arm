@@ -50,7 +50,7 @@ def use_packed_native(path, round_id):
             bool(cfg.get("pid_stamp")) and pid_stamp(cfg["pid"])==cfg["pid_stamp"])
 
 
-def refresh_wm(s, *, direct_storage=False):
+def refresh_wm(s, *, direct_storage=False, indexed_exposures=False):
     from learning.multimodal.world_model import PerceptualDynamics
     from learning.multimodal.wm_replay import PhysicalReplay
     from scripts.multimodal.train_wm import physical_loss
@@ -66,7 +66,8 @@ def refresh_wm(s, *, direct_storage=False):
     optimizer = torch.optim.AdamW(model.parameters(), lr=.001, weight_decay=.0001)
     optimizer.load_state_dict(parent["optimizer"])
     rng = torch.Generator(device=DEVICE).manual_seed(s["data_seed"])
-    replay = PhysicalReplay(None, "train", DEVICE, episode_dirs=members, direct_storage=direct_storage)
+    replay = PhysicalReplay(None, "train", DEVICE, episode_dirs=members, direct_storage=direct_storage,
+                            indexed_exposures=indexed_exposures)
     out.mkdir(parents=True, exist_ok=True)
     # The first comparison's current-student native paths become common training data
     # only after C freezes its winner. The registered 128 windows still total 128.
@@ -137,7 +138,7 @@ def refresh_wm(s, *, direct_storage=False):
                 emit(out / "progress.json", dict(stage="wm", retained=step, paid=paid0+step-step0,
                      loss=float(loss.detach()), grad=float(grad), **peak(DEVICE)))
     emit(out / "receipt.json", dict(stage="wm", retained=1000, paid=paid0+1000-step0,
-         direct_replay_storage=direct_storage,
+         direct_replay_storage=direct_storage,indexed_exposures=indexed_exposures,
          rollback=paid0-step0, source=s["parent"], members=len(members), children=s["round"], wm=str(ck),
          batch=128, horizon=7, members_file=s["members"], wall_s_last_run=time.monotonic()-started,
          validation_h7_before=read(prior_value)["h7_loss"], validation_h7_after=validation_loss(),
@@ -526,7 +527,7 @@ def read_spec(path):
 
 
 def run_spec(path,data_cache):
-    from scripts.multimodal.mm03_b_parallel import native_pair_slot,wm_phase_slot
+    from scripts.multimodal.mm03_b_parallel import native_pair_slot,wm_phase_slot,stream_row_policy
     s=read_spec(path)
     run_root = Path(s["root"])
     status_file = run_root / "status" / "B.json"
@@ -558,7 +559,8 @@ def run_spec(path,data_cache):
             print(json.dumps(dict(event="started",time=started,pid=os.getpid(),seed=s["seed"],stage=s["stage"])),file=log)
             try:
                 if s["stage"] == "wm":
-                    refresh_wm(s,direct_storage=direct)
+                    refresh_wm(s,direct_storage=direct,
+                               indexed_exposures=direct and stream_row_policy(s["root"],s["members"]))
                 elif s["stage"] == "bridge":
                     bridge(s)
                 else:

@@ -386,10 +386,20 @@ def fill_round(root, r, workers, include_model, selected):
     if r==1:
         from scripts.multimodal.mm03_b_physics import verify_handoffs
         verify_handoffs(root)
-    membership(root,r)
+    member = membership(root,r)
     collection_ledgers(root)
-    slots = allocation(root,membership(root,r),f"r{r:02d}")
     methods=METHODS if include_model else BASE
+    capacity_file = directory/"phase_capacity.json"
+    capacity = read(capacity_file) if capacity_file.is_file() else {}
+    # A resumed coordinator can revisit a completed round to score existing
+    # checkpoints. It has no new optimizer to admit or allocation to replace.
+    if (capacity.get("membership")==str(member) and 1<=capacity.get("slots",0)<=len(SEEDS)
+            and all((directory/"wm"/f"seed{s}"/"receipt.json").is_file() for s in SEEDS)
+            and all((train_dir(root,r,m,s)/stage/"receipt.json").is_file()
+                    for m,s,stage in product(methods,SEEDS,("bc","bridge","paired")))):
+        slots = capacity["slots"]
+    else:
+        slots = allocation(root,member,f"r{r:02d}")
     def paired_finished():
         return all((train_dir(root,r,"H9-WM",s)/"paired/receipt.json").is_file() for s in SEEDS)
     schedules={seed:iter(methods) for seed in SEEDS}

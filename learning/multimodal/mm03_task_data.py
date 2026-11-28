@@ -32,9 +32,10 @@ class SharedRows:
         resident = self.device
         reservation = None
         self.residency = dict(device=str(resident),source_image_file_bytes=image_bytes)
-        from scripts.multimodal.mm03_b_parallel import compact_row_policy, mapped_image_policy
+        from scripts.multimodal.mm03_b_parallel import compact_row_policy, mapped_image_policy, stream_row_policy
         mapped = bool(mapped_image_policy(run_root,member_file))
         compact = mapped and compact_row_policy(run_root, member_file)
+        streamed = compact and stream_row_policy(run_root, member_file)
         if self.device.type=="cuda" and not mapped:
             from scripts.multimodal.mm03_b_parallel import (GPU_HEADROOM,GPU_WORK_PER_OPTIMIZER,
                                                             estimated_row_bytes,choose_row_device)
@@ -47,7 +48,8 @@ class SharedRows:
                 self.residency["device"]="cpu"
         retry_on_host = False
         try:
-            self.data = EpisodeDataset(None,"train",vocab,resident,episodes=episodes,map_images=mapped,compact_rows=compact)
+            self.data = EpisodeDataset(None,"train",vocab,resident,episodes=episodes,map_images=mapped,
+                                       compact_rows=compact,stream_rows=streamed)
         except torch.OutOfMemoryError:
             if resident.type!="cuda":
                 raise
@@ -60,7 +62,8 @@ class SharedRows:
             torch.cuda.empty_cache()
             resident=torch.device("cpu")
             self.residency.update(device="cpu",fallback="CUDA allocation unavailable during dataset construction")
-            self.data=EpisodeDataset(None,"train",vocab,resident,episodes=episodes,map_images=mapped,compact_rows=compact)
+            self.data=EpisodeDataset(None,"train",vocab,resident,episodes=episodes,map_images=mapped,
+                                     compact_rows=compact,stream_rows=streamed)
         commands = torch.zeros((len(self.data.states["episode"]), 2), device=resident)
         command_valid = torch.zeros(len(commands), device=resident, dtype=torch.bool)
         for i, (p, m) in enumerate(episodes):
@@ -115,7 +118,7 @@ class SharedRows:
         if mapped:
             self.residency.update(image_storage="shared_original_npy",
                                   mapped_image_bytes=sum(v.nbytes for v in self.data.mapped_images.values()),
-                                  compact_state_rows=compact)
+                                  compact_state_rows=compact,stream_state_rows=streamed)
         if reservation is not None:
             from scripts.multimodal.mm03_b import emit
             emit(reservation,self.residency)
