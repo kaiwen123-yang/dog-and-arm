@@ -416,7 +416,9 @@ def snapshot(root,repo,milestone):
     wm_note = ""
     if wm_result:
         dest = out / "performance/wm_lanes"
-        for name in ("registration.json", "admission_checks.json", "controller.py", "decision.json"):
+        for name in ("registration.json", "admission_checks.json", "controller.py", "decision.json",
+                     "cohort_change.json", "idle_release.py", "r49_idle_release.json", "r50_collect_tail.py",
+                     "r50_collection_tail.json", "r50_admission.json", "r50_first_updates.json"):
             slimcopy(wm_dir / name, dest / name)
         manifest["wm_stage_comparison"] = "performance/wm_lanes/decision.json"
         if wm_result.get("valid"):
@@ -425,7 +427,18 @@ def snapshot(root,repo,milestone):
                        f"另两个种子并行合计 {wm_result['pair_updates_min']:.0f} 次/分。"
                        f"后续世界模型刷新采用 {wm_result['selected_lanes']} 路上限。")
         else:
-            wm_note = "第 49 轮世界模型并发未取得完整可比窗口，后续沿用原分配。"
+            wm_note = (f"第 49 轮原分配器放行 {wm_result['seed_slots']} 个训练种子和 "
+                       f"{wm_result['original_wm_slots']} 路世界模型。前两个世界模型部分重叠，随后沿用原分配。")
+        idle_release = read(wm_dir / "r49_idle_release.json")
+        if idle_release:
+            wm_note += (f"在没有物理会话时轮换推理服务，释放 {idle_release['gpu_released_MiB']:,} MiB 显存和 "
+                        f"{idle_release['anonymous_released_MiB']:.0f} MiB 匿名主机内存。")
+        admission50 = read(wm_dir / "r50_admission.json")
+        if admission50:
+            manifest["round50_seed_admission"] = "performance/wm_lanes/r50_admission.json"
+            wm_note += (f"第 50 轮准入时实际可用主机内存 {admission50['host_available_GiB']:.2f} GiB、"
+                        f"显存 {admission50['gpu_free_GiB']:.2f} GiB，原分配器放行 "
+                        f"{admission50['seed_slots']} 个并行种子。")
     speed = summarize(root)
     if speed:
         manifest["performance_evidence"]="performance/summary.json"
@@ -604,7 +617,7 @@ def snapshot(root,repo,milestone):
             f.write("\n"+resource_note+f" [实测记录]({OUT.as_posix()}/performance/host_rows/)\n")
         if batch_note and "中央推理批次核验" in milestone:
             f.write("\n" + batch_note + f" [推理核验]({OUT.as_posix()}/{manifest['inference_batch_evidence']})\n")
-        if wm_note and "世界模型并发实测" in milestone:
+        if wm_note and ("世界模型并发实测" in milestone or "原准入实测" in milestone):
             f.write("\n" + wm_note + f" [实付回执]({OUT.as_posix()}/{manifest['wm_stage_comparison']})\n")
     return manifest
 
