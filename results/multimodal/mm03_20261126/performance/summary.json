@@ -1,5 +1,5 @@
 {
-  "as_of_beijing": "2026-11-28T11:48:57+08:00",
+  "as_of_beijing": "2026-11-28T12:01:16+08:00",
   "observed_cohort": {
     "baseline_round": 2,
     "optimized_round": 4,
@@ -2271,40 +2271,48 @@
     "case_configurations": 12
   },
   "native_cf_resources": {
-    "B": 12,
+    "B": 4,
     "C": 8,
     "B_CF": 6,
     "B_GPU": 3,
-    "B_CF_slots": 1,
-    "changed_beijing": "2026-11-28T11:35:02+08:00",
-    "reason": "Lend two finished CF32 seeds' native slots to ordinary scoring",
+    "B_CF_slots": 3,
+    "changed_beijing": "2026-11-28T11:57:35+08:00",
+    "reason": "Return scoring slots to the three CF32 seeds",
     "A_finished": true,
     "C_finished": true,
     "candidates_frozen": false,
     "previous": {
-      "B": 4,
+      "B": 12,
       "C": 8,
       "B_CF": 6,
       "B_GPU": 3,
-      "B_CF_slots": 3
+      "B_CF_slots": 1
     },
     "B_throughput_before": {
       "partition": "rounds/r44/regression",
-      "cases_done": 14,
+      "cases_done": 20,
       "planned": 20,
-      "workers": 4,
+      "workers": 12,
       "launch_workers": 7,
       "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-      "wall_s": 34.45886234752834,
-      "completed_here": 14,
-      "steps_here": 80837,
-      "steps_s": 2345.898688840442,
+      "wall_s": 41.017705185338855,
+      "completed_here": 20,
+      "steps_here": 222188,
+      "steps_s": 5416.880320243212,
       "resumed_cases": 0,
       "processes": [
-        198750,
-        198753,
-        198754,
-        198755
+        200261,
+        200264,
+        200265,
+        200266,
+        200267,
+        200268,
+        200269,
+        200270,
+        200271,
+        200272,
+        200273,
+        200274
       ]
     },
     "A_last_batch": {
@@ -2322,19 +2330,41 @@
       "timestamp": "2026-11-26T02:55:24.053452+00:00"
     },
     "central_inference": {
-      "calls": 1368777,
-      "forwards": 991961,
+      "calls": 1486569,
+      "forwards": 1052686,
       "max_batch": 18,
-      "mean_batch": 1.3798697731059992,
-      "queue_wait_mean_ms": 1.2939522468584896,
+      "mean_batch": 1.4121675409381336,
+      "queue_wait_mean_ms": 1.320071316766147,
       "device": "cuda",
       "queued": 0,
       "models": 32,
-      "graph_calls": 991961,
+      "graph_calls": 1052686,
       "cached_graphs": 48,
       "coalesce_ms": 0.7,
       "peak_torch_allocated_bytes": 1122304512,
       "pid": 187408
+    },
+    "workers": {
+      "B": 4,
+      "C": 8,
+      "B_CF": 6,
+      "B_GPU": 3,
+      "B_CF_slots": 3
+    },
+    "elastic_cf": {
+      "protocol": "mm03-ordinary-native-lease-v1",
+      "mode": "ordinary_reserved",
+      "changed_beijing": "2026-11-28T11:57:45+08:00",
+      "reserved_ordinary": 4,
+      "effective_ordinary_capacity": 4,
+      "effective_workers_per_cf": 6,
+      "borrowed_ordinary_cores": 0,
+      "additional_shared_cpu_slots": 0,
+      "measured_cgroup_cpu_cores": null,
+      "measured_gpu_free_GiB": null,
+      "host_available_bytes": null,
+      "estimated_incremental_host_bytes": 0,
+      "live_pool_sizes": {}
     }
   },
   "paired_native_throughput": {

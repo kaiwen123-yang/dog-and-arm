@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-28T11:48:56+08:00",
+  "as_of_beijing": "2026-11-28T12:01:16+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,22 +25,22 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "第44轮物理评测提速与完整训练表核验",
+  "milestone": "r44 工作块",
   "runtime": {
     "supervisor": {
-      "pid": 187403,
-      "pid_stamp": "1188299981",
-      "started_beijing": "2026-11-28T08:27:12+08:00",
+      "pid": 206301,
+      "pid_stamp": "1189562839",
+      "started_beijing": "2026-11-28T11:57:41+08:00",
       "state": "running",
       "live": true
     },
     "inference": {
       "unit": "inference",
-      "attempt": 12,
-      "started_beijing": "2026-11-28T08:27:12+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt012.log",
-      "wrapper": 187405,
-      "wrapper_stamp": "1188299986",
+      "attempt": 13,
+      "started_beijing": "2026-11-28T11:57:41+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt013.log",
+      "wrapper": 206303,
+      "wrapper_stamp": "1189562845",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.conda/envs/arm-and-dog/bin/python",
         "-u",
@@ -49,10 +49,10 @@
         "--root",
         "/root/autodl-tmp/mm03-20261126"
       ],
-      "git_commit": "b01dedfc1edc83ceb62364071aef03504d664ccb",
+      "git_commit": "89c19fcedcea2033de58828f1b682912ccaa820a",
       "state": "running",
-      "pid": 187408,
-      "pid_stamp": "1188299991",
+      "pid": 206306,
+      "pid_stamp": "1189562850",
       "live": true
     },
     "A": {
@@ -82,11 +82,11 @@
     },
     "B": {
       "unit": "B",
-      "attempt": 18,
-      "started_beijing": "2026-11-28T08:27:14+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt018.log",
-      "wrapper": 187414,
-      "wrapper_stamp": "1188300196",
+      "attempt": 19,
+      "started_beijing": "2026-11-28T11:57:43+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt019.log",
+      "wrapper": 206312,
+      "wrapper_stamp": "1189563057",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.venv/bin/python",
         "-u",
@@ -97,10 +97,10 @@
         "--workers",
         "7"
       ],
-      "git_commit": "b01dedfc1edc83ceb62364071aef03504d664ccb",
+      "git_commit": "89c19fcedcea2033de58828f1b682912ccaa820a",
       "state": "running",
-      "pid": 187416,
-      "pid_stamp": "1188300199",
+      "pid": 206314,
+      "pid_stamp": "1189563062",
       "live": true
     },
     "C": {
@@ -178,45 +178,45 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 6890,
+    "samples": 6927,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-28T11:48:37+08:00",
-      "time": 1795837717.7429612,
-      "cpu_stat": "usage_usec 660215143035\nuser_usec 634319587865\nsystem_usec 25895555170\nnr_periods 708312\nnr_throttled 136\nthrottled_usec 141338270",
+      "beijing": "2026-11-28T12:01:02+08:00",
+      "time": 1795838462.350519,
+      "cpu_stat": "usage_usec 663014812909\nuser_usec 636976346080\nsystem_usec 26038466828\nnr_periods 715758\nnr_throttled 138\nthrottled_usec 149088587",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "108081078272",
+      "ram_bytes": "83426250752",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 536178499584,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 16987, 97887, 4",
+      "disk_free_bytes": 543616008192,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 5627, 97887, 14",
       "inference": {
-        "calls": 1486569,
-        "forwards": 1052686,
-        "max_batch": 18,
-        "mean_batch": 1.4121675409381336,
-        "queue_wait_mean_ms": 1.320071316766147,
+        "calls": 48811,
+        "forwards": 21091,
+        "max_batch": 17,
+        "mean_batch": 2.314304679721208,
+        "queue_wait_mean_ms": 1.6299398722690823,
         "device": "cuda",
         "queued": 0,
-        "models": 32,
-        "graph_calls": 1052686,
-        "cached_graphs": 48,
+        "models": 3,
+        "graph_calls": 21091,
+        "cached_graphs": 26,
         "coalesce_ms": 0.7,
-        "peak_torch_allocated_bytes": 1122304512,
-        "pid": 187408
+        "peak_torch_allocated_bytes": 913777152,
+        "pid": 206306
       },
       "memory_components_bytes": {
-        "anon": 27429339136,
-        "file": 79017402368,
-        "shmem": 43712512
+        "anon": 10401931264,
+        "file": 71971487744,
+        "shmem": 22003712
       },
       "lane_pids": {
-        "inference": 187408,
+        "inference": 206306,
         "A": 404015,
-        "B": 187416,
+        "B": 206314,
         "C": 411312,
         "video": 399173
       }
@@ -965,30 +965,36 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r44/regression",
+    "partition": "rounds/r45/collect",
     "cases_done": 20,
-    "planned": 20,
-    "workers": 12,
+    "planned": 216,
+    "workers": 18,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 41.017705185338855,
+    "wall_s": 37.27259367518127,
     "completed_here": 20,
-    "steps_here": 222188,
-    "steps_s": 5416.880320243212,
+    "steps_here": 138250,
+    "steps_s": 3709.1596362948208,
     "resumed_cases": 0,
     "processes": [
-      200261,
-      200264,
-      200265,
-      200266,
-      200267,
-      200268,
-      200269,
-      200270,
-      200271,
-      200272,
-      200273,
-      200274
+      206784,
+      206787,
+      206788,
+      206789,
+      206790,
+      206791,
+      206792,
+      206793,
+      206794,
+      206795,
+      206796,
+      206797,
+      206798,
+      206799,
+      206800,
+      206801,
+      206802,
+      206803
     ]
   },
   "A_current": {
