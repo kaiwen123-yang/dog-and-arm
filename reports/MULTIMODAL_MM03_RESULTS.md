@@ -1,8 +1,8 @@
 # MM03 多模态腿臂仿真实验
 
-2026-11-28T05:15:02+08:00（北京时间），r36 工作块。
+2026-11-28T08:23:29+08:00（北京时间），r40 工作块。
 
-A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、854,016、7,680、108,000、195,000 次。
+A 已有 44/44 个干预或教师参考案。B 的新完整教师通过 96/96（计划 96），已回执的正式纯学生案 0/324。L16、B 高层、C 分支、WM、bridge 累计实付分别为 60,000、946,176、7,680、120,000、216,600 次。
 
 原生 MuJoCo 3.3.0，2 ms 伺服、20 ms 学习控制、100 ms 腕部 RGB-D。按原 12 事件判分。真实硬件运动命令 0。
 
@@ -66,7 +66,7 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 ## 真实教师前缀后的学生续演
 
-已结束 3888 案，3888 案实际切换到学生，250 案继续完成全部事件。
+已结束 4321 案，4321 案实际切换到学生，293 案继续完成全部事件。
 
 ## 正式纯学生评测
 
@@ -76,15 +76,15 @@ A 的每个 2 ms 子步日志保存在 AutoDL 对应 case_dir/physics_2ms。旧 
 
 | 方法 | 微调种子 | 轮次 | 全程成功 | 驶近 | 停稳 | 首败最多的原因 |
 |---|---:|---:|---:|---:|---:|---|
-| D23 | 1701 | 36 | 0/8 | 3/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
-| D23 | 1702 | 36 | 0/8 | 1/8 | 0/8 | wheel_support_or_tilt (8) |
-| D23 | 1703 | 36 | 0/8 | 5/8 | 0/8 | wheel_support_or_tilt (5)、timeout:settle (3) |
-| H9 | 1701 | 36 | 0/8 | 1/8 | 1/8 | timeout:approach_base (4)、unexpected_contact:robot_self (3) |
-| H9 | 1702 | 36 | 0/8 | 4/8 | 1/8 | timeout:settle (2)、unexpected_contact:robot_self (2) |
-| H9 | 1703 | 36 | 0/8 | 2/8 | 1/8 | timeout:approach_base (3)、unexpected_contact:robot_self (3) |
-| H9-WM | 1701 | 36 | 0/8 | 3/8 | 2/8 | timeout:approach_base (4)、operation_station_drift (1) |
-| H9-WM | 1702 | 36 | 0/8 | 0/8 | 0/8 | timeout:approach_base (8) |
-| H9-WM | 1703 | 36 | 0/8 | 2/8 | 0/8 | wheel_support_or_tilt (2)、timeout:settle (2) |
+| D23 | 1701 | 40 | 0/8 | 3/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
+| D23 | 1702 | 40 | 0/8 | 4/8 | 0/8 | wheel_support_or_tilt (6)、timeout:settle (2) |
+| D23 | 1703 | 40 | 0/8 | 3/8 | 2/8 | wheel_support_or_tilt (6)、operation_station_drift (1) |
+| H9 | 1701 | 40 | 0/8 | 2/8 | 0/8 | timeout:approach_base (3)、unexpected_contact:robot_self (3) |
+| H9 | 1702 | 40 | 0/8 | 5/8 | 2/8 | unexpected_contact:robot_self (3)、operation_station_drift (2) |
+| H9 | 1703 | 40 | 0/8 | 2/8 | 0/8 | unexpected_contact:robot_self (3)、persistent_saturation:piper_joint2 (2) |
+| H9-WM | 1701 | 40 | 0/8 | 3/8 | 2/8 | unexpected_contact:robot_self (3)、operation_station_drift (2) |
+| H9-WM | 1702 | 40 | 0/8 | 2/8 | 1/8 | timeout:approach_base (6)、unexpected_contact:finger_non_grasp_handle (1) |
+| H9-WM | 1703 | 40 | 0/8 | 2/8 | 1/8 | timeout:approach_base (5)、timeout:settle (1) |
 
 ## 训练吞吐
 
