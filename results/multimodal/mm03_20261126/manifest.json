@@ -1,7 +1,7 @@
 {
   "method": "M1Piper-MM03-StabilityHierarchy-DMO-v1",
   "status": "in_progress",
-  "as_of_beijing": "2026-11-28T12:19:28+08:00",
+  "as_of_beijing": "2026-11-28T14:09:12+08:00",
   "registration": "results/planning/multimodal_mm03_20261126/registration.json",
   "registration_commit": "e3e47e88d79ebef4a1adec638f86baffcc54916f",
   "host": "autodl-d57",
@@ -25,22 +25,22 @@
     "C": 4
   },
   "hardware_motion_commands": 0,
-  "milestone": "第45轮双种子与三种子真物理配对复测",
+  "milestone": "中央推理批次核验",
   "runtime": {
     "supervisor": {
-      "pid": 206301,
-      "pid_stamp": "1189562839",
-      "started_beijing": "2026-11-28T11:57:41+08:00",
+      "pid": 212397,
+      "pid_stamp": "1190022058",
+      "started_beijing": "2026-11-28T13:14:13+08:00",
       "state": "running",
       "live": true
     },
     "inference": {
       "unit": "inference",
-      "attempt": 13,
-      "started_beijing": "2026-11-28T11:57:41+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt013.log",
-      "wrapper": 206303,
-      "wrapper_stamp": "1189562845",
+      "attempt": 15,
+      "started_beijing": "2026-11-28T14:00:39+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt015.log",
+      "wrapper": 234411,
+      "wrapper_stamp": "1190300684",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.conda/envs/arm-and-dog/bin/python",
         "-u",
@@ -51,8 +51,8 @@
       ],
       "git_commit": "89c19fcedcea2033de58828f1b682912ccaa820a",
       "state": "running",
-      "pid": 206306,
-      "pid_stamp": "1189562850",
+      "pid": 234413,
+      "pid_stamp": "1190300690",
       "live": true
     },
     "A": {
@@ -82,11 +82,11 @@
     },
     "B": {
       "unit": "B",
-      "attempt": 19,
-      "started_beijing": "2026-11-28T11:57:43+08:00",
-      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt019.log",
-      "wrapper": 206312,
-      "wrapper_stamp": "1189563057",
+      "attempt": 20,
+      "started_beijing": "2026-11-28T13:14:15+08:00",
+      "log": "/root/autodl-tmp/mm03-20261126/logs/B.attempt020.log",
+      "wrapper": 212410,
+      "wrapper_stamp": "1190022275",
       "argv": [
         "/root/autodl-tmp/dog-and-arm-mm03/.venv/bin/python",
         "-u",
@@ -99,8 +99,8 @@
       ],
       "git_commit": "89c19fcedcea2033de58828f1b682912ccaa820a",
       "state": "running",
-      "pid": 206314,
-      "pid_stamp": "1189563062",
+      "pid": 212412,
+      "pid_stamp": "1190022280",
       "live": true
     },
     "C": {
@@ -178,45 +178,46 @@
   "raw_case_table": "physical_cases.jsonl",
   "budget": "budget.json",
   "resource_samples": {
-    "samples": 6981,
+    "samples": 7309,
     "initial": {
       "A": 7,
       "B": 7,
       "C": 4
     },
     "current": {
-      "beijing": "2026-11-28T12:19:08+08:00",
-      "time": 1795839548.7520695,
-      "cpu_stat": "usage_usec 671636006734\nuser_usec 645124179928\nsystem_usec 26511826806\nnr_periods 726622\nnr_throttled 138\nthrottled_usec 149088587",
+      "beijing": "2026-11-28T14:08:54+08:00",
+      "time": 1795846134.8835492,
+      "cpu_stat": "usage_usec 732006706487\nuser_usec 701753048317\nsystem_usec 30253658170\nnr_periods 792482\nnr_throttled 191\nthrottled_usec 186149189",
       "cpu_quota": "2500000 100000",
-      "ram_bytes": "126695759872",
+      "ram_bytes": "126702120960",
       "ram_limit_bytes": "128849018880",
-      "disk_free_bytes": 540284997632,
-      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 52920, 97887, 85",
+      "disk_free_bytes": 576038547456,
+      "gpu_name_usedMiB_totalMiB_utilPC": "NVIDIA RTX PRO 6000 Blackwell Server Edition, 43001, 97887, 20",
       "inference": {
-        "calls": 342178,
-        "forwards": 135108,
-        "max_batch": 17,
-        "mean_batch": 2.532625751250851,
-        "queue_wait_mean_ms": 2.1182792600753815,
+        "calls": 974,
+        "forwards": 71,
+        "max_batch": 15,
+        "mean_batch": 13.71830985915493,
+        "queue_wait_mean_ms": 3.209931284449306,
         "device": "cuda",
         "queued": 1,
-        "models": 9,
-        "graph_calls": 135108,
-        "cached_graphs": 48,
+        "models": 1,
+        "graph_calls": 13,
+        "cached_graphs": 8,
         "coalesce_ms": 0.7,
-        "peak_torch_allocated_bytes": 1120334848,
-        "pid": 206306
+        "eager_width_15_batches": 58,
+        "peak_torch_allocated_bytes": 305158144,
+        "pid": 234413
       },
       "memory_components_bytes": {
-        "anon": 90685169664,
-        "file": 34417152000,
-        "shmem": 87515136
+        "anon": 71337881600,
+        "file": 53629304832,
+        "shmem": 196554752
       },
       "lane_pids": {
-        "inference": 206306,
+        "inference": 234413,
         "A": 404015,
-        "B": 206314,
+        "B": 212412,
         "C": 411312,
         "video": 399173
       }
@@ -549,19 +550,19 @@
     {
       "method": "H9",
       "seed": 1702,
-      "round": 44,
-      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r44/H9/seed1702/paired/full.pt",
-      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r44/H9/seed1702/paired/deploy.pt",
-      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r44/H9/seed1702/paired/receipt.json",
-      "full_sha256": "919dd2d046c0c6cfaad8bccdbbe0c4f577ff06021ba5d73575ce4cbbe380f9a7",
-      "deploy_sha256": "b23431e80feb2fd1cad3b3a8ad2911dedc834fea4d956e99bf1f618838e33c4a",
+      "round": 46,
+      "full": "/root/autodl-tmp/mm03-20261126/B/rounds/r46/H9/seed1702/paired/full.pt",
+      "deploy": "/root/autodl-tmp/mm03-20261126/B/rounds/r46/H9/seed1702/paired/deploy.pt",
+      "receipt": "/root/autodl-tmp/mm03-20261126/B/rounds/r46/H9/seed1702/paired/receipt.json",
+      "full_sha256": "592f9fa36d3f882b9562c4b5662c92f8a1a6acfda668bd74a853ed8a8e7ba488",
+      "deploy_sha256": "7d1e0fc8254cd1c38aa569b396c54abecbb428488ca79ae84ef7488444d741fa",
       "low": "/root/autodl-tmp/mm03-20261126/A/low/seed1702/block0/deploy.pt",
       "rank": [
         0,
         0,
-        8,
-        -1,
-        -44
+        12,
+        0,
+        -46
       ],
       "development": [
         {
@@ -576,7 +577,7 @@
           "side": "pull",
           "goal": 25,
           "success": false,
-          "events": 2
+          "events": 4
         },
         {
           "scene": "tr_nominal",
@@ -590,14 +591,14 @@
           "side": "push",
           "goal": 25,
           "success": false,
-          "events": 2
+          "events": 4
         },
         {
           "scene": "va_pose",
           "side": "pull",
           "goal": 15,
           "success": false,
-          "events": 0
+          "events": 1
         },
         {
           "scene": "va_pose",
@@ -611,7 +612,7 @@
           "side": "push",
           "goal": 15,
           "success": false,
-          "events": 2
+          "events": 1
         },
         {
           "scene": "va_pose",
@@ -965,36 +966,36 @@
   "planned_formal_cases": 324,
   "new_blind_opened": false,
   "B_current": {
-    "partition": "rounds/r45/collect",
-    "cases_done": 216,
-    "planned": 216,
+    "partition": "rounds/r48/collect",
+    "cases_done": 24,
+    "planned": 24,
     "workers": 18,
     "launch_workers": 7,
     "worker_target_source": "/root/autodl-tmp/mm03-20261126/resources/worker_targets.json",
-    "wall_s": 342.7605895381421,
-    "completed_here": 216,
-    "steps_here": 3087884,
-    "steps_s": 9008.865354563708,
+    "wall_s": 75.35489722155035,
+    "completed_here": 24,
+    "steps_here": 412695,
+    "steps_s": 5476.684531685295,
     "resumed_cases": 0,
     "processes": [
-      206784,
-      206787,
-      206788,
-      206789,
-      206790,
-      206791,
-      206792,
-      206793,
-      206794,
-      206795,
-      206796,
-      206797,
-      206798,
-      206799,
-      206800,
-      206801,
-      206802,
-      206803
+      233198,
+      233201,
+      233202,
+      233203,
+      233204,
+      233205,
+      233206,
+      233207,
+      233208,
+      233209,
+      233210,
+      233211,
+      233212,
+      233213,
+      233214,
+      233215,
+      233216,
+      233217
     ]
   },
   "A_current": {
@@ -1030,5 +1031,6 @@
   "tail_scoring_evidence": "performance/tail_scoring/decision.json",
   "compact_row_evidence": "performance/host_rows/loader_decision.json",
   "paired_comparison_plan": "performance/host_rows/r45_registration.json",
-  "round45_paired_measurement": "performance/host_rows/r45_decision.json"
+  "round45_paired_measurement": "performance/host_rows/r45_decision.json",
+  "inference_batch_evidence": "performance/inference_batches/operation.json"
 }

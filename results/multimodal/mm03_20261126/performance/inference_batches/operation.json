@@ -1,0 +1,48 @@
+{
+  "observed_beijing": "2026-11-28T14:06:03+08:00",
+  "prior_service_errors": [
+    {
+      "attempt": 9,
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt009.log",
+      "completed_graph_readback_failures": 15,
+      "reporting_run_line_frames": 15,
+      "every_fanout_error": 36
+    },
+    {
+      "attempt": 10,
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt010.log",
+      "completed_graph_readback_failures": 15,
+      "reporting_run_line_frames": 15,
+      "every_fanout_error": 36
+    },
+    {
+      "attempt": 11,
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt011.log",
+      "completed_graph_readback_failures": 15,
+      "reporting_run_line_frames": 15,
+      "every_fanout_error": 36
+    },
+    {
+      "attempt": 13,
+      "log": "/root/autodl-tmp/mm03-20261126/logs/inference.attempt013.log",
+      "completed_graph_readback_failures": 15,
+      "reporting_run_line_frames": 15,
+      "every_fanout_error": 21
+    }
+  ],
+  "diagnosis": "Four independent inference services reported exactly 15 DtoH graph-output failures before subsequent calls inherited CUDA error 700. The previous instrumentation did not store the batch size and the underlying driver cause is unconfirmed.",
+  "routing": "Only exact task batch width 15 uses the ordinary frozen GPU forward; all other previously graph-enabled widths keep their normal path. Future errors log method kind and group size.",
+  "equivalent_responses": 4416,
+  "equivalence": "equivalence.json",
+  "socket_responses": 975,
+  "socket": "socket_check.json",
+  "socket_width15_eager_batches": 58,
+  "ended_rotation": "2026-11-28T14:00:41+08:00",
+  "original_inference": 212402,
+  "active_inference": 234413,
+  "B_attempt": 20,
+  "same_live_B_pid": 212412,
+  "additional_learning_updates": 0,
+  "additional_native_substeps": 0,
+  "operational_validation": "Client-drained replacement + retained observation socket test. Long-run recurrence is observed separately."
+}
