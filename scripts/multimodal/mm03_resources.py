@@ -8,6 +8,41 @@ import time
 from scripts.multimodal.mm03_launch import DEFAULT, now, read, write
 
 
+TAIL_REASON = "Lend two finished CF32 seeds' native slots to ordinary scoring"
+
+
+def tail_scoring_target(root, old):
+    from scripts.multimodal.mm03_b_parallel import GIB, GPU_HEADROOM, HOST_HEADROOM, host_memory
+    import subprocess
+
+    lent = old.get("reason") == TAIL_REASON
+    restore = (4, 6, 3, "Return scoring slots to the three CF32 seeds") if lent else None
+    policy = read(root / "resources/tail_scoring.json")
+    if not policy.get("enabled") or (root / "B/candidate_freeze.json").exists():
+        return restore
+    if not lent and tuple(old.get(k) for k in ("B", "B_CF", "B_CF_slots", "B_GPU")) != (4, 6, 3, 3):
+        return None
+    rounds = (p.parent for p in (root / "B/rounds").glob("r*/members.json") if p.parent.name[1:].isdigit())
+    folder = max(rounds, key=lambda p: int(p.name[1:]), default=None)
+    if folder is None:
+        return restore
+    number = int(folder.name[1:])
+    if number < policy["from_round"] or number > policy.get("through_round", number):
+        return restore
+    if sum((folder / f"H9-WM/seed{s}/paired/receipt.json").is_file() for s in (1701, 1702, 1703)) != 2:
+        return restore
+    try:
+        _, available = host_memory()
+        free = int(subprocess.check_output(["nvidia-smi", "-i", "0", "--query-gpu=memory.free",
+                   "--format=csv,noheader,nounits"], text=True).strip()) * 2**20
+        extra = 0 if lent else 8
+        if available < HOST_HEADROOM + extra * (3*GIB//2) or free < GPU_HEADROOM + extra * GIB:
+            return restore
+    except (OSError, ValueError, subprocess.CalledProcessError):
+        return restore
+    return None if lent else (12, 6, 1, TAIL_REASON)
+
+
 def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=None, elastic=None):
     from scripts.multimodal.mm03_elastic import configure_locked,reconcile_locked
     directory=root/"resources"
@@ -46,6 +81,11 @@ def update(root, b=None, c=None, reason=None, b_gpu=None, b_cf=None, cf_slots=No
         a_done=(root/"A/completion.json").is_file()
         c_done=(root/"C/selection.json").is_file()
         frozen=(root/"B/candidate_freeze.json").is_file()
+        if (a_done and c_done and not frozen and all(v is None for v in (b,c,b_gpu,b_cf,cf_slots))
+                and (old.get("reason")==TAIL_REASON or (directory/"tail_scoring.json").is_file())):
+            adjustment=tail_scoring_target(root,old)
+            if adjustment:
+                b,b_cf,cf_slots,reason=adjustment
         if b is None and c is None and b_gpu is None and b_cf is None and cf_slots is None:
             if old and old.get("A_finished")==a_done and old.get("C_finished")==c_done and old.get("candidates_frozen",False)==frozen:
                 return reconcile_locked(root,old)
